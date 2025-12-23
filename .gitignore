@@ -1,0 +1,136 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+.pnpm-debug.log*
+
+# testing
+/coverage
+playwright-report/
+test-results/
+*.spec.ts.snap
+
+# next.js
+/.next/
+/out/
+.next/
+out/
+
+# production
+/build
+dist/
+
+# misc
+.DS_Store
+*.pem
+*.log
+*.tsbuildinfo
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# local env files
+.env*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# supabase
+.supabase/
+supabase/.temp/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+.cursor-tutor/
+.cursor-tutor-1/
+*.code-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Windows
+*.lnk
+NTUSER.DAT*
+ntuser.dat*
+*.regtrans-ms
+*.blf
+
+# Personal files (if accidentally in project)
+.android/
+.app-store/
+.bash_history
+.bash_profile
+.bashrc
+.cache/
+.chocolatey/
+.claude.json
+.claude.json.backup
+.claude/
+.config/
+.docker/
+.emulator_console_auth_token
+.expo/
+.gitconfig
+.gradle/
+.lesshst
+.local/
+.openshot_qt/
+.serena/
+.ssh/
+.viminfo
+.viminfo.tmp
+.viminfy.tmp
+.viminfz.tmp
+.yarnrc
+
+# Windows user directories (should never be in project)
+AppData/
+Contacts/
+Desktop/
+Downloads/
+Dropbox/
+Favorites/
+Links/
+Music/
+OneDrive/
+Videos/
+"3D Objects/"
+"Saved Games/"
+Searches/
+"Creative Cloud Files*"/
+
+# Other
+code/
+goose/
+my-app/
+npm-cache/
+scoop/
+-1.14-windows.xml

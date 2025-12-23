@@ -1,0 +1,25 @@
+# Supabase Migrations
+
+This directory contains database migration files.
+
+## Migration Files
+
+Migration files are created using:
+```bash
+supabase migration new <description>
+```
+
+Migration files follow the naming convention:
+```
+YYYYMMDDHHMMSS_<description>.sql
+```
+
+## Important Rules
+
+1. **Never edit existing migrations** - Always create new migration files
+2. **Test locally first** - Test migrations before applying to production
+3. **Include RLS policies** - All new tables must have RLS enabled
+4. **Document changes** - Include comments explaining migration purpose
+
+See [MIGRATION_PROCEDURE.md](../docs/procedures/MIGRATION_PROCEDURE.md) for detailed migration workflow.
+

@@ -1,0 +1,34 @@
+{
+  "name": "soloshethings",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.89.0",
+    "next": "15.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "sanitize-html": "^2.17.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/sanitize-html": "^2.16.0",
+    "autoprefixer": "^10.4.23",
+    "clsx": "^2.1.0",
+    "postcss": "^8.5.6",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0"
+  }
+}

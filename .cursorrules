@@ -1,0 +1,347 @@
+# SoloSheThings Cursor Rules
+
+**Project:** SoloSheThings - Mobile-first platform for solo female travelers  
+**Stack:** Next.js 15+ App Router, TypeScript (strict), Supabase, Stripe, WordPress (headless)
+
+## 📚 Documentation First
+
+**ALWAYS read these docs before making changes:**
+1. `docs/DOCUMENTATION_INDEX.md` - Master navigation map
+2. `docs/ARCHITECTURE_CONSTITUTION.md` - Foundational principles
+3. `docs/PROJECT_CONTEXT_PROMPT.md` - Quick reference guide
+
+**For specific features, read relevant contracts:**
+- Auth: `docs/contracts/AUTH_CONTRACT.md`
+- Data access: `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md`
+- Access control: `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`
+- Billing: `docs/contracts/BILLING_STRIPE_CONTRACT.md`
+- WordPress: `docs/contracts/WORDPRESS_CONTENT_CONTRACT.md`
+- Storage: `docs/contracts/UPLOADS_STORAGE_CONTRACT.md`
+
+## 🚫 Non-Negotiables (Never Violate)
+
+### 1. RLS Always On
+- Every Supabase table MUST have Row Level Security enabled
+- Default deny, explicit allow policies only
+- Never bypass RLS using service role for user operations
+
+### 2. Explicit Selects Only
+- NEVER use `select('*')`
+- ALWAYS specify columns explicitly
+- Prevents accidental data leakage
+
+### 3. getUser(), Not getSession()
+- Use `getUser()` from `@supabase/auth-helpers-nextjs` for ALL auth decisions
+- `getSession()` is insufficient for security-critical gating
+- Use in middleware, Server Components, Server Actions, API routes
+
+### 4. Server-Only Secrets
+- Service role keys, Stripe secrets, API keys MUST only exist server-side
+- Never expose `SUPABASE_SERVICE_ROLE_KEY` to client
+- Never use `NEXT_PUBLIC_*` prefix for secrets
+
+### 5. No Silent Failures
+- All errors MUST be logged (Sentry in production)
+- Operations MUST throw or return explicit error states
+- Never use empty catch blocks
+- Never swallow errors silently
+
+### 6. WordPress = Read-Only
+- WordPress is read-only from Next.js (no writes)
+- WordPress content is public (no authentication required)
+- WordPress is ONLY for editorial/blog content
+- All user data goes in Supabase, not WordPress
+
+### 7. Supabase = User Data
+- Supabase handles: identity, profiles, subscriptions, UGC, moderation, storage
+- Never store user data in WordPress
+- Never use WordPress for authentication
+
+## 🏗️ Architecture Rules
+
+### Component Boundaries
+- **Server Components First** - Default to Server Components
+- **Client Components** - Only when needed (interactivity, hooks, browser APIs)
+- **No DB writes in client components** - All mutations via Server Actions or API routes
+- **Middleware** - Allow/deny/redirect ONLY, no business logic
+
+### Data Access Patterns
+- Server-only query modules for data fetching
+- Typed return shapes (never `any`)
+- Use `.maybeSingle()` when 0 rows is valid
+- Use `.single()` when exactly 1 row expected
+- Server-only Supabase client for privileged reads
+
+### Error Handling
+- Never swallow errors
+- User-safe error messages (no technical jargon)
+- Log errors with context (category, type, component)
+- Use Sentry in production, console logs in development
+
+### Naming Conventions
+- Server Actions: `createPost`, `updateProfile` (verb + noun)
+- Query modules: `getUserProfile`, `getPosts` (get + noun)
+- Components: PascalCase (`UserProfile`, `PostList`)
+- Routes: kebab-case (`/user-profile`, `/create-post`)
+
+## 🔴 Red-Zone Files (Require Extra Review)
+
+These files MUST be reviewed carefully:
+- `lib/supabase.ts` - Supabase client initialization
+- `middleware.ts` - Route protection and auth checks
+- `app/api/webhooks/stripe/route.ts` - Stripe webhook handler
+- `lib/auth-provider.tsx` - Auth context/provider (if exists)
+- `lib/wordpress.ts` - WordPress content fetching
+- `lib/supabase-admin.ts` - Service role client (server-only)
+- `lib/stripe.ts` - Stripe client initialization
+
+**When touching red-zone files:**
+1. Show existing code first
+2. Summarize current behavior
+3. Apply smallest possible diff
+4. Explicitly explain security implications
+
+## 📝 Code Patterns
+
+### Server Actions
+```typescript
+'use server';
+
+export async function createPost(formData: FormData) {
+  const user = await getUser(); // Security-critical check
+  if (!user) throw new Error('Unauthorized');
+  
+  try {
+    const { data, error } = await supabase
+      .from('community_posts')
+      .insert({ author_id: user.id, title, content })
+      .select('id, title') // Explicit selects
+      .single();
+      
+    if (error) throw error;
+    return { success: true, data };
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { category: 'database', error_type: 'insert_failed' },
+    });
+    throw error;
+  }
+}
+```
+
+### Data Queries
+```typescript
+// ✅ CORRECT: Explicit selects
+const { data } = await supabase
+  .from('profiles')
+  .select('id, username, avatar_url') // Explicit columns
+  .eq('id', userId)
+  .maybeSingle(); // 0 rows is valid
+
+// ❌ WRONG: Wildcard select
+const { data } = await supabase
+  .from('profiles')
+  .select('*') // NEVER
+  .eq('id', userId);
+```
+
+### Auth Checks
+```typescript
+// ✅ CORRECT: Use getUser()
+import { getUser } from '@/lib/auth';
+
+export default async function ProtectedPage() {
+  const user = await getUser(); // Verifies JWT signature
+  if (!user) redirect('/login');
+  // User is authenticated and verified
+}
+
+// ❌ WRONG: Use getSession()
+const session = await getSession(); // Session may be stale
+```
+
+### Error Logging
+```typescript
+// ✅ CORRECT: Log errors before handling
+try {
+  await createPost(data);
+} catch (error) {
+  Sentry.captureException(error, {
+    tags: {
+      category: 'database',
+      error_type: 'insert_failed',
+      component: 'create-post',
+    },
+    extra: {
+      user_id: user.id, // Safe to log
+      // Never log passwords, tokens, API keys
+    },
+  });
+  throw error; // Re-throw or return error state
+}
+
+// ❌ WRONG: Silent failure
+try {
+  await createPost(data);
+} catch (error) {
+  // Silent failure - error not logged
+}
+```
+
+## 🔐 Security Rules
+
+### RLS Policies
+- Default deny (no access unless policy allows)
+- Use `auth.uid()` for user-scoped access
+- Public read policies for public content
+- Private write policies for user data
+
+### Storage Access
+- Users can only upload to own folders (`{userId}/...`)
+- Private content uses signed URLs with expiration
+- Public content uses public URLs
+- Storage RLS policies enforce access
+
+### Webhook Security
+- Verify webhook signatures (Stripe, WordPress)
+- Use idempotency ledger for duplicate prevention
+- Never process webhooks without signature verification
+
+### Input Validation
+- Validate all user inputs (use Zod)
+- Sanitize WordPress HTML before display (DOMPurify)
+- Never trust client-side validation alone
+
+## 📊 Database Schema
+
+### Schema Truth Source
+- `docs/database_schema_audit.md` is the single source of truth
+- Generated types MUST come from actual database schema
+- After schema changes, regenerate types: `supabase gen types typescript --local > types/database.ts`
+
+### Migration Workflow
+1. Update `docs/database_schema_audit.md` FIRST
+2. Create migration: `supabase migration new <description>`
+3. Write migration SQL
+4. Test locally: `supabase db reset`
+5. Regenerate types
+6. Update `docs/DATABASE_REPORT.md` if needed
+
+## 🚀 Pre-Push Checklist
+
+Before pushing code:
+- [ ] `npm run build` passes
+- [ ] `npm run lint` passes
+- [ ] `npm run type-check` passes (if available)
+- [ ] No secrets in code
+- [ ] RLS policies reviewed (if schema changed)
+- [ ] Explicit selects in all queries
+- [ ] Documentation updated (if behavior changed)
+
+## 📖 Documentation Updates
+
+### When to Update Docs
+
+**Schema Changes:**
+- Update `docs/database_schema_audit.md` BEFORE migration
+- Update `docs/DATABASE_REPORT.md` with explanation
+
+**Behavior Changes:**
+- Update relevant contract doc BEFORE code changes
+- Update `docs/USER_GUIDE.md` if user-facing
+- Update `docs/diagrams/core-flows.md` if flow changes
+
+**Feature Status:**
+- Update `docs/MVP_STATUS_NOTION.md` with progress
+
+**New Documentation:**
+- Add to `docs/DOCUMENTATION_INDEX.md`
+
+### Documentation is Truth
+- Code must match docs, not the other way around
+- If code and docs conflict, reconcile them
+- Update docs FIRST, then write code
+
+## 🎯 Project-Specific Rules
+
+### WordPress Integration
+- WordPress is headless CMS for editorial content only
+- Use ISR with 1-hour revalidation
+- Webhook revalidation on WordPress publish
+- Sanitize all WordPress HTML (DOMPurify)
+- Server-only fetch (no client-side WordPress API calls)
+
+### Stripe Integration
+- Database is source of truth (check DB subscription state, not Stripe API)
+- Webhook ledger for idempotency
+- Trial: 7 days, full access
+- After trial: 3 posts/day reading limit
+- Subscription: $3.99/month
+
+### Creator Privacy
+- No face recognition on user-uploaded content
+- No biometric data collection
+- Users own their content
+- Privacy toggles: public/limited/private
+
+### Performance
+- ISR for WordPress content (1-hour revalidation)
+- Next.js Image component for all images
+- Server Components by default
+- Lazy load heavy Client Components
+
+## 🐛 Debugging
+
+### Common Issues
+- Auth: See `docs/runbooks/DEBUG_AUTH.md`
+- RLS: See `docs/runbooks/DEBUG_RLS.md`
+- Storage: See `docs/runbooks/DEBUG_STORAGE_UPLOADS.md`
+
+### Error Taxonomy
+- `authentication` - Login, signup, session errors
+- `rls` - Row Level Security policy violations
+- `webhook` - Stripe/WordPress webhook errors
+- `wordpress_fetch` - WordPress API errors
+- `sanitization` - HTML sanitization errors
+
+## ✅ Quality Checks
+
+### Testing
+- Run smoke tests before deployment (see `docs/proof/E2E_SMOKE_PATHS.md`)
+- Follow QA checklist (see `docs/proof/QA_CHECKLIST.md`)
+- Verify RLS policies work correctly
+- Test error handling and logging
+
+### Monitoring
+- All errors logged to Sentry (production)
+- Never log sensitive data (passwords, tokens, API keys)
+- Alert thresholds defined (see `docs/proof/MONITORING_SENTRY_POSTURE.md`)
+
+## 🎨 UX Expectations
+
+### Error Messages
+- User-friendly, actionable messages
+- No technical jargon
+- Clear next steps
+- Role-specific messages (see `docs/USER_GUIDE.md`)
+
+### Access Control
+- Anonymous: Marketing pages, WordPress blog only
+- Trial: Full access during trial, limited after expiration
+- Subscribed: Full access to all features
+- Admin: Moderation and bi-weekly posts
+
+## 📋 Quick Reference
+
+**Schema Truth:** `docs/database_schema_audit.md`  
+**Behavior Truth:** `docs/contracts/*.md`  
+**Architecture:** `docs/ARCHITECTURE_CONSTITUTION.md`  
+**Security:** `docs/SECURITY_INVARIANTS.md`  
+**Coding Standards:** `docs/CODING_STANDARDS.md`  
+**Procedures:** `docs/procedures/*.md`  
+**Diagrams:** `docs/diagrams/*.md`
+
+---
+
+**Remember:** When in doubt, read the documentation. Documentation is the source of truth. Code must match docs.
+

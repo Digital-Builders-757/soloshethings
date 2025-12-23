@@ -1,0 +1,20 @@
+# Next.js App Directory
+
+This directory will contain the Next.js App Router application code.
+
+## Structure
+
+```
+app/
+  (auth)/          # Login, signup, password reset
+  talent/          # Talent dashboard routes
+  client/          # Client dashboard routes (if applicable)
+  api/             # Route handlers (webhooks, external APIs)
+  layout.tsx       # Root layout
+  page.tsx         # Homepage
+```
+
+## Documentation
+
+See [ARCHITECTURE_CONSTITUTION.md](../docs/ARCHITECTURE_CONSTITUTION.md) for architecture details.
+
