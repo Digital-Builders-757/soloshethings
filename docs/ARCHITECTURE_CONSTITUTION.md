@@ -26,11 +26,13 @@
 - WordPress is used ONLY for editorial/blog content
 - WordPress content MUST use ISR with webhook revalidation
 - WordPress content MUST be sanitized before display
+- WordPress integration is OPTIONAL in Phase 1 (application builds/deploys without WP_URL)
 
 **MUST NOT:**
 - Store user-generated content in WordPress
 - Require authentication for WordPress content
 - Use WordPress for user profiles, subscriptions, or community features
+- Throw errors or crash when WP_URL is not configured (return safe fallbacks instead)
 
 ### Supabase = Identity + Profiles + Subscription State + UGC/Community + Moderation + Storage
 

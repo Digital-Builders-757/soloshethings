@@ -2,6 +2,30 @@
 
 **Purpose:** Headless WordPress integration, data access patterns, sanitization rules, ISR revalidation, preview mode, and security boundaries for SoloSheThings.
 
+**Phase 1 Status:** WordPress integration is **OPTIONAL** in Phase 1 (UI/UX focus). The application will build and deploy successfully without `WP_URL` configured. Blog routes show "Coming Soon" when WordPress is not configured.
+
+## Optional Configuration (Phase 1)
+
+### WordPress Not Required for Build/Deploy
+
+**Behavior When WP_URL Not Configured:**
+- `/blog` shows "Coming Soon" message with friendly UI
+- `/blog/[slug]` returns 404 (notFound())
+- `/preview/[...slug]` returns 404 (notFound())
+- Build completes successfully without errors
+- No runtime crashes or exceptions
+
+**Required Environment Variables (When WP Enabled):**
+- `WP_URL` - WordPress site URL (e.g., `https://blog.example.com`)
+- `REVALIDATE_SECRET` - Secret for webhook revalidation (optional, for Phase 2+)
+- `PREVIEW_SECRET` - Secret for preview mode (optional, for Phase 2+)
+
+**Implementation:**
+- `isWordPressConfigured()` helper checks if `WP_URL` is set
+- WordPress fetch functions return safe fallbacks (empty array or null)
+- Errors are logged server-side only, never thrown
+- UI gracefully handles missing WordPress configuration
+
 ## Non-Negotiables
 
 1. **WordPress is Public Editorial Only** - WordPress is used ONLY for public editorial/blog content. No user authentication in WordPress.

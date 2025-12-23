@@ -5,6 +5,9 @@
  * Uses ISR with revalidation tags
  * 
  * Reference: docs/WORDPRESS_SUPABASE_BLUEPRINT.md
+ * 
+ * NOTE: WordPress integration is OPTIONAL in Phase 1.
+ * When WP_URL is not configured, functions return safe fallbacks.
  */
 
 import "server-only";
@@ -18,16 +21,27 @@ const WP_URL = process.env.WP_URL;
 const WP_API_BASE = WP_URL ? `${WP_URL}/wp-json/wp/v2` : "";
 
 /**
+ * Check if WordPress is configured
+ * 
+ * @returns true if WP_URL is set, false otherwise
+ */
+export function isWordPressConfigured(): boolean {
+  return !!WP_URL;
+}
+
+/**
  * Get WordPress posts list
  * 
  * @param params - Query parameters (page, perPage, category, tag, search)
- * @returns Array of WordPress posts
+ * @returns Array of WordPress posts (empty array if WP not configured)
  */
 export async function getWpPosts(
   params: WpPostListParams = {}
 ): Promise<WpPostListResponse> {
   if (!WP_URL) {
-    throw new Error("WP_URL environment variable is required");
+    // WordPress not configured - return empty array (safe fallback)
+    console.warn("WordPress not configured: WP_URL environment variable is missing");
+    return [];
   }
 
   const { page = 1, perPage = 10, category, tag, search } = params;
@@ -61,18 +75,19 @@ export async function getWpPosts(
     });
 
     if (!response.ok) {
-      throw new Error(
+      // Log error server-side, return empty array (graceful degradation)
+      console.error(
         `WordPress API error: ${response.status} ${response.statusText}`
       );
+      return [];
     }
 
     const posts = await response.json();
     return posts;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch WordPress posts: ${error.message}`);
-    }
-    throw new Error("Failed to fetch WordPress posts: Unknown error");
+    // Log error server-side, return empty array (graceful degradation)
+    console.error("Failed to fetch WordPress posts:", error);
+    return [];
   }
 }
 
@@ -80,11 +95,13 @@ export async function getWpPosts(
  * Get WordPress post by slug
  * 
  * @param slug - Post slug
- * @returns WordPress post or null if not found
+ * @returns WordPress post or null if not found or WP not configured
  */
 export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
   if (!WP_URL) {
-    throw new Error("WP_URL environment variable is required");
+    // WordPress not configured - return null (safe fallback)
+    console.warn("WordPress not configured: WP_URL environment variable is missing");
+    return null;
   }
 
   const searchParams = new URLSearchParams({
@@ -103,9 +120,11 @@ export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
     });
 
     if (!response.ok) {
-      throw new Error(
+      // Log error server-side, return null (graceful degradation)
+      console.error(
         `WordPress API error: ${response.status} ${response.statusText}`
       );
+      return null;
     }
 
     const posts = await response.json();
@@ -116,12 +135,9 @@ export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
 
     return posts[0];
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(
-        `Failed to fetch WordPress post by slug: ${error.message}`
-      );
-    }
-    throw new Error("Failed to fetch WordPress post by slug: Unknown error");
+    // Log error server-side, return null (graceful degradation)
+    console.error("Failed to fetch WordPress post by slug:", error);
+    return null;
   }
 }
 

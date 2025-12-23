@@ -5,10 +5,13 @@
  * Must use noStore() and never cache
  * 
  * Reference: docs/WORDPRESS_SUPABASE_BLUEPRINT.md
+ * 
+ * NOTE: WordPress integration is OPTIONAL in Phase 1.
+ * Returns 404 when WP_URL is not configured.
  */
 
 import { draftMode } from "next/headers";
-import { getWpPostBySlug } from "@/lib/wp-rest";
+import { getWpPostBySlug, isWordPressConfigured } from "@/lib/wp-rest";
 import { Prose } from "@/components/prose";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -24,6 +27,11 @@ export default async function PreviewPage({ params }: Props) {
 
   const { slug } = await params;
   const slugString = slug.join("/");
+
+  // Check if WordPress is configured
+  if (!isWordPressConfigured()) {
+    notFound();
+  }
 
   // Check if draft mode is enabled
   const draft = await draftMode();

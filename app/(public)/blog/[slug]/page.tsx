@@ -7,9 +7,12 @@
  * Content sanitization via Prose component
  * 
  * Reference: docs/WORDPRESS_SUPABASE_BLUEPRINT.md
+ * 
+ * NOTE: WordPress integration is OPTIONAL in Phase 1.
+ * Returns 404 when WP_URL is not configured or post not found.
  */
 
-import { getWpPostBySlug } from "@/lib/wp-rest";
+import { getWpPostBySlug, isWordPressConfigured } from "@/lib/wp-rest";
 import { Prose } from "@/components/prose";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -21,6 +24,14 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  
+  // If WordPress not configured, return generic metadata
+  if (!isWordPressConfigured()) {
+    return {
+      title: "Post Not Found",
+    };
+  }
+  
   const post = await getWpPostBySlug(slug);
 
   if (!post) {
@@ -42,6 +53,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
+  
+  // If WordPress not configured, return 404
+  if (!isWordPressConfigured()) {
+    notFound();
+  }
+  
   const post = await getWpPostBySlug(slug);
 
   if (!post) {
