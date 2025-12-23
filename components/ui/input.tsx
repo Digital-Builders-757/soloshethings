@@ -46,15 +46,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const effectiveVariant = error ? 'error' : variant
 
     const baseStyles =
-      'w-full px-4 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-neutral-100'
+      'w-full px-4 py-3 rounded-xl border transition-all duration-normal ease-out focus-ring disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-neutral-50 bg-white/80 backdrop-blur-sm'
 
     const variants = {
       default:
-        'border-neutral-300 focus:border-brand-blue1 focus:ring-brand-blue1',
+        'hairline-border border-neutral-300/60 focus:border-brand-blue1/60 focus:ring-brand-blue1/30 focus:bg-white focus:shadow-[0_0_0_3px_rgba(var(--brand-blue-1)/0.1)]',
       error:
-        'border-red-500 focus:border-red-500 focus:ring-red-500',
+        'border-red-400/60 focus:border-red-500 focus:ring-red-500/30 focus:bg-white focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]',
       success:
-        'border-green-500 focus:border-green-500 focus:ring-green-500',
+        'border-green-400/60 focus:border-green-500 focus:ring-green-500/30 focus:bg-white focus:shadow-[0_0_0_3px_rgba(34,197,94,0.1)]',
     }
 
     return (

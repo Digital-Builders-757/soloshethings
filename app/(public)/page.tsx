@@ -25,7 +25,7 @@ export default function HomePage() {
           </p>
           <a
             href="/signup"
-            className="inline-block bg-brand-yellow1 text-black px-8 py-3 rounded-lg font-semibold hover:bg-brand-yellow2 transition-colors"
+            className="inline-block bg-brand-yellow1 text-black px-8 py-3 rounded-full font-semibold hover:bg-brand-yellow2 transition-all btn-glow active:scale-[0.98]"
           >
             Get Started - Free Trial
           </a>
@@ -40,7 +40,7 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Placeholder cards - will be replaced with real data */}
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Safe Spot Title</h3>
@@ -56,7 +56,7 @@ export default function HomePage() {
               </div>
             </div>
             {/* Repeat placeholder cards */}
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Safe Spot Title</h3>
@@ -65,13 +65,13 @@ export default function HomePage() {
                 </p>
                 <a
                   href="/places/example-slug"
-                  className="text-brand-blue1 hover:text-brand-blue2 font-medium"
+                  className="text-brand-blue1 hover:text-brand-blue2 font-medium transition-colors"
                 >
                   Read Full Story →
                 </a>
               </div>
             </div>
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Safe Spot Title</h3>
@@ -91,14 +91,15 @@ export default function HomePage() {
       </section>
 
       {/* Community Highlights */}
-      <section className="py-16 px-4 bg-neutral-50">
+      <div className="section-divider"></div>
+      <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">
             From the Community
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Preview cards - full content requires auth */}
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Community Story</h3>
@@ -112,7 +113,7 @@ export default function HomePage() {
               </div>
             </div>
             {/* Repeat preview cards */}
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Community Story</h3>
@@ -120,12 +121,12 @@ export default function HomePage() {
                   Preview of community story. Join to read the full story and connect
                   with other solo travelers...
                 </p>
-                <div className="bg-brand-yellow1 text-black px-4 py-2 rounded text-sm font-medium inline-block">
+                <div className="bg-brand-yellow1 text-black px-4 py-2 rounded-full text-sm font-medium inline-block">
                   Join to View Full Story
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="surface-card rounded-xl overflow-hidden lift-hover">
               <div className="aspect-video bg-neutral-200"></div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">Community Story</h3>
@@ -142,7 +143,7 @@ export default function HomePage() {
           <div className="text-center">
             <a
               href="/signup"
-              className="inline-block bg-brand-blue1 text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-blue2 transition-colors"
+              className="inline-block bg-brand-blue1 text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-blue2 transition-all btn-glow active:scale-[0.98]"
             >
               Join the Community
             </a>
@@ -151,6 +152,7 @@ export default function HomePage() {
       </section>
 
       {/* Collections CTA */}
+      <div className="section-divider"></div>
       <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Browse by Theme</h2>
@@ -159,7 +161,7 @@ export default function HomePage() {
           </p>
           <a
             href="/collections"
-            className="inline-block bg-brand-orange text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            className="inline-block bg-brand-orange text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition-all btn-glow active:scale-[0.98]"
           >
             Browse Collections
           </a>
@@ -167,6 +169,7 @@ export default function HomePage() {
       </section>
 
       {/* Curated Drops (Bulletin) CTA */}
+      <div className="section-divider"></div>
       <section className="py-16 px-4 bg-brand-blue2 text-white">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Curated Drops</h2>
@@ -175,7 +178,7 @@ export default function HomePage() {
           </p>
           <a
             href="/blog"
-            className="inline-block bg-brand-yellow1 text-black px-8 py-3 rounded-lg font-semibold hover:bg-brand-yellow2 transition-colors"
+            className="inline-block bg-brand-yellow1 text-black px-8 py-3 rounded-full font-semibold hover:bg-brand-yellow2 transition-all btn-glow active:scale-[0.98]"
           >
             View Latest Drops
           </a>

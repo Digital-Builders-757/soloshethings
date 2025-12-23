@@ -38,7 +38,7 @@ export function PlaceCard({
     <Link
       href={href}
       className={cn(
-        "group block bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow",
+        "group block surface-card rounded-xl overflow-hidden lift-hover",
         className
       )}
     >

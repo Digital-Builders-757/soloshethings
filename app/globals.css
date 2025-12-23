@@ -82,8 +82,149 @@
   }
   
   body {
-    @apply bg-white text-neutral-900;
+    /* Postcard Pastel: Warm gradient background wash */
+    background: linear-gradient(
+      135deg,
+      rgb(var(--brand-yellow-1) / 0.03) 0%,
+      rgb(var(--brand-blue-1) / 0.02) 50%,
+      rgb(var(--brand-yellow-1) / 0.03) 100%
+    );
+    background-attachment: fixed;
+    @apply text-neutral-900;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Improved typography rhythm */
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* Subtle grain texture overlay (CSS-only) */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.03;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    );
+  }
+
+  /* Soft vignette effect */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.015) 100%
+    );
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Postcard Pastel Utility Classes */
+@layer utilities {
+  /* Warm paper surface for cards */
+  .surface-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(var(--neutral-200), 0.8);
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 4px 12px rgba(var(--brand-blue-1) / 0.03);
+  }
+
+  /* Glass morphism effect */
+  .surface-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Soft glow effect for buttons */
+  .btn-glow {
+    box-shadow: 
+      0 2px 8px rgba(var(--brand-blue-1) / 0.2),
+      0 0 0 0 rgba(var(--brand-blue-1) / 0);
+    transition: box-shadow var(--duration-normal) var(--ease-out);
+  }
+
+  .btn-glow:hover {
+    box-shadow: 
+      0 4px 16px rgba(var(--brand-blue-1) / 0.3),
+      0 0 0 4px rgba(var(--brand-blue-1) / 0.1);
+  }
+
+  /* Premium focus ring */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-blue1/40 focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  /* Hairline border (ultra-thin) */
+  .hairline-border {
+    border-width: 0.5px;
+    border-color: rgba(var(--neutral-300), 0.6);
+  }
+
+  /* Subtle lift on hover */
+  .lift-hover {
+    transition: transform var(--duration-normal) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+  }
+
+  .lift-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 8px 24px rgba(var(--brand-blue-1) / 0.06);
+  }
+
+  .lift-hover:active {
+    transform: translateY(0);
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(var(--neutral-300), 0.5),
+      transparent
+    );
+    margin: var(--spacing-16) 0;
   }
 }
 

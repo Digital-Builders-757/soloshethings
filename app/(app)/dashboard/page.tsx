@@ -24,7 +24,7 @@ export default async function DashboardPage() {
           You're successfully logged in as {user.email}
         </p>
 
-        <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-8">
+        <div className="surface-card rounded-xl p-8">
           <h2 className="text-2xl font-semibold mb-4">Dashboard Coming Soon</h2>
           <p className="text-neutral-700 mb-4">
             Phase 1 (Backend Foundation) is complete! The full dashboard with community feed,

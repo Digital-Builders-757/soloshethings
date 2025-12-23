@@ -16,48 +16,48 @@ export function Header({ className }: HeaderProps) {
   return (
     <header
       className={cn(
-        "border-b border-neutral-200 bg-white sticky top-0 z-50",
+        "surface-glass border-b hairline-border sticky top-0 z-50 backdrop-blur-md",
         className
       )}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-brand-blue1">
+          <Link href="/" className="flex items-center space-x-2 group">
+            <span className="text-2xl font-bold text-brand-blue1 transition-colors group-hover:text-brand-blue2">
               SoloSheThings
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/collections"
-              className="text-neutral-700 hover:text-brand-blue1 transition-colors"
+              className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
             >
               Collections
             </Link>
             <Link
               href="/blog"
-              className="text-neutral-700 hover:text-brand-blue1 transition-colors"
+              className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
             >
               Blog
             </Link>
             <Link
               href="/map"
-              className="text-neutral-700 hover:text-brand-blue1 transition-colors"
+              className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
             >
               Map
             </Link>
             <Link
               href="/login"
-              className="text-neutral-700 hover:text-brand-blue1 transition-colors"
+              className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="bg-brand-blue1 text-white px-4 py-2 rounded-lg font-semibold hover:bg-brand-blue2 transition-colors"
+              className="bg-brand-blue1 text-white px-5 py-2 rounded-full font-semibold hover:bg-brand-blue2 btn-glow transition-all"
             >
               Get Started
             </Link>
@@ -65,7 +65,7 @@ export function Header({ className }: HeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-neutral-700 hover:text-brand-blue1"
+            className="md:hidden p-2 text-neutral-700 hover:text-brand-blue1 rounded-lg hover:bg-brand-blue1/5 transition-colors"
             aria-label="Open menu"
             disabled
           >

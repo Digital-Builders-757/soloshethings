@@ -42,19 +42,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue1 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+      'inline-flex items-center justify-center font-semibold rounded-full transition-all duration-normal ease-out focus-ring disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
       primary:
-        'bg-brand-blue1 text-white hover:bg-brand-blue2 active:bg-brand-blue2',
+        'bg-brand-blue1 text-white hover:bg-brand-blue2 active:bg-brand-blue2 btn-glow active:scale-[0.98]',
       secondary:
-        'bg-neutral-200 text-neutral-900 hover:bg-neutral-300 active:bg-neutral-400',
+        'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300 border border-neutral-200/60 active:scale-[0.98]',
       outline:
-        'border-2 border-brand-blue1 text-brand-blue1 hover:bg-brand-blue1 hover:text-white active:bg-brand-blue2 active:border-brand-blue2',
+        'border-2 border-brand-blue1/60 text-brand-blue1 hover:bg-brand-blue1/10 hover:border-brand-blue1 active:bg-brand-blue1/20 active:scale-[0.98]',
       ghost:
-        'text-brand-blue1 hover:bg-brand-blue1/10 active:bg-brand-blue1/20',
+        'text-brand-blue1 hover:bg-brand-blue1/8 active:bg-brand-blue1/15 active:scale-[0.98]',
       danger:
-        'bg-brand-orange text-white hover:bg-red-600 active:bg-red-700',
+        'bg-brand-orange text-white hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98]',
     }
 
     const sizes = {
