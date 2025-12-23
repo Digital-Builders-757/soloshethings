@@ -5,16 +5,27 @@
  * Follows: docs/contracts/AUTH_CONTRACT.md
  */
 
+'use client'
+
 import { signup } from '@/app/actions/auth'
 import Link from 'next/link'
+import { useFormState } from 'react-dom'
 
 export default function SignupPage() {
+  const [state, formAction] = useFormState(signup, null)
+
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-16">
       <div className="max-w-md w-full">
         <h1 className="text-4xl font-bold mb-8 text-center">Create Account</h1>
 
-        <form action={signup} className="space-y-6">
+        {state?.error && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {state.error}
+          </div>
+        )}
+
+        <form action={formAction} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-2">
               Email

@@ -27,9 +27,12 @@ import { redirect } from 'next/navigation'
  * 5. Redirect to dashboard
  *
  * @param formData - Form data containing email, password, username
- * @returns Redirect to dashboard or error
+ * @returns Error object or redirects (never returns on success)
  */
-export async function signup(formData: FormData) {
+export async function signup(
+  _prevState: { error: string } | null,
+  formData: FormData
+): Promise<{ error: string } | null> {
   const supabase = await createClient()
 
   // Extract form data
@@ -101,10 +104,14 @@ export async function signup(formData: FormData) {
  * 2. Check profile exists (repair if missing, bounded)
  * 3. Redirect based on role
  *
+ * @param _prevState - Previous form state (from useFormState)
  * @param formData - Form data containing email and password
- * @returns Redirect to dashboard or error
+ * @returns Error object or redirects (never returns on success)
  */
-export async function login(formData: FormData) {
+export async function login(
+  _prevState: { error: string } | null,
+  formData: FormData
+): Promise<{ error: string } | null> {
   const supabase = await createClient()
 
   // Extract form data
