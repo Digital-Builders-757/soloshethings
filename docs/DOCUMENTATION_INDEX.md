@@ -123,6 +123,7 @@ Testing requirements, quality gates, and monitoring.
 
 - **[proof/QA_CHECKLIST.md](./proof/QA_CHECKLIST.md)** - Testing requirements and quality gates
 - **[proof/E2E_SMOKE_PATHS.md](./proof/E2E_SMOKE_PATHS.md)** - Critical user journeys for smoke testing
+- **[proof/MVP_SMOKE_CHECKLIST.md](./proof/MVP_SMOKE_CHECKLIST.md)** - Definitive QA checklist to verify MVP is usable and stable
 - **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Error tracking, monitoring setup, and alerting rules
 
 ### UX Canon Layer

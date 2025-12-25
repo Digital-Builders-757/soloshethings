@@ -381,16 +381,19 @@ export function BadWordPressContent({ content }: { content: string }) {
 
 ### Route → Tags → Revalidate Trigger Mapping
 
+**Canonical Tag Standards (MUST be followed):**
+
 | Route | ISR Tags | Revalidate Trigger |
 |-------|----------|-------------------|
 | `/blog` | `posts`, `posts:page:${page}` | Publish/update any post |
 | `/blog/[slug]` | `posts`, `post:${slug}` | Publish/update that specific post |
 
-**Tag Standards:**
-- Lists always tag: `posts` (plus `posts:page:${page}` for pagination)
-- Details always tag: `posts` + `post:${slug}` (both tags ensure comprehensive invalidation)
+**Tag Enforcement Rules:**
+- **Lists MUST always tag:** `posts` (required) + `posts:page:${page}` (optional, for granular pagination invalidation)
+- **Details MUST always tag:** `posts` (required) + `post:${slug}` (required, for specific post invalidation)
+- Both tags ensure comprehensive invalidation (broad + specific)
 
-**WordPress Webhook Payload Example:**
+**WordPress Webhook Payload Example (Canonical Format):**
 ```json
 {
   "secret": "REVALIDATE_SECRET",
@@ -398,6 +401,11 @@ export function BadWordPressContent({ content }: { content: string }) {
   "tags": ["posts", "post:my-post-slug"]
 }
 ```
+
+**Why Both Tags?**
+- `posts` tag: Invalidates all blog-related pages (broad invalidation)
+- `post:${slug}` tag: Invalidates specific post page (granular invalidation)
+- This dual-tag approach ensures cache consistency whether WordPress sends paths, tags, or both
 
 ### ISR Configuration
 
@@ -456,84 +464,210 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 **Canonical Contract:**
 - Method: `POST`
 - Body: `{ secret: string, paths?: string[], tags?: string[] }`
-- Validates `secret === process.env.REVALIDATE_SECRET`
+- Validates `secret === process.env.REVALIDATE_SECRET` (from request body, not header)
 - Input validation: max 25 items per array (prevents abuse)
-- **Phase 1.2 Hardening:** Body size limit (e.g., max 10KB) to prevent DoS
+- Body size limit: max 10KB (prevents DoS attacks)
 
 **Method:** POST
 
-**Authentication:** Header `x-wordpress-secret` must match `WORDPRESS_WEBHOOK_SECRET`
+**Authentication:** 
+- Secret must be provided in request body: `{ secret: "REVALIDATE_SECRET", ... }`
+- Secret validated against `process.env.REVALIDATE_SECRET`
 
-**Request Body:**
+**Request Body (Canonical Format):**
 ```typescript
-interface WordPressWebhookPayload {
-  post_id: number;
-  post_type: string;
-  action: 'publish' | 'update' | 'delete' | 'trash';
-  post?: {
-    slug: string;
-    status: string;
-  };
+interface RevalidateWebhookPayload {
+  secret: string;           // Required: REVALIDATE_SECRET
+  paths?: string[];         // Optional: Array of paths to revalidate (max 25)
+  tags?: string[];         // Optional: Array of cache tags to revalidate (max 25)
 }
 ```
+
+**Example Payload:**
+```json
+{
+  "secret": "your-revalidate-secret-here",
+  "paths": ["/blog", "/blog/my-post-slug"],
+  "tags": ["posts", "post:my-post-slug"]
+}
+```
+
+**Validation Rules:**
+- `secret`: Required, must match `REVALIDATE_SECRET` env var
+- `paths`: Optional array of strings, max 25 items, each path max 200 chars, must start with `/` (no URLs)
+- `tags`: Optional array of strings, max 25 items, each tag max 200 chars, must match namespace (`posts`, `post:*`, `posts:page:*`)
+- Body size: Max 10KB total (byte-accurate enforcement)
+- Content-length: Validated safely (guards against NaN/Infinity)
+
+**Security Hardening:**
+- Byte-accurate body size checking (not character count)
+- Path validation: rejects URLs, enforces relative paths only
+- Tag namespace validation: only allows expected WordPress cache tags
+- Individual string length limits: prevents payload-in-disguise attacks
+- TODO: Add rate limiting (Upstash Redis or Vercel Edge Config) for production
 
 ### Webhook Implementation
 
 ```typescript
-// ✅ CORRECT: Webhook revalidation endpoint
-// app/api/revalidate/wordpress/route.ts
+// ✅ CORRECT: Webhook revalidation endpoint (canonical implementation with security hardening)
+// app/api/revalidate/route.ts
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
+const MAX_BODY_SIZE = 10 * 1024; // 10KB in bytes
+const MAX_ITEMS = 25; // Max items per array
+const MAX_STRING_LENGTH = 200; // Max length per path/tag string
+
 export async function POST(request: NextRequest) {
   try {
-    // 1. Verify webhook secret
-    const secret = request.headers.get('x-wordpress-secret');
-    if (secret !== process.env.WORDPRESS_WEBHOOK_SECRET) {
-      console.error('Invalid webhook secret');
+    const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET;
+    if (!REVALIDATE_SECRET) {
+      throw new Error('REVALIDATE_SECRET environment variable is not set');
+    }
+
+    // 1. Enforce body size limit (byte-accurate, not character count)
+    const contentLength = request.headers.get('content-length');
+    
+    if (contentLength) {
+      // Safe number parsing (guards against NaN, Infinity, or maliciously large values)
+      const contentLengthNum = Number(contentLength);
+      if (!Number.isFinite(contentLengthNum) || contentLengthNum < 0) {
+        return NextResponse.json(
+          { error: 'Invalid content-length header' },
+          { status: 400 }
+        );
+      }
+      
+      if (contentLengthNum > MAX_BODY_SIZE) {
+        return NextResponse.json(
+          { error: `Request body exceeds maximum size of ${MAX_BODY_SIZE} bytes` },
+          { status: 413 }
+        );
+      }
+    }
+
+    // Read body as arrayBuffer for byte-accurate size checking
+    const arrayBuffer = await request.arrayBuffer();
+    
+    if (arrayBuffer.byteLength > MAX_BODY_SIZE) {
+      return NextResponse.json(
+        { error: `Request body exceeds maximum size of ${MAX_BODY_SIZE} bytes` },
+        { status: 413 }
+      );
+    }
+
+    // Decode buffer to text and parse JSON
+    const bodyText = new TextDecoder().decode(arrayBuffer);
+    let body: { secret?: string; paths?: unknown; tags?: unknown };
+    
+    try {
+      body = JSON.parse(bodyText);
+    } catch (parseError) {
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
+
+    const { secret, paths, tags } = body;
+
+    // 2. Validate secret (from body, not header)
+    if (!secret || typeof secret !== 'string' || secret !== REVALIDATE_SECRET) {
       return NextResponse.json(
         { error: 'Invalid secret' },
         { status: 401 }
       );
     }
 
-    // 2. Parse payload
-    const body = await request.json();
-    const { post_id, post_type, action, post } = body;
-
-    // 3. Revalidate based on action
-    if (post_type === 'post') {
-      // Revalidate blog list
-      revalidatePath('/blog');
-      revalidatePath('/blog/[slug]', 'page');
-
-      // Revalidate specific post if slug provided
-      if (post?.slug) {
-        revalidatePath(`/blog/${post.slug}`);
+    // 3. Validate paths array (if provided)
+    if (paths !== undefined) {
+      if (!Array.isArray(paths) || paths.length > MAX_ITEMS) {
+        return NextResponse.json(
+          { error: `paths must be an array with max ${MAX_ITEMS} items` },
+          { status: 400 }
+        );
       }
 
-      // Revalidate by tag (for cache invalidation)
-      revalidateTag('wordpress-posts');
+      // Validate each path: must be string, start with /, reasonable length, no URLs
+      for (const path of paths) {
+        if (typeof path !== 'string' || path.length > MAX_STRING_LENGTH) {
+          return NextResponse.json(
+            { error: 'All paths must be strings under 200 characters' },
+            { status: 400 }
+          );
+        }
+
+        // Path must start with / and not be a full URL
+        if (!path.startsWith('/') || path.includes('://') || path.includes('http')) {
+          return NextResponse.json(
+            { error: 'Paths must be relative paths starting with /' },
+            { status: 400 }
+          );
+        }
+      }
     }
 
-    // 4. Log revalidation
-    console.log('WordPress revalidation:', {
-      post_id,
-      post_type,
-      action,
-      slug: post?.slug,
-      timestamp: new Date().toISOString(),
-    });
+    // 4. Validate tags array (if provided)
+    if (tags !== undefined) {
+      if (!Array.isArray(tags) || tags.length > MAX_ITEMS) {
+        return NextResponse.json(
+          { error: `tags must be an array with max ${MAX_ITEMS} items` },
+          { status: 400 }
+        );
+      }
+
+      // Validate each tag: must be string, reasonable length, valid namespace
+      const VALID_TAG_PREFIXES = ['posts', 'post:', 'posts:page:'];
+      
+      for (const tag of tags) {
+        if (typeof tag !== 'string' || tag.length > MAX_STRING_LENGTH) {
+          return NextResponse.json(
+            { error: 'All tags must be strings under 200 characters' },
+            { status: 400 }
+          );
+        }
+
+        // Tag must match expected namespace (posts, post:*, posts:page:*)
+        const isValidTag = VALID_TAG_PREFIXES.some(
+          prefix => tag === prefix || tag.startsWith(prefix)
+        );
+        if (!isValidTag) {
+          return NextResponse.json(
+            { error: 'Tag must match expected namespace: posts, post:*, or posts:page:*' },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // 5. Revalidate paths (all validation passed)
+    if (paths && Array.isArray(paths) && paths.length > 0) {
+      for (const path of paths) {
+        if (typeof path === 'string') {
+          revalidatePath(path);
+        }
+      }
+    }
+
+    // 6. Revalidate tags (all validation passed)
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+      for (const tag of tags) {
+        if (typeof tag === 'string') {
+          revalidateTag(tag);
+        }
+      }
+    }
 
     return NextResponse.json({
       revalidated: true,
-      post_id,
-      slug: post?.slug,
+      paths: paths || [],
+      tags: tags || [],
+      now: Date.now(),
     });
   } catch (error) {
     console.error('Revalidation error:', error);
     return NextResponse.json(
-      { error: 'Revalidation failed' },
+      { error: error instanceof Error ? error.message : 'Revalidation failed' },
       { status: 500 }
     );
   }
@@ -834,21 +968,96 @@ export async function fetchWordPressPosts() {
 }
 ```
 
+## Security Testing Checklist
+
+**Manual Security Tests (Run before production):**
+
+1. **Invalid secret** → Should return `401`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d '{"secret":"wrong-secret","paths":["/blog"]}'
+   ```
+
+2. **Missing secret** → Should return `401`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d '{"paths":["/blog"]}'
+   ```
+
+3. **>10KB body (no content-length header)** → Should return `413`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d "{\"secret\":\"$REVALIDATE_SECRET\",\"paths\":[\"$(python3 -c 'print(\"/blog\" + \"x\" * 10000)')\"]}"
+   ```
+
+4. **>10KB content-length** → Should return `413`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -H "Content-Length: 999999" \
+     -d '{"secret":"test"}'
+   ```
+
+5. **Invalid tag format** → Should return `400`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d '{"secret":"$REVALIDATE_SECRET","tags":["invalid-tag"]}'
+   ```
+
+6. **Path not starting with /** → Should return `400`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d '{"secret":"$REVALIDATE_SECRET","paths":["https://evil.com"]}'
+   ```
+
+7. **Tag exceeds max length** → Should return `400`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -d "{\"secret\":\"$REVALIDATE_SECRET\",\"tags\":[\"posts\" + \"x\".repeat(201)]}"
+   ```
+
+8. **Invalid content-length (NaN/Infinity)** → Should return `400`
+   ```bash
+   curl -X POST http://localhost:3000/api/revalidate \
+     -H "Content-Type: application/json" \
+     -H "Content-Length: abc" \
+     -d '{"secret":"test"}'
+   ```
+
+**All tests should pass before deploying to production.**
+
 ## Security Checklist
 
 Before deploying WordPress integration:
 
+**WordPress Integration:**
 - [ ] WordPress API URL in server-only environment variable
 - [ ] Webhook secret configured and verified
 - [ ] Preview secret configured (different from webhook secret)
-- [ ] All WordPress fetches are server-side only
+- [ ] All WordPress fetches are server-side only (`import "server-only"`)
 - [ ] Content sanitization implemented (DOMPurify)
 - [ ] ISR revalidation configured
-- [ ] Webhook endpoint secured with secret
 - [ ] Preview mode uses cookies (not tokens)
 - [ ] No admin tokens exposed to client
 - [ ] CORS configured on WordPress (if needed)
 - [ ] Error handling implemented (graceful degradation)
+
+**Revalidation Endpoint Security (RED ZONE):**
+- [ ] Webhook endpoint secured with secret (body-based, not header)
+- [ ] Body size limit enforced (10KB byte-accurate)
+- [ ] Content-length header validated safely (guards against NaN/Infinity)
+- [ ] Path validation: rejects URLs, enforces relative paths only
+- [ ] Tag namespace validation: only allows expected WordPress cache tags
+- [ ] Individual string length limits enforced (200 chars max)
+- [ ] Array limits enforced (25 items max per array)
+- [ ] All security tests pass (see Security Testing Checklist above)
+- [ ] Rate limiting added (Upstash Redis or Vercel Edge Config) - TODO for production
 
 ---
 

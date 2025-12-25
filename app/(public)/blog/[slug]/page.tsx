@@ -89,7 +89,7 @@ export default async function BlogPostPage({ params }: Props) {
               </time>
             </div>
             {featuredImage && (
-              <div className="aspect-video bg-neutral-200 rounded-lg mb-8 overflow-hidden">
+              <div className="aspect-video bg-neutral-200 rounded-xl mb-8 overflow-hidden">
                 <img
                   src={featuredImage}
                   alt={
@@ -105,10 +105,10 @@ export default async function BlogPostPage({ params }: Props) {
           <Prose html={post.content.rendered} />
         </article>
 
-        <nav className="mt-16 pt-8 border-t border-neutral-200">
+        <nav className="mt-16 pt-8 border-t hairline-border">
           <Link
             href="/blog"
-            className="text-brand-blue1 hover:text-brand-blue2 font-medium"
+            className="text-brand-blue1 hover:text-brand-blue2 font-medium transition-colors"
           >
             ← Back to Blog
           </Link>

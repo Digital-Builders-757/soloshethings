@@ -35,7 +35,7 @@ export default async function BlogPage() {
                   ? "We're preparing amazing travel content for you. Check back soon!"
                   : "No blog posts available at the moment. Check back soon!"}
               </p>
-              <div className="bg-brand-yellow1 text-black p-4 rounded-lg">
+              <div className="bg-brand-yellow1/90 text-black p-4 rounded-xl backdrop-blur-sm">
                 <p className="text-sm font-medium">
                   ✨ Stay tuned for travel guides, destination spotlights, and solo travel stories!
                 </p>
@@ -55,7 +55,7 @@ export default async function BlogPage() {
               return (
                 <article
                   key={post.id}
-                  className="bg-white border border-neutral-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  className="surface-card rounded-xl overflow-hidden lift-hover"
                 >
                   {featuredImage && (
                     <div className="aspect-video bg-neutral-200 relative overflow-hidden">

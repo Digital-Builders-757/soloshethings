@@ -5,6 +5,17 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    // Custom utility classes from @layer utilities in globals.css
+    // These must be safelisted to prevent tree-shaking
+    'focus-ring',
+    'btn-glow',
+    'surface-card',
+    'surface-glass',
+    'lift-hover',
+    'hairline-border',
+    'section-divider',
+  ],
   theme: {
     extend: {
       colors: {

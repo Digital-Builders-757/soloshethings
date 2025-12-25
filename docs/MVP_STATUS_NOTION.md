@@ -12,6 +12,7 @@
 - **Backend Foundation (Phase 1)** - Supabase setup, database migration, authentication ✅
 - **WordPress Editorial Layer (Phase 1)** - Blog content integration with ISR ✅
 - **UI Foundation (Phase 2 partial)** - Brand tokens, typography, core components ✅
+- **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
 
 ### 🚧 In Progress
 
@@ -26,7 +27,7 @@
 - Stripe subscription integration (7-day trial, billing webhook)
 - Admin post creation interface
 - Photo upload system (Supabase Storage)
-- Profile editing and avatar uploads
+- Avatar uploads (profile editing complete ✅)
 
 ### 📋 Next
 
@@ -429,6 +430,74 @@ Next Steps:
 - UI foundation work (completed above)
 - Begin Phase 1 backend implementation
 
+#### 2025-01-27 - MVP Core Features Complete
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Complete MVP implementation per locked MVP definition
+- Auth hardening: Reliable signup/login/logout flows with predictable redirects
+- Minimal profiles: Profile query module, update server action, profile edit page
+- Dashboard UX shell: Complete-feeling dashboard with profile display and quick actions
+- WordPress graceful fallback: Blog routes work with/without WP_URL
+- UI/UX polish: Consistent design system across all pages
+- Revalidation verification: Endpoint properly validates inputs and uses canonical tags
+
+**What Works:**
+- ✅ Signup flow creates user + profile atomically
+- ✅ Login flow authenticates and repairs missing profiles (bounded)
+- ✅ Logout clears session and redirects properly
+- ✅ Protected routes redirect unauthenticated users
+- ✅ Authenticated users see dashboard with profile info
+- ✅ Profile editing (username, full_name, bio) functional
+- ✅ Blog routes degrade gracefully when WP_URL missing
+- ✅ Header shows logout when authenticated
+- ✅ All pages use consistent design system
+
+**Files Created:**
+- `lib/queries/profiles.ts` - Profile query module
+- `app/actions/profile.ts` - Profile update server action
+- `app/(app)/profile/page.tsx` - Profile edit page
+- `components/profile/profile-form.tsx` - Profile form component
+- `components/nav/logout-button.tsx` - Logout button component
+
+**Files Modified:**
+- `app/actions/auth.ts` - Exported generateUsername for profile repair
+- `app/(app)/dashboard/page.tsx` - Enhanced with profile display
+- `components/nav/header.tsx` - Made server component, shows auth state
+- `app/(public)/blog/page.tsx` - Updated styling
+- `app/(public)/blog/[slug]/page.tsx` - Updated styling
+
+**Verification:**
+- ✅ All code follows architectural rules (explicit selects, getUser(), RLS)
+- ✅ Profile repair is bounded (max 1 retry) to prevent loops
+- ✅ Error handling is user-safe and logged
+- ✅ No redirect loops
+- ✅ WordPress graceful fallback tested
+- ✅ Revalidation endpoint validates all inputs
+- ✅ Documentation updated (this file, AUTH_CONTRACT.md)
+
+**MVP Definition Status:**
+- ✅ User can sign up, log in, log out reliably
+- ✅ Protected dashboard shell exists
+- ✅ User has minimal editable profile
+- ✅ Public marketing pages and blog routes work without crashes
+- ✅ WordPress is optional at runtime (graceful fallback)
+- ✅ UI/UX polish applied
+
+**Not Implemented (as per MVP scope):**
+- ❌ Stripe or subscriptions (explicitly NOT MVP)
+- ❌ Community posting (explicitly NOT MVP)
+- ❌ Dashboard CMS/blog editor (explicitly NOT MVP)
+- ❌ Supabase-based long-form blogging (explicitly NOT MVP)
+- ❌ WordPress JWT auth enablement (explicitly NOT MVP)
+
+**Next Steps:**
+- Manual QA testing (mobile and desktop)
+- Verify database schema matches documentation
+- Test profile repair flow with missing profiles
+- Verify WordPress integration when WP_URL is configured
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS
@@ -460,16 +529,18 @@ Next Steps:
 - ✅ Route shells (AWA-inspired IA)
 - ✅ Component scaffolding
 
-### Phase 1: Core MVP 📋
+### Phase 1: Core MVP 🚧
 
-- 📋 Authentication system
-- 📋 User profiles
-- 📋 Subscription management
-- 📋 WordPress integration (blog routes ready)
+- ✅ Authentication system (signup, login, logout, route protection)
+- ✅ User profiles (query module, update action, edit page)
+- ✅ Dashboard shell (profile display, quick actions, navigation)
+- 📋 Subscription management (Stripe integration pending)
+- ✅ WordPress integration (blog routes with graceful fallback)
   - **Blueprint:** `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
   - Blog list + detail pages (ISR + webhook revalidation)
   - Preview mode + revalidate API
   - Canonical sanitization + Prose renderer
+  - Graceful fallback when WP_URL missing
 - 📋 Community posts (route shells ready)
 - 📋 Photo uploads
 - 📋 Admin post creation

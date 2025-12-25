@@ -3,16 +3,22 @@
  * 
  * Site navigation header
  * Production-friendly, accessible, mobile-first
+ * Shows different nav based on auth state
  */
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { getUser } from "@/lib/supabase/server";
+import { LogoutButton } from "./logout-button";
 
 type HeaderProps = {
   className?: string;
 };
 
-export function Header({ className }: HeaderProps) {
+export async function Header({ className }: HeaderProps) {
+  const user = await getUser();
+  const isAuthenticated = !!user;
+
   return (
     <header
       className={cn(
@@ -49,18 +55,38 @@ export function Header({ className }: HeaderProps) {
             >
               Map
             </Link>
-            <Link
-              href="/login"
-              className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-brand-blue1 text-white px-5 py-2 rounded-full font-semibold hover:bg-brand-blue2 btn-glow transition-all"
-            >
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
+                >
+                  Profile
+                </Link>
+                <LogoutButton />
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-neutral-700 hover:text-brand-blue1 transition-colors px-3 py-2 rounded-lg hover:bg-brand-blue1/5"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-brand-blue1 text-white px-5 py-2 rounded-full font-semibold hover:bg-brand-blue2 btn-glow transition-all"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

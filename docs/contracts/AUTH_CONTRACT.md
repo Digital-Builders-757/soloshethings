@@ -2,12 +2,17 @@
 
 **Purpose:** Authentication flow, session management, profile bootstrap, and user identity rules for SoloSheThings.
 
-**Implementation Status:** ✅ Implemented (Phase 1)
+**Implementation Status:** ✅ Implemented (Phase 1 MVP)
 - ✅ Signup with profile bootstrap (`app/actions/auth.ts`)
 - ✅ Login with profile check (`app/actions/auth.ts`)
 - ✅ Logout (`app/actions/auth.ts`)
 - ✅ Route protection middleware (`middleware.ts`)
 - ✅ Functional auth pages (`app/(auth)/login`, `app/(auth)/signup`)
+- ✅ Profile query module (`lib/queries/profiles.ts`)
+- ✅ Profile update server action (`app/actions/profile.ts`)
+- ✅ Profile edit page (`app/(app)/profile/page.tsx`)
+- ✅ Dashboard with profile display (`app/(app)/dashboard/page.tsx`)
+- ✅ Header with auth state (`components/nav/header.tsx`)
 - ⏳ Stripe subscription creation (TODO: Phase 4)
 - ⏳ Welcome email (TODO: Phase 4)
 

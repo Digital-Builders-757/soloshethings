@@ -70,6 +70,8 @@ export async function getWpPosts(
     const response = await fetch(url, {
       next: {
         revalidate: 3600, // 1 hour ISR
+        // Tag standards: Lists MUST tag 'posts' (required) + 'posts:page:${page}' (optional, for granular invalidation)
+        // See docs/contracts/WORDPRESS_CONTENT_CONTRACT.md for canonical tag standards
         tags: [`posts`, `posts:page:${page}`],
       },
     });
@@ -115,6 +117,8 @@ export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
     const response = await fetch(url, {
       next: {
         revalidate: 3600, // 1 hour ISR
+        // Tag standards: Details MUST tag 'posts' (required) + 'post:${slug}' (required)
+        // See docs/contracts/WORDPRESS_CONTENT_CONTRACT.md for canonical tag standards
         tags: [`posts`, `post:${slug}`],
       },
     });
