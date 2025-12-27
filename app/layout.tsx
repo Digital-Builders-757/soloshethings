@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/nav/header";
+import { Footer } from "../components/layout/footer";
 
 // Load Inter font with Latin subset
 // Inter is a highly legible, modern sans-serif optimized for UI
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

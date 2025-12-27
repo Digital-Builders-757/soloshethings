@@ -134,6 +134,7 @@ User-facing documentation and feature status.
 - **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - Project status dashboard, phase planning, and progress history
 - **[BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)** - Brand color palette, usage rules, and design tokens
 - **[UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md)** - Accidentally Wes Anderson inspiration (structure only, not styling)
+- **[design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md)** - Brand color vibrancy enhancement design plan and implementation
 
 ### Diagrams Layer
 

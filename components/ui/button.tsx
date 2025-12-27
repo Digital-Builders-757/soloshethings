@@ -46,15 +46,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        'bg-brand-blue1 text-white hover:bg-brand-blue2 active:bg-brand-blue2 btn-glow active:scale-[0.98]',
+        'bg-brand-blue1 text-white hover:bg-brand-blue2 active:bg-brand-blue2 btn-glow active:scale-[0.98] shadow-lg shadow-brand-blue1/20',
       secondary:
         'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300 border border-neutral-200/60 active:scale-[0.98]',
       outline:
-        'border-2 border-brand-blue1/60 text-brand-blue1 hover:bg-brand-blue1/10 hover:border-brand-blue1 active:bg-brand-blue1/20 active:scale-[0.98]',
+        'border-2 border-brand-blue1 text-brand-blue1 hover:bg-brand-blue1/10 hover:border-brand-blue1 active:bg-brand-blue1/20 active:scale-[0.98]',
       ghost:
         'text-brand-blue1 hover:bg-brand-blue1/8 active:bg-brand-blue1/15 active:scale-[0.98]',
       danger:
-        'bg-brand-orange text-white hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98]',
+        'bg-brand-orange text-white hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98] shadow-lg shadow-brand-orange/20',
     }
 
     const sizes = {

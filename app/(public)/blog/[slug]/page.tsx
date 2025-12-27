@@ -105,10 +105,11 @@ export default async function BlogPostPage({ params }: Props) {
           <Prose html={post.content.rendered} />
         </article>
 
-        <nav className="mt-16 pt-8 border-t hairline-border">
+        <nav className="mt-16 pt-8">
+          <div className="section-divider mb-8"></div>
           <Link
             href="/blog"
-            className="text-brand-blue1 hover:text-brand-blue2 font-medium transition-colors"
+            className="text-brand-blue1 hover:text-brand-blue2 font-medium transition-colors inline-flex items-center gap-2"
           >
             ← Back to Blog
           </Link>

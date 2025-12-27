@@ -60,11 +60,20 @@
 - Use brand colors for backgrounds sparingly
 - Prefer neutral backgrounds (white, gray) with brand color accents
 - When using brand colors as backgrounds, ensure sufficient text contrast
+- **Body Background:** Multi-color gradient at 8% opacity using all 5 brand colors
+- **Hero Sections:** Enhanced gradients at 10-12% opacity for vibrancy
 
 ### Text Colors
 - Use brand colors for text only when contrast requirements are met
 - Prefer dark text (`#000000` or `#1a1a1a`) on light backgrounds
 - Prefer light text (`#ffffff`) on dark brand color backgrounds
+
+### Gradient Borders
+- Use `.surface-card-gradient` utility class for cards that need vibrant brand color borders
+- Gradient borders use all 5 brand colors in sequence: Blue 1 → Yellow 1 → Orange → Yellow 2 → Blue 2
+- Border width: 3px on desktop, 2px on mobile
+- Hover state: Border expands to 4px (desktop) or 3px (mobile)
+- Applied to: Blog cards, place cards, story cards, featured content cards
 
 ## Contrast Requirements
 
@@ -144,12 +153,20 @@ theme: {
 <div className="bg-brand-yellow1 text-black">
   Highlight Content
 </div>
+
+{/* Gradient border card */}
+<article className="surface-card-gradient lift-hover">
+  <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
+    {/* Card content */}
+  </div>
+</article>
 ```
 
 **❌ WRONG:**
 ```tsx
 <button className="bg-[#0439D9]"> {/* Never use raw hex */}
 <button style={{ backgroundColor: '#0439D9' }}> {/* Never inline styles */}
+<div className="border-gradient-brand"> {/* Use surface-card-gradient instead */}
 ```
 
 ## What We Do NOT Copy
@@ -184,6 +201,92 @@ When implementing dark mode:
 - Maintain contrast ratios
 - Test with screen readers
 - Consider reduced motion preferences
+- Adjust gradient border opacity for dark backgrounds
+
+## Gradient Border System
+
+### Overview
+
+The gradient border system uses all 5 brand colors to create vibrant, eye-catching borders on cards and content blocks. This reflects African heritage through bold, celebratory color combinations while maintaining the existing aesthetic quality.
+
+### Implementation
+
+**CSS Utility Class:** `.surface-card-gradient`
+
+**Gradient Colors (in order):**
+1. Blue 1 (`#0439D9`)
+2. Yellow 1 (`#F2E205`)
+3. Orange (`#F28705`)
+4. Yellow 2 (`#F2CB05`)
+5. Blue 2 (`#034AA6`)
+
+**Gradient Direction:** 135deg (diagonal)
+
+### Usage Guidelines
+
+**When to Use:**
+- Blog post cards
+- Place/safe spot cards
+- Story cards
+- Featured content cards
+- Landing page showcase cards
+
+**When NOT to Use:**
+- Form inputs
+- Error messages
+- Navigation elements
+- Small UI elements (badges, tags)
+- Text-only content blocks
+
+### Technical Details
+
+**Border Width:**
+- Desktop: 3px default, 4px on hover
+- Mobile: 2px default, 3px on hover
+
+**Structure:**
+```tsx
+<article className="surface-card-gradient lift-hover">
+  <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
+    {/* Card content (image, text, etc.) */}
+  </div>
+</article>
+```
+
+**Important:** The inner wrapper div is required for proper gradient border rendering. The border-radius calculation accounts for the gradient border width.
+
+### Background Gradients
+
+**Body Background:**
+- Multi-color gradient using all 5 brand colors
+- Opacity: 8% (increased from 2-3% for vibrancy)
+- Direction: 135deg diagonal
+- Fixed attachment for consistent appearance
+
+**Hero Sections:**
+- Enhanced gradient overlay via `.hero-wash` utility
+- Opacity: 10-12% (increased from 5-8%)
+- Creates depth and vibrancy without overwhelming content
+
+**Section Dividers:**
+- Brand color gradient dividers (`.section-divider`)
+- Height: 2px
+- Fades to transparent at edges
+- Uses all 5 brand colors in sequence
+
+### Performance Considerations
+
+- Gradient borders use CSS-only techniques (no JavaScript)
+- Browser support: Modern browsers (Chrome, Firefox, Safari, Edge)
+- Graceful degradation: Falls back to solid border if gradients not supported
+- Mobile-optimized: Thinner borders on mobile devices
+
+### Accessibility
+
+- Gradient borders do not affect text contrast
+- All text remains WCAG AA compliant
+- Borders enhance visual appeal without compromising readability
+- Focus states remain visible and accessible
 
 ---
 
@@ -191,4 +294,5 @@ When implementing dark mode:
 - [UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md) - AWA inspiration (structure only)
 - [PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md) - Brand reference
 - [CODING_STANDARDS.md](./CODING_STANDARDS.md) - Component patterns
+- [design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md) - Design implementation plan
 

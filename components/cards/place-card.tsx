@@ -38,33 +38,34 @@ export function PlaceCard({
     <Link
       href={href}
       className={cn(
-        "group block surface-card rounded-xl overflow-hidden lift-hover",
+        "group block surface-card-gradient lift-hover",
         className
       )}
     >
-      {/* Image */}
-      <div className="aspect-video bg-neutral-200 relative overflow-hidden">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={imageAlt || title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-neutral-400">
-            Image Placeholder
-          </div>
-        )}
-        {isFeatured && (
-          <div className="absolute top-4 left-4 bg-brand-yellow1 text-black px-3 py-1 rounded text-sm font-semibold">
-            Featured
-          </div>
-        )}
-      </div>
+      <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
+        {/* Image */}
+        <div className="aspect-video bg-neutral-200 relative overflow-hidden">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={imageAlt || title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-neutral-400">
+              Image Placeholder
+            </div>
+          )}
+          {isFeatured && (
+            <div className="absolute top-4 left-4 bg-brand-yellow1 text-black px-3 py-1 rounded text-sm font-semibold">
+              Featured
+            </div>
+          )}
+        </div>
 
-      {/* Content */}
-      <div className="p-6">
+        {/* Content */}
+        <div className="p-6">
         <h3 className="text-xl font-semibold mb-2 group-hover:text-brand-blue1 transition-colors">
           {title}
         </h3>
@@ -89,6 +90,7 @@ export function PlaceCard({
             Read Full Story →
           </span>
         )}
+        </div>
       </div>
     </Link>
   );

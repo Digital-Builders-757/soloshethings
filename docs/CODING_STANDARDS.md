@@ -17,7 +17,7 @@
 ### Type Definitions
 
 ```typescript
-// ✅ CORRECT: Explicit interface
+// ✅ CORRECT: Explicit interface (prefer interface over type for extensibility)
 interface Profile {
   id: string;
   username: string;
@@ -26,8 +26,41 @@ interface Profile {
   created_at: string;
 }
 
+// ✅ CORRECT: Extending interfaces
+interface AdminProfile extends Profile {
+  permissions: string[];
+}
+
+// ✅ CORRECT: Using utility types
+type ProfileUpdate = Partial<Pick<Profile, 'username' | 'avatar_url'>>;
+type ProfilePublic = Omit<Profile, 'role'>;
+
+// ✅ CORRECT: Mapped types for variations
+type ProfileKeys = keyof Profile;
+type ProfileOptional = {
+  [K in ProfileKeys]?: Profile[K];
+};
+
 // ❌ WRONG: Using any
 function processProfile(profile: any) { }
+
+// ✅ CORRECT: Use unknown with type guards instead
+function processProfile(profile: unknown) {
+  if (isProfile(profile)) {
+    // profile is typed as Profile here
+    return profile.username;
+  }
+  throw new Error('Invalid profile');
+}
+
+function isProfile(value: unknown): value is Profile {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'username' in value
+  );
+}
 ```
 
 ### Null Safety
@@ -189,21 +222,78 @@ export function ProfileCard(props: any) { }
 ### Hooks
 
 ```typescript
-// ✅ CORRECT: Custom hook with proper typing
+// ✅ CORRECT: Custom hook with proper typing and cleanup
 export function useProfile(userId: string) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   
   useEffect(() => {
+    let cancelled = false;
+    
     fetchProfile(userId)
-      .then(setProfile)
-      .catch(setError)
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (!cancelled) {
+          setProfile(data);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+    
+    // Cleanup: prevent state updates if component unmounts
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
   
   return { profile, loading, error };
 }
+```
+
+### Component Composition
+
+```typescript
+// ✅ CORRECT: Extract reusable logic into custom hooks
+function useFormValidation<T>(schema: z.ZodSchema<T>) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  const validate = useCallback((data: unknown) => {
+    const result = schema.safeParse(data);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0].toString()] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  }, [schema]);
+  
+  return { errors, validate };
+}
+
+// ✅ CORRECT: Use React.memo() strategically for expensive components
+export const ExpensiveList = React.memo(function ExpensiveList({ items }: { items: Item[] }) {
+  return (
+    <ul>
+      {items.map((item) => (
+        <ListItem key={item.id} item={item} />
+      ))}
+    </ul>
+  );
+});
 ```
 
 ## Next.js Standards
@@ -422,12 +512,16 @@ const { error } = await supabase
 - Return user-safe error messages (no technical details)
 - Throw errors for unexpected failures
 - Return explicit error states for expected failures
+- Always handle error parameters in callbacks (never ignore error params)
+- Use error boundaries to catch errors in React component trees
+- Design user-friendly fallback UIs when errors occur
 
 **MUST NOT:**
 - Use empty catch blocks
 - Ignore error responses
 - Expose technical error details to users
 - Fail silently without logging
+- Ignore error parameters in callbacks
 
 ```typescript
 // ✅ CORRECT: Proper error handling with logging
@@ -487,6 +581,53 @@ async function badExample() {
     // Empty catch - NEVER DO THIS
   }
 }
+
+// ✅ CORRECT: Error boundaries for React components
+'use client';
+
+import { Component, ReactNode } from 'react';
+import * as Sentry from '@sentry/nextjs';
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Log error to Sentry
+    Sentry.captureException(error, {
+      tags: { component: 'ErrorBoundary' },
+      extra: errorInfo,
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-4 text-center">
+          <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
+          <p className="text-neutral-600">Please refresh the page or try again later.</p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 ```
 
 ## Naming Conventions
@@ -499,6 +640,21 @@ async function badExample() {
 - **Utilities:** camelCase (`formatDate.ts`, `validateEmail.ts`)
 - **Types:** PascalCase (`Profile.ts`, `Post.ts`)
 - **Hooks:** camelCase with `use` prefix (`useProfile.ts`, `useAuth.ts`)
+- **Files:** kebab-case (`user-profile.tsx`, `auth-utils.ts`)
+- **Directories:** kebab-case (`components/auth-wizard`, `lib/queries`)
+
+### Variables and Functions
+
+- **Variables/Functions:** camelCase (`getUser`, `isLoading`, `handleSubmit`)
+- **Constants:** UPPERCASE (`MAX_FILE_SIZE`, `API_ENDPOINT`)
+- **Type/Interface:** PascalCase (`Profile`, `PostResult`)
+
+### Specific Naming Patterns
+
+- **Event handlers:** Prefix with `handle` (`handleClick`, `handleSubmit`)
+- **Boolean variables:** Prefix with verb (`isLoading`, `hasError`, `canSubmit`)
+- **Custom hooks:** Prefix with `use` (`useAuth`, `useProfile`)
+- **Use complete words** over abbreviations (except: `err`, `req`, `res`, `props`, `ref`)
 
 ### Routes (Next.js App Router)
 
@@ -520,30 +676,38 @@ async function badExample() {
 
 ```typescript
 // 1. React/Next.js imports
-import { useState, useEffect } from 'react';
-import { NextRequest, NextResponse } from 'next/server';
+import { useState, useEffect } from 'react'
+import { NextRequest, NextResponse } from 'next/server'
 
 // 2. Third-party imports
-import { z } from 'zod';
-import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod'
+import { createClient } from '@supabase/supabase-js'
 
 // 3. Internal imports (absolute paths)
-import { supabase } from '@/lib/supabase';
-import { getUser } from '@/lib/auth';
-import { Button } from '@/components/ui/button';
-import { ProfileCard } from '@/components/shared/profile-card';
+import { supabase } from '@/lib/supabase'
+import { getUser } from '@/lib/auth'
+import { Button } from '@/components/ui/button'
 
-// 4. Type imports
-import type { Profile } from '@/types/profile';
+// 4. Type imports (use 'import type' for types-only)
+import type { Profile } from '@/types/profile'
 ```
 
 ## Code Formatting
 
 - Use Prettier with project configuration
-- 2 spaces for indentation
-- Single quotes for strings
-- Semicolons required
-- Trailing commas in multi-line objects/arrays
+- 2 spaces for indentation (consistent with existing codebase)
+- Single quotes for strings (except to avoid escaping)
+- Semicolons required (consistent with existing codebase)
+- Trailing commas in multiline object/array literals
+- Limit line length to 100 characters (reasonable for modern screens)
+- Space after keywords (`if`, `for`, `while`)
+- Space before function declaration parentheses
+- Space infix operators (`+`, `-`, `*`, `=`)
+- Space after commas
+- Keep else statements on same line as closing curly brace: `} else {`
+- Use curly braces for multi-line if statements
+- Always use strict equality (`===` instead of `==`)
+- Eliminate unused variables - remove or use them
 
 ## State + Form Patterns
 
@@ -620,6 +784,71 @@ export async function updateProfile(
 - **Forms:** Native HTML forms + Server Actions (no form libraries needed)
 - **UI Components:** shadcn/ui (already in use)
 - **State:** React built-in hooks (useState, useFormState)
+
+### React Performance Optimization
+
+**MUST:**
+- Use `useCallback` for memoizing callback functions passed to children
+- Use `useMemo` for expensive computations (not for simple values)
+- Avoid inline function definitions in JSX (extract to useCallback or component methods)
+- Implement code splitting using dynamic imports (`next/dynamic`)
+- Use proper key props in lists (never use index as key unless list is static)
+- Use `React.memo()` for expensive components that re-render frequently
+
+```typescript
+// ✅ CORRECT: useCallback for stable function references
+'use client';
+
+import { useCallback, useState } from 'react';
+
+export function PostList({ posts }: { posts: Post[] }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  
+  // Memoize callback to prevent child re-renders
+  const handleSelect = useCallback((id: string) => {
+    setSelectedId(id);
+  }, []);
+  
+  return (
+    <ul>
+      {posts.map((post) => (
+        <PostItem
+          key={post.id} // ✅ Stable key, never use index
+          post={post}
+          isSelected={post.id === selectedId}
+          onSelect={handleSelect}
+        />
+      ))}
+    </ul>
+  );
+}
+
+// ✅ CORRECT: useMemo for expensive computations
+function ExpensiveComponent({ items }: { items: Item[] }) {
+  const sortedItems = useMemo(() => {
+    // Expensive sorting operation
+    return [...items].sort((a, b) => a.date.localeCompare(b.date));
+  }, [items]);
+  
+  return <div>{/* render sorted items */}</div>;
+}
+
+// ✅ CORRECT: Dynamic imports for code splitting
+import dynamic from 'next/dynamic';
+
+const HeavyChart = dynamic(() => import('@/components/HeavyChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false, // Disable SSR if component uses browser-only APIs
+});
+
+export function Dashboard() {
+  return (
+    <div>
+      <HeavyChart />
+    </div>
+  );
+}
+```
 
 ## Testing Conventions
 
@@ -749,6 +978,122 @@ export async function updateProfile(formData: FormData) {
 }
 ```
 
+## Accessibility (a11y)
+
+**MUST:**
+- Use semantic HTML for meaningful structure
+- Apply accurate ARIA attributes where needed
+- Ensure full keyboard navigation support
+- Manage focus order and visibility effectively
+- Maintain accessible color contrast ratios (WCAG AA minimum)
+- Follow logical heading hierarchy (h1 → h2 → h3)
+- Make all interactive elements accessible
+- Provide clear and accessible error feedback
+
+```typescript
+// ✅ CORRECT: Accessible form with proper labels and error messages
+'use client';
+
+export function AccessibleForm() {
+  const [error, setError] = useState<string | null>(null);
+  
+  return (
+    <form>
+      <div>
+        <label htmlFor="username" className="block mb-1">
+          Username
+        </label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          aria-describedby={error ? 'username-error' : undefined}
+          aria-invalid={error ? 'true' : 'false'}
+          className={error ? 'border-red-500' : ''}
+        />
+        {error && (
+          <div
+            id="username-error"
+            role="alert"
+            className="text-red-600 text-sm mt-1"
+          >
+            {error}
+          </div>
+        )}
+      </div>
+      
+      <button
+        type="submit"
+        className="focus:outline-none focus:ring-2 focus:ring-brand-blue1"
+      >
+        Submit
+      </button>
+    </form>
+  );
+}
+
+// ✅ CORRECT: Keyboard navigation support
+'use client';
+
+export function AccessibleButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  }, [onClick]);
+  
+  return (
+    <button
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      className="focus:outline-none focus:ring-2 focus:ring-brand-blue1"
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+## Code Quality Guidelines
+
+**MUST:**
+- Keep functions focused - Single responsibility principle
+- Extract complex logic - Don't inline complex operations in JSX
+- Use trailing commas in multiline object/array literals
+- Always use strict equality (`===` instead of `==`)
+- Eliminate unused variables - Remove or use them
+
+```typescript
+// ✅ CORRECT: Focused function with extracted logic
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+
+function OrderSummary({ items }: { items: Item[] }) {
+  const total = calculateTotal(items); // Extracted logic
+  
+  return (
+    <div>
+      <h2>Order Summary</h2>
+      <p>Total: ${total.toFixed(2)}</p>
+    </div>
+  );
+}
+
+// ❌ WRONG: Complex logic inlined in JSX
+function OrderSummary({ items }: { items: Item[] }) {
+  return (
+    <div>
+      <h2>Order Summary</h2>
+      <p>
+        Total: ${items.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+      </p>
+    </div>
+  );
+}
+```
+
 ## Documentation
 
 - Complex functions must have JSDoc comments
@@ -756,6 +1101,27 @@ export async function updateProfile(formData: FormData) {
 - Query modules should document return types
 - Server Actions should document expected inputs
 - Update [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md) when adding new docs
+
+```typescript
+/**
+ * Fetches a user profile by ID from Supabase.
+ * 
+ * @param userId - The unique identifier of the user
+ * @returns The profile data or null if not found
+ * @throws {Error} If the database query fails
+ * 
+ * @example
+ * ```typescript
+ * const profile = await getProfile('user-123');
+ * if (profile) {
+ *   console.log(profile.username);
+ * }
+ * ```
+ */
+export async function getProfile(userId: string): Promise<ProfileResult | null> {
+  // Implementation...
+}
+```
 
 ---
 

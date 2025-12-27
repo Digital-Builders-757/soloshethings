@@ -64,6 +64,10 @@
 - **Client Components** - Only when needed (interactivity, hooks, browser APIs)
 - **No DB writes in client components** - All mutations via Server Actions or API routes
 - **Middleware** - Allow/deny/redirect ONLY, no business logic
+- **Component Composition** - Extract reusable logic into custom hooks
+- **Functional Components** - Use function keyword, TypeScript interfaces for props
+- **React.memo()** - Use strategically for performance (not everywhere)
+- **Cleanup in useEffect** - Always implement proper cleanup for subscriptions/timers
 
 ### Data Access Patterns
 - Server-only query modules for data fetching
@@ -77,12 +81,27 @@
 - User-safe error messages (no technical jargon)
 - Log errors with context (category, type, component)
 - Use Sentry in production, console logs in development
+- **Error Boundaries:** Use error boundaries to catch errors in React component trees
+- **Error Logging:** Log caught errors to external service (Sentry) for tracking
+- **Fallback UIs:** Design user-friendly fallback UIs when errors occur
+- **Always handle error parameters in callbacks** - Never ignore error params
 
 ### Naming Conventions
 - Server Actions: `createPost`, `updateProfile` (verb + noun)
 - Query modules: `getUserProfile`, `getPosts` (get + noun)
 - Components: PascalCase (`UserProfile`, `PostList`)
 - Routes: kebab-case (`/user-profile`, `/create-post`)
+- Files: kebab-case (`user-profile.tsx`, `auth-utils.ts`)
+- Directories: kebab-case (`components/auth-wizard`, `lib/queries`)
+- Variables/Functions: camelCase (`getUser`, `isLoading`, `handleSubmit`)
+- Constants: UPPERCASE (`MAX_FILE_SIZE`, `API_ENDPOINT`)
+- Type/Interface: PascalCase (`Profile`, `PostResult`)
+
+**Specific Naming Patterns:**
+- Event handlers: Prefix with `handle` (`handleClick`, `handleSubmit`)
+- Boolean variables: Prefix with verb (`isLoading`, `hasError`, `canSubmit`)
+- Custom hooks: Prefix with `use` (`useAuth`, `useProfile`)
+- Use complete words over abbreviations (except: `err`, `req`, `res`, `props`, `ref`)
 
 ## 🔴 Red-Zone Files (Require Extra Review)
 
@@ -289,6 +308,13 @@ Before pushing code:
 - Next.js Image component for all images
 - Server Components by default
 - Lazy load heavy Client Components
+- **React Performance:**
+  - Use `useCallback` for memoizing callback functions passed to children
+  - Use `useMemo` for expensive computations (not for simple values)
+  - Avoid inline function definitions in JSX (extract to useCallback or component methods)
+  - Implement code splitting using dynamic imports (`next/dynamic`)
+  - Use proper key props in lists (never use index as key unless list is static)
+  - Use `React.memo()` for expensive components that re-render frequently
 
 ## 🐛 Debugging
 
@@ -330,6 +356,73 @@ Before pushing code:
 - Trial: Full access during trial, limited after expiration
 - Subscribed: Full access to all features
 - Admin: Moderation and bi-weekly posts
+
+## 💻 Code Style & Quality
+
+### Code Formatting
+- Use 2 spaces for indentation (consistent with existing codebase)
+- Use single quotes for strings (except to avoid escaping)
+- Semicolons required (consistent with existing codebase)
+- Trailing commas in multiline object/array literals
+- Limit line length to 100 characters (reasonable for modern screens)
+- Space after keywords (`if`, `for`, `while`)
+- Space before function declaration parentheses
+- Space infix operators (`+`, `-`, `*`, `=`)
+- Space after commas
+- Keep else statements on same line as closing curly brace: `} else {`
+- Use curly braces for multi-line if statements
+
+### TypeScript Best Practices
+- **Strict Mode:** Always enabled
+- **Type Definitions:** Use interfaces for object structures (prefer `interface` over `type` for extensibility)
+- **Type Guards:** Use type guards to handle undefined/null safely
+- **Generics:** Apply generics to functions/actions where type flexibility is needed
+- **Utility Types:** Use TypeScript utility types (`Partial`, `Pick`, `Omit`) for cleaner code
+- **Mapped Types:** Use mapped types for creating variations of existing types dynamically
+- **Never use `any`:** Use proper types or `unknown` with type guards
+
+### Import Organization
+```typescript
+// 1. React/Next.js imports
+import { useState, useEffect } from 'react'
+import { NextRequest, NextResponse } from 'next/server'
+
+// 2. Third-party imports
+import { z } from 'zod'
+import { createClient } from '@supabase/supabase-js'
+
+// 3. Internal imports (absolute paths)
+import { supabase } from '@/lib/supabase'
+import { getUser } from '@/lib/auth'
+import { Button } from '@/components/ui/button'
+
+// 4. Type imports (use 'import type' for types-only)
+import type { Profile } from '@/types/profile'
+```
+
+### React Component Patterns
+- **Functional Components:** Use function keyword (not arrow functions for components)
+- **Props Interfaces:** Define explicit interfaces for component props
+- **Component Composition:** Implement proper component composition patterns
+- **Extract Logic:** Extract reusable logic into custom hooks
+- **List Keys:** Use stable, unique keys (never index unless list is truly static)
+
+### Accessibility (a11y)
+- **Semantic HTML:** Use semantic HTML for meaningful structure
+- **ARIA Attributes:** Apply accurate ARIA attributes where needed
+- **Keyboard Navigation:** Ensure full keyboard navigation support
+- **Focus Management:** Manage focus order and visibility effectively
+- **Color Contrast:** Maintain accessible color contrast ratios (WCAG AA minimum)
+- **Heading Hierarchy:** Follow logical heading hierarchy (h1 → h2 → h3)
+- **Interactive Elements:** Make all interactive elements accessible
+- **Error Feedback:** Provide clear and accessible error feedback
+
+### Code Quality
+- **Eliminate unused variables** - Remove or use them
+- **Always use strict equality** (`===` instead of `==`)
+- **Use trailing commas** in multiline object/array literals
+- **Keep functions focused** - Single responsibility principle
+- **Extract complex logic** - Don't inline complex operations in JSX
 
 ## 📋 Quick Reference
 

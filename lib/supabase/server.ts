@@ -110,7 +110,13 @@ export async function getUser() {
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error) {
-    console.error('Error fetching user:', error)
+    // Check if this is just a missing session (expected for anonymous users)
+    const isSessionMissing = error.message?.includes('session') || error.message?.includes('missing') || error.message?.includes('not authenticated')
+    
+    if (!isSessionMissing) {
+      // Only log actual errors, not expected "no session" cases
+      console.error('Error fetching user:', error)
+    }
     return null
   }
 

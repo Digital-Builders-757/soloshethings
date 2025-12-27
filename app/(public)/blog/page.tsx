@@ -55,38 +55,40 @@ export default async function BlogPage() {
               return (
                 <article
                   key={post.id}
-                  className="surface-card rounded-xl overflow-hidden lift-hover"
+                  className="surface-card-gradient lift-hover"
                 >
-                  {featuredImage && (
-                    <div className="aspect-video bg-neutral-200 relative overflow-hidden">
-                      <img
-                        src={featuredImage}
-                        alt={
-                          post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
-                          post.title.rendered
-                        }
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  {!featuredImage && (
-                    <div className="aspect-video bg-neutral-200"></div>
-                  )}
-                  <div className="p-6">
-                    <h2 className="text-xl font-semibold mb-2 line-clamp-2">
-                      {post.title.rendered}
-                    </h2>
-                    {excerpt && (
-                      <p className="text-neutral-600 mb-4 line-clamp-3">
-                        {excerpt}...
-                      </p>
+                  <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
+                    {featuredImage && (
+                      <div className="aspect-video bg-neutral-200 relative overflow-hidden">
+                        <img
+                          src={featuredImage}
+                          alt={
+                            post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
+                            post.title.rendered
+                          }
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                     )}
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-brand-blue1 hover:text-brand-blue2 font-medium"
-                    >
-                      Read More →
-                    </Link>
+                    {!featuredImage && (
+                      <div className="aspect-video bg-neutral-200"></div>
+                    )}
+                    <div className="p-6">
+                      <h2 className="text-xl font-semibold mb-2 line-clamp-2">
+                        {post.title.rendered}
+                      </h2>
+                      {excerpt && (
+                        <p className="text-neutral-600 mb-4 line-clamp-3">
+                          {excerpt}...
+                        </p>
+                      )}
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="text-brand-blue1 hover:text-brand-blue2 font-medium"
+                      >
+                        Read More →
+                      </Link>
+                    </div>
                   </div>
                 </article>
               );

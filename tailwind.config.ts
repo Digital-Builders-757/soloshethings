@@ -15,6 +15,22 @@ const config: Config = {
     'lift-hover',
     'hairline-border',
     'section-divider',
+    'hero-wash',
+    'postcard-media',
+    'postcard-caption',
+    'eyebrow-text',
+    'narrative-interlude',
+    'animate-float-slow',
+    'animate-float-medium',
+    'animate-float-fast',
+    'animate-gentle-rise',
+    'animate-text-flow',
+    'animate-gentle-glow',
+    'animate-gentle-pulse',
+    'animate-fade-in',
+    'animate-slide-up',
+    'animate-scale-in',
+    'animate-spin-slow',
   ],
   theme: {
     extend: {
@@ -71,6 +87,40 @@ const config: Config = {
         'in-out': 'var(--ease-in-out)',
         'out': 'var(--ease-out)',
         'in': 'var(--ease-in)',
+      },
+      keyframes: {
+        'float-slow': {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-20px) rotate(2deg)' },
+        },
+        'float-medium': {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-15px) rotate(-1deg)' },
+        },
+        'float-fast': {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-10px) rotate(1deg)' },
+        },
+        'gentle-rise': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'gentle-glow': {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
+        },
+        'gentle-pulse': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+        },
+      },
+      animation: {
+        'float-slow': 'float-slow 6s ease-in-out infinite',
+        'float-medium': 'float-medium 4s ease-in-out infinite',
+        'float-fast': 'float-fast 3s ease-in-out infinite',
+        'gentle-rise': 'gentle-rise 1s ease-out forwards',
+        'gentle-glow': 'gentle-glow 2s ease-in-out infinite',
+        'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
       },
     },
   },
