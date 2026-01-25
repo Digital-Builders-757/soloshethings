@@ -16,6 +16,7 @@ import { getWpPostBySlug, isWordPressConfigured } from "@/lib/wp-rest";
 import { Prose } from "@/components/prose";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 
 type Props = {
@@ -89,14 +90,17 @@ export default async function BlogPostPage({ params }: Props) {
               </time>
             </div>
             {featuredImage && (
-              <div className="aspect-video bg-neutral-200 rounded-xl mb-8 overflow-hidden">
-                <img
+              <div className="aspect-video bg-neutral-200 rounded-xl mb-8 overflow-hidden relative">
+                <Image
                   src={featuredImage}
                   alt={
                     post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
                     post.title.rendered
                   }
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  className="object-cover"
+                  unoptimized
                 />
               </div>
             )}

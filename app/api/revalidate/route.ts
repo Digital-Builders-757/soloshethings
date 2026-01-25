@@ -14,6 +14,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { getRevalidateSecret } from "@/lib/wp-env";
 
 // Validation constants
 const MAX_BODY_SIZE = 10 * 1024; // 10KB in bytes
@@ -22,10 +23,13 @@ const MAX_STRING_LENGTH = 200; // Max length per path/tag string
 
 export async function POST(request: NextRequest) {
   try {
-    const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET;
+    const configuredSecret = getRevalidateSecret();
 
-    if (!REVALIDATE_SECRET) {
-      throw new Error("REVALIDATE_SECRET environment variable is not set");
+    if (!configuredSecret) {
+      return NextResponse.json(
+        { error: "Revalidation not configured" },
+        { status: 503 }
+      );
     }
 
     // 1. Enforce body size limit (byte-accurate, not character count)
@@ -65,7 +69,7 @@ export async function POST(request: NextRequest) {
     
     try {
       body = JSON.parse(bodyText);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { error: "Invalid JSON in request body" },
         { status: 400 }
@@ -75,7 +79,7 @@ export async function POST(request: NextRequest) {
     const { secret, paths, tags } = body;
 
     // 2. Validate secret from body (canonical contract)
-    if (!secret || typeof secret !== "string" || secret !== REVALIDATE_SECRET) {
+    if (!secret || typeof secret !== "string" || secret !== configuredSecret) {
       return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
     }
 
@@ -179,7 +183,7 @@ export async function POST(request: NextRequest) {
     if (tags && Array.isArray(tags) && tags.length > 0) {
       for (const tag of tags) {
         if (typeof tag === "string") {
-          revalidateTag(tag);
+          revalidateTag(tag, "max");
         }
       }
     }

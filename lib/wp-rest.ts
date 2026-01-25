@@ -13,12 +13,13 @@
 import "server-only";
 
 import { WpPost, WpPostListParams, WpPostListResponse } from "./wp-types";
+import { getWordpressBaseUrl } from "./wp-env";
 
-const WP_URL = process.env.WP_URL;
+const WP_BASE_URL = getWordpressBaseUrl();
 
-// Allow build to succeed without WP_URL (will fail at runtime)
+// Allow build to succeed without WordPress URL configured
 // This prevents build failures when env vars aren't set
-const WP_API_BASE = WP_URL ? `${WP_URL}/wp-json/wp/v2` : "";
+const WP_API_BASE = WP_BASE_URL ? `${WP_BASE_URL}/wp-json/wp/v2` : "";
 
 /**
  * Check if WordPress is configured
@@ -26,7 +27,7 @@ const WP_API_BASE = WP_URL ? `${WP_URL}/wp-json/wp/v2` : "";
  * @returns true if WP_URL is set, false otherwise
  */
 export function isWordPressConfigured(): boolean {
-  return !!WP_URL;
+  return !!WP_BASE_URL;
 }
 
 /**
@@ -38,9 +39,11 @@ export function isWordPressConfigured(): boolean {
 export async function getWpPosts(
   params: WpPostListParams = {}
 ): Promise<WpPostListResponse> {
-  if (!WP_URL) {
+  if (!WP_BASE_URL) {
     // WordPress not configured - return empty array (safe fallback)
-    console.warn("WordPress not configured: WP_URL environment variable is missing");
+    console.warn(
+      "WordPress not configured: WORDPRESS_URL/WP_URL environment variable is missing"
+    );
     return [];
   }
 
@@ -100,9 +103,11 @@ export async function getWpPosts(
  * @returns WordPress post or null if not found or WP not configured
  */
 export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
-  if (!WP_URL) {
+  if (!WP_BASE_URL) {
     // WordPress not configured - return null (safe fallback)
-    console.warn("WordPress not configured: WP_URL environment variable is missing");
+    console.warn(
+      "WordPress not configured: WORDPRESS_URL/WP_URL environment variable is missing"
+    );
     return null;
   }
 

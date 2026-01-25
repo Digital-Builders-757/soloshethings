@@ -16,12 +16,14 @@
 - No runtime crashes or exceptions
 
 **Required Environment Variables (When WP Enabled):**
-- `WP_URL` - WordPress site URL (e.g., `https://blog.example.com`)
-- `REVALIDATE_SECRET` - Secret for webhook revalidation (optional, for Phase 2+)
-- `PREVIEW_SECRET` - Secret for preview mode (optional, for Phase 2+)
+- `WORDPRESS_URL` - WordPress site URL (preferred, e.g., `https://cms.soloshethings.com`)
+- `WP_URL` - Legacy fallback (supported; ignored if `WORDPRESS_URL` is set)
+- `WORDPRESS_REVALIDATE_SECRET` - Webhook secret (preferred)
+- `REVALIDATE_SECRET` - Legacy fallback for revalidation (supported; ignored if preferred is set)
+- `PREVIEW_SECRET` - Secret for preview mode (unchanged)
 
 **Implementation:**
-- `isWordPressConfigured()` helper checks if `WP_URL` is set
+- `isWordPressConfigured()` helper checks if `WORDPRESS_URL` or `WP_URL` is set
 - WordPress fetch functions return safe fallbacks (empty array or null)
 - Errors are logged server-side only, never thrown
 - UI gracefully handles missing WordPress configuration

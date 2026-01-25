@@ -554,6 +554,73 @@ Next Steps:
 - Mobile device testing
 - Consider additional elements for gradient borders if needed
 
+#### 2025-01-25 - ESLint Migration & Code Quality Baseline
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Migrated from `.eslintrc.json` to ESLint flat config (`eslint.config.mjs`) to resolve circular config crash
+- Fixed all linting errors (13 errors, 8 warnings → 0 errors, 0 warnings)
+- Converted all `<img>` tags to Next.js `<Image />` components for performance optimization
+- Upgraded Next.js from `15.0.7` to `16.1.4` (fixed critical security vulnerabilities)
+- Updated `revalidateTag` API call to Next.js 16 signature (`revalidateTag(tag, "max")`)
+- Enforced strict lint baseline with `--max-warnings 0` in package.json scripts
+
+**What Was Fixed:**
+- ✅ Apostrophe escaping in JSX (5 errors)
+- ✅ HTML links replaced with Next.js `<Link />` components (5 errors)
+- ✅ `Math.random()` in render replaced with React `useId()` hook (2 errors)
+- ✅ Unused variables removed (4 warnings)
+- ✅ `require()` imports converted to ES6 `import` (1 error)
+- ✅ WordPress featured images converted to optimized `<Image />` components (3 warnings)
+- ✅ HEIC images documented with ESLint disable comment (1 warning, justified)
+
+**Files Created:**
+- `eslint.config.mjs` - ESLint flat config with Next.js presets
+- `.eslintrc.json.bak` - Backup of old config
+
+**Files Modified:**
+- `package.json` - Updated lint scripts, Next.js version
+- `app/(app)/dashboard/page.tsx` - Fixed apostrophes
+- `app/(app)/places/[slug]/page.tsx` - Fixed HTML link
+- `app/(auth)/login/page.tsx` - Fixed apostrophe
+- `components/landing/about-section.tsx` - Fixed apostrophes
+- `components/landing/landing-page-content.tsx` - Fixed HTML links
+- `components/ui/input.tsx` - Replaced Math.random with useId
+- `components/ui/textarea.tsx` - Replaced Math.random with useId
+- `tailwind.config.ts` - Converted require to import
+- `app/api/revalidate/route.ts` - Updated revalidateTag API, removed unused vars
+- `components/nav/logout-button.tsx` - Removed unused error var
+- `lib/supabase/server.ts` - Removed unused error vars
+- `app/(public)/blog/[slug]/page.tsx` - Converted img to Image
+- `app/(public)/blog/page.tsx` - Converted img to Image
+- `app/(public)/preview/[...slug]/page.tsx` - Converted img to Image
+- `components/landing/travel-moments-gallery.tsx` - Added ESLint disable for HEIC
+- `next.config.ts` - Added WordPress domain configuration comments
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ `npm audit --omit=dev` shows 0 vulnerabilities
+- ✅ TypeScript compilation successful
+- ✅ All Next.js Image components properly configured
+- ✅ Next.js 16 API compatibility verified
+
+**Security Improvements:**
+- ✅ Next.js upgraded to latest secure version (16.1.4)
+- ✅ All critical vulnerabilities resolved
+- ✅ Strict lint baseline prevents future code quality drift
+
+**Performance Improvements:**
+- ✅ WordPress images now use Next.js Image optimization (with unoptimized fallback for dynamic domains)
+- ✅ Proper `sizes` attributes for responsive image loading
+- ✅ HEIC images documented with justification for `<img>` usage
+
+**Next Steps:**
+- Manual smoke testing of blog pages and revalidate endpoint
+- Consider adding WordPress domain to `next.config.ts` remotePatterns for full image optimization
+- Monitor build performance with Next.js 16
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS

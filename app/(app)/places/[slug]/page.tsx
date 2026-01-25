@@ -6,6 +6,8 @@
  * Public previews shown on home page, full content here
  */
 
+import Link from 'next/link';
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -61,12 +63,12 @@ export default async function PlaceDetailPage({ params }: Props) {
         </article>
         
         <nav className="mt-16 pt-8 border-t border-neutral-200">
-          <a
+          <Link
             href="/"
             className="text-brand-blue1 hover:text-brand-blue2 font-medium"
           >
             ← Back to Home
-          </a>
+          </Link>
         </nav>
       </div>
     </main>

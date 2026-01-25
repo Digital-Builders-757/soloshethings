@@ -15,7 +15,7 @@
  */
 
 import { cn } from '@/lib/utils'
-import { InputHTMLAttributes, forwardRef } from 'react'
+import { InputHTMLAttributes, forwardRef, useId } from 'react'
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -40,7 +40,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     // Generate ID if not provided (for label association)
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
+    const generatedId = useId()
+    const inputId = id || `input-${generatedId}`
 
     // Determine variant based on error prop
     const effectiveVariant = error ? 'error' : variant

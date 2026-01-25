@@ -135,11 +135,13 @@ Use GraphQL for:
 ## 7) Environment Variables (Required)
 
 ### WordPress
-- `WP_URL` (example: https://cms.soloshethings.com)
+- `WORDPRESS_URL` (preferred, example: https://cms.soloshethings.com)
+- `WP_URL` (legacy fallback; ignored if `WORDPRESS_URL` is set)
 - `WP_GRAPHQL_URL` (example: https://cms.soloshethings.com/graphql) — optional if using GraphQL
 
 ### Next.js
-- `REVALIDATE_SECRET` (long random secret)
+- `WORDPRESS_REVALIDATE_SECRET` (preferred, long random secret)
+- `REVALIDATE_SECRET` (legacy fallback; ignored if preferred is set)
 - `PREVIEW_SECRET` (long random secret)
 - `NEXT_PUBLIC_SITE_URL` (example: https://soloshethings.com)
 
