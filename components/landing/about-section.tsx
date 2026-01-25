@@ -15,7 +15,7 @@ export function AboutSection() {
         </h2>
         <div className="space-y-6 text-lg text-neutral-700 leading-relaxed">
           <p>
-            SoloSheThings is more than a platform—it's a community where solo female travelers
+            SoloSheThings is more than a platform—it&apos;s a community where solo female travelers
             find safety, inspiration, and connection. We believe every woman deserves to explore
             the world with confidence and peace of mind.
           </p>
@@ -25,7 +25,7 @@ export function AboutSection() {
             understand the unique joys and challenges of solo travel.
           </p>
           <p className="text-xl font-semibold text-brand-blue1">
-            Because your journey matters, and you shouldn't have to travel it alone.
+            Because your journey matters, and you shouldn&apos;t have to travel it alone.
           </p>
         </div>
       </div>

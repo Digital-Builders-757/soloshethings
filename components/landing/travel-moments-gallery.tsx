@@ -35,6 +35,7 @@ export function TravelMomentsGallery() {
               <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)] h-full relative">
                 {/* Use regular img tag for HEIC files (Next.js Image doesn't support HEIC) */}
                 {image.isHeic ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={image.src}
                     alt={image.alt}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { WorldTravelAnimation } from './world-travel-animation';
 import { WesAndersonHero } from './wes-anderson-hero';
 import { CulturalShowcaseSection } from './cultural-showcase-section';
@@ -69,13 +70,13 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
                         Morning light spills through tall windows. The barista remembers your order. 
                         This is where solo travelers find their rhythm.
                       </p>
-                      <a
+                      <Link
                         href="/places/example-slug"
                         className="text-brand-blue1 hover:text-brand-blue2 font-medium inline-flex items-center gap-1 transition-colors"
                       >
                         Read Full Story
                         <span className="text-lg">→</span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -90,13 +91,13 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
                         Soft shadows dance on stone. Plants whisper in the breeze. 
                         A moment of calm discovery, perfectly safe.
                       </p>
-                      <a
+                      <Link
                         href="/places/example-slug"
                         className="text-brand-blue1 hover:text-brand-blue2 font-medium inline-flex items-center gap-1 transition-colors"
                       >
                         Read Full Story
                         <span className="text-lg">→</span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -111,13 +112,13 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
                         Warm light glows from within. Shelves promise stories. 
                         A safe haven for curious travelers.
                       </p>
-                      <a
+                      <Link
                         href="/places/example-slug"
                         className="text-brand-blue1 hover:text-brand-blue2 font-medium inline-flex items-center gap-1 transition-colors"
                       >
                         Read Full Story
                         <span className="text-lg">→</span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -191,12 +192,12 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
                 </div>
               </div>
               <div className="text-center">
-                <a
+                <Link
                   href="/signup"
                   className="inline-block bg-brand-blue1 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-brand-blue2 transition-all btn-glow active:scale-[0.98]"
                 >
                   Join the Community
-                </a>
+                </Link>
               </div>
             </div>
           </section>
@@ -213,12 +214,12 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
               <p className="text-xl text-neutral-600 mb-10 max-w-2xl mx-auto leading-relaxed">
                 Explore safe spots by safety level, budget, wellness, destination type, and more.
               </p>
-              <a
+              <Link
                 href="/collections"
                 className="inline-block bg-brand-orange text-white px-10 py-4 rounded-full font-semibold text-lg hover:opacity-90 transition-all btn-glow active:scale-[0.98]"
               >
                 Browse Collections
-              </a>
+              </Link>
             </div>
           </section>
 
@@ -231,12 +232,12 @@ export function LandingPageContent({ destinations, stats, events }: LandingPageC
               <p className="text-xl mb-10 text-white/95 max-w-2xl mx-auto leading-relaxed">
                 Bi-weekly curated safe spots and travel stories from our community.
               </p>
-              <a
+              <Link
                 href="/blog"
                 className="inline-block bg-brand-yellow1 text-black px-10 py-4 rounded-full font-semibold text-lg hover:bg-brand-yellow2 transition-all btn-glow active:scale-[0.98]"
               >
                 View Latest Drops
-              </a>
+              </Link>
             </div>
           </section>
         </main>

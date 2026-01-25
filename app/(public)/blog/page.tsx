@@ -14,6 +14,7 @@
 import { getWpPosts, isWordPressConfigured } from "@/lib/wp-rest";
 import type { WpPostListResponse } from "@/lib/wp-types";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function BlogPage() {
   const wpConfigured = isWordPressConfigured();
@@ -60,13 +61,16 @@ export default async function BlogPage() {
                   <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
                     {featuredImage && (
                       <div className="aspect-video bg-neutral-200 relative overflow-hidden">
-                        <img
+                        <Image
                           src={featuredImage}
                           alt={
                             post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
                             post.title.rendered
                           }
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover"
+                          unoptimized
                         />
                       </div>
                     )}

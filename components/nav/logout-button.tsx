@@ -28,7 +28,7 @@ export function LogoutButton() {
       }
       // If no error, redirect() was called server-side, so just refresh client
       router.refresh();
-    } catch (error) {
+    } catch {
       // redirect() throws, so this is expected - just refresh
       router.push('/');
       router.refresh();

@@ -90,7 +90,7 @@ export default async function DashboardPage() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold mb-4">Welcome to SoloSHEThings!</h1>
         <p className="text-xl text-neutral-600 mb-8">
-          You're successfully logged in as {user.email}
+          You&apos;re successfully logged in as {user.email}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -154,7 +154,7 @@ export default async function DashboardPage() {
             quick actions, and personalized content will be built in Phase 3.
           </p>
           <p className="text-neutral-700">
-            For now, you can explore the navigation menu to see what's available.
+            For now, you can explore the navigation menu to see what&apos;s available.
           </p>
         </div>
       </div>
