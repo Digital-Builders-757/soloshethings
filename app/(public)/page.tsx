@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header />
+      <Header showBanner={true} />
       <main>
         <HeroSection />
         <WelcomeSection />

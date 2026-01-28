@@ -1,23 +1,24 @@
-import React from "react"
-import type { Metadata } from 'next'
-import { Raleway, Roboto } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from "next"
+import { Raleway, Roboto } from "next/font/google"
+import "./globals.css"
 
-const raleway = Raleway({ 
+const raleway = Raleway({
   subsets: ["latin"],
-  variable: '--font-raleway',
-  weight: ['300', '400', '500', '600', '700']
+  variable: "--font-raleway",
+  weight: ["300", "400", "500", "600", "700"],
 })
 
-const roboto = Roboto({ 
+const roboto = Roboto({
   subsets: ["latin"],
-  variable: '--font-roboto',
-  weight: ['300', '400', '500', '700']
+  variable: "--font-roboto",
+  weight: ["300", "400", "500", "700"],
 })
 
 export const metadata: Metadata = {
-  title: 'SoloSheThings - Safe Travels for Solo Female Travelers',
-  description: 'A community dedicated to empowering solo female travelers.',
+  title: "SoloSheThings - Safe Travels for Solo Female Travelers",
+  description:
+    "A community dedicated to empowering solo female travelers. Discover destinations, safety tips, and inspiring stories from fearless women around the world.",
+  keywords: ["solo travel", "female travelers", "travel blog", "women travel", "travel community"],
 }
 
 export default function RootLayout({
@@ -27,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${raleway.variable} ${roboto.variable} font-sans antialiased`}>
-        {children}
-      </body>
+      <body className={`${raleway.variable} ${roboto.variable} font-sans antialiased`}>{children}</body>
     </html>
   )
 }
