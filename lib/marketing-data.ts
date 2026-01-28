@@ -1,36 +1,13 @@
 /**
  * Marketing Data Functions
  * 
- * Placeholder functions for landing page data fetching
+ * Data from SOLOSHETHINGS_CODE_PACKAGE integrated
  * These will be replaced with real Supabase queries when tables are ready
  */
 
 import 'server-only';
 
 // Types
-export interface Destination {
-  id: string;
-  name: string;
-  location: string;
-  country?: string;
-  image_url?: string;
-  description?: string;
-  gradient_class?: string;
-  featured: boolean;
-}
-
-export interface Story {
-  id: string;
-  title: string;
-  excerpt: string;
-  image_url?: string;
-  author?: {
-    username: string;
-    avatar_url?: string;
-  };
-  published_at: string;
-}
-
 export interface BlogPost {
   id: string;
   title: string;
@@ -48,147 +25,74 @@ export interface CommunityStats {
   connections_made: number;
 }
 
-export interface Event {
+export interface Author {
+  id: string;
+  name: string;
+  avatar: string;
+  bio: string;
+  isFounder: boolean;
+}
+
+export interface CommunityStory {
   id: string;
   title: string;
-  type: 'Virtual' | 'In-Person';
-  date: string;
-  location?: string;
-  attending_count: number;
-  image_url?: string;
+  excerpt: string;
+  image: string;
+  author: {
+    name: string;
+    location: string;
+    avatar?: string;
+  };
+  publishedAt: string;
 }
 
-/**
- * Get featured destinations for hero carousel
- * TODO: Replace with Supabase query when destinations table exists
- */
-export async function getFeaturedDestinations(): Promise<Destination[]> {
-  // Placeholder: Return mock data with Unsplash images
-  // Future: SELECT * FROM destinations WHERE featured = true LIMIT 4
-  // Using Unsplash Source API for curated travel images
-  return [
-    {
-      id: '1',
-      name: 'Lisbon',
-      location: 'Portugal',
-      country: 'Portugal',
-      image_url: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=1000&fit=crop&q=80',
-      gradient_class: 'from-blue-600 to-orange-500',
-      featured: true,
-    },
-    {
-      id: '2',
-      name: 'Kyoto',
-      location: 'Japan',
-      country: 'Japan',
-      image_url: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=1000&fit=crop&q=80',
-      gradient_class: 'from-amber-500 to-rose-400',
-      featured: true,
-    },
-    {
-      id: '3',
-      name: 'Reykjavik',
-      location: 'Iceland',
-      country: 'Iceland',
-      image_url: 'https://images.unsplash.com/photo-1504829857797-ddff9c9e7f3b?w=800&h=1000&fit=crop&q=80',
-      gradient_class: 'from-purple-600 to-pink-500',
-      featured: true,
-    },
-    {
-      id: '4',
-      name: 'Barcelona',
-      location: 'Spain',
-      country: 'Spain',
-      image_url: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=1000&fit=crop&q=80',
-      gradient_class: 'from-green-500 to-emerald-400',
-      featured: true,
-    },
-  ];
-}
+// Site info from package
+export const siteInfo = {
+  name: "SoloSheThings",
+  tagline: "Safe Travels for Solo Female Travelers",
+  description: "A community dedicated to empowering solo female travelers with guides, safety tips, and inspiring stories from fearless women around the world."
+};
+
+// Founder data from package
+export const founder: Author = {
+  id: "founder-1",
+  name: "Solo She",
+  avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+  bio: "Hey! I'm the founder of SoloSheThings. After years of traveling solo, I've discovered that the world is much more welcoming than we're led to believe. My mission is to empower women to explore the world confidently and safely, sharing my adventures and creating a community where solo female travelers can connect and inspire each other.",
+  isFounder: true
+};
 
 /**
- * Get latest stories for stories section
- * TODO: Replace with Supabase query from community_posts table
- */
-export async function getLatestStories(limit = 6): Promise<Story[]> {
-  // Placeholder: Return mock data
-  // Future: SELECT id, title, excerpt, image_url, author_id, published_at 
-  //         FROM community_posts 
-  //         WHERE status = 'published' AND privacy_level = 'public'
-  //         ORDER BY published_at DESC LIMIT $limit
-  return [
-    {
-      id: '1',
-      title: 'Finding My Rhythm in Barcelona',
-      excerpt: 'A week of mornings at the same café, evenings watching the sunset.',
-      image_url: '/placeholder-story-1.png',
-      author: { username: 'Sarah M.' },
-      published_at: '2024-03-15',
-    },
-    {
-      id: '2',
-      title: 'A Safe Haven in Tokyo',
-      excerpt: 'The quiet bookstore that became my daily ritual.',
-      image_url: '/placeholder-story-2.png',
-      author: { username: 'Jessica K.' },
-      published_at: '2024-03-10',
-    },
-    {
-      id: '3',
-      title: 'Morning Walks in Reykjavik',
-      excerpt: 'How I found peace in the early hours, exploring safely on my own.',
-      image_url: '/placeholder-story-3.png',
-      author: { username: 'Maria L.' },
-      published_at: '2024-03-05',
-    },
-  ].slice(0, limit);
-}
-
-/**
- * Get latest blog posts
- * TODO: Replace with WordPress API or Supabase query
+ * Get latest blog posts - Using data from SOLOSHETHINGS_CODE_PACKAGE
  */
 export async function getLatestBlogPosts(limit = 6): Promise<BlogPost[]> {
-  // Placeholder: Return mock data
-  // Future: Fetch from WordPress API or blog_posts table
-  return [
+  const posts: BlogPost[] = [
     {
-      id: '1',
-      title: 'Solo Travel Safety Tips',
-      slug: 'solo-travel-safety-tips',
-      excerpt: 'Essential safety tips for solo female travelers.',
-      category: 'Safety',
-      image_url: '/placeholder-blog-1.png',
-      published_at: '2024-03-20',
+      id: "post-1",
+      title: "Solo She Things – Entry 12",
+      slug: "solo-she-things-entry-12",
+      excerpt: "Dear Solo SHE, I can't say enough good things about Portugal. It was on this trip, my second to this beautiful country with incredible landscapes that...",
+      category: "Adventure",
+      image_url: "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=1000&fit=crop",
+      published_at: "2026-01-19",
     },
     {
-      id: '2',
-      title: 'Budget Travel Planning',
-      slug: 'budget-travel-planning',
-      excerpt: 'How to plan an amazing trip on a budget.',
-      category: 'Budget',
-      image_url: '/placeholder-blog-2.png',
-      published_at: '2024-03-18',
+      id: "post-2",
+      title: "Hello world!",
+      slug: "hello-world",
+      excerpt: "Welcome to SoloSheThings. This is your introduction to safe travels for solo female travelers!",
+      category: "Announcement",
+      image_url: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=800&h=1000&fit=crop",
+      published_at: "2026-01-01",
     },
-    {
-      id: '3',
-      title: 'Travel Meditation & Wellness',
-      slug: 'travel-meditation-wellness',
-      excerpt: 'Staying centered while exploring the world.',
-      category: 'Wellness',
-      image_url: '/placeholder-blog-3.png',
-      published_at: '2024-03-15',
-    },
-  ].slice(0, limit);
+  ];
+  return posts.slice(0, limit);
 }
 
 /**
  * Get community statistics
- * TODO: Replace with aggregate queries from Supabase
  */
 export async function getCommunityStats(): Promise<CommunityStats> {
-  // Placeholder: Return mock data
-  // Future: Aggregate queries from profiles, community_posts, etc.
   return {
     active_members: 10000,
     countries: 152,
@@ -198,38 +102,46 @@ export async function getCommunityStats(): Promise<CommunityStats> {
 }
 
 /**
- * Get upcoming events
- * TODO: Replace with Supabase query when events table is ready
+ * Get community stories - Using data from SOLOSHETHINGS_CODE_PACKAGE
  */
-export async function getUpcomingEvents(limit = 3): Promise<Event[]> {
-  // Placeholder: Return mock data
-  // Future: SELECT * FROM events 
-  //         WHERE event_date >= NOW() AND status = 'published'
-  //         ORDER BY event_date ASC LIMIT $limit
-  const events: Event[] = [
+export async function getCommunityStories(limit = 3): Promise<CommunityStory[]> {
+  const stories: CommunityStory[] = [
     {
-      id: '1',
-      title: 'Solo Travel Safety Workshop',
-      type: 'Virtual' as const,
-      date: '2024-03-15',
-      attending_count: 156,
+      id: "story-1",
+      title: "My First Solo Trip to Iceland",
+      excerpt: "I was nervous about traveling alone, but Iceland turned out to be the perfect destination for my first solo adventure.",
+      image: "https://images.unsplash.com/photo-1520769945061-0a448c463865?w=600&h=400&fit=crop",
+      author: {
+        name: "Sarah M.",
+        location: "New York",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
+      },
+      publishedAt: "2025-01-12"
     },
     {
-      id: '2',
-      title: 'Community Meetup: Central Park',
-      type: 'In-Person' as const,
-      date: '2024-03-22',
-      location: 'Central Park, NY',
-      attending_count: 42,
+      id: "story-2",
+      title: "Finding Confidence in Thailand",
+      excerpt: "Thailand taught me that I'm stronger than I thought. From navigating Bangkok's markets to exploring ancient temples, every day was a new adventure.",
+      image: "https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&h=400&fit=crop",
+      author: {
+        name: "Emma L.",
+        location: "London",
+        avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop"
+      },
+      publishedAt: "2025-01-08"
     },
     {
-      id: '3',
-      title: 'Budget Travel Planning Session',
-      type: 'Virtual' as const,
-      date: '2024-04-05',
-      attending_count: 89,
-    },
+      id: "story-3",
+      title: "A Month in Bali Changed Everything",
+      excerpt: "Spending a month in Bali solo was transformative. I found peace, made lifelong friends, and discovered a version of myself I didn't know existed.",
+      image: "https://images.unsplash.com/photo-1573790387438-4da905039392?w=600&h=400&fit=crop",
+      author: {
+        name: "Jessica K.",
+        location: "Sydney",
+        avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop"
+      },
+      publishedAt: "2025-01-03"
+    }
   ];
-  return events.slice(0, limit);
+  return stories.slice(0, limit);
 }
-

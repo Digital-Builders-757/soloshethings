@@ -1,121 +1,40 @@
-/**
- * Button Component
- *
- * Foundational UI component with multiple variants, sizes, and states
- *
- * Variants:
- * - primary: Brand blue background, white text (default)
- * - secondary: Neutral background, dark text
- * - outline: Transparent with border
- * - ghost: Transparent, no border
- * - danger: Orange/red for destructive actions
- *
- * Sizes: sm, md (default), lg
- *
- * States: default, hover, focus, active, disabled, loading
- */
-
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-import { ButtonHTMLAttributes, forwardRef } from 'react'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
-  size?: 'sm' | 'md' | 'lg'
-  loading?: boolean
-  icon?: React.ReactNode
-  iconPosition?: 'left' | 'right'
-}
-
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant = 'primary',
-      size = 'md',
-      loading = false,
-      disabled,
-      icon,
-      iconPosition = 'left',
-      children,
-      ...props
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-white hover:bg-destructive/90',
+        outline: 'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+      },
+      size: {
+        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
+        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
+        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
+        icon: 'size-9',
+      },
     },
-    ref
-  ) => {
-    const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-full transition-all duration-normal ease-out focus-ring disabled:opacity-50 disabled:cursor-not-allowed'
-
-    const variants = {
-      primary:
-        'bg-brand-blue1 text-white hover:bg-brand-blue2 active:bg-brand-blue2 btn-glow active:scale-[0.98] shadow-lg shadow-brand-blue1/20',
-      secondary:
-        'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300 border border-neutral-200/60 active:scale-[0.98]',
-      outline:
-        'border-2 border-brand-blue1 text-brand-blue1 hover:bg-brand-blue1/10 hover:border-brand-blue1 active:bg-brand-blue1/20 active:scale-[0.98]',
-      ghost:
-        'text-brand-blue1 hover:bg-brand-blue1/8 active:bg-brand-blue1/15 active:scale-[0.98]',
-      danger:
-        'bg-brand-orange text-white hover:bg-orange-600 active:bg-orange-700 active:scale-[0.98] shadow-lg shadow-brand-orange/20',
-    }
-
-    const sizes = {
-      sm: 'px-4 py-2 text-sm',
-      md: 'px-6 py-3 text-base',
-      lg: 'px-8 py-4 text-lg',
-    }
-
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          baseStyles,
-          variants[variant],
-          sizes[size],
-          loading && 'cursor-wait',
-          className
-        )}
-        disabled={disabled || loading}
-        {...props}
-      >
-        {loading && (
-          <svg
-            className={cn(
-              'animate-spin',
-              size === 'sm' && 'h-4 w-4',
-              size === 'md' && 'h-5 w-5',
-              size === 'lg' && 'h-6 w-6',
-              children && (iconPosition === 'left' ? 'mr-2' : 'ml-2')
-            )}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        )}
-        {!loading && icon && iconPosition === 'left' && (
-          <span className={cn(children && 'mr-2')}>{icon}</span>
-        )}
-        {children}
-        {!loading && icon && iconPosition === 'right' && (
-          <span className={cn(children && 'ml-2')}>{icon}</span>
-        )}
-      </button>
-    )
-  }
+    defaultVariants: { variant: 'default', size: 'default' },
+  },
 )
 
-Button.displayName = 'Button'
+function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ...props
+}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : 'button'
+  return <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />
+}
 
-export { Button }
+export { Button, buttonVariants }
