@@ -1,27 +1,14 @@
-/**
- * Input Component
- *
- * Form input field with label, error states, and helper text
- *
- * Types: text, email, password, number, url, tel, search
- * States: default, error, success, disabled
- *
- * Features:
- * - Automatic label association
- * - Error message display
- * - Helper text support
- * - Required field indicator
- * - Icon support (future)
- */
+import * as React from "react"
 
 import { cn } from '@/lib/utils'
 import { InputHTMLAttributes, forwardRef, useId } from 'react'
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   error?: string
   helperText?: string
   variant?: 'default' | 'error' | 'success'
+  required?: boolean
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
