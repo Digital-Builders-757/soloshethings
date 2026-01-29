@@ -47,8 +47,13 @@ export function Header({ showBanner = false }: HeaderProps) {
             className="h-full w-full object-cover"
             priority
           />
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#db7093]/60 via-[#40e0d0]/40 to-[#9370db]/60 animate-gradient-shift bg-[length:200%_200%]" />
+          {/* Gradient Overlay - Using rgba() for proper opacity support */}
+          <div 
+            className="absolute inset-0 animate-gradient-shift bg-[length:200%_200%]"
+            style={{
+              background: "linear-gradient(to right, rgba(219, 112, 147, 0.6), rgba(64, 224, 208, 0.4), rgba(147, 112, 219, 0.6))"
+            }}
+          />
 
           {/* Animated Marquee Text */}
           <div className="absolute bottom-0 left-0 right-0 overflow-hidden bg-[#1a1a2e]/90 py-2">

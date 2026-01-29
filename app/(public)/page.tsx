@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
 import { WelcomeSection } from "@/components/home/welcome-section"
@@ -15,7 +14,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header showBanner={true} />
       <main>
         <HeroSection />
         <WelcomeSection />

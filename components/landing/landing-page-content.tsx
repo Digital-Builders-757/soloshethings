@@ -10,12 +10,10 @@
  * 6. Newsletter signup
  */
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { BlogPost, CommunityStats, CommunityStory } from '@/lib/marketing-data';
 import { NewsletterSignup } from './newsletter-signup';
-import { WorldTravelAnimation } from './world-travel-animation';
 import { WesAndersonHero } from './wes-anderson-hero';
 
 interface LandingPageContentProps {
