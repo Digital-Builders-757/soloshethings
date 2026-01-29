@@ -19,7 +19,6 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
-import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
 type Props = {
@@ -75,12 +74,8 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
-      <Header showBanner={false} />
-      <main className="relative min-h-screen bg-muted/30 py-16 overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(219,112,147,0.05),transparent_50%)]" />
-        
-        <div className="container relative mx-auto px-6">
+      <main className="section-mist relative min-h-screen py-16 overflow-hidden">
+        <div className="container relative mx-auto px-6 z-10">
           <div className="max-w-4xl mx-auto">
             {/* Back button */}
             <nav className="mb-8">
@@ -98,12 +93,12 @@ export default async function BlogPostPage({ params }: Props) {
                 {/* Header */}
                 <header className="mb-8">
                   <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground leading-tight">
-                    {post.title.rendered}
+                    <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">{post.title.rendered}</span>
                   </h1>
                   <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
                     <span className="font-medium text-foreground">By {author}</span>
                     <span className="text-muted-foreground">•</span>
-                    <time dateTime={post.date} className="font-medium">
+                    <time dateTime={post.date} className="font-medium text-accent">
                       {new Date(post.date).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -124,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
                       }
                       fill
                       sizes="(max-width: 768px) 100vw, 768px"
-                      className="object-cover"
+                      className="image-clean object-cover"
                       unoptimized
                     />
                   </div>

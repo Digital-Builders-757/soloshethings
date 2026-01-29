@@ -3,12 +3,20 @@
 @tailwind utilities;
 
 :root {
-  /* Futuristic Feminine Palette */
-  --brand-pink: #db7093;
-  --brand-cyan: #40e0d0;
-  --brand-purple: #9370db;
-  --brand-rose: #ffb6c1;
-  --brand-dark: #1a1a2e;
+  /* Brand Colors (Raw Values) */
+  --brand-blue-1: #0439D9;
+  --brand-blue-2: #034AA6;
+  --brand-yellow-1: #F2E205;
+  --brand-yellow-2: #F2CB05;
+  --brand-orange: #F28705;
+  
+  /* Semantic Color Tokens */
+  --color-primary: var(--brand-blue-1);
+  --color-primary-2: var(--brand-blue-2);
+  --color-highlight: var(--brand-yellow-1);
+  --color-highlight-2: var(--brand-yellow-2);
+  --color-accent: var(--brand-orange);
+  --color-bg-dark: #1a1a2e;
   
   /* Core palette - HSL for Tailwind */
   --background: 280 20% 98%;
@@ -76,7 +84,7 @@
   position: absolute;
   inset: -2px;
   border-radius: calc(var(--radius) + 2px);
-  background: linear-gradient(135deg, #db7093, #40e0d0, #9370db);
+  background: linear-gradient(135deg, var(--brand-blue-1), var(--brand-yellow-1), var(--brand-orange), var(--brand-yellow-2), var(--brand-blue-2));
   z-index: -1;
   background-size: 200% 200%;
   animation: gradient-shift 4s ease infinite;
@@ -103,15 +111,189 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #db7093, #9370db);
+  background: linear-gradient(to bottom, var(--brand-blue-1), var(--brand-blue-2));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #9370db, #db7093);
+  background: linear-gradient(to bottom, var(--brand-blue-2), var(--brand-blue-1));
 }
 
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+/* Gradient Recipes - Named Utilities */
+@layer utilities {
+  /* Banner/Hero Gradient: Blue → Yellow → Orange (warm, energetic) */
+  .bg-brand-sunrise {
+    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-yellow-1) 50%, var(--brand-orange) 100%);
+  }
+  
+  /* Primary Button Gradient: Blue1 → Blue2 (calm, trustworthy) */
+  .bg-brand-ocean {
+    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 100%);
+  }
+  
+  /* Full Spectrum Gradient: All 5 brand colors (for borders, cards) */
+  .bg-brand-spectrum {
+    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-yellow-1) 25%, var(--brand-orange) 50%, var(--brand-yellow-2) 75%, var(--brand-blue-2) 100%);
+  }
+  
+  /* Highlight Gradient: Yellow → Orange (warm accents) */
+  .bg-brand-highlight {
+    background: linear-gradient(135deg, var(--brand-yellow-1) 0%, var(--brand-orange) 100%);
+  }
+  
+  /* Border Gradient: Full spectrum for card borders */
+  .border-brand-spectrum {
+    border-image: linear-gradient(135deg, var(--brand-blue-1), var(--brand-yellow-1), var(--brand-orange), var(--brand-yellow-2), var(--brand-blue-2)) 1;
+  }
+  
+  /* Ring/Shadow Gradient: For glow effects */
+  .ring-brand-spectrum {
+    box-shadow: 0 0 20px rgba(4, 57, 217, 0.3), 0 0 40px rgba(242, 226, 5, 0.2);
+  }
+}
+
+/* Section Theme System - Backdrop Layers */
+@layer utilities {
+  /* Ocean Theme: Rich blue gradient (dark, primary) - for Hero, Newsletter, key CTAs */
+  .section-ocean {
+    position: relative;
+    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 100%);
+  }
+  
+  .section-ocean::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: 
+      radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.3), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(242, 226, 5, 0.3), transparent 50%);
+    pointer-events: none;
+  }
+  
+  .section-ocean::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+  
+  /* Mist Theme: Soft light background (neutral, subtle) - for content sections */
+  .section-mist {
+    position: relative;
+    background: hsl(var(--background));
+  }
+  
+  .section-mist::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.05), transparent 60%);
+    pointer-events: none;
+  }
+  
+  .section-mist::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: 
+      linear-gradient(rgba(4, 57, 217, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(4, 57, 217, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  
+  /* Sunrise Theme: Accent borders/headers (subtle Blue→Yellow/Orange) - for highlights */
+  .section-sunrise {
+    position: relative;
+  }
+  
+  .section-sunrise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at top right, rgba(242, 226, 5, 0.08), transparent 50%);
+    pointer-events: none;
+  }
+}
+
+/* Surface Utilities - Cards, Panels, Overlays */
+@layer utilities {
+  /* Glass surface for Ocean theme */
+  .surface-glass-ocean {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Glass surface for Mist theme */
+  .surface-glass-mist {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(4, 57, 217, 0.1);
+  }
+  
+  /* Badge/Accent with Sunrise theme */
+  .badge-sunrise {
+    background: linear-gradient(135deg, rgba(4, 57, 217, 0.15), rgba(242, 226, 5, 0.15));
+    border: 1px solid rgba(4, 57, 217, 0.2);
+  }
+  
+  /* Ocean Theme with Warmth: Balanced brand color spectrum */
+  .section-ocean-warm {
+    position: relative;
+    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 40%, var(--brand-yellow-1) 60%, var(--brand-orange) 80%, var(--brand-blue-2) 100%);
+  }
+  
+  .section-ocean-warm::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: 
+      radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.25), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(242, 226, 5, 0.35), transparent 50%),
+      radial-gradient(ellipse at center, rgba(242, 135, 5, 0.25), transparent 60%),
+      radial-gradient(ellipse at top right, rgba(242, 203, 5, 0.2), transparent 50%);
+    pointer-events: none;
+  }
+  
+  .section-ocean-warm::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+  
+  /* Neutral vignette overlay (for images, no color casting) */
+  .overlay-neutral-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.2) 100%);
+    pointer-events: none;
+  }
+  
+  /* Clean image (no filters, no opacity reduction) */
+  .image-clean {
+    filter: none;
+    opacity: 1;
+  }
 }

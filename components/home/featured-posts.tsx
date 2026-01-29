@@ -11,14 +11,16 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   // If no posts, show empty state or fallback
   if (!posts || posts.length === 0) {
     return (
-      <section className="relative bg-muted/30 py-24 overflow-hidden">
-        <div className="container relative mx-auto px-6">
+      <section className="section-mist relative py-24 overflow-hidden">
+        <div className="container relative mx-auto px-6 z-10">
           <div className="mb-12 text-center">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#db7093]/20 to-[#40e0d0]/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
               <Sparkles className="h-3 w-3" />
               Curated for you
             </span>
-            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">Featured Posts</h2>
+            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+              <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">Featured Posts</span>
+            </h2>
           </div>
           <p className="text-center text-muted-foreground">No posts available at the moment.</p>
         </div>
@@ -27,18 +29,16 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   }
 
   return (
-    <section className="relative bg-muted/30 py-24 overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(219,112,147,0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(64,224,208,0.1),transparent_50%)]" />
-
-      <div className="container relative mx-auto px-6">
+    <section className="section-mist relative py-24 overflow-hidden">
+      <div className="container relative mx-auto px-6 z-10">
         <div className="mb-12 text-center">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#db7093]/20 to-[#40e0d0]/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
             <Sparkles className="h-3 w-3" />
             Curated for you
           </span>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">Featured Posts</h2>
+          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+            <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">Featured Posts</span>
+          </h2>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -62,21 +62,23 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                   {/* Image */}
                   <div className="relative h-[300px] overflow-hidden md:h-[350px]">
                     {featuredImage ? (
-                      <Image
-                        src={featuredImage}
-                        alt={post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text || post.title.rendered}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        unoptimized
-                      />
+                      <>
+                        <Image
+                          src={featuredImage}
+                          alt={post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text || post.title.rendered}
+                          fill
+                          className="image-clean object-cover transition-transform duration-700 group-hover:scale-110"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          unoptimized
+                        />
+                        {/* Hover overlay only - for interaction feedback */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--color-bg-dark)]/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      </>
                     ) : (
                       <div className="h-full w-full bg-muted flex items-center justify-center">
                         <span className="text-muted-foreground">No image</span>
                       </div>
                     )}
-                    {/* Gradient overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e]/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </div>
 
                   {/* Content */}
@@ -103,10 +105,10 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-[#db7093] to-[#9370db] px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-[#db7093]/40"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-ocean px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-brand-primary/40"
           >
             <span className="relative z-10">View All Posts</span>
-            <span className="absolute inset-0 bg-gradient-to-r from-[#9370db] to-[#db7093] opacity-0 transition-opacity group-hover:opacity-100" />
+            <span className="absolute inset-0 bg-gradient-to-r from-brand-primary-2 to-brand-primary opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
       </div>

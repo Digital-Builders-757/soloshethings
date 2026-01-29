@@ -14,7 +14,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { BlogPost, CommunityStats, CommunityStory } from '@/lib/marketing-data';
 import { NewsletterSignup } from './newsletter-signup';
-import { siteInfo } from '@/lib/marketing-data';
 import { WesAndersonHero } from './wes-anderson-hero';
 
 interface LandingPageContentProps {

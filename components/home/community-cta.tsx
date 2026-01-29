@@ -26,43 +26,45 @@ export function CommunityCTA() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-background py-24">
-      {/* Background decorations */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(219,112,147,0.08),transparent_70%)]" />
-
-      <div className="container mx-auto px-6">
+    <section className="section-ocean-warm relative overflow-hidden py-24">
+      <div className="container mx-auto px-6 relative z-10">
         <div
           ref={containerRef}
           className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl p-1"
           style={{
-            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(219,112,147,0.15), transparent 40%), linear-gradient(135deg, rgba(219,112,147,0.1), transparent, rgba(64,224,208,0.1))`,
+            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15), transparent 40%)`,
           }}
         >
-          <div className="relative rounded-[calc(1.5rem-4px)] bg-background/80 backdrop-blur-sm px-8 py-16 text-center md:px-16">
-            {/* Floating elements */}
-            <div className="absolute left-8 top-8 animate-float">
-              <Heart className="h-6 w-6 text-[#db7093]/40" />
+          <div className="relative rounded-[calc(1.5rem-4px)] surface-glass-ocean px-8 py-16 text-center md:px-16">
+            {/* Floating elements with warm accents */}
+            <div className="absolute left-8 top-8 animate-float z-10">
+              <Heart className="h-6 w-6 text-brand-yellow1/60 drop-shadow-[0_0_8px_rgba(242,226,5,0.4)]" />
             </div>
-            <div className="absolute right-12 top-12 animate-float" style={{ animationDelay: "1s" }}>
-              <Sparkles className="h-5 w-5 text-[#40e0d0]/40" />
+            <div className="absolute right-12 top-12 animate-float z-10" style={{ animationDelay: "1s" }}>
+              <Sparkles className="h-5 w-5 text-brand-orange/50 drop-shadow-[0_0_8px_rgba(242,135,5,0.4)]" />
             </div>
-            <div className="absolute bottom-12 left-16 animate-float" style={{ animationDelay: "2s" }}>
-              <Sparkles className="h-4 w-4 text-[#9370db]/40" />
+            <div className="absolute bottom-12 left-16 animate-float z-10" style={{ animationDelay: "2s" }}>
+              <Sparkles className="h-4 w-4 text-brand-yellow2/50 drop-shadow-[0_0_6px_rgba(242,203,5,0.3)]" />
+            </div>
+            <div className="absolute top-1/2 right-8 animate-float z-10" style={{ animationDelay: "0.5s" }}>
+              <Heart className="h-5 w-5 text-brand-orange/40 drop-shadow-[0_0_6px_rgba(242,135,5,0.3)]" />
             </div>
 
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#db7093]/20 to-[#40e0d0]/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full surface-glass-ocean px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white">
               <Sparkles className="h-3 w-3" />
               Join 10,000+ Travelers
             </span>
 
-            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-              <span className="bg-gradient-to-r from-[#9370db] via-[#db7093] to-[#40e0d0] bg-clip-text text-transparent">
+            <h2 className="font-serif text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+              <span className="bg-gradient-to-r from-white via-brand-yellow1/90 to-brand-orange/80 bg-clip-text text-transparent">
                 Join Our
               </span>{" "}
-              Community
+              <span className="bg-gradient-to-r from-brand-yellow1 via-brand-orange to-white bg-clip-text text-transparent">
+                Community
+              </span>
             </h2>
 
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
               Connect with thousands of solo female travelers from around the world. Share your stories, get travel
               tips, and find your next adventure with a supportive community that understands the joy and challenges of
               solo travel.
@@ -72,7 +74,7 @@ export function CommunityCTA() {
               <Link href="/signup">
                 <Button
                   size="lg"
-                  className="group gap-2 rounded-full bg-gradient-to-r from-[#db7093] to-[#9370db] px-8 text-white transition-all hover:shadow-lg hover:shadow-[#db7093]/40"
+                  className="group gap-2 rounded-full bg-gradient-to-r from-brand-primary via-brand-highlight to-brand-accent px-8 text-white transition-all hover:shadow-lg hover:shadow-brand-highlight/40"
                 >
                   Join the Community
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -82,7 +84,7 @@ export function CommunityCTA() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full border-2 border-primary/30 bg-transparent px-8 text-foreground transition-all hover:border-primary hover:bg-primary/10"
+                  className="rounded-full border-2 border-white/30 bg-transparent px-8 text-white transition-all hover:border-brand-highlight hover:bg-brand-highlight/10 hover:shadow-[0_0_12px_rgba(242,226,5,0.3)]"
                 >
                   Learn More
                 </Button>
