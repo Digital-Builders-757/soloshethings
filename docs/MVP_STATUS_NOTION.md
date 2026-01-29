@@ -602,6 +602,40 @@ Next Steps:
 - Browser compatibility testing
 - Mobile device testing
 
+#### 2025-01-29 - Layout Bug Fixes: Duplicate Headers & Gradient Opacity
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Fixed duplicate header rendering on home page (Header component was rendered both in page and layout)
+- Fixed gradient opacity issue in header component (Tailwind opacity modifiers don't work on hex colors in gradients)
+- Created PublicLayoutClient component for conditional Banner rendering (home page only)
+- Synced package-lock.json with package.json after develop branch merge
+
+**Bugs Fixed:**
+- **Bug 1: Duplicate Headers** - Home page rendered `<Header showBanner={true} />` while being nested under `app/(public)/layout.tsx`, causing two navigation headers
+- **Bug 2: Gradient Opacity** - Header component used Tailwind opacity modifiers (`/60`, `/40`) on hex colors in gradients, which don't work properly
+
+**Files Modified:**
+- `app/(public)/layout.tsx` - Added SiteHeader, removed duplicate header logic
+- `app/(public)/page.tsx` - Removed Header component
+- `app/(public)/layout-client.tsx` - New client component for conditional Banner rendering
+- `components/header.tsx` - Fixed gradient opacity using rgba() instead of Tailwind modifiers
+- `components/landing/landing-page-content.tsx` - Removed unused imports
+- `package-lock.json` - Synced with package.json dependencies from develop branch
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ Home page shows single header (no duplicates)
+- ✅ Banner appears only on home page
+- ✅ Gradient overlay displays with proper opacity (60%, 40%, 60%)
+- ✅ Navigation works correctly across all public pages
+
+**Next Steps:**
+- PR ready for merge into develop branch
+- Branch can be closed after PR merge
+
 #### 2025-01-25 - ESLint Migration & Code Quality Baseline
 
 **Status:** ✅ VERIFIED
