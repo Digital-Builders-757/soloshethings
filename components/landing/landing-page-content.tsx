@@ -15,32 +15,6 @@ import Image from 'next/image';
 import type { BlogPost, CommunityStats, CommunityStory } from '@/lib/marketing-data';
 import { NewsletterSignup } from './newsletter-signup';
 import { WesAndersonHero } from './wes-anderson-hero';
-<<<<<<< HEAD
-import { CulturalShowcaseSection } from './cultural-showcase-section';
-import { AboutSection } from './about-section';
-import { ConnectSection } from './connect-section';
-import { TravelMomentsGallery } from './travel-moments-gallery';
-import type { CommunityStats } from '@/lib/marketing-data';
-
-// Local type definitions
-interface Destination {
-  id: string;
-  name: string;
-  location: string;
-  image_url?: string;
-}
-
-interface Event {
-  id: string;
-  title: string;
-  type: 'Virtual' | 'In-Person';
-  date: string;
-  location?: string;
-  attending_count: number;
-  image?: string;
-}
-=======
->>>>>>> 01834d0 (feat(design): match white background sections to founder section style (#4))
 
 interface LandingPageContentProps {
   posts: BlogPost[];
