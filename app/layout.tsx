@@ -1,35 +1,34 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Header } from "../components/nav/header";
-import { Footer } from "../components/layout/footer";
+import type { Metadata } from "next"
+import { Raleway, Roboto } from "next/font/google"
+import "./globals.css"
 
-// Load Inter font with Latin subset
-// Inter is a highly legible, modern sans-serif optimized for UI
-const inter = Inter({
+const raleway = Raleway({
   subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
+  variable: "--font-raleway",
+  weight: ["300", "400", "500", "600", "700"],
+})
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  variable: "--font-roboto",
+  weight: ["300", "400", "500", "700"],
+})
 
 export const metadata: Metadata = {
   title: "SoloSheThings - Safe Travels for Solo Female Travelers",
-  description: "A community platform empowering solo female travelers with safe spots, travel stories, and community support.",
-};
+  description:
+    "A community dedicated to empowering solo female travelers. Discover destinations, safety tips, and inspiring stories from fearless women around the world.",
+  keywords: ["solo travel", "female travelers", "travel blog", "women travel", "travel community"],
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className={inter.className}>
-        <Header />
-        {children}
-        <Footer />
-      </body>
+    <html lang="en">
+      <body className={`${raleway.variable} ${roboto.variable} font-sans antialiased`}>{children}</body>
     </html>
-  );
+  )
 }
-

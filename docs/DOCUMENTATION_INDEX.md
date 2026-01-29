@@ -135,6 +135,7 @@ User-facing documentation and feature status.
 - **[BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)** - Brand color palette, usage rules, and design tokens
 - **[UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md)** - Accidentally Wes Anderson inspiration (structure only, not styling)
 - **[design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md)** - Brand color vibrancy enhancement design plan and implementation
+- **[design-plans/WHITE_BACKGROUND_COLOR_MATCHING_PLAN.md](./design-plans/WHITE_BACKGROUND_COLOR_MATCHING_PLAN.md)** - White background section visual consistency plan and implementation
 
 ### Diagrams Layer
 
