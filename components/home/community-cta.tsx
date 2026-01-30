@@ -74,7 +74,7 @@ export function CommunityCTA() {
               <Link href="/signup">
                 <Button
                   size="lg"
-                  className="group gap-2 rounded-full bg-gradient-to-r from-brand-primary via-brand-highlight to-brand-accent px-8 text-white transition-all hover:shadow-lg hover:shadow-brand-highlight/40"
+                  className="group gap-2 rounded-full bg-gradient-to-r from-brand-yellow1 via-brand-orange to-brand-yellow2 px-8 text-black transition-all hover:shadow-lg"
                 >
                   Join the Community
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -84,7 +84,7 @@ export function CommunityCTA() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full border-2 border-white/30 bg-transparent px-8 text-white transition-all hover:border-brand-highlight hover:bg-brand-highlight/10 hover:shadow-[0_0_12px_rgba(242,226,5,0.3)]"
+                  className="rounded-full border-2 border-white/30 bg-transparent px-8 text-white transition-all hover:border-brand-yellow1 hover:bg-brand-yellow1/10 hover:shadow-lg"
                 >
                   Learn More
                 </Button>

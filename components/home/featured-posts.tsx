@@ -11,37 +11,46 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   // If no posts, show empty state or fallback
   if (!posts || posts.length === 0) {
     return (
-      <section className="section-mist relative py-24 overflow-hidden">
+      <section className="section-sunrise relative py-24 overflow-hidden bg-white">
         <div className="container relative mx-auto px-6 z-10">
           <div className="mb-12 text-center">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-900">
               <Sparkles className="h-3 w-3" />
               Curated for you
             </span>
-            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-              <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">Featured Posts</span>
+            <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
+              <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">Featured Posts</span>
             </h2>
           </div>
-          <p className="text-center text-muted-foreground">No posts available at the moment.</p>
+          <p className="text-center text-neutral-600">No posts available at the moment.</p>
         </div>
       </section>
     )
   }
 
+  const count = posts.length
+  const showCtaTile = count > 0 && count < 3
+  const gridCols =
+    count === 1
+      ? "md:grid-cols-2 lg:grid-cols-2"
+      : count === 2
+      ? "md:grid-cols-2 lg:grid-cols-3"
+      : "md:grid-cols-2 lg:grid-cols-3"
+
   return (
-    <section className="section-mist relative py-24 overflow-hidden">
+    <section className="section-sunrise relative py-24 overflow-hidden bg-white">
       <div className="container relative mx-auto px-6 z-10">
         <div className="mb-12 text-center">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-900">
             <Sparkles className="h-3 w-3" />
             Curated for you
           </span>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">Featured Posts</span>
+          <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
+            <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">Featured Posts</span>
           </h2>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className={`grid gap-8 ${gridCols}`}>
           {posts.map((post, index) => {
             // Extract featured image from WordPress _embedded data
             const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
@@ -72,43 +81,68 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                           unoptimized
                         />
                         {/* Hover overlay only - for interaction feedback */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--color-bg-dark)]/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                       </>
                     ) : (
-                      <div className="h-full w-full bg-muted flex items-center justify-center">
-                        <span className="text-muted-foreground">No image</span>
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-blue1/10 via-white to-brand-yellow1/20">
+                        <span className="text-sm font-medium text-neutral-600">No image</span>
                       </div>
                     )}
                   </div>
 
                   {/* Content */}
                   <div className="flex flex-col gap-3 p-6">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-accent">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-brand-orange">
                       {new Date(post.date).toLocaleDateString("en-US", {
                         month: "long",
                         year: "numeric",
                       })}
                     </p>
-                    <h3 className="font-serif text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-primary line-clamp-2">
+                    <h3 className="font-serif text-xl font-bold text-neutral-900 transition-colors duration-300 group-hover:text-brand-blue1 line-clamp-2">
                       {post.title.rendered}
                     </h3>
                     {excerpt && (
-                      <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{excerpt}...</p>
+                      <p className="line-clamp-2 text-sm leading-relaxed text-neutral-600">{excerpt}...</p>
                     )}
                   </div>
                 </div>
               </Link>
             )
           })}
+          {showCtaTile && (
+            <Link
+              href="/blog"
+              className="group gradient-border overflow-hidden rounded-xl transition-all duration-500 hover:-translate-y-2"
+            >
+              <div className="h-full overflow-hidden rounded-lg bg-white">
+                <div className="flex h-full flex-col justify-between gap-6 p-8">
+                  <div>
+                    <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-blue1/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-blue2">
+                      Explore
+                    </span>
+                    <h3 className="font-serif text-2xl font-bold text-neutral-900">
+                      Explore the Blog
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                      Read stories, tips, and destination guides curated for solo travelers.
+                    </p>
+                  </div>
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-blue1 px-4 py-2 text-sm font-semibold text-white transition-all group-hover:bg-brand-blue2">
+                    Browse all posts
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
         </div>
 
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-ocean px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-brand-primary/40"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-ocean px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg"
           >
             <span className="relative z-10">View All Posts</span>
-            <span className="absolute inset-0 bg-gradient-to-r from-brand-primary-2 to-brand-primary opacity-0 transition-opacity group-hover:opacity-100" />
+            <span className="absolute inset-0 bg-gradient-to-r from-brand-blue2 to-brand-blue1 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
       </div>

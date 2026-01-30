@@ -554,6 +554,51 @@ Next Steps:
 - Mobile device testing
 - Consider additional elements for gradient borders if needed
 
+#### 2026-01-30 - Homepage Brand Palette Refresh & Featured Posts CTA Fill
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Refreshed homepage hero, community, and newsletter backgrounds with brand palette gradients
+- Updated homepage typography and accents to use consistent neutral/brand tokens
+- Aligned map page header gradient and CTA shadow with brand blues
+- Added a featured posts CTA tile for small post counts to avoid sparse layouts
+- Updated navigation branding gradients to match the refreshed palette
+
+**Key Features:**
+- New homepage-only gradient utilities for hero/community/newsletter sections
+- Adaptive featured posts grid when 1-2 posts are available
+- Improved newsletter signup card contrast and button styling
+
+**Files Modified:**
+- `app/globals.css` - Homepage gradient utilities + palette adjustments
+- `tailwind.config.ts` - Safelist additions + refreshed animation glow colors
+- `components/home/hero-section.tsx` - New hero gradients + text color updates
+- `components/home/hero-carousel.tsx` - Updated controls and overlays
+- `components/home/community-stories.tsx` - New background layers + card styling
+- `components/home/community-cta.tsx` - CTA gradient updates
+- `components/home/about-preview.tsx` - Brand palette refresh and messaging updates
+- `components/home/featured-posts.tsx` - Adaptive grid + CTA tile
+- `components/home/newsletter-section.tsx` - New background + signup card styles
+- `components/home/welcome-section.tsx` - Updated background and typography styles
+- `components/nav/NavClient.tsx` - Nav gradients aligned to palette
+- `components/nav/header.tsx` - Logo gradient update
+- `app/(public)/map/page.tsx` - Header gradient + CTA shadow update
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ All components use brand tokens (no raw hex codes)
+
+**Design Impact:**
+- Homepage sections share a cohesive brand gradient language
+- Featured posts grid feels complete even with limited content
+- Improved contrast and readability across hero and newsletter sections
+
+**Next Steps:**
+- Visual review and client feedback
+- Mobile device testing
+
 #### 2025-01-29 - White Background Color Matching & Visual Consistency
 
 **Status:** ✅ VERIFIED

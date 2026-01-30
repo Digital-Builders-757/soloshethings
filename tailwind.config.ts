@@ -32,6 +32,17 @@ const config: Config = {
     'animate-slide-up',
     'animate-scale-in',
     'animate-spin-slow',
+    'bg-brand-sunrise',
+    'bg-brand-ocean',
+    'bg-brand-spectrum',
+    'bg-brand-highlight',
+    'home-hero-bg',
+    'home-hero-grid',
+    'home-community-bg',
+    'home-community-radials',
+    'home-community-grid',
+    'home-newsletter-bg',
+    'home-newsletter-radials',
   ],
   theme: {
     extend: {
@@ -70,11 +81,11 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
-          blue1: "rgb(var(--brand-blue-1) / <alpha-value>)",
-          blue2: "rgb(var(--brand-blue-2) / <alpha-value>)",
-          yellow1: "rgb(var(--brand-yellow-1) / <alpha-value>)",
-          yellow2: "rgb(var(--brand-yellow-2) / <alpha-value>)",
-          orange: "rgb(var(--brand-orange) / <alpha-value>)",
+          blue1: "rgb(var(--brand-blue-1-rgb) / <alpha-value>)",
+          blue2: "rgb(var(--brand-blue-2-rgb) / <alpha-value>)",
+          yellow1: "rgb(var(--brand-yellow-1-rgb) / <alpha-value>)",
+          yellow2: "rgb(var(--brand-yellow-2-rgb) / <alpha-value>)",
+          orange: "rgb(var(--brand-orange-rgb) / <alpha-value>)",
         },
         neutral: {
           50: "rgb(var(--neutral-50) / <alpha-value>)",
@@ -132,8 +143,14 @@ const config: Config = {
           "50%": { backgroundPosition: "100% 50%" },
         },
         "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(219, 112, 147, 0.3), 0 0 40px rgba(64, 224, 208, 0.2)" },
-          "50%": { boxShadow: "0 0 30px rgba(219, 112, 147, 0.5), 0 0 60px rgba(64, 224, 208, 0.3)" },
+          "0%, 100%": {
+            boxShadow:
+              "0 0 20px rgba(4, 57, 217, 0.35), 0 0 40px rgba(242, 226, 5, 0.2)",
+          },
+          "50%": {
+            boxShadow:
+              "0 0 30px rgba(4, 57, 217, 0.55), 0 0 60px rgba(242, 135, 5, 0.3)",
+          },
         },
         float: {
           "0%, 100%": { transform: "translateY(0px)" },
@@ -144,8 +161,11 @@ const config: Config = {
           "100%": { backgroundPosition: "200% 0" },
         },
         "text-glow": {
-          "0%, 100%": { textShadow: "0 0 10px rgba(219, 112, 147, 0.5)" },
-          "50%": { textShadow: "0 0 20px rgba(219, 112, 147, 0.8), 0 0 30px rgba(64, 224, 208, 0.5)" },
+          "0%, 100%": { textShadow: "0 0 10px rgba(4, 57, 217, 0.45)" },
+          "50%": {
+            textShadow:
+              "0 0 20px rgba(4, 57, 217, 0.7), 0 0 30px rgba(242, 226, 5, 0.45)",
+          },
         },
         marquee: {
           "0%": { transform: "translateX(0)" },
