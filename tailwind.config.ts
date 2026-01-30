@@ -126,56 +126,30 @@ const config: Config = {
         'out': 'var(--ease-out)',
         'in': 'var(--ease-in)',
       },
-      fontSize: {
-        'display-xl': ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }],   // 56px
-        'display-lg': ['2.75rem', { lineHeight: '1.15', fontWeight: '700' }], // 44px
-        'display-md': ['2.25rem', { lineHeight: '1.2', fontWeight: '700' }],  // 36px
-      },
-      spacing: {
-        '18': '4.5rem',   // 72px
-        '22': '5.5rem',   // 88px
-      },
-      boxShadow: {
-        'xs': 'var(--shadow-xs)',
-        'sm': 'var(--shadow-sm)',
-        'md': 'var(--shadow-md)',
-        'lg': 'var(--shadow-lg)',
-        'xl': 'var(--shadow-xl)',
-      },
-      transitionDuration: {
-        'fast': 'var(--duration-fast)',
-        'normal': 'var(--duration-normal)',
-        'slow': 'var(--duration-slow)',
-      },
-      transitionTimingFunction: {
-        'in-out': 'var(--ease-in-out)',
-        'out': 'var(--ease-out)',
-        'in': 'var(--ease-in)',
-      },
       keyframes: {
-        'float-slow': {
-          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-          '50%': { transform: 'translateY(-20px) rotate(2deg)' },
+        "gradient-shift": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
         },
-        'float-medium': {
-          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-          '50%': { transform: 'translateY(-15px) rotate(-1deg)' },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(219, 112, 147, 0.3), 0 0 40px rgba(64, 224, 208, 0.2)" },
+          "50%": { boxShadow: "0 0 30px rgba(219, 112, 147, 0.5), 0 0 60px rgba(64, 224, 208, 0.3)" },
         },
-        'float-fast': {
-          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-          '50%': { transform: 'translateY(-10px) rotate(1deg)' },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
         },
-        'gentle-rise': {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
         },
-        'gentle-glow': {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
+        "text-glow": {
+          "0%, 100%": { textShadow: "0 0 10px rgba(219, 112, 147, 0.5)" },
+          "50%": { textShadow: "0 0 20px rgba(219, 112, 147, 0.8), 0 0 30px rgba(64, 224, 208, 0.5)" },
         },
-        'gentle-pulse': {
-          '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.05)' },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
         },
         'float-slow': {
           '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
@@ -203,15 +177,12 @@ const config: Config = {
         },
       },
       animation: {
-<<<<<<< HEAD
         "gradient-shift": "gradient-shift 8s ease infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
         float: "float 6s ease-in-out infinite",
         shimmer: "shimmer 2s infinite",
         "text-glow": "text-glow 2s ease-in-out infinite",
         marquee: "marquee 20s linear infinite",
-=======
->>>>>>> 17f0ca5 (Resolve merge conflicts with main branch)
         'float-slow': 'float-slow 6s ease-in-out infinite',
         'float-medium': 'float-medium 4s ease-in-out infinite',
         'float-fast': 'float-fast 3s ease-in-out infinite',
@@ -223,11 +194,5 @@ const config: Config = {
   },
   plugins: [typography],
 };
-<<<<<<< HEAD
 
 export default config;
-=======
-
-export default config;
-
->>>>>>> 17f0ca5 (Resolve merge conflicts with main branch)
