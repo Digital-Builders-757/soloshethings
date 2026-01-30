@@ -554,6 +554,88 @@ Next Steps:
 - Mobile device testing
 - Consider additional elements for gradient borders if needed
 
+#### 2025-01-29 - White Background Color Matching & Visual Consistency
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Matched Featured Posts and Blog sections to "Meet the Founder" section visual style
+- Removed ashy overlays from images (reduced opacity from `/60` to `/40` matching founder section)
+- Added brand color gradient accents to section headers throughout blog sections
+- Balanced Join Community section colors (reduced blue dominance, added yellow/orange warmth)
+- Updated Map page styling for consistency and documented natural color requirement
+- Applied `image-clean` class consistently for vibrant image display
+
+**Key Features:**
+- Consistent overlay opacity (`/40`) across all white background sections
+- Brand gradient headers matching founder section pattern
+- Balanced brand color spectrum in Join Community section
+- Visual consistency across all public-facing sections
+
+**Files Modified:**
+- `components/home/featured-posts.tsx` - Overlay fix + brand gradient header
+- `app/(public)/blog/page.tsx` - Overlay fix + brand gradient header
+- `app/(public)/blog/[slug]/page.tsx` - Brand gradient title + accent date + image-clean
+- `components/home/community-cta.tsx` - Balanced brand colors in headline + icons
+- `app/globals.css` - Updated `section-ocean-warm` for balanced color spectrum
+- `app/(public)/map/page.tsx` - Consistent styling + natural color documentation
+- `components/landing/landing-page-content.tsx` - Removed unused import
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ No linting errors
+- ✅ All components use Tailwind classes (no raw hex codes)
+- ✅ Brand colors only (no new colors introduced)
+- ✅ Overlay opacity standardized to `/40` (matching founder section)
+- ✅ Brand gradients applied consistently
+- ✅ Map page documented for natural colors
+
+**Design Impact:**
+- Visual consistency achieved across all white background sections
+- Images display with full vibrancy (no ashy overlays)
+- Brand colors used consistently and intentionally
+- Join Community section balanced with all 5 brand colors
+
+**Next Steps:**
+- Visual review and client feedback
+- Browser compatibility testing
+- Mobile device testing
+
+#### 2025-01-29 - Layout Bug Fixes: Duplicate Headers & Gradient Opacity
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Fixed duplicate header rendering on home page (Header component was rendered both in page and layout)
+- Fixed gradient opacity issue in header component (Tailwind opacity modifiers don't work on hex colors in gradients)
+- Created PublicLayoutClient component for conditional Banner rendering (home page only)
+- Synced package-lock.json with package.json after develop branch merge
+
+**Bugs Fixed:**
+- **Bug 1: Duplicate Headers** - Home page rendered `<Header showBanner={true} />` while being nested under `app/(public)/layout.tsx`, causing two navigation headers
+- **Bug 2: Gradient Opacity** - Header component used Tailwind opacity modifiers (`/60`, `/40`) on hex colors in gradients, which don't work properly
+
+**Files Modified:**
+- `app/(public)/layout.tsx` - Added SiteHeader, removed duplicate header logic
+- `app/(public)/page.tsx` - Removed Header component
+- `app/(public)/layout-client.tsx` - New client component for conditional Banner rendering
+- `components/header.tsx` - Fixed gradient opacity using rgba() instead of Tailwind modifiers
+- `components/landing/landing-page-content.tsx` - Removed unused imports
+- `package-lock.json` - Synced with package.json dependencies from develop branch
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ Home page shows single header (no duplicates)
+- ✅ Banner appears only on home page
+- ✅ Gradient overlay displays with proper opacity (60%, 40%, 60%)
+- ✅ Navigation works correctly across all public pages
+
+**Next Steps:**
+- PR ready for merge into main branch
+- Branch can be closed after PR merge
+
 #### 2025-01-25 - ESLint Migration & Code Quality Baseline
 
 **Status:** ✅ VERIFIED
