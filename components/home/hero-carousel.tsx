@@ -55,7 +55,7 @@ export function HeroCarousel() {
               priority={index === 0}
             />
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e]/40 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </div>
         ))}
 
@@ -67,7 +67,7 @@ export function HeroCarousel() {
             setIsAutoPlaying(false)
             setTimeout(() => setIsAutoPlaying(true), 10000)
           }}
-          className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#db7093] to-[#9370db] text-white shadow-lg shadow-[#db7093]/30 transition-all hover:scale-110"
+          className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue1 to-brand-blue2 text-white shadow-lg transition-all hover:scale-110"
           aria-label="Previous slide"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -79,14 +79,14 @@ export function HeroCarousel() {
             setIsAutoPlaying(false)
             setTimeout(() => setIsAutoPlaying(true), 10000)
           }}
-          className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#40e0d0] to-[#9370db] text-white shadow-lg shadow-[#40e0d0]/30 transition-all hover:scale-110"
+          className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-brand-yellow1 to-brand-orange text-black shadow-lg transition-all hover:scale-110"
           aria-label="Next slide"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
 
         {/* Progress Dots */}
-        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-[#1a1a2e]/20 px-4 py-2 backdrop-blur-sm">
+        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-black/20 px-4 py-2 backdrop-blur-sm">
           {heroImages.map((_, index) => (
             <button
               key={`dot-${heroImages[index].id}`}
@@ -95,7 +95,7 @@ export function HeroCarousel() {
               className={cn(
                 "h-2 rounded-full transition-all duration-300",
                 index === currentSlide
-                  ? "w-8 bg-gradient-to-r from-[#db7093] to-[#40e0d0]"
+                  ? "w-8 bg-gradient-to-r from-brand-blue1 to-brand-yellow1"
                   : "w-2 bg-white/50 hover:bg-white/75"
               )}
               aria-label={`Go to slide ${index + 1}`}

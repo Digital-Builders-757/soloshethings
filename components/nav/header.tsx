@@ -30,7 +30,7 @@ export async function Header({ className }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <span className="text-2xl font-bold text-brand-blue1 transition-colors group-hover:text-brand-blue2">
+            <span className="text-2xl font-bold bg-gradient-to-r from-brand-blue1 to-brand-blue2 bg-clip-text text-transparent">
               SoloSheThings
             </span>
           </Link>

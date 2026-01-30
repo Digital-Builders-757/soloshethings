@@ -27,7 +27,9 @@ export default function MapPage() {
       <div className="container relative mx-auto px-6 z-10">
         <div className="max-w-7xl mx-auto">
           <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl mb-8">
-            <span className="bg-gradient-to-r from-brand-primary-2 to-brand-primary bg-clip-text text-transparent">Explore Safe Spots on Map</span>
+            <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">
+              Explore Safe Spots on Map
+            </span>
           </h1>
           
           {/* Phase 2 Stub */}
@@ -38,7 +40,7 @@ export default function MapPage() {
             </p>
             <a
               href="/collections"
-              className="inline-block rounded-full bg-brand-ocean px-6 py-2 text-white font-semibold transition-all hover:shadow-lg hover:shadow-brand-primary/40"
+              className="inline-block rounded-full bg-brand-ocean px-6 py-2 text-white font-semibold transition-all hover:shadow-lg hover:shadow-brand-blue1/40"
             >
               Browse Collections Instead
             </a>

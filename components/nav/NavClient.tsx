@@ -56,7 +56,7 @@ export function NavClient({
         <Link
           key={link.href}
           href={link.href}
-          className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-primary after:to-brand-highlight after:transition-all hover:after:w-full"
+          className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
         >
           {link.label}
         </Link>
@@ -67,14 +67,14 @@ export function NavClient({
     <>
       <Link
         href="/login"
-        className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-primary after:to-brand-highlight after:transition-all hover:after:w-full"
+        className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
       >
         Sign In
       </Link>
       <Link href="/signup">
         <Button
           size="sm"
-          className="rounded-full bg-brand-ocean px-6 text-white transition-all hover:shadow-lg hover:shadow-brand-primary/40 animate-glow-pulse"
+          className="rounded-full bg-brand-ocean px-6 text-white transition-all hover:shadow-lg hover:shadow-brand-blue1/40 animate-glow-pulse"
         >
           Get Started
         </Button>
@@ -89,10 +89,10 @@ export function NavClient({
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="group flex items-center gap-2">
-              <span className="font-serif text-2xl font-bold tracking-wide text-primary animate-text-glow">
+              <span className="font-serif text-2xl font-bold tracking-wide bg-gradient-to-r from-brand-blue1 to-brand-blue2 bg-clip-text text-transparent animate-text-glow">
                 SoloSheThings
               </span>
-              <Sparkles className="h-5 w-5 text-accent opacity-0 transition-opacity group-hover:opacity-100" />
+              <Sparkles className="h-5 w-5 text-brand-yellow1 opacity-0 transition-opacity group-hover:opacity-100" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -101,7 +101,7 @@ export function NavClient({
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-primary after:to-brand-highlight after:transition-all hover:after:w-full"
+                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>
@@ -187,7 +187,7 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed left-0 right-0 top-0 z-50 glass border-b border-border/30 shadow-lg shadow-brand-primary/10 transition-all duration-500",
+            "fixed left-0 right-0 top-0 z-50 glass border-b border-border/30 shadow-lg shadow-brand-blue1/10 transition-all duration-500",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
         >
@@ -202,7 +202,7 @@ export function NavClient({
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-primary after:to-brand-highlight after:transition-all hover:after:w-full"
+                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
                   >
                     {link.label}
                   </Link>
