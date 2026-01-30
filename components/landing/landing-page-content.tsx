@@ -8,7 +8,25 @@ import { CulturalShowcaseSection } from './cultural-showcase-section';
 import { AboutSection } from './about-section';
 import { ConnectSection } from './connect-section';
 import { TravelMomentsGallery } from './travel-moments-gallery';
-import type { Destination, CommunityStats, Event } from '@/lib/marketing-data';
+import type { CommunityStats } from '@/lib/marketing-data';
+
+// Local type definitions
+interface Destination {
+  id: string;
+  name: string;
+  location: string;
+  image_url?: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  type: 'Virtual' | 'In-Person';
+  date: string;
+  location?: string;
+  attending_count: number;
+  image?: string;
+}
 
 interface LandingPageContentProps {
   destinations: Destination[];
