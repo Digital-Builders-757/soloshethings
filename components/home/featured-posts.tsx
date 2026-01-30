@@ -109,7 +109,6 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
               </Link>
             )
           })}
-
           {showCtaTile && (
             <Link
               href="/blog"

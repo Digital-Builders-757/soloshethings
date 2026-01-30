@@ -3,12 +3,17 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors (Raw Values) */
+  /* Brand Colors (Hex + RGB triplets for opacity utilities) */
   --brand-blue-1: #0439D9;
+  --brand-blue-1-rgb: 4 57 217;
   --brand-blue-2: #034AA6;
+  --brand-blue-2-rgb: 3 74 166;
   --brand-yellow-1: #F2E205;
+  --brand-yellow-1-rgb: 242 226 5;
   --brand-yellow-2: #F2CB05;
+  --brand-yellow-2-rgb: 242 203 5;
   --brand-orange: #F28705;
+  --brand-orange-rgb: 242 135 5;
   
   /* Semantic Color Tokens */
   --color-primary: var(--brand-blue-1);
@@ -296,7 +301,6 @@
     filter: none;
     opacity: 1;
   }
-
   /* Homepage-only gradients (brand palette only) */
   .home-hero-bg {
     background: linear-gradient(

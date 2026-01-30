@@ -81,11 +81,11 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
-          blue1: "rgb(var(--brand-blue-1) / <alpha-value>)",
-          blue2: "rgb(var(--brand-blue-2) / <alpha-value>)",
-          yellow1: "rgb(var(--brand-yellow-1) / <alpha-value>)",
-          yellow2: "rgb(var(--brand-yellow-2) / <alpha-value>)",
-          orange: "rgb(var(--brand-orange) / <alpha-value>)",
+          blue1: "rgb(var(--brand-blue-1-rgb) / <alpha-value>)",
+          blue2: "rgb(var(--brand-blue-2-rgb) / <alpha-value>)",
+          yellow1: "rgb(var(--brand-yellow-1-rgb) / <alpha-value>)",
+          yellow2: "rgb(var(--brand-yellow-2-rgb) / <alpha-value>)",
+          orange: "rgb(var(--brand-orange-rgb) / <alpha-value>)",
         },
         neutral: {
           50: "rgb(var(--neutral-50) / <alpha-value>)",

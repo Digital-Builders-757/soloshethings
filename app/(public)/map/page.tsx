@@ -6,16 +6,6 @@
  * Map-based browsing
  * 
  * Public route (stub for now, full implementation in Phase 2)
- */
-
-/**
- * Map Explore Page
- * 
- * Phase 2 Feature - Stub Implementation
- * Geographic exploration of safe spots
- * Map-based browsing
- * 
- * Public route (stub for now, full implementation in Phase 2)
  * 
  * NOTE: When map component is implemented, ensure it uses original/natural
  * map tile colors (not blue overlay). Apply brand colors to UI frame only,
