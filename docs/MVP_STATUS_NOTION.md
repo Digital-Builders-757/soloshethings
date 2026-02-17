@@ -20,6 +20,7 @@
 - **Dedicated About Page** - Extracted about section from homepage into `/about` route ✅
 - **Marquee Animation Removal** - Banner text made static (no scrolling) ✅
 - **Featured Posts Removal** - Featured posts section removed from homepage ✅
+- **Interactive 3D Travel Map** - Globe with markers, trip list, fly-to animations, lazy-loaded ✅
 
 ### 🚧 In Progress
 
@@ -38,11 +39,8 @@
 - Admin post creation interface
 - Photo upload system (Supabase Storage)
 - Avatar uploads (profile editing complete ✅)
-- Interactive travel map (connecting blog posts to locations)
-
 ### 📋 Next
 
-- **P0** - Interactive travel map (connect blog posts to map locations)
 - **P0** - Stripe billing integration (7-day trial, subscription gate)
 - **P1** - Admin post creation interface
 - **P1** - Photo upload system (Supabase Storage)
@@ -815,6 +813,45 @@ Next Steps:
 - Visual review and client feedback
 - Mobile device testing
 
+#### 2026-01-26 - Interactive 3D Travel Map
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Implemented interactive 3D globe on `/map` page using react-globe.gl (Three.js)
+- Created `TravelEntry` data model with geocoordinates for 10 destinations across 6 continents
+- Globe displays colored markers at each visited location with city labels
+- Hovering a marker shows a floating preview card (thumbnail, title, location, date, excerpt)
+- Clicking a marker navigates to the corresponding `/blog/[slug]` post
+- Sidebar trip list synced with globe — clicking a list item flies the camera to that marker
+- Active marker is highlighted (yellow) with an animated ring pulse
+- Globe auto-rotates, pauses during fly-to, resumes after settling
+- Lazy-loaded via `next/dynamic` with `ssr: false` to avoid Three.js SSR issues
+- Responsive layout: side-by-side on desktop, stacked on mobile
+
+**Files Created:**
+- `lib/travel-data.ts` — TravelEntry interface + 10 example entries with lat/lng
+- `components/map/globe-viewer.tsx` — 3D globe client component
+- `components/map/travel-list.tsx` — Sidebar trip list client component
+- `components/map/marker-preview.tsx` — Hover tooltip client component
+- `app/(public)/map/map-client.tsx` — Client boundary wiring globe + list state
+
+**Files Modified:**
+- `app/(public)/map/page.tsx` — Replaced Phase 2 stub with full map page
+- `package.json` — Added react-globe.gl, three, @types/three
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ `npm run typecheck` passes with no errors
+- ✅ Globe lazy-loads correctly (no SSR errors)
+- ✅ No architectural violations (static data, client components for interactivity)
+
+**Next Steps:**
+- Populate travel entries from real blog post slugs
+- Future: migrate to Supabase `travel_locations` table or WordPress ACF custom fields
+- Visual review and client feedback
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS
@@ -865,7 +902,7 @@ Next Steps:
 
 ### Phase 2: Community Features 📋
 
-- 📋 Map explore functionality (route stub exists)
+- ✅ Map explore functionality (3D interactive globe with travel markers)
 - 📋 Direct messaging
 - 📋 Reactions/comments
 - 📋 Events RSVP

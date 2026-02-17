@@ -1,48 +1,57 @@
 /**
  * Map Explore Page
- * 
- * Phase 2 Feature - Stub Implementation
- * Geographic exploration of safe spots
- * Map-based browsing
- * 
- * Public route (stub for now, full implementation in Phase 2)
- * 
- * NOTE: When map component is implemented, ensure it uses original/natural
- * map tile colors (not blue overlay). Apply brand colors to UI frame only,
- * not the map tiles themselves.
+ *
+ * Interactive 3D globe showing Sharon's travel destinations.
+ * Each marker connects to a blog post about that location.
+ * A synced trip list appears beside the globe on desktop.
+ *
+ * Public route — globe is viewable by anyone.
+ * Blog post links navigate to /blog/[slug] (auth-protected).
+ *
+ * The GlobeViewer is lazy-loaded via next/dynamic (ssr: false)
+ * because Three.js / WebGL require browser APIs.
  */
-export default function MapPage() {
-  return (
-    <main className="section-mist relative min-h-screen py-16 overflow-hidden">
-      <div className="container relative mx-auto px-6 z-10">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl mb-8">
-            <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">
-              Explore Safe Spots on Map
-            </span>
-          </h1>
-          
-          {/* Phase 2 Stub */}
-          <div className="gradient-border rounded-xl overflow-hidden bg-card p-8 text-center">
-            <h2 className="font-serif text-2xl font-bold mb-4 text-foreground">🗺️ Map Feature Coming in Phase 2</h2>
-            <p className="text-lg mb-6 text-muted-foreground">
-              Geographic exploration of safe spots will be available in a future release.
-            </p>
-            <a
-              href="/collections"
-              className="inline-block rounded-full bg-brand-ocean px-6 py-2 text-white font-semibold transition-all hover:shadow-lg hover:shadow-brand-blue1/40"
-            >
-              Browse Collections Instead
-            </a>
-          </div>
-          
-          {/* Placeholder map area - Map will use natural/original colors when implemented */}
-          <div className="mt-8 aspect-video bg-neutral-200 rounded-lg flex items-center justify-center gradient-border">
-            <p className="text-muted-foreground">Map will be implemented here in Phase 2</p>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+
+import type { Metadata } from "next"
+import { Footer } from "@/components/footer"
+import { MapPageClient } from "./map-client"
+
+export const metadata: Metadata = {
+  title: "Travel Map | SoloSheThings",
+  description:
+    "Explore Sharon's solo travel destinations on an interactive 3D globe. Click any marker to read the full travel story.",
 }
 
+export default function MapPage() {
+  return (
+    <>
+      <main className="relative min-h-screen bg-white py-16">
+        {/* Subtle background decorations */}
+        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-[#F2E205]/5 blur-3xl" />
+        <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-[#0439D9]/5 blur-3xl" />
+
+        <div className="container relative mx-auto px-6">
+          {/* Page header */}
+          <div className="mb-10 max-w-2xl">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#0439D9]/10 border border-[#0439D9]/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#0439D9]">
+              Interactive Globe
+            </span>
+            <h1 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
+              Where Sharon Has{" "}
+              <span className="text-[#0439D9]">Traveled</span>
+            </h1>
+            <p className="mt-3 text-lg text-neutral-600">
+              Spin the globe, hover over a marker to preview the trip, or click
+              to read the full story. Pick a destination from the list to fly
+              there.
+            </p>
+          </div>
+
+          {/* Globe + Trip List — interactive client boundary */}
+          <MapPageClient />
+        </div>
+      </main>
+      <Footer />
+    </>
+  )
+}
