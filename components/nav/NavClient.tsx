@@ -74,7 +74,7 @@ export function NavClient({
       <Link href="/signup">
         <Button
           size="sm"
-          className="rounded-full bg-brand-ocean px-6 text-white transition-all hover:shadow-lg hover:shadow-brand-blue1/40 animate-glow-pulse"
+          className="rounded-full bg-[#0439D9] px-6 text-white transition-all hover:bg-[#034AA6] hover:shadow-lg"
         >
           Get Started
         </Button>
@@ -171,7 +171,7 @@ export function NavClient({
                       </Button>
                     </Link>
                     <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="w-full bg-brand-ocean text-white">
+                      <Button className="w-full bg-[#0439D9] text-white">
                         Get Started
                       </Button>
                     </Link>

@@ -27,13 +27,10 @@ export function Banner() {
       {/* Neutral vignette for depth (no color casting) */}
       <div className="overlay-neutral-vignette" />
 
-      {/* Animated Marquee Text */}
-      <div className="absolute bottom-0 left-0 right-0 overflow-hidden bg-[color:var(--color-bg-dark)]/90 py-2">
-        <div className="animate-marquee whitespace-nowrap">
-          <span className="mx-4 inline-block font-mono text-sm font-medium tracking-widest text-white">
-            {marqueeText}
-            {marqueeText}
-            {marqueeText}
+      {/* Static Banner Text (no animation) */}
+      <div className="absolute bottom-0 left-0 right-0 bg-[color:var(--color-bg-dark)]/90 py-2">
+        <div className="text-center">
+          <span className="inline-block font-mono text-sm font-medium tracking-widest text-white">
             {marqueeText}
           </span>
         </div>

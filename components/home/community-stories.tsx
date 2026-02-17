@@ -24,17 +24,13 @@ export function CommunityStories() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden home-community-bg py-24">
-      {/* Parallax Background Pattern */}
-      <div
-        className="absolute inset-0 home-community-radials"
-        style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-      />
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#034AA6] py-24">
+      {/* Background Pattern */}
       <div className="absolute inset-0 home-community-grid" />
 
       <div className="container relative mx-auto px-6">
         <div className="mb-12 text-center">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-blue1/30 to-brand-yellow1/30 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-white">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-white">
             <Users className="h-3 w-3" />
             Community
           </span>
@@ -47,7 +43,7 @@ export function CommunityStories() {
             <Link
               key={story.id}
               href={`/community/stories/${story.id}`}
-              className="group gradient-border overflow-hidden rounded-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+              className="group border-2 border-white/20 overflow-hidden rounded-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
               style={{
                 transform: `translateY(${Math.sin((scrollY + index * 100) * 0.005) * 5}px)`,
               }}
@@ -61,10 +57,10 @@ export function CommunityStories() {
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-black/40" />
 
                   {/* Quote icon */}
-                  <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue1 to-brand-orange text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
+                  <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#0439D9] text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
                     <Quote className="h-5 w-5" />
                   </div>
 
@@ -82,7 +78,7 @@ export function CommunityStories() {
                     {story.excerpt}
                   </p>
                   <div className="mt-4 flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-brand-blue1 to-brand-yellow1" />
+                    <div className="h-8 w-8 rounded-full bg-[#0439D9]" />
                     <p className="text-sm font-medium text-white">
                       {story.author.name}
                       <span className="block text-xs text-white/60">{story.author.location}</span>
@@ -97,7 +93,7 @@ export function CommunityStories() {
         <div className="mt-12 text-center">
           <Link
             href="/community"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border-2 border-white/30 px-8 py-3 text-sm font-semibold text-white transition-all hover:border-transparent hover:bg-gradient-to-r hover:from-brand-blue1 hover:to-brand-yellow1"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border-2 border-white/30 px-8 py-3 text-sm font-semibold text-white transition-all hover:border-transparent hover:bg-[#F2E205] hover:text-black"
           >
             Read More Stories
           </Link>

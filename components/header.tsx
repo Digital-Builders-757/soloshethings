@@ -35,7 +35,7 @@ export function Header({ showBanner = false }: HeaderProps) {
 
   return (
     <>
-      {/* Animated Gradient Banner - Only shown on home page */}
+      {/* Banner - Only shown on home page */}
       {showBanner && (
         <section className="relative h-[200px] w-full overflow-hidden">
           {/* Background Image */}
@@ -47,21 +47,13 @@ export function Header({ showBanner = false }: HeaderProps) {
             className="h-full w-full object-cover"
             priority
           />
-          {/* Gradient Overlay - Using rgba() for proper opacity support */}
-          <div 
-            className="absolute inset-0 animate-gradient-shift bg-[length:200%_200%]"
-            style={{
-              background: "linear-gradient(to right, rgba(219, 112, 147, 0.6), rgba(64, 224, 208, 0.4), rgba(147, 112, 219, 0.6))"
-            }}
-          />
+          {/* Solid Overlay */}
+          <div className="absolute inset-0 bg-[#021a4d]/60" />
 
-          {/* Animated Marquee Text */}
-          <div className="absolute bottom-0 left-0 right-0 overflow-hidden bg-[#1a1a2e]/90 py-2">
-            <div className="animate-marquee whitespace-nowrap">
-              <span className="mx-4 inline-block font-mono text-sm font-medium tracking-widest text-white">
-                {marqueeText}
-                {marqueeText}
-                {marqueeText}
+          {/* Static Text (no marquee animation) */}
+          <div className="absolute bottom-0 left-0 right-0 bg-[#021a4d]/90 py-2">
+            <div className="text-center">
+              <span className="inline-block font-mono text-sm font-medium tracking-widest text-white">
                 {marqueeText}
               </span>
             </div>
@@ -85,7 +77,7 @@ export function Header({ showBanner = false }: HeaderProps) {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="group flex items-center gap-2">
-              <span className="font-serif text-2xl font-bold tracking-wide text-primary animate-text-glow">
+              <span className="font-serif text-2xl font-bold tracking-wide text-primary">
                 SoloSheThings
               </span>
               <Sparkles className="h-5 w-5 text-accent opacity-0 transition-opacity group-hover:opacity-100" />
@@ -97,21 +89,21 @@ export function Header({ showBanner = false }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-[#db7093] after:to-[#40e0d0] after:transition-all hover:after:w-full"
+                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#0439D9] after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
                 href="/login"
-                className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-[#db7093] after:to-[#40e0d0] after:transition-all hover:after:w-full"
+                className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#0439D9] after:transition-all hover:after:w-full"
               >
                 Sign In
               </Link>
               <Link href="/signup">
                 <Button
                   size="sm"
-                  className="rounded-full bg-gradient-to-r from-[#db7093] to-[#9370db] px-6 text-white transition-all hover:shadow-lg hover:shadow-[#db7093]/40 animate-glow-pulse"
+                  className="rounded-full bg-[#0439D9] px-6 text-white transition-all hover:bg-[#034AA6] hover:shadow-lg"
                 >
                   Get Started
                 </Button>
@@ -154,7 +146,7 @@ export function Header({ showBanner = false }: HeaderProps) {
                   </Button>
                 </Link>
                 <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full bg-gradient-to-r from-[#db7093] to-[#9370db] text-white">Get Started</Button>
+                  <Button className="w-full bg-[#0439D9] text-white">Get Started</Button>
                 </Link>
               </div>
             </nav>
@@ -165,7 +157,7 @@ export function Header({ showBanner = false }: HeaderProps) {
       {/* Sticky Menu - Appears after scrolling */}
       <nav
         className={cn(
-          "fixed left-0 right-0 top-0 z-50 glass border-b border-border/30 shadow-lg shadow-[#db7093]/10 transition-all duration-500",
+          "fixed left-0 right-0 top-0 z-50 glass border-b border-border/30 shadow-lg shadow-[#0439D9]/10 transition-all duration-500",
           isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
         )}
       >
@@ -180,21 +172,21 @@ export function Header({ showBanner = false }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-[#db7093] after:to-[#40e0d0] after:transition-all hover:after:w-full"
+                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#0439D9] after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
                 href="/login"
-                className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-[#db7093] after:to-[#40e0d0] after:transition-all hover:after:w-full"
+                className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#0439D9] after:transition-all hover:after:w-full"
               >
                 Sign In
               </Link>
               <Link href="/signup">
                 <Button
                   size="sm"
-                  className="rounded-full bg-gradient-to-r from-[#db7093] to-[#9370db] px-6 text-white transition-all hover:shadow-lg hover:shadow-[#db7093]/40"
+                  className="rounded-full bg-[#0439D9] px-6 text-white transition-all hover:bg-[#034AA6] hover:shadow-lg"
                 >
                   Get Started
                 </Button>

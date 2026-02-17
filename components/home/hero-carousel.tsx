@@ -33,11 +33,11 @@ export function HeroCarousel() {
 
   return (
     <div
-      className="gradient-border relative h-[400px] w-full overflow-hidden rounded-2xl md:h-[500px]"
+      className="relative h-[400px] w-full overflow-hidden rounded-2xl border-2 border-[#0439D9]/20 md:h-[500px]"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      <div className="absolute inset-[3px] overflow-hidden rounded-xl">
+      <div className="absolute inset-0 overflow-hidden rounded-xl">
         {/* Slides */}
         {heroImages.map((image, index) => (
           <div
@@ -54,8 +54,8 @@ export function HeroCarousel() {
               className="object-cover"
               priority={index === 0}
             />
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/20" />
           </div>
         ))}
 
@@ -67,7 +67,7 @@ export function HeroCarousel() {
             setIsAutoPlaying(false)
             setTimeout(() => setIsAutoPlaying(true), 10000)
           }}
-          className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue1 to-brand-blue2 text-white shadow-lg transition-all hover:scale-110"
+          className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#0439D9] text-white shadow-lg transition-all hover:scale-110"
           aria-label="Previous slide"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -79,7 +79,7 @@ export function HeroCarousel() {
             setIsAutoPlaying(false)
             setTimeout(() => setIsAutoPlaying(true), 10000)
           }}
-          className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-brand-yellow1 to-brand-orange text-black shadow-lg transition-all hover:scale-110"
+          className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#F2E205] text-black shadow-lg transition-all hover:scale-110"
           aria-label="Next slide"
         >
           <ChevronRight className="h-6 w-6" />
@@ -95,7 +95,7 @@ export function HeroCarousel() {
               className={cn(
                 "h-2 rounded-full transition-all duration-300",
                 index === currentSlide
-                  ? "w-8 bg-gradient-to-r from-brand-blue1 to-brand-yellow1"
+                  ? "w-8 bg-[#0439D9]"
                   : "w-2 bg-white/50 hover:bg-white/75"
               )}
               aria-label={`Go to slide ${index + 1}`}

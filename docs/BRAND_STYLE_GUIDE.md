@@ -60,20 +60,18 @@
 - Use brand colors for backgrounds sparingly
 - Prefer neutral backgrounds (white, gray) with brand color accents
 - When using brand colors as backgrounds, ensure sufficient text contrast
-- **Body Background:** Multi-color gradient at 8% opacity using all 5 brand colors
-- **Hero Sections:** Enhanced gradients at 10-12% opacity for vibrancy
+- **Body Background:** Solid `hsl(var(--background))` — no gradients
+- **Hero Sections:** Solid brand blue backgrounds with subtle rgba overlays for depth
 
 ### Text Colors
 - Use brand colors for text only when contrast requirements are met
 - Prefer dark text (`#000000` or `#1a1a1a`) on light backgrounds
 - Prefer light text (`#ffffff`) on dark brand color backgrounds
 
-### Gradient Borders
-- Use `.surface-card-gradient` utility class for cards that need vibrant brand color borders
-- Gradient borders use all 5 brand colors in sequence: Blue 1 → Yellow 1 → Orange → Yellow 2 → Blue 2
-- Border width: 3px on desktop, 2px on mobile
-- Hover state: Border expands to 4px (desktop) or 3px (mobile)
-- Applied to: Blog cards, place cards, story cards, featured content cards
+### Borders
+- Use solid brand color borders: `border-[#0439D9]/20` for subtle, `border-[#0439D9]` for emphasis
+- No gradient borders — all borders are solid colors
+- Applied to: Blog cards, place cards, story cards, content cards
 
 ## Contrast Requirements
 
@@ -154,11 +152,9 @@ theme: {
   Highlight Content
 </div>
 
-{/* Gradient border card */}
-<article className="surface-card-gradient lift-hover">
-  <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
-    {/* Card content */}
-  </div>
+{/* Solid border card */}
+<article className="border-2 border-[#0439D9]/20 rounded-xl hover:shadow-lg transition-all">
+  {/* Card content */}
 </article>
 ```
 
@@ -166,7 +162,7 @@ theme: {
 ```tsx
 <button className="bg-[#0439D9]"> {/* Never use raw hex */}
 <button style={{ backgroundColor: '#0439D9' }}> {/* Never inline styles */}
-<div className="border-gradient-brand"> {/* Use surface-card-gradient instead */}
+<div className="bg-gradient-to-r from-blue-500 to-purple-500"> {/* No gradients — use solid colors */}
 ```
 
 ## What We Do NOT Copy
@@ -201,91 +197,53 @@ When implementing dark mode:
 - Maintain contrast ratios
 - Test with screen readers
 - Consider reduced motion preferences
-- Adjust gradient border opacity for dark backgrounds
+- Adjust brand color opacity for dark backgrounds
 
-## Gradient Border System
+## Border & Surface System
 
 ### Overview
 
-The gradient border system uses all 5 brand colors to create vibrant, eye-catching borders on cards and content blocks. This reflects African heritage through bold, celebratory color combinations while maintaining the existing aesthetic quality.
+The site uses solid brand colors for all borders and surfaces. All gradients have been removed in favor of clean, solid color treatments. Glassmorphism effects (`backdrop-filter: blur`) are used for elevated surfaces.
 
-### Implementation
+### Solid Borders
 
-**CSS Utility Class:** `.surface-card-gradient`
+**Border Pattern:** `border-2 border-[#0439D9]/20` (subtle) or `border-[#0439D9]` (emphasis)
 
-**Gradient Colors (in order):**
-1. Blue 1 (`#0439D9`)
-2. Yellow 1 (`#F2E205`)
-3. Orange (`#F28705`)
-4. Yellow 2 (`#F2CB05`)
-5. Blue 2 (`#034AA6`)
-
-**Gradient Direction:** 135deg (diagonal)
-
-### Usage Guidelines
-
-**When to Use:**
+**Applied to:**
 - Blog post cards
 - Place/safe spot cards
 - Story cards
-- Featured content cards
-- Landing page showcase cards
+- Content cards
 
 **When NOT to Use:**
-- Form inputs
-- Error messages
+- Form inputs (use default input borders)
 - Navigation elements
-- Small UI elements (badges, tags)
-- Text-only content blocks
+- Small UI elements (badges use `bg-[#0439D9]/15`)
 
-### Technical Details
+### Surface Utilities
 
-**Border Width:**
-- Desktop: 3px default, 4px on hover
-- Mobile: 2px default, 3px on hover
+**Glass surfaces:**
+- `.glass` — White glassmorphism (85% opacity, 12px blur)
+- `.surface-glass-ocean` — Dark glassmorphism for blue backgrounds
+- `.surface-glass-mist` — Light glassmorphism for white backgrounds
 
-**Structure:**
-```tsx
-<article className="surface-card-gradient lift-hover">
-  <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
-    {/* Card content (image, text, etc.) */}
-  </div>
-</article>
-```
+**Section backgrounds:**
+- `.section-ocean` — Solid Blue 1 background
+- `.section-mist` — Solid background color
+- `.home-hero-bg` — Solid background for hero
+- `.home-community-bg` — Solid Blue 2 background
+- `.home-newsletter-bg` — Solid Blue 1 background
 
-**Important:** The inner wrapper div is required for proper gradient border rendering. The border-radius calculation accounts for the gradient border width.
+### Performance
 
-### Background Gradients
-
-**Body Background:**
-- Multi-color gradient using all 5 brand colors
-- Opacity: 8% (increased from 2-3% for vibrancy)
-- Direction: 135deg diagonal
-- Fixed attachment for consistent appearance
-
-**Hero Sections:**
-- Enhanced gradient overlay via `.hero-wash` utility
-- Opacity: 10-12% (increased from 5-8%)
-- Creates depth and vibrancy without overwhelming content
-
-**Section Dividers:**
-- Brand color gradient dividers (`.section-divider`)
-- Height: 2px
-- Fades to transparent at edges
-- Uses all 5 brand colors in sequence
-
-### Performance Considerations
-
-- Gradient borders use CSS-only techniques (no JavaScript)
+- All solid colors — no gradient computation
+- Glassmorphism uses hardware-accelerated `backdrop-filter`
 - Browser support: Modern browsers (Chrome, Firefox, Safari, Edge)
-- Graceful degradation: Falls back to solid border if gradients not supported
-- Mobile-optimized: Thinner borders on mobile devices
 
 ### Accessibility
 
-- Gradient borders do not affect text contrast
+- Solid borders do not affect text contrast
 - All text remains WCAG AA compliant
-- Borders enhance visual appeal without compromising readability
 - Focus states remain visible and accessible
 
 ---

@@ -12,16 +12,23 @@
 - **Backend Foundation (Phase 1)** - Supabase setup, database migration, authentication ✅
 - **WordPress Editorial Layer (Phase 1)** - Blog content integration with ISR ✅
 - **UI Foundation (Phase 2 partial)** - Brand tokens, typography, core components ✅
-- **Visual Design Enhancement** - Gradient border system, enhanced brand color vibrancy ✅
+- **Visual Design Enhancement** - Grand Seiko Watch palette, solid color system (gradients removed) ✅
 - **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
+- **Homepage Redesign** - Futuristic feminine theme, new section components, hero carousel ✅
+- **Gradient Removal** - All gradients replaced with solid colors site-wide ✅
+- **Blog Route Protection** - Blog pages moved behind authentication middleware ✅
+- **Dedicated About Page** - Extracted about section from homepage into `/about` route ✅
+- **Marquee Animation Removal** - Banner text made static (no scrolling) ✅
+- **Featured Posts Removal** - Featured posts section removed from homepage ✅
 
 ### 🚧 In Progress
 
-**Phase 2: Design System** (60% Complete)
-- ✅ Typography system (Inter font, design tokens)
+**Phase 2: Design System** (65% Complete)
+- ✅ Typography system (Raleway serif + Roboto sans, design tokens)
 - ✅ Core UI components (Button, Input, Textarea, Badge, Avatar)
-- ✅ Brand color vibrancy enhancement (gradient borders, enhanced gradients)
-- ✅ Visual polish (African heritage-inspired color system)
+- ✅ Brand color system (Grand Seiko Watch palette — solid colors, no gradients)
+- ✅ Visual polish (glassmorphism, solid borders, clean surfaces)
+- ✅ Homepage section components (Hero, Welcome, Community CTA/Stories, About Preview, Newsletter)
 - 📋 Feedback components (Alert, Skeleton, Spinner, Modal, Toast)
 - 📋 Trust & safety components (Privacy Toggle, Privacy Badge, Report Button)
 - 📋 Empty State component
@@ -31,11 +38,15 @@
 - Admin post creation interface
 - Photo upload system (Supabase Storage)
 - Avatar uploads (profile editing complete ✅)
+- Interactive travel map (connecting blog posts to locations)
 
 ### 📋 Next
 
-- **Phase 1 Completion** - Stripe billing, WordPress integration, admin features, photo uploads
-- **Phase 2** - Design system (typography, UI components, design tokens)
+- **P0** - Interactive travel map (connect blog posts to map locations)
+- **P0** - Stripe billing integration (7-day trial, subscription gate)
+- **P1** - Admin post creation interface
+- **P1** - Photo upload system (Supabase Storage)
+- **P1** - Feedback components (Alert, Skeleton, Spinner, Modal, Toast)
 
 ### ❌ Blocked
 
@@ -747,6 +758,62 @@ Next Steps:
 - Manual smoke testing of blog pages and revalidate endpoint
 - Consider adding WordPress domain to `next.config.ts` remotePatterns for full image optimization
 - Monitor build performance with Next.js 16
+
+#### 2026-01-26 - Homepage Overhaul: Gradient Removal, Route Protection & Layout Cleanup
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Removed all gradient CSS utilities and replaced with solid brand colors site-wide
+- Stopped marquee/scrolling text animation on the homepage banner (Banner.tsx)
+- Created dedicated `/about` page extracted from homepage about-preview section
+- Moved blog routes from `(public)` to `(app)` route group, requiring authentication
+- Removed featured posts section from homepage entirely
+- Fixed "Get Started" button losing its color after gradient utility removal
+- Updated middleware to protect `/blog` routes
+
+**Bugs Fixed:**
+- **Get Started button color lost** — `bg-brand-ocean` gradient utility was removed during cleanup; replaced with solid `bg-[#0439D9]` in NavClient
+- **Marquee still animating** — Identified `components/layout/Banner.tsx` (not `header.tsx`) as the actual marquee source; removed `animate-marquee` class
+- **Duplicate header on /about page** — Removed explicit `<Header />` import since the `(public)` layout already renders the site header
+
+**Files Created:**
+- `app/(app)/blog/page.tsx` — Protected blog list page
+- `app/(app)/blog/[slug]/page.tsx` — Protected blog post detail page
+- `app/(public)/about/page.tsx` — Dedicated about page
+
+**Files Deleted:**
+- `app/(public)/blog/page.tsx` — Replaced by protected version
+- `app/(public)/blog/[slug]/page.tsx` — Replaced by protected version
+
+**Files Modified:**
+- `app/globals.css` — Removed all gradient utilities, solid colors only
+- `tailwind.config.ts` — Removed gradient-shift, glow-pulse, text-glow animations
+- `app/(public)/page.tsx` — Removed FeaturedPosts import
+- `components/header.tsx` — Solid overlay, static banner text
+- `components/layout/Banner.tsx` — Removed marquee animation, solid overlay
+- `components/nav/NavClient.tsx` — Fixed Get Started button solid color
+- `components/home/about-preview.tsx` — Link to /about, solid borders
+- `components/home/community-cta.tsx` — Solid colors
+- `components/home/community-stories.tsx` — Solid colors
+- `components/home/hero-carousel.tsx` — Solid borders/controls
+- `components/home/hero-section.tsx` — Solid colors
+- `components/home/newsletter-section.tsx` — Solid colors
+- `middleware.ts` — Added `/blog` to protected routes
+
+**Verification:**
+- ✅ `npm run build` passes successfully
+- ✅ `npm run lint` passes with 0 errors, 0 warnings
+- ✅ `npm run typecheck` passes with no errors
+- ✅ All gradient references removed from globals.css
+- ✅ Blog routes require authentication
+- ✅ About page accessible at /about
+- ✅ Banner text static (no scrolling)
+
+**Next Steps:**
+- Interactive travel map feature
+- Visual review and client feedback
+- Mobile device testing
 
 #### [Future Entry Template]
 

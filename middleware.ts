@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
     '/settings',
     '/submit',
     '/saved',
+    '/blog',
     '/app', // All routes under (app) route group
   ]
 

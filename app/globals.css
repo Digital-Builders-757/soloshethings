@@ -77,28 +77,6 @@
   }
 }
 
-/* Gradient Border Card */
-.gradient-border {
-  position: relative;
-  background: hsl(var(--card));
-  border-radius: var(--radius);
-}
-
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: calc(var(--radius) + 2px);
-  background: linear-gradient(135deg, var(--brand-blue-1), var(--brand-yellow-1), var(--brand-orange), var(--brand-yellow-2), var(--brand-blue-2));
-  z-index: -1;
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
-}
-
-.gradient-border-static::before {
-  animation: none;
-}
-
 /* Glassmorphism */
 .glass {
   background: rgba(255, 255, 255, 0.85);
@@ -116,200 +94,68 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--brand-blue-1), var(--brand-blue-2));
+  background: var(--brand-blue-1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, var(--brand-blue-2), var(--brand-blue-1));
+  background: var(--brand-blue-2);
 }
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/* Gradient Recipes - Named Utilities */
+/* Section Theme System - Solid Colors Only */
 @layer utilities {
-  /* Banner/Hero Gradient: Blue → Yellow → Orange (warm, energetic) */
-  .bg-brand-sunrise {
-    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-yellow-1) 50%, var(--brand-orange) 100%);
-  }
-  
-  /* Primary Button Gradient: Blue1 → Blue2 (calm, trustworthy) */
-  .bg-brand-ocean {
-    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 100%);
-  }
-  
-  /* Full Spectrum Gradient: All 5 brand colors (for borders, cards) */
-  .bg-brand-spectrum {
-    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-yellow-1) 25%, var(--brand-orange) 50%, var(--brand-yellow-2) 75%, var(--brand-blue-2) 100%);
-  }
-  
-  /* Highlight Gradient: Yellow → Orange (warm accents) */
-  .bg-brand-highlight {
-    background: linear-gradient(135deg, var(--brand-yellow-1) 0%, var(--brand-orange) 100%);
-  }
-  
-  /* Border Gradient: Full spectrum for card borders */
-  .border-brand-spectrum {
-    border-image: linear-gradient(135deg, var(--brand-blue-1), var(--brand-yellow-1), var(--brand-orange), var(--brand-yellow-2), var(--brand-blue-2)) 1;
-  }
-  
-  /* Ring/Shadow Gradient: For glow effects */
-  .ring-brand-spectrum {
-    box-shadow: 0 0 20px rgba(4, 57, 217, 0.3), 0 0 40px rgba(242, 226, 5, 0.2);
-  }
-}
-
-/* Section Theme System - Backdrop Layers */
-@layer utilities {
-  /* Ocean Theme: Rich blue gradient (dark, primary) - for Hero, Newsletter, key CTAs */
   .section-ocean {
     position: relative;
-    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 100%);
+    background: var(--brand-blue-1);
   }
-  
-  .section-ocean::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.3), transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(242, 226, 5, 0.3), transparent 50%);
-    pointer-events: none;
-  }
-  
-  .section-ocean::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-image: 
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-  }
-  
-  /* Mist Theme: Soft light background (neutral, subtle) - for content sections */
+
   .section-mist {
     position: relative;
     background: hsl(var(--background));
   }
-  
-  .section-mist::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.05), transparent 60%);
-    pointer-events: none;
-  }
-  
-  .section-mist::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-image: 
-      linear-gradient(rgba(4, 57, 217, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(4, 57, 217, 0.02) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-  }
-  
-  /* Sunrise Theme: Accent borders/headers (subtle Blue→Yellow/Orange) - for highlights */
+
   .section-sunrise {
     position: relative;
   }
-  
-  .section-sunrise::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: radial-gradient(ellipse at top right, rgba(242, 226, 5, 0.08), transparent 50%);
-    pointer-events: none;
-  }
-}
 
-/* Surface Utilities - Cards, Panels, Overlays */
-@layer utilities {
-  /* Glass surface for Ocean theme */
+  .section-ocean-warm {
+    position: relative;
+    background: var(--brand-blue-1);
+  }
+
+  /* Surface Utilities */
   .surface-glass-ocean {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
-  /* Glass surface for Mist theme */
+
   .surface-glass-mist {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(4, 57, 217, 0.1);
   }
-  
-  /* Badge/Accent with Sunrise theme */
+
   .badge-sunrise {
-    background: linear-gradient(135deg, rgba(4, 57, 217, 0.15), rgba(242, 226, 5, 0.15));
+    background: rgba(4, 57, 217, 0.15);
     border: 1px solid rgba(4, 57, 217, 0.2);
   }
-  
-  /* Ocean Theme with Warmth: Balanced brand color spectrum */
-  .section-ocean-warm {
-    position: relative;
-    background: linear-gradient(135deg, var(--brand-blue-1) 0%, var(--brand-blue-2) 40%, var(--brand-yellow-1) 60%, var(--brand-orange) 80%, var(--brand-blue-2) 100%);
-  }
-  
-  .section-ocean-warm::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.25), transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(242, 226, 5, 0.35), transparent 50%),
-      radial-gradient(ellipse at center, rgba(242, 135, 5, 0.25), transparent 60%),
-      radial-gradient(ellipse at top right, rgba(242, 203, 5, 0.2), transparent 50%);
-    pointer-events: none;
-  }
-  
-  .section-ocean-warm::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-image: 
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-  }
-  
-  /* Neutral vignette overlay (for images, no color casting) */
+
   .overlay-neutral-vignette {
     position: absolute;
     inset: 0;
     background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.2) 100%);
     pointer-events: none;
   }
-  
-  /* Clean image (no filters, no opacity reduction) */
+
   .image-clean {
     filter: none;
     opacity: 1;
   }
-  /* Homepage-only gradients (brand palette only) */
+
+  /* Homepage backgrounds - solid colors */
   .home-hero-bg {
-    background: linear-gradient(
-      135deg,
-      rgba(4, 57, 217, 0.12) 0%,
-      rgba(242, 226, 5, 0.1) 45%,
-      rgba(242, 135, 5, 0.08) 75%,
-      rgba(3, 74, 166, 0.1) 100%
-    );
+    background: hsl(var(--background));
   }
 
   .home-hero-grid {
@@ -320,13 +166,11 @@
   }
 
   .home-community-bg {
-    background: linear-gradient(135deg, var(--brand-blue-2) 0%, var(--brand-blue-1) 55%, var(--brand-blue-2) 100%);
+    background: var(--brand-blue-2);
   }
 
   .home-community-radials {
-    background:
-      radial-gradient(circle at 30% 20%, rgba(242, 226, 5, 0.18), transparent 40%),
-      radial-gradient(circle at 70% 80%, rgba(242, 135, 5, 0.18), transparent 40%);
+    background: radial-gradient(circle at 30% 20%, rgba(242, 226, 5, 0.18), transparent 40%);
   }
 
   .home-community-grid {
@@ -337,18 +181,10 @@
   }
 
   .home-newsletter-bg {
-    background: linear-gradient(
-      135deg,
-      var(--brand-blue-1) 0%,
-      var(--brand-yellow-1) 40%,
-      var(--brand-orange) 70%,
-      var(--brand-blue-2) 100%
-    );
+    background: var(--brand-blue-1);
   }
 
   .home-newsletter-radials {
-    background:
-      radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.25), transparent 50%),
-      radial-gradient(ellipse at bottom right, rgba(242, 135, 5, 0.25), transparent 50%);
+    background: radial-gradient(ellipse at top left, rgba(4, 57, 217, 0.25), transparent 50%);
   }
 }
