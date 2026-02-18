@@ -22,6 +22,11 @@ export async function middleware(request: NextRequest) {
   // Update Supabase session
   const { supabase, response } = await updateSession(request)
 
+  // If supabase client is null (env vars missing), allow through
+  if (!supabase) {
+    return response
+  }
+
   // Get current user
   const {
     data: { user },
