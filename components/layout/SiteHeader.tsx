@@ -40,6 +40,17 @@ export async function SiteHeader({ variant = "public" }: SiteHeaderProps) {
     );
   }
 
+  // If Supabase env vars are missing, render without auth
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return (
+      <NavClient
+        publicLinks={publicNavLinks}
+        isAuthenticated={false}
+        showStickyNav={true}
+      />
+    );
+  }
+
   // For app variant, require authentication (middleware handles redirect)
   // But we still check to determine nav items
   const user = await getUser();

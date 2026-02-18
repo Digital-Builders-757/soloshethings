@@ -108,8 +108,8 @@ const config: Config = {
         '4xl': '2rem',    // 32px
       },
       fontFamily: {
-        sans: ["var(--font-roboto)", "system-ui", "sans-serif"],
-        serif: ["var(--font-raleway)", "Georgia", "serif"],
+        sans: ["var(--font-rokkitt)", "Georgia", "serif"],
+        serif: ["var(--font-rokkitt)", "Georgia", "serif"],
       },
       fontSize: {
         'display-xl': ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }],   // 56px
