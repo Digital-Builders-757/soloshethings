@@ -40,7 +40,9 @@ export async function updateSession(request: NextRequest) {
   })
 
   // If Supabase is not configured, skip session update
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const sbKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!sbUrl || !sbUrl.startsWith('http') || !sbKey || sbKey.length === 0) {
     return { supabase: null, response }
   }
 
