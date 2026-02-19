@@ -31,6 +31,10 @@ import type { Database } from '@/types/database'
  * @returns Supabase client instance
  */
 export function createClient() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return null
+  }
+
   return createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -41,6 +45,7 @@ export function createClient() {
  * Singleton instance of the Supabase client
  *
  * Use this in Client Components for all Supabase operations
+ * Returns null if Supabase is not configured
  *
  * Example:
  * ```tsx
@@ -48,6 +53,7 @@ export function createClient() {
  * import { supabase } from '@/lib/supabase/client'
  *
  * export function MyComponent() {
+ *   if (!supabase) return <p>Supabase not configured</p>
  *   const { data } = await supabase.from('posts').select('*')
  *   // ...
  * }

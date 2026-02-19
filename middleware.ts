@@ -17,6 +17,11 @@ export async function middleware(request: NextRequest) {
   // Update Supabase session
   const { supabase, response } = await updateSession(request)
 
+  // If Supabase is not configured, allow all requests through
+  if (!supabase) {
+    return response
+  }
+
   // Get current user
   const {
     data: { user },

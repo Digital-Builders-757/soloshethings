@@ -39,6 +39,11 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
+  // If Supabase is not configured, skip session update
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return { supabase: null, response }
+  }
+
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

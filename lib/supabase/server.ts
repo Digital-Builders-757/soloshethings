@@ -20,6 +20,13 @@ import { cookies } from 'next/headers'
 import type { Database } from '@/types/database'
 
 /**
+ * Check if Supabase environment variables are configured
+ */
+export function isSupabaseConfigured(): boolean {
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+}
+
+/**
  * Create a Supabase client for Server Components and Server Actions
  *
  * This client:
@@ -27,9 +34,13 @@ import type { Database } from '@/types/database'
  * - Respects RLS policies (user context from auth)
  * - Automatically handles cookie operations
  *
- * @returns Supabase client instance
+ * @returns Supabase client instance or null if not configured
  */
 export async function createClient() {
+  if (!isSupabaseConfigured()) {
+    return null
+  }
+
   const cookieStore = await cookies()
 
   return createServerClient<Database>(
@@ -81,8 +92,8 @@ export async function createClient() {
  * @returns Supabase client with admin access
  */
 export function createServiceRoleClient() {
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set')
+  if (!isSupabaseConfigured() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Supabase is not configured or SUPABASE_SERVICE_ROLE_KEY is not set')
   }
 
   return createServerClient<Database>(
@@ -107,6 +118,7 @@ export function createServiceRoleClient() {
  */
 export async function getUser() {
   const supabase = await createClient()
+  if (!supabase) return null
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error) {
