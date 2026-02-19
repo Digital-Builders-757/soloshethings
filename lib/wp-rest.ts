@@ -41,9 +41,6 @@ export async function getWpPosts(
 ): Promise<WpPostListResponse> {
   if (!WP_BASE_URL) {
     // WordPress not configured - return empty array (safe fallback)
-    console.warn(
-      "WordPress not configured: WORDPRESS_URL/WP_URL environment variable is missing"
-    );
     return [];
   }
 
@@ -105,9 +102,6 @@ export async function getWpPosts(
 export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
   if (!WP_BASE_URL) {
     // WordPress not configured - return null (safe fallback)
-    console.warn(
-      "WordPress not configured: WORDPRESS_URL/WP_URL environment variable is missing"
-    );
     return null;
   }
 

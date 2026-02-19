@@ -35,6 +35,9 @@ export async function signup(
   formData: FormData
 ): Promise<{ error: string } | null> {
   const supabase = await createClient()
+  if (!supabase) {
+    return { error: 'Authentication service is not configured' }
+  }
 
   // Extract form data
   const email = formData.get('email') as string
@@ -114,6 +117,9 @@ export async function login(
   formData: FormData
 ): Promise<{ error: string } | null> {
   const supabase = await createClient()
+  if (!supabase) {
+    return { error: 'Authentication service is not configured' }
+  }
 
   // Extract form data
   const email = formData.get('email') as string
@@ -189,6 +195,9 @@ export async function login(
  */
 export async function logout() {
   const supabase = await createClient()
+  if (!supabase) {
+    redirect('/')
+  }
 
   try {
     const { error } = await supabase.auth.signOut()

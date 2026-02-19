@@ -24,6 +24,9 @@ export default async function ProfilePage() {
     const { generateUsername } = await import('@/lib/auth-utils')
     const { createClient } = await import('@/lib/supabase/server')
     const supabase = await createClient()
+    if (!supabase) {
+      redirect('/login')
+    }
     
     try {
       const { data, error } = await supabase

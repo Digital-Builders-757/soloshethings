@@ -25,6 +25,7 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
  */
 export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = await createClient();
+  if (!supabase) return null;
   
   const { data, error } = await supabase
     .from('profiles')

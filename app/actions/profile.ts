@@ -32,6 +32,9 @@ export async function updateProfile(
   }
 
   const supabase = await createClient();
+  if (!supabase) {
+    return { error: 'Database service is not configured' };
+  }
 
   // Extract form data
   const username = formData.get('username') as string | null;
