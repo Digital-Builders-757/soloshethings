@@ -19,9 +19,8 @@ export function Banner() {
       <Image
         src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=200&fit=crop"
         alt="Travel banner"
-        width={1920}
-        height={200}
-        className="image-clean h-full w-full object-cover"
+        fill
+        className="image-clean object-cover"
         priority
       />
       {/* Neutral vignette for depth (no color casting) */}
