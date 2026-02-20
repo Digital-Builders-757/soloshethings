@@ -48,8 +48,8 @@ export function NewsletterSection() {
             Stay Connected
             </span>
 
-            <h2 className="font-serif text-3xl font-bold text-white drop-shadow-[0_6px_24px_rgba(4,57,217,0.6)] md:text-4xl lg:text-5xl">
-              Want to be Pen Pals?
+            <h2 className="font-serif text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+              <span className="text-brand-orange">Want to be</span> <span className="text-white">Pen Pals?</span>
             </h2>
             <p className="mt-4 text-lg text-white/90 drop-shadow-[0_4px_18px_rgba(0,0,0,0.4)]">
               Sign up to stay current on all my latest tips, tricks, photos, and destination guides.

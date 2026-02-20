@@ -36,7 +36,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="font-serif text-2xl font-bold text-primary">
+            <Link href="/" className="font-serif text-2xl font-bold text-brand-orange">
               SoloSheThings
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">

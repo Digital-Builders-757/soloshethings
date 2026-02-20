@@ -14,12 +14,12 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
       <section className="section-sunrise relative py-24 overflow-hidden bg-white">
         <div className="container relative mx-auto px-6 z-10">
           <div className="mb-12 text-center">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-900">
-              <Sparkles className="h-3 w-3" />
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-orange/10 border border-brand-orange/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-foreground">
+              <Sparkles className="h-3 w-3 text-brand-orange" />
               Curated for you
             </span>
-            <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
-              <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">Featured Posts</span>
+            <h2 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl">
+              <span className="text-brand-orange">Featured Posts</span>
             </h2>
           </div>
           <p className="text-center text-neutral-600">No posts available at the moment.</p>
@@ -98,7 +98,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                         year: "numeric",
                       })}
                     </p>
-                    <h3 className="font-serif text-xl font-bold text-neutral-900 transition-colors duration-300 group-hover:text-brand-blue1 line-clamp-2">
+                    <h3 className="font-serif text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-brand-orange line-clamp-2">
                       {post.title.rendered}
                     </h3>
                     {excerpt && (
@@ -117,7 +117,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
               <div className="h-full overflow-hidden rounded-lg bg-white">
                 <div className="flex h-full flex-col justify-between gap-6 p-8">
                   <div>
-                    <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-blue1/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-blue2">
+                    <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-orange/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-orange">
                       Explore
                     </span>
                     <h3 className="font-serif text-2xl font-bold text-neutral-900">
@@ -127,7 +127,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                       Read stories, tips, and destination guides curated for solo travelers.
                     </p>
                   </div>
-                  <div className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-blue1 px-4 py-2 text-sm font-semibold text-white transition-all group-hover:bg-brand-blue2">
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange px-4 py-2 text-sm font-semibold text-white transition-all group-hover:bg-brand-orange/90">
                     Browse all posts
                   </div>
                 </div>
@@ -139,10 +139,9 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-ocean px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-orange px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg"
           >
             <span className="relative z-10">View All Posts</span>
-            <span className="absolute inset-0 bg-gradient-to-r from-brand-blue2 to-brand-blue1 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
       </div>

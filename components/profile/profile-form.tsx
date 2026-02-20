@@ -26,14 +26,14 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="text-brand-blue1 hover:text-brand-blue2 font-medium"
+            className="text-brand-pink hover:text-brand-pinkDark font-medium"
           >
             ← Back to Dashboard
           </Link>
         </div>
 
         <div className="surface-card rounded-xl p-8">
-          <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
+          <h1 className="text-3xl font-bold mb-6 text-brand-pink">Edit Profile</h1>
 
           {state?.success && (
             <div className="mb-4 p-4 bg-green-50/80 border border-green-200/60 rounded-xl text-green-700 text-sm backdrop-blur-sm">
@@ -103,7 +103,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             <div className="flex gap-4">
               <button
                 type="submit"
-                className="flex-1 bg-brand-blue1 text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-blue2 transition-all btn-glow active:scale-[0.98]"
+                className="flex-1 bg-brand-pink text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-pinkDark transition-all active:scale-[0.98]"
               >
                 Save Changes
               </button>

@@ -64,13 +64,13 @@ export function AboutPreview() {
 
           {/* Content */}
           <div className="flex flex-col gap-6">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full badge-sunrise px-4 py-2 text-xs font-semibold uppercase tracking-widest text-neutral-900">
-              <Sparkles className="h-3 w-3 text-brand-blue1" />
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange/10 border border-brand-orange/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-foreground">
+              <Sparkles className="h-3 w-3 text-brand-orange" />
               Meet the Founder
             </span>
 
-            <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl">
-              <span className="text-brand-blue1 drop-shadow-[0_4px_14px_rgba(4,57,217,0.25)]">
+            <h2 className="font-serif text-3xl font-bold md:text-4xl">
+              <span className="text-brand-orange">
                 About Solo She Things
               </span>
             </h2>
@@ -104,7 +104,7 @@ export function AboutPreview() {
             </div>
 
             <Link href="/about" className="mt-4">
-              <Button className="group gap-2 rounded-full bg-gradient-to-r from-brand-blue1 to-brand-blue2 px-6 text-white transition-all hover:shadow-lg">
+              <Button className="group gap-2 rounded-full bg-brand-orange px-6 text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg">
                 Read My Story
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>

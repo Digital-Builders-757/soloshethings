@@ -56,10 +56,10 @@ export function CommunityCTA() {
             </span>
 
             <h2 className="font-serif text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-              <span className="bg-gradient-to-r from-white via-brand-yellow1/90 to-brand-orange/80 bg-clip-text text-transparent">
+              <span className="text-brand-orange">
                 Join Our
               </span>{" "}
-              <span className="bg-gradient-to-r from-brand-yellow1 via-brand-orange to-white bg-clip-text text-transparent">
+              <span className="text-white">
                 Community
               </span>
             </h2>

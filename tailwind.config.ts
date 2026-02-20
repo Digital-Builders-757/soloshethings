@@ -86,6 +86,8 @@ const config: Config = {
           yellow1: "rgb(var(--brand-yellow-1-rgb) / <alpha-value>)",
           yellow2: "rgb(var(--brand-yellow-2-rgb) / <alpha-value>)",
           orange: "rgb(var(--brand-orange-rgb) / <alpha-value>)",
+          pink: "rgb(var(--brand-pink-rgb) / <alpha-value>)",
+          pinkDark: "rgb(var(--brand-pink-dark-rgb) / <alpha-value>)",
         },
         neutral: {
           50: "rgb(var(--neutral-50) / <alpha-value>)",

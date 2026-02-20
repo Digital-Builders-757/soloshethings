@@ -38,7 +38,7 @@ export function CommunityStories() {
             <Users className="h-3 w-3" />
             Community
           </span>
-          <h2 className="font-serif text-3xl font-bold text-white md:text-4xl lg:text-5xl">Community Stories</h2>
+          <h2 className="font-serif text-3xl font-bold md:text-4xl lg:text-5xl"><span className="text-brand-orange">Community</span> <span className="text-white">Stories</span></h2>
           <p className="mt-4 text-lg text-white/70">Real stories from real solo female travelers</p>
         </div>
 

@@ -14,35 +14,39 @@
   --brand-yellow-2-rgb: 242 203 5;
   --brand-orange: #F28705;
   --brand-orange-rgb: 242 135 5;
+  --brand-pink: #E84C88;
+  --brand-pink-rgb: 232 76 136;
+  --brand-pink-dark: #C73B73;
+  --brand-pink-dark-rgb: 199 59 115;
   
   /* Semantic Color Tokens */
-  --color-primary: var(--brand-blue-1);
+  --color-primary: var(--brand-orange);
   --color-primary-2: var(--brand-blue-2);
   --color-highlight: var(--brand-yellow-1);
   --color-highlight-2: var(--brand-yellow-2);
-  --color-accent: var(--brand-orange);
+  --color-accent: var(--brand-pink);
   --color-bg-dark: #034AA6;
   
   /* Core palette - HSL for Tailwind */
-  --background: 220 25% 98%;
+  --background: 0 0% 100%;
   --foreground: 220 15% 15%;
   --card: 0 0% 100%;
   --card-foreground: 220 15% 15%;
   --popover: 0 0% 100%;
   --popover-foreground: 220 15% 15%;
-  --primary: 225 96.4% 43.3%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 220 20% 95%;
+  --primary: 30 90% 47%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 20% 96%;
   --secondary-foreground: 220 15% 20%;
-  --muted: 220 16% 94%;
+  --muted: 220 16% 95%;
   --muted-foreground: 220 10% 45%;
-  --accent: 56 96% 48.4%;
-  --accent-foreground: 0 0% 10%;
+  --accent: 338 78% 60%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
   --border: 220 15% 90%;
   --input: 220 15% 92%;
-  --ring: 225 96.4% 43.3%;
+  --ring: 30 90% 47%;
   --radius: 0.75rem;
 }
 
@@ -53,19 +57,19 @@
   --card-foreground: 0 0% 98%;
   --popover: 220 20% 12%;
   --popover-foreground: 0 0% 98%;
-  --primary: 225 96.4% 55%;
-  --primary-foreground: 0 0% 98%;
+  --primary: 30 90% 55%;
+  --primary-foreground: 0 0% 100%;
   --secondary: 220 18% 20%;
   --secondary-foreground: 0 0% 98%;
   --muted: 220 18% 20%;
   --muted-foreground: 220 10% 65%;
-  --accent: 56 96% 48.4%;
-  --accent-foreground: 0 0% 10%;
+  --accent: 338 78% 55%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 30%;
   --destructive-foreground: 0 0% 98%;
   --border: 220 18% 20%;
   --input: 220 18% 20%;
-  --ring: 225 96.4% 55%;
+  --ring: 30 90% 55%;
 }
 
 @layer base {
