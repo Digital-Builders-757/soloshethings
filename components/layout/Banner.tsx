@@ -13,7 +13,7 @@ export function Banner() {
   return (
     <div>
       {/* Top Announcement Banner */}
-      <div className="bg-brand-navy py-2.5 text-center">
+      <div className="bg-brand-blue py-2.5 text-center">
         <p className="text-sm font-medium tracking-wide text-white">
           Discover your Solo SHE Adventure!
         </p>
@@ -33,8 +33,8 @@ export function Banner() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-brand-navy/40" />
-        <div className="absolute inset-x-0 bottom-0 overflow-hidden bg-brand-navy/80 py-2">
+        <div className="absolute inset-0 bg-brand-blue/40" />
+        <div className="absolute inset-x-0 bottom-0 overflow-hidden bg-brand-blue/80 py-2">
           <div className="animate-marquee whitespace-nowrap">
             <span className="mx-4 inline-block text-xs font-medium uppercase tracking-[0.25em] text-white">
               {marqueeText}

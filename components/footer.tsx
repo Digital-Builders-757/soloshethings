@@ -36,8 +36,8 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link href="/" className="font-serif text-2xl font-bold text-brand-navy">
-              Solo <span className="text-brand-coral">SHE</span> Things
+            <Link href="/" className="font-serif text-2xl font-bold text-brand-blue">
+              Solo <span className="text-brand-orange">SHE</span> Things
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
               A safe space for solo female travelers to discover, share, and connect. Empowering women
@@ -50,7 +50,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand-coral hover:text-brand-coral"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand-orange hover:text-brand-orange"
                   aria-label={social.label}
                 >
                   <social.icon className="h-5 w-5" />
@@ -61,13 +61,13 @@ export function Footer() {
 
           {/* Destinations */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-navy">Destinations</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Destinations</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.destinations.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-coral"
+                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
                   >
                     {link.label}
                   </Link>
@@ -78,13 +78,13 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-navy">Resources</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Resources</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-coral"
+                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
                   >
                     {link.label}
                   </Link>
@@ -95,13 +95,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-navy">Company</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Company</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-coral"
+                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
                   >
                     {link.label}
                   </Link>
@@ -117,10 +117,10 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Solo SHE Things. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-brand-coral">
+            <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground transition-colors hover:text-brand-coral">
+            <Link href="/terms" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
               Terms of Service
             </Link>
           </div>

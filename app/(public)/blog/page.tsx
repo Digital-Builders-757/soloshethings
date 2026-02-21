@@ -23,7 +23,7 @@ export default async function BlogPage() {
   return (
     <main className="min-h-screen py-16 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-navy">SHE <span className="text-brand-coral">Stories</span> & Guides</h1>
+        <h1 className="text-4xl font-bold mb-8 text-brand-orange">SHE <span className="text-brand-blue">Stories</span> & Guides</h1>
         
         {!wpConfigured || posts.length === 0 ? (
           <div className="text-center py-16">
@@ -88,7 +88,7 @@ export default async function BlogPage() {
                       )}
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="text-brand-coral hover:text-brand-coral/80 font-medium"
+                        className="text-brand-orange hover:text-brand-orange/80 font-medium"
                       >
                         Read More →
                       </Link>

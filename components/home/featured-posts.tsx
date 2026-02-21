@@ -9,13 +9,13 @@ interface FeaturedPostsProps {
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-12 text-center">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
         {eyebrow}
       </p>
-      <h2 className="font-serif text-3xl font-bold text-brand-navy md:text-4xl lg:text-5xl text-balance">
+      <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
         {title}
       </h2>
-      <div className="mx-auto mt-4 h-px w-16 bg-brand-coral" />
+      <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
     </div>
   )
 }
@@ -77,19 +77,19 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
 
                 {/* Content */}
                 <div className="flex flex-col gap-3 p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-gold">
                     {new Date(post.date).toLocaleDateString("en-US", {
                       month: "long",
                       year: "numeric",
                     })}
                   </p>
-                  <h3 className="font-serif text-xl font-bold text-brand-navy transition-colors duration-300 group-hover:text-brand-coral line-clamp-2">
+                  <h3 className="font-serif text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-brand-orange line-clamp-2">
                     {post.title.rendered}
                   </h3>
                   {excerpt && (
                     <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{excerpt}...</p>
                   )}
-                  <span className="mt-2 text-sm font-semibold text-brand-coral">
+                  <span className="mt-2 text-sm font-semibold text-brand-orange">
                     See How SHE Did It &rarr;
                   </span>
                 </div>
@@ -101,7 +101,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-navy px-8 py-3 text-sm font-semibold text-brand-navy transition-all hover:bg-brand-navy hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-blue px-8 py-3 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue hover:text-white"
           >
             View All Stories
           </Link>

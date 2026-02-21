@@ -24,15 +24,15 @@ export function NewsletterSection() {
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-xl text-center">
           {/* Eyebrow */}
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
             Stay Connected
           </p>
 
           {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-navy md:text-4xl lg:text-5xl text-balance">
+          <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
             The Connection Collective
           </h2>
-          <div className="mx-auto mt-4 h-px w-16 bg-brand-coral" />
+          <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
 
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             Sign up for the inside scoop on all the latest tips, tricks, photos, and destination guides
@@ -50,13 +50,13 @@ export function NewsletterSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-12 rounded-full border-2 border-border bg-white pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:border-brand-coral sm:rounded-r-none"
+                  className="h-12 rounded-full border-2 border-border bg-white pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:border-brand-orange sm:rounded-r-none"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={status === "loading"}
-                className="h-12 gap-2 rounded-full bg-brand-coral px-6 text-white transition-all hover:bg-brand-coral/90 sm:rounded-l-none"
+                className="h-12 gap-2 rounded-full bg-brand-orange px-6 text-white transition-all hover:bg-brand-orange/90 sm:rounded-l-none"
               >
                 {status === "loading" ? (
                   <>
@@ -79,8 +79,8 @@ export function NewsletterSection() {
           </form>
 
           {status === "success" && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-sage/20 px-4 py-2 text-sm text-brand-navy">
-              <Check className="h-4 w-4 text-brand-sage" />
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-gold/20 px-4 py-2 text-sm text-brand-blue">
+              <Check className="h-4 w-4 text-brand-gold" />
               Welcome to the collective! Check your inbox for a confirmation.
             </div>
           )}

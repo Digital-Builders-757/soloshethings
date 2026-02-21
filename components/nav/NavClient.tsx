@@ -63,7 +63,7 @@ export function NavClient({
       <Link href="/signup">
         <Button
           size="sm"
-          className="rounded-full bg-brand-coral px-6 text-white transition-all hover:bg-brand-coral/90"
+          className="rounded-full bg-brand-orange px-6 text-white transition-all hover:bg-brand-orange/90"
         >
           Get Started
         </Button>
@@ -74,11 +74,11 @@ export function NavClient({
   return (
     <>
       {/* Main Nav - Black/Navy editorial */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-navy">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-blue">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="font-serif text-2xl font-bold tracking-wide text-white">
-              Solo <span className="text-brand-coral">SHE</span> Things
+              Solo <span className="text-brand-orange">SHE</span> Things
             </Link>
 
             {/* Desktop Navigation */}
@@ -113,7 +113,7 @@ export function NavClient({
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-white/10 bg-brand-navy md:hidden">
+          <div className="border-t border-white/10 bg-brand-blue md:hidden">
             <nav className="container mx-auto flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
               {allLinks.map((link) => (
                 <Link
@@ -145,7 +145,7 @@ export function NavClient({
                       </Button>
                     </Link>
                     <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="w-full bg-brand-coral text-white hover:bg-brand-coral/90">
+                      <Button className="w-full bg-brand-orange text-white hover:bg-brand-orange/90">
                         Get Started
                       </Button>
                     </Link>
@@ -161,7 +161,7 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-brand-navy shadow-lg transition-all duration-500",
+            "fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-brand-blue shadow-lg transition-all duration-500",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"
@@ -169,7 +169,7 @@ export function NavClient({
           <div className="container mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <Link href="/" className="font-serif text-xl font-bold tracking-wide text-white">
-                Solo <span className="text-brand-coral">SHE</span> Things
+                Solo <span className="text-brand-orange">SHE</span> Things
               </Link>
 
               <div className="hidden items-center gap-6 md:flex">

@@ -75,7 +75,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="max-w-4xl mx-auto">
         <article>
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-navy">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-orange">
               {post.title.rendered}
             </h1>
             <div className="text-neutral-600 mb-6">
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="section-divider mb-8"></div>
           <Link
             href="/blog"
-            className="text-brand-coral hover:text-brand-coral/80 font-medium transition-colors inline-flex items-center gap-2"
+            className="text-brand-orange hover:text-brand-orange/80 font-medium transition-colors inline-flex items-center gap-2"
           >
             ← Back to Blog
           </Link>

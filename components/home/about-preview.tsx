@@ -25,14 +25,14 @@ export function AboutPreview() {
 
           {/* Content */}
           <div className="flex flex-col gap-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
               Meet the Founder
             </p>
 
-            <h2 className="font-serif text-3xl font-bold text-brand-navy md:text-4xl text-balance">
+            <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl text-balance">
               About Solo SHE Things
             </h2>
-            <div className="h-px w-16 bg-brand-coral" />
+            <div className="h-px w-16 bg-brand-orange" />
 
             <p className="text-lg leading-relaxed text-muted-foreground">
               We are more than just a platform -- we are a movement. Solo SHE Things empowers women
@@ -44,10 +44,10 @@ export function AboutPreview() {
             <div className="mt-4 grid grid-cols-3 gap-6">
               {stats.map((stat) => (
                 <div key={stat.label} className="rounded-xl border border-border bg-brand-cream p-4 text-center">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-coral/10">
-                    <stat.icon className="h-5 w-5 text-brand-coral" />
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-orange/10">
+                    <stat.icon className="h-5 w-5 text-brand-orange" />
                   </div>
-                  <p className="mt-2 font-serif text-2xl font-bold text-brand-navy">{stat.value}</p>
+                  <p className="mt-2 font-serif text-2xl font-bold text-brand-blue">{stat.value}</p>
                   <p className="text-xs text-muted-foreground">{stat.label}</p>
                 </div>
               ))}
@@ -55,7 +55,7 @@ export function AboutPreview() {
 
             <Link
               href="/about"
-              className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg"
+              className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg"
             >
               Read My Story
               <ArrowRight className="h-4 w-4" />

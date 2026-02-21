@@ -3,89 +3,94 @@
 @tailwind utilities;
 
 :root {
-  /* Soft Feminine Travel Palette */
+  /* Brand Palette */
+  --brand-pink: #FCC5E2;
+  --brand-pink-rgb: 252 197 226;
+  --brand-orange: #FB5315;
+  --brand-orange-rgb: 251 83 21;
+  --brand-gold: #DD9917;
+  --brand-gold-rgb: 221 153 23;
   --brand-peach: #FFD0A9;
   --brand-peach-rgb: 255 208 169;
-  --brand-coral: #E88D67;
-  --brand-coral-rgb: 232 141 103;
-  --brand-blush: #F4C2C2;
-  --brand-blush-rgb: 244 194 194;
-  --brand-sage: #A8C3A0;
-  --brand-sage-rgb: 168 195 160;
-  --brand-navy: #2C3E50;
-  --brand-navy-rgb: 44 62 80;
+  --brand-blue: #2044E0;
+  --brand-blue-rgb: 32 68 224;
+
+  /* Semantic aliases used across components */
+  --brand-coral: #FB5315;
+  --brand-coral-rgb: 251 83 21;
+  --brand-navy: #2044E0;
+  --brand-navy-rgb: 32 68 224;
+  --brand-blush: #FCC5E2;
+  --brand-blush-rgb: 252 197 226;
+  --brand-sage: #DD9917;
+  --brand-sage-rgb: 221 153 23;
   --brand-cream: #FFF8F0;
   --brand-cream-rgb: 255 248 240;
-  --brand-warm-gray: #6B7280;
-  --brand-warm-gray-rgb: 107 114 128;
 
   /* Legacy mappings for backward compat */
-  --brand-blue-1: #2C3E50;
-  --brand-blue-1-rgb: 44 62 80;
-  --brand-blue-2: #34495E;
-  --brand-blue-2-rgb: 52 73 94;
+  --brand-blue-1: #2044E0;
+  --brand-blue-1-rgb: 32 68 224;
+  --brand-blue-2: #1A38C0;
+  --brand-blue-2-rgb: 26 56 192;
   --brand-yellow-1: #FFD0A9;
   --brand-yellow-1-rgb: 255 208 169;
-  --brand-yellow-2: #F4C2C2;
-  --brand-yellow-2-rgb: 244 194 194;
-  --brand-orange: #E88D67;
-  --brand-orange-rgb: 232 141 103;
-  --brand-pink: #F4C2C2;
-  --brand-pink-rgb: 244 194 194;
-  --brand-pink-dark: #E88D67;
-  --brand-pink-dark-rgb: 232 141 103;
+  --brand-yellow-2: #FCC5E2;
+  --brand-yellow-2-rgb: 252 197 226;
+  --brand-orange-rgb-legacy: 251 83 21;
+  --brand-pink-dark: #E0408C;
+  --brand-pink-dark-rgb: 224 64 140;
 
   /* Semantic Color Tokens */
-  --color-primary: var(--brand-coral);
-  --color-primary-2: var(--brand-navy);
+  --color-primary: var(--brand-orange);
+  --color-primary-2: var(--brand-blue);
   --color-highlight: var(--brand-peach);
-  --color-highlight-2: var(--brand-blush);
-  --color-accent: var(--brand-sage);
-  --color-bg-dark: var(--brand-navy);
+  --color-highlight-2: var(--brand-pink);
+  --color-accent: var(--brand-gold);
+  --color-bg-dark: var(--brand-blue);
 
   /* Core palette - HSL for Tailwind */
   --background: 0 0% 100%;
-  --foreground: 210 18% 20%;
+  --foreground: 220 15% 15%;
   --card: 0 0% 100%;
-  --card-foreground: 210 18% 20%;
+  --card-foreground: 220 15% 15%;
   --popover: 0 0% 100%;
-  --popover-foreground: 210 18% 20%;
-  --primary: 20 70% 59%;
+  --popover-foreground: 220 15% 15%;
+  --primary: 16 97% 53%;
   --primary-foreground: 0 0% 100%;
   --secondary: 30 100% 97%;
-  --secondary-foreground: 210 18% 20%;
+  --secondary-foreground: 220 15% 15%;
   --muted: 30 20% 96%;
   --muted-foreground: 215 14% 45%;
-  --accent: 110 24% 58%;
+  --accent: 43 82% 48%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
   --border: 30 20% 90%;
   --input: 30 20% 92%;
-  --ring: 20 70% 59%;
+  --ring: 16 97% 53%;
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: 210 18% 10%;
+  --background: 220 20% 10%;
   --foreground: 0 0% 98%;
-  --card: 210 18% 12%;
+  --card: 220 20% 12%;
   --card-foreground: 0 0% 98%;
-  --popover: 210 18% 12%;
+  --popover: 220 20% 12%;
   --popover-foreground: 0 0% 98%;
-  --primary: 20 70% 62%;
+  --primary: 16 97% 58%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 210 15% 20%;
+  --secondary: 220 15% 20%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 210 15% 20%;
-  --muted-foreground: 210 10% 65%;
-  --accent: 110 24% 50%;
+  --muted: 220 15% 20%;
+  --muted-foreground: 220 10% 65%;
+  --accent: 43 82% 52%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 30%;
   --destructive-foreground: 0 0% 98%;
-  --border: 210 15% 20%;
-  --input: 210 15% 20%;
-  --ring: 20 70% 62%;
+  --border: 220 15% 20%;
+  --input: 220 15% 20%;
+  --ring: 16 97% 58%;
 }
 
 @layer base {
@@ -121,12 +126,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-coral);
+  background: var(--brand-orange);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-navy);
+  background: var(--brand-blue);
 }
 
 /* Clean image utility */

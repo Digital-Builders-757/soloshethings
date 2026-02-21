@@ -48,20 +48,24 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
+          /* Exact palette */
+          pink: "rgb(var(--brand-pink-rgb) / <alpha-value>)",
+          orange: "rgb(var(--brand-orange-rgb) / <alpha-value>)",
+          gold: "rgb(var(--brand-gold-rgb) / <alpha-value>)",
           peach: "rgb(var(--brand-peach-rgb) / <alpha-value>)",
+          blue: "rgb(var(--brand-blue-rgb) / <alpha-value>)",
+          cream: "rgb(var(--brand-cream-rgb) / <alpha-value>)",
+          /* Semantic aliases */
           coral: "rgb(var(--brand-coral-rgb) / <alpha-value>)",
+          navy: "rgb(var(--brand-navy-rgb) / <alpha-value>)",
           blush: "rgb(var(--brand-blush-rgb) / <alpha-value>)",
           sage: "rgb(var(--brand-sage-rgb) / <alpha-value>)",
-          navy: "rgb(var(--brand-navy-rgb) / <alpha-value>)",
-          cream: "rgb(var(--brand-cream-rgb) / <alpha-value>)",
-          /* Legacy aliases */
+          pinkDark: "rgb(var(--brand-pink-dark-rgb) / <alpha-value>)",
+          /* Legacy */
           blue1: "rgb(var(--brand-blue-1-rgb) / <alpha-value>)",
           blue2: "rgb(var(--brand-blue-2-rgb) / <alpha-value>)",
           yellow1: "rgb(var(--brand-yellow-1-rgb) / <alpha-value>)",
           yellow2: "rgb(var(--brand-yellow-2-rgb) / <alpha-value>)",
-          orange: "rgb(var(--brand-orange-rgb) / <alpha-value>)",
-          pink: "rgb(var(--brand-pink-rgb) / <alpha-value>)",
-          pinkDark: "rgb(var(--brand-pink-dark-rgb) / <alpha-value>)",
         },
         neutral: {
           50: "rgb(var(--neutral-50) / <alpha-value>)",
