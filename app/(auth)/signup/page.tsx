@@ -17,7 +17,7 @@ export default function SignupPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-16">
       <div className="max-w-md w-full surface-card rounded-2xl p-8">
-        <h1 className="text-4xl font-bold mb-8 text-center text-brand-pink">Create Account</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center text-brand-navy">Create Account</h1>
 
         {state?.error && (
           <div className="mb-4 p-4 bg-red-50/80 border border-red-200/60 rounded-xl text-red-700 text-sm backdrop-blur-sm">
@@ -71,7 +71,7 @@ export default function SignupPage() {
             />
           </div>
 
-          <div className="bg-brand-pink/10 border border-brand-pink/20 text-foreground p-4 rounded-xl backdrop-blur-sm">
+          <div className="bg-brand-peach/20 border border-brand-peach/40 text-foreground p-4 rounded-xl">
             <p className="text-sm font-medium">
               🎁 Start with a 7-day free trial - Full access to all features
             </p>
@@ -79,7 +79,7 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full bg-brand-pink text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-pinkDark transition-all active:scale-[0.98]"
+            className="w-full bg-brand-coral text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-coral/90 transition-all active:scale-[0.98]"
           >
             Sign Up
           </button>
@@ -88,7 +88,7 @@ export default function SignupPage() {
         <div className="mt-6 text-center">
           <Link
             href="/login"
-            className="text-brand-pink hover:text-brand-pinkDark font-medium"
+            className="text-brand-coral hover:text-brand-coral/80 font-medium"
           >
             Already have an account? Sign in
           </Link>

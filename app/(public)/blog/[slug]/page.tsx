@@ -68,14 +68,14 @@ export default async function BlogPostPage({ params }: Props) {
 
   const featuredImage =
     post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
-  const author = post._embedded?.author?.[0]?.name || "SoloSheThings";
+  const author = post._embedded?.author?.[0]?.name || "Solo SHE Things";
 
   return (
     <main className="min-h-screen py-16 px-4">
       <div className="max-w-4xl mx-auto">
         <article>
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-orange">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-navy">
               {post.title.rendered}
             </h1>
             <div className="text-neutral-600 mb-6">
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="section-divider mb-8"></div>
           <Link
             href="/blog"
-            className="text-brand-orange hover:text-brand-orange/80 font-medium transition-colors inline-flex items-center gap-2"
+            className="text-brand-coral hover:text-brand-coral/80 font-medium transition-colors inline-flex items-center gap-2"
           >
             ← Back to Blog
           </Link>

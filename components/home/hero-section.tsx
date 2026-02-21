@@ -1,83 +1,54 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { HeroCarousel } from "./hero-carousel"
-import { Sparkles, ArrowDown } from "lucide-react"
+import Image from "next/image"
+import { heroImages } from "@/lib/data"
+
+const captions = [
+  "Embrace the Unknown",
+  "Find Your Courage",
+  "Wander Freely",
+  "Connect Deeply",
+]
 
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const textRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current || !textRef.current) return
-
-      const scrolled = window.scrollY
-      const rate = scrolled * 0.3
-
-      textRef.current.style.transform = `translateY(${rate}px)`
-      textRef.current.style.opacity = `${1 - scrolled / 600}`
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
   return (
-    <section
-      ref={sectionRef}
-      id="heroSection"
-      className="relative min-h-[80vh] overflow-hidden bg-white py-16 md:py-24"
-    >
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 home-hero-grid" />
+    <section className="bg-white py-16 md:py-24">
+      <div className="container mx-auto px-6">
+        {/* Heading */}
+        <div className="mb-12 text-center">
+          <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-brand-navy md:text-5xl lg:text-6xl text-balance">
+            Solo <span className="text-brand-coral">SHE</span> Things
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            A travel blog and community for adventurous solo female travelers.
+            Discover destinations, safety tips, and stories from fearless women around the world.
+          </p>
+        </div>
 
-      {/* Floating Orbs */}
-      <div className="absolute left-[10%] top-[20%] h-64 w-64 rounded-full bg-brand-orange/10 blur-3xl animate-float" />
-      <div
-        className="absolute right-[15%] bottom-[20%] h-48 w-48 rounded-full bg-brand-blue1/10 blur-3xl animate-float"
-        style={{ animationDelay: "2s" }}
-      />
-      <div
-        className="absolute left-[50%] top-[50%] h-32 w-32 rounded-full bg-brand-yellow1/8 blur-2xl animate-float"
-        style={{ animationDelay: "4s" }}
-      />
-
-      <div className="container relative mx-auto px-6">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          {/* Text Content with Parallax */}
-          <div ref={textRef} className="flex flex-col gap-6">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange/10 border border-brand-orange/20 px-4 py-2 text-sm font-medium text-foreground">
-              <Sparkles className="h-4 w-4 text-brand-orange" />
-              Welcome to Your Next Adventure
+        {/* 4-Image Strip */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {heroImages.map((image, index) => (
+            <div
+              key={image.id}
+              className="group relative h-[320px] overflow-hidden rounded-xl sm:h-[380px] lg:h-[420px]"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                priority={index < 2}
+                loading={index >= 2 ? "lazy" : undefined}
+              />
+              {/* Caption overlay */}
+              <div className="absolute inset-x-0 bottom-0 bg-brand-navy/60 px-4 py-3 backdrop-blur-sm transition-opacity duration-300">
+                <p className="text-center text-sm font-semibold tracking-wide text-white">
+                  {captions[index]}
+                </p>
+              </div>
             </div>
-
-            <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl">
-              <span className="inline-block text-brand-orange">
-                Travel Blog
-              </span>{" "}
-              <span className="text-foreground">for Adventurous Solo Female Travelers</span>
-            </h1>
-
-            <p className="text-lg leading-relaxed text-neutral-700 md:text-xl">
-              Discover incredible destinations, safety tips, and stories from fearless solo female travelers around the
-              world
-            </p>
-
-            {/* Scroll indicator */}
-            <div className="mt-8 flex items-center gap-2 text-sm text-neutral-600">
-              <ArrowDown className="h-4 w-4 animate-bounce" />
-              <span>Scroll to explore</span>
-            </div>
-          </div>
-
-          {/* Carousel with glow effect */}
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-brand-orange/25 via-brand-yellow1/15 to-brand-blue1/20 blur-xl opacity-60" />
-            <div className="relative">
-              <HeroCarousel />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

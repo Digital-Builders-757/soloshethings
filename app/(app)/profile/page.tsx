@@ -48,7 +48,7 @@ export default async function ProfilePage() {
                 </p>
                 <a
                   href="/dashboard"
-                  className="inline-block bg-brand-pink text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-pinkDark transition-all"
+                  className="inline-block bg-brand-coral text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-coral/90 transition-all"
                 >
                   Return to Dashboard
                 </a>
@@ -71,7 +71,7 @@ export default async function ProfilePage() {
               </p>
               <a
                 href="/dashboard"
-                className="inline-block bg-brand-blue1 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-blue2 transition-all"
+                className="inline-block bg-brand-coral text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-coral/90 transition-all"
               >
                 Return to Dashboard
               </a>

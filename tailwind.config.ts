@@ -7,42 +7,9 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
-    // Custom utility classes from @layer utilities in globals.css
-    // These must be safelisted to prevent tree-shaking
-    'focus-ring',
-    'btn-glow',
     'surface-card',
-    'surface-glass',
-    'lift-hover',
-    'hairline-border',
-    'section-divider',
-    'hero-wash',
-    'postcard-media',
-    'postcard-caption',
-    'eyebrow-text',
-    'narrative-interlude',
-    'animate-float-slow',
-    'animate-float-medium',
-    'animate-float-fast',
-    'animate-gentle-rise',
-    'animate-text-flow',
-    'animate-gentle-glow',
-    'animate-gentle-pulse',
-    'animate-fade-in',
-    'animate-slide-up',
-    'animate-scale-in',
-    'animate-spin-slow',
-    'bg-brand-sunrise',
-    'bg-brand-ocean',
-    'bg-brand-spectrum',
-    'bg-brand-highlight',
-    'home-hero-bg',
-    'home-hero-grid',
-    'home-community-bg',
-    'home-community-radials',
-    'home-community-grid',
-    'home-newsletter-bg',
-    'home-newsletter-radials',
+    'image-clean',
+    'overlay-neutral-vignette',
   ],
   theme: {
     extend: {
@@ -81,6 +48,13 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
+          peach: "rgb(var(--brand-peach-rgb) / <alpha-value>)",
+          coral: "rgb(var(--brand-coral-rgb) / <alpha-value>)",
+          blush: "rgb(var(--brand-blush-rgb) / <alpha-value>)",
+          sage: "rgb(var(--brand-sage-rgb) / <alpha-value>)",
+          navy: "rgb(var(--brand-navy-rgb) / <alpha-value>)",
+          cream: "rgb(var(--brand-cream-rgb) / <alpha-value>)",
+          /* Legacy aliases */
           blue1: "rgb(var(--brand-blue-1-rgb) / <alpha-value>)",
           blue2: "rgb(var(--brand-blue-2-rgb) / <alpha-value>)",
           yellow1: "rgb(var(--brand-yellow-1-rgb) / <alpha-value>)",
@@ -110,8 +84,8 @@ const config: Config = {
         '4xl': '2rem',    // 32px
       },
       fontFamily: {
-        sans: ["var(--font-roboto)", "system-ui", "sans-serif"],
-        serif: ["var(--font-raleway)", "Georgia", "serif"],
+        sans: ["var(--font-rokkitt)", "Georgia", "serif"],
+        serif: ["var(--font-rokkitt)", "Georgia", "serif"],
       },
       fontSize: {
         'display-xl': ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }],   // 56px

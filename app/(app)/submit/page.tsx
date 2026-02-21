@@ -14,10 +14,10 @@ export default function SubmitPage() {
   return (
     <main className="min-h-screen py-16 px-4">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-pink">Submit a Safe Spot</h1>
+        <h1 className="text-4xl font-bold mb-8 text-brand-navy">Submit a Safe Spot</h1>
         
         {/* Auth-gated placeholder */}
-        <div className="bg-brand-yellow1 text-black p-6 rounded-lg mb-8">
+        <div className="bg-brand-peach/30 border border-brand-peach/50 text-foreground p-6 rounded-lg mb-8">
           <p className="font-semibold">
             🔒 This is an authenticated route. Full form implementation coming in Phase 1.
           </p>
@@ -33,7 +33,7 @@ export default function SubmitPage() {
               type="text"
               id="title"
               name="title"
-              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-pink focus:border-transparent"
+              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-coral focus:border-transparent"
               placeholder="Name of the safe spot or story title"
               disabled
             />
@@ -47,7 +47,7 @@ export default function SubmitPage() {
               id="description"
               name="description"
               rows={6}
-              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-pink focus:border-transparent"
+              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-coral focus:border-transparent"
               placeholder="Tell us about this safe spot or share your travel story..."
               disabled
             />
@@ -72,7 +72,7 @@ export default function SubmitPage() {
             <select
               id="privacy"
               name="privacy"
-              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-pink focus:border-transparent"
+              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand-coral focus:border-transparent"
               disabled
             >
               <option value="public">Public - All authenticated users can see</option>
@@ -84,7 +84,7 @@ export default function SubmitPage() {
             <p className="text-sm text-neutral-700">
               <strong>Privacy Note:</strong> Your photos are yours. We do not use face
               recognition technology on user-uploaded content. See our{" "}
-              <a href="/privacy" className="text-brand-pink hover:text-brand-pinkDark">
+              <a href="/privacy" className="text-brand-coral hover:text-brand-coral/80">
                 Privacy Policy
               </a>{" "}
               for more information.
@@ -93,7 +93,7 @@ export default function SubmitPage() {
           
           <button
             type="submit"
-            className="w-full bg-brand-pink text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-pinkDark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-coral text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-coral/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled
           >
             Submit (Coming in Phase 1)

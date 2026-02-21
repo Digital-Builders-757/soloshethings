@@ -15,14 +15,14 @@ export default function CollectionsPage() {
   return (
     <main className="min-h-screen py-16 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-orange">Browse Collections</h1>
+        <h1 className="text-4xl font-bold mb-8 text-brand-navy">Browse Collections</h1>
         
         {/* Filter UI Stub */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Filter by Theme</h2>
           <div className="flex flex-wrap gap-3">
             {/* Tag filters - will be implemented with real data */}
-            <button className="px-4 py-2 bg-brand-orange text-white rounded-lg hover:bg-brand-orange/90 transition-colors">
+            <button className="px-4 py-2 bg-brand-coral text-white rounded-lg hover:bg-brand-coral/90 transition-colors">
               Safety Level
             </button>
             <button className="px-4 py-2 bg-neutral-200 text-neutral-900 rounded-lg hover:bg-neutral-300 transition-colors">
@@ -55,7 +55,7 @@ export default function CollectionsPage() {
               </p>
               <a
                 href="/collections/safety-level"
-                className="text-brand-orange hover:text-brand-orange/80 font-medium"
+                className="text-brand-coral hover:text-brand-coral/80 font-medium"
               >
                 View Collection →
               </a>
@@ -71,7 +71,7 @@ export default function CollectionsPage() {
               </p>
               <a
                 href="/collections/budget"
-                className="text-brand-orange hover:text-brand-orange/80 font-medium"
+                className="text-brand-coral hover:text-brand-coral/80 font-medium"
               >
                 View Collection →
               </a>
@@ -86,7 +86,7 @@ export default function CollectionsPage() {
               </p>
               <a
                 href="/collections/wellness"
-                className="text-brand-orange hover:text-brand-orange/80 font-medium"
+                className="text-brand-coral hover:text-brand-coral/80 font-medium"
               >
                 View Collection →
               </a>

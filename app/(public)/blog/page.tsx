@@ -23,7 +23,7 @@ export default async function BlogPage() {
   return (
     <main className="min-h-screen py-16 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-orange">Travel Guides & Stories</h1>
+        <h1 className="text-4xl font-bold mb-8 text-brand-navy">SHE <span className="text-brand-coral">Stories</span> & Guides</h1>
         
         {!wpConfigured || posts.length === 0 ? (
           <div className="text-center py-16">
@@ -36,7 +36,7 @@ export default async function BlogPage() {
                   ? "We're preparing amazing travel content for you. Check back soon!"
                   : "No blog posts available at the moment. Check back soon!"}
               </p>
-              <div className="bg-brand-yellow1/90 text-black p-4 rounded-xl backdrop-blur-sm">
+              <div className="bg-brand-peach/30 border border-brand-peach/50 text-foreground p-4 rounded-xl">
                 <p className="text-sm font-medium">
                   ✨ Stay tuned for travel guides, destination spotlights, and solo travel stories!
                 </p>
@@ -88,7 +88,7 @@ export default async function BlogPage() {
                       )}
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="text-brand-orange hover:text-brand-orange/80 font-medium"
+                        className="text-brand-coral hover:text-brand-coral/80 font-medium"
                       >
                         Read More →
                       </Link>
