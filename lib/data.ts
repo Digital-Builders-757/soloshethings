@@ -145,10 +145,10 @@ export interface BlogPost {
   ]
   
   export const heroImages = [
-    { id: 1, src: "/images/hero-1.jpg", alt: "Solo traveler in front of Belem Tower in Lisbon, Portugal", caption: "Lisbon, Portugal" },
-    { id: 2, src: "/images/hero-2.jpeg", alt: "Solo traveler at the Reichstag building in Berlin, Germany", caption: "Berlin, Germany" },
-    { id: 3, src: "/images/hero-3.jpeg", alt: "Solo traveler watching elephants at sunset from a boat in Botswana", caption: "Okavango Delta, Botswana" },
-    { id: 4, src: "/images/hero-4.jpg", alt: "Solo traveler posing with a bronze sculpture at night", caption: "Exploring the World" },
+    { id: 1, src: "/images/hero-1.jpg", alt: "Solo traveler in front of Belem Tower in Portugal", caption: "Portugal" },
+    { id: 2, src: "/images/hero-2.jpeg", alt: "Solo traveler at the Reichstag building in Berlin", caption: "Berlin" },
+    { id: 3, src: "/images/hero-3.jpeg", alt: "Solo traveler watching elephants at sunset on the Zambezi River", caption: "Zambezi River" },
+    { id: 4, src: "/images/hero-4.jpg", alt: "Solo traveler exploring a sculpture in Pamplona, Spain", caption: "Pamplona, Spain" },
   ]
   
   export const categories = [
