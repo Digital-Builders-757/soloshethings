@@ -3,16 +3,9 @@
 import Image from "next/image"
 import { heroImages } from "@/lib/data"
 
-const captions = [
-  "Embrace the Unknown",
-  "Find Your Courage",
-  "Wander Freely",
-  "Connect Deeply",
-]
-
 export function HeroSection() {
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-background py-16 md:py-24">
       <div className="container mx-auto px-6">
         {/* Heading */}
         <div className="mb-12 text-center">
@@ -26,25 +19,25 @@ export function HeroSection() {
         </div>
 
         {/* 4-Image Strip */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
           {heroImages.map((image, index) => (
             <div
               key={image.id}
-              className="group relative h-[320px] overflow-hidden rounded-xl sm:h-[380px] lg:h-[420px]"
+              className="group relative aspect-[3/4] overflow-hidden rounded-xl"
             >
               <Image
                 src={image.src}
                 alt={image.alt}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                sizes="(max-width: 1024px) 50vw, 25vw"
                 priority={index < 2}
                 loading={index >= 2 ? "lazy" : undefined}
               />
               {/* Caption overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-brand-navy/60 px-4 py-3 backdrop-blur-sm transition-opacity duration-300">
+              <div className="absolute inset-x-0 bottom-0 bg-brand-navy/60 px-4 py-3 backdrop-blur-sm">
                 <p className="text-center text-sm font-semibold tracking-wide text-white">
-                  {captions[index]}
+                  {image.caption}
                 </p>
               </div>
             </div>
