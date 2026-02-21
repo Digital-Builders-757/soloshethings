@@ -74,7 +74,7 @@ export function NavClient({
   return (
     <>
       {/* Main Nav - Black/Navy editorial */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-blue">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="font-serif text-2xl font-bold tracking-wide text-white">
@@ -113,7 +113,7 @@ export function NavClient({
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-white/10 bg-black md:hidden">
+          <div className="border-t border-white/10 bg-brand-blue md:hidden">
             <nav className="container mx-auto flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
               {allLinks.map((link) => (
                 <Link
@@ -161,7 +161,7 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black shadow-lg transition-all duration-500",
+            "fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-brand-blue shadow-lg transition-all duration-500",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"
