@@ -8,13 +8,13 @@ export function CommunityStories() {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-peach">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#FFD0A9]">
             Real Travelers, Real Stories
           </p>
-          <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
+          <h2 className="font-serif text-3xl font-bold text-[#FFD0A9] md:text-4xl lg:text-5xl text-balance">
             Community Solo Stories
           </h2>
-          <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
+          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-[#FFD0A9]" />
         </div>
 
         {/* Story Cards */}
@@ -34,7 +34,7 @@ export function CommunityStories() {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-brand-blue/70 px-4 py-3 backdrop-blur-sm">
-                  <h3 className="font-serif text-lg font-semibold text-brand-peach">
+                  <h3 className="font-serif text-lg font-semibold text-[#FFD0A9]">
                     {story.title}
                   </h3>
                 </div>
@@ -42,7 +42,7 @@ export function CommunityStories() {
 
               {/* Content */}
               <div className="p-5">
-                <p className="line-clamp-3 text-sm leading-relaxed text-brand-peach/80">
+                <p className="line-clamp-3 text-sm leading-relaxed text-[#FFD0A9]/80">
                   {story.excerpt}
                 </p>
                 <div className="mt-4 flex items-center gap-3">

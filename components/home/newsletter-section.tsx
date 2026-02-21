@@ -35,8 +35,7 @@ export function NewsletterSection() {
           <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
 
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Sign up for the inside scoop on all the latest tips, tricks, photos, and destination guides
-            from fellow solo SHE travelers.
+            Sign up to stay current on all of my latest tips, tricks, photos, and destination guides.
           </p>
 
           {/* Form */}

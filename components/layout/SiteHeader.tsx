@@ -13,9 +13,12 @@ type SiteHeaderProps = {
 };
 
 const publicNavLinks = [
-  { href: "/collections", label: "Explore" },
-  { href: "/blog", label: "Stories" },
-  { href: "/map", label: "Safe Spots" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Travel + SHE Things" },
+  { href: "/collections", label: "Solo SHEntries" },
+  { href: "/shop", label: "Shop" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const authNavLinks = [
