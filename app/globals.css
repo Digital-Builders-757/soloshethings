@@ -3,28 +3,35 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors (Hex + RGB triplets for opacity utilities) */
-  --brand-blue-1: #0439D9;
-  --brand-blue-1-rgb: 4 57 217;
-  --brand-blue-2: #034AA6;
-  --brand-blue-2-rgb: 3 74 166;
-  --brand-yellow-1: #F2E205;
-  --brand-yellow-1-rgb: 242 226 5;
-  --brand-yellow-2: #F2CB05;
-  --brand-yellow-2-rgb: 242 203 5;
-  --brand-orange: #F28705;
-  --brand-orange-rgb: 242 135 5;
+  /* Brand Palette - 5 colors only */
+  --palette-light-pink: #FCC5E2;
+  --palette-orange: #FB5315;
+  --palette-mustard: #DD9917;
+  --palette-pale-peach: #FFD0A9;
+  --palette-blue: #2044E0;
+
+  /* Brand Colors (from palette - for Tailwind compatibility) */
+  --brand-blue-1: var(--palette-blue);
+  --brand-blue-1-rgb: 32 68 224;
+  --brand-blue-2: var(--palette-blue);
+  --brand-blue-2-rgb: 32 68 224;
+  --brand-yellow-1: var(--palette-mustard);
+  --brand-yellow-1-rgb: 221 153 23;
+  --brand-yellow-2: var(--palette-mustard);
+  --brand-yellow-2-rgb: 221 153 23;
+  --brand-orange: var(--palette-orange);
+  --brand-orange-rgb: 251 83 21;
   
   /* Semantic Color Tokens */
-  --color-primary: var(--brand-blue-1);
-  --color-primary-2: var(--brand-blue-2);
-  --color-highlight: var(--brand-yellow-1);
-  --color-highlight-2: var(--brand-yellow-2);
-  --color-accent: var(--brand-orange);
-  --color-bg-dark: #034AA6;
+  --color-primary: var(--palette-blue);
+  --color-primary-2: var(--palette-blue);
+  --color-highlight: var(--palette-mustard);
+  --color-highlight-2: var(--palette-mustard);
+  --color-accent: var(--palette-orange);
+  --color-bg-dark: var(--palette-blue);
   
   /* Core palette - HSL for Tailwind */
-  --background: 220 25% 98%;
+  --background: 0 0% 100%;
   --foreground: 220 15% 15%;
   --card: 0 0% 100%;
   --card-foreground: 220 15% 15%;
@@ -159,10 +166,7 @@
   }
 
   .home-hero-grid {
-    background-image:
-      linear-gradient(rgba(4, 57, 217, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(4, 57, 217, 0.05) 1px, transparent 1px);
-    background-size: 60px 60px;
+    display: none;
   }
 
   .home-community-bg {
@@ -174,10 +178,7 @@
   }
 
   .home-community-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+    display: none;
   }
 
   .home-newsletter-bg {

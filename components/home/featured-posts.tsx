@@ -14,12 +14,12 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
       <section className="section-sunrise relative py-24 overflow-hidden bg-white">
         <div className="container relative mx-auto px-6 z-10">
           <div className="mb-12 text-center">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full badge-sunrise px-4 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-900">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#FCC5E2]/30 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#DD9917]">
               <Sparkles className="h-3 w-3" />
               Curated for you
             </span>
-            <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
-              <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">Featured Posts</span>
+            <h2 className="font-serif text-3xl font-bold text-[#FB5315] md:text-4xl lg:text-5xl">
+              SHE Stories
             </h2>
           </div>
           <p className="text-center text-neutral-600">No posts available at the moment.</p>
@@ -46,7 +46,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
             Curated for you
           </span>
           <h2 className="font-serif text-3xl font-bold text-neutral-900 md:text-4xl lg:text-5xl">
-            <span className="bg-gradient-to-r from-brand-blue2 to-brand-blue1 bg-clip-text text-transparent">Featured Posts</span>
+            SHE Stories
           </h2>
         </div>
 
@@ -139,10 +139,9 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-ocean px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#FB5315] px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-[#DD9917] hover:shadow-lg"
           >
             <span className="relative z-10">View All Posts</span>
-            <span className="absolute inset-0 bg-gradient-to-r from-brand-blue2 to-brand-blue1 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
       </div>

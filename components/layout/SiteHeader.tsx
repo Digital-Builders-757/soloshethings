@@ -18,9 +18,12 @@ type SiteHeaderProps = {
 };
 
 const publicNavLinks = [
-  { href: "/collections", label: "Collections" },
-  { href: "/blog", label: "Blog" },
-  { href: "/map", label: "Map" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Travel + SHE Things" },
+  { href: "/collections", label: "Solo SHEntries" },
+  { href: "/shop", label: "Shop" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const authNavLinks = [
@@ -35,7 +38,6 @@ export async function SiteHeader({ variant = "public" }: SiteHeaderProps) {
       <NavClient
         publicLinks={publicNavLinks}
         isAuthenticated={false}
-        showStickyNav={true}
       />
     );
   }
@@ -53,7 +55,6 @@ export async function SiteHeader({ variant = "public" }: SiteHeaderProps) {
         publicLinks={publicNavLinks}
         authLinks={authNavLinks}
         isAuthenticated={isAuthenticated}
-        showStickyNav={true}
       />
     );
   }
@@ -64,7 +65,6 @@ export async function SiteHeader({ variant = "public" }: SiteHeaderProps) {
       publicLinks={publicNavLinks}
       authLinks={authNavLinks}
       isAuthenticated={isAuthenticated}
-      showStickyNav={true}
     />
   );
 }

@@ -7,10 +7,9 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutButton } from "./logout-button";
 
@@ -23,28 +22,14 @@ type NavClientProps = {
   publicLinks: NavLink[];
   authLinks?: NavLink[];
   isAuthenticated: boolean;
-  showStickyNav?: boolean;
 };
 
 export function NavClient({
   publicLinks,
   authLinks = [],
   isAuthenticated,
-  showStickyNav = true,
 }: NavClientProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (!showStickyNav) return;
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 400);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [showStickyNav]);
 
   const allLinks = isAuthenticated
     ? [...publicLinks, ...authLinks]
@@ -56,7 +41,7 @@ export function NavClient({
         <Link
           key={link.href}
           href={link.href}
-          className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
+          className="relative text-xs font-semibold uppercase tracking-[0.15em] text-white transition-all hover:text-[#FFD0A9] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#FFD0A9] after:transition-all hover:after:w-full"
         >
           {link.label}
         </Link>
@@ -67,14 +52,14 @@ export function NavClient({
     <>
       <Link
         href="/login"
-        className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
+        className="relative text-xs font-semibold uppercase tracking-[0.15em] text-white transition-all hover:text-[#FFD0A9] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#FFD0A9] after:transition-all hover:after:w-full"
       >
         Sign In
       </Link>
       <Link href="/signup">
         <Button
           size="sm"
-          className="rounded-full bg-[#0439D9] px-6 text-white transition-all hover:bg-[#034AA6] hover:shadow-lg"
+          className="rounded-full bg-[#FB5315] px-6 text-white transition-all hover:bg-[#DD9917] hover:shadow-lg"
         >
           Get Started
         </Button>
@@ -84,24 +69,36 @@ export function NavClient({
 
   return (
     <>
-      {/* Top Menu with Glassmorphism */}
-      <header className="glass sticky top-0 z-40 border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="group flex items-center gap-2">
-              <span className="font-serif text-2xl font-bold tracking-wide bg-gradient-to-r from-brand-blue1 to-brand-blue2 bg-clip-text text-transparent animate-text-glow">
-                SoloSheThings
-              </span>
-              <Sparkles className="h-5 w-5 text-brand-yellow1 opacity-0 transition-opacity group-hover:opacity-100" />
-            </Link>
+      {/* Top Banner */}
+      <div className="bg-[#FB5315] py-2 text-center border-b border-white/30">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white">
+          Discover your Solo SHE Adventure!
+        </p>
+      </div>
 
+      {/* Header - scrolls with page */}
+      <header className="bg-white">
+        {/* Brand Name */}
+        <div className="py-5 text-center">
+          <Link href="/" className="inline-block">
+            <span className="font-serif text-sm font-semibold uppercase tracking-[0.25em] text-[#FB5315] md:text-base">
+              Solo SHE Things Est. 2025
+            </span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Navigation - fixed, stays on scroll */}
+      <div className="sticky top-0 z-40 border-b border-[#2044E0]/50 bg-[#2044E0] shadow-sm">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-center md:justify-center">
             {/* Desktop Navigation */}
-            <nav className="hidden items-center gap-6 md:flex">
+            <nav className="hidden items-center gap-8 md:flex">
               {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
+                  className="relative text-xs font-semibold uppercase tracking-[0.15em] text-white transition-all hover:text-[#FFD0A9] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#FFD0A9] after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>
@@ -117,9 +114,9 @@ export function NavClient({
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-primary" />
+                <X className="h-6 w-6 text-white" />
               ) : (
-                <Menu className="h-6 w-6 text-primary" />
+                <Menu className="h-6 w-6 text-white" />
               )}
             </button>
           </div>
@@ -127,13 +124,13 @@ export function NavClient({
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-border/50 bg-background/95 backdrop-blur-lg md:hidden">
+          <div className="border-t border-[#2044E0]/50 bg-[#2044E0]/98 backdrop-blur-lg md:hidden">
             <nav className="container mx-auto flex flex-col gap-4 px-6 py-4">
               {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+                  className="text-sm font-medium text-white transition-colors hover:text-[#FFD0A9]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -150,7 +147,7 @@ export function NavClient({
                       >
                         <Button
                           variant="outline"
-                          className="w-full border-primary/50 bg-transparent text-foreground hover:bg-primary/10"
+                          className="w-full border-white/50 bg-transparent text-white hover:bg-white/10"
                         >
                           {link.label}
                         </Button>
@@ -165,13 +162,13 @@ export function NavClient({
                     <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button
                         variant="outline"
-                        className="w-full border-primary/50 bg-transparent text-foreground hover:bg-primary/10"
+                        className="w-full border-white/50 bg-transparent text-white hover:bg-white/10"
                       >
                         Sign In
                       </Button>
                     </Link>
                     <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="w-full bg-[#0439D9] text-white">
+                      <Button className="w-full bg-[#FB5315] text-white hover:bg-[#DD9917]">
                         Get Started
                       </Button>
                     </Link>
@@ -181,47 +178,8 @@ export function NavClient({
             </nav>
           </div>
         )}
-      </header>
+      </div>
 
-      {/* Sticky Menu - Appears after scrolling */}
-      {showStickyNav && (
-        <nav
-          className={cn(
-            "fixed left-0 right-0 top-0 z-50 glass border-b border-border/30 shadow-lg shadow-brand-blue1/10 transition-all duration-500",
-            isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
-          )}
-        >
-          <div className="container mx-auto px-6 py-3">
-            <div className="flex items-center justify-between">
-              <Link href="/" className="font-serif text-xl font-bold tracking-wide text-primary">
-                SoloSheThings
-              </Link>
-
-              <div className="hidden items-center gap-6 md:flex">
-                {allLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                  className="relative text-sm font-medium text-foreground transition-all hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-brand-blue1 after:to-brand-blue2 after:transition-all hover:after:w-full"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                {authActions}
-              </div>
-
-              <button
-                type="button"
-                className="md:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                <Menu className="h-6 w-6 text-primary" />
-              </button>
-            </div>
-          </div>
-        </nav>
-      )}
     </>
   );
 }
