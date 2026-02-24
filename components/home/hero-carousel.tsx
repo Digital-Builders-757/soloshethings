@@ -59,7 +59,7 @@ export function HeroCarousel() {
       <button
         type="button"
         onClick={() => { prevSlide(); setIsAutoPlaying(false); setTimeout(() => setIsAutoPlaying(true), 10000) }}
-        className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition-all hover:bg-white"
+        className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5" />
@@ -67,7 +67,7 @@ export function HeroCarousel() {
       <button
         type="button"
         onClick={() => { nextSlide(); setIsAutoPlaying(false); setTimeout(() => setIsAutoPlaying(true), 10000) }}
-        className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition-all hover:bg-white"
+        className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5" />
@@ -83,8 +83,8 @@ export function HeroCarousel() {
             className={cn(
               "h-2 rounded-full transition-all duration-300",
               index === currentSlide
-                ? "w-6 bg-brand-coral"
-                : "w-2 bg-brand-navy/30 hover:bg-brand-navy/50"
+                ? "w-6 bg-brand-orange"
+                : "w-2 bg-brand-blue/30 hover:bg-brand-blue/50"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />
