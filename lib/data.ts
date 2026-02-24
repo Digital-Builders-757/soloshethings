@@ -145,10 +145,10 @@ export interface BlogPost {
   ]
   
   export const heroImages = [
-    { id: 1, src: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=800&h=1000&fit=crop", alt: "Solo female traveler exploring mountains" },
-    { id: 2, src: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=800&h=1000&fit=crop", alt: "Woman at tropical beach destination" },
-    { id: 3, src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=1000&fit=crop", alt: "Scenic travel destination" },
-    { id: 4, src: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=1000&fit=crop", alt: "Adventure travel landscape" }
+    { id: 1, src: "/images/hero-1.jpg", alt: "Solo traveler in front of Belem Tower in Portugal", caption: "Portugal" },
+    { id: 2, src: "/images/hero-2.jpeg", alt: "Solo traveler at the Reichstag building in Berlin", caption: "Berlin" },
+    { id: 3, src: "/images/hero-3.jpeg", alt: "Solo traveler watching elephants at sunset on the Zambezi River", caption: "Zambezi River" },
+    { id: 4, src: "/images/hero-4.jpg", alt: "Solo traveler exploring a sculpture in Pamplona, Spain", caption: "Pamplona, Spain" },
   ]
   
   export const categories = [

@@ -51,7 +51,7 @@ export default async function DashboardPage() {
                 </p>
                 <Link
                   href="/login"
-                  className="inline-block bg-brand-blue1 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-blue2 transition-all"
+                  className="inline-block bg-brand-orange text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-orange/90 transition-all"
                 >
                   Return to Login
                 </Link>
@@ -74,7 +74,7 @@ export default async function DashboardPage() {
               </p>
               <Link
                 href="/login"
-                className="inline-block bg-brand-blue1 text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-blue2 transition-all"
+                className="inline-block bg-brand-coral text-white px-6 py-2 rounded-full font-semibold hover:bg-brand-coral/90 transition-all"
               >
                 Return to Login
               </Link>
@@ -88,15 +88,15 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen px-4 py-16">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Welcome to SoloSHEThings!</h1>
-        <p className="text-xl text-neutral-600 mb-8">
+        <h1 className="text-4xl font-bold mb-4 text-brand-pink">Welcome to Solo SHE Things!</h1>
+        <p className="text-xl text-muted-foreground mb-8">
           You&apos;re successfully logged in as {user.email}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Profile Card */}
           <div className="surface-card rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Your Profile</h2>
+            <h2 className="text-xl font-semibold mb-4 text-brand-pink">Your Profile</h2>
             <div className="space-y-2">
               <p className="text-neutral-700">
                 <span className="font-medium">Username:</span> {profile.username}
@@ -114,7 +114,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/profile"
-              className="inline-block mt-4 text-brand-blue1 hover:text-brand-blue2 font-medium"
+              className="inline-block mt-4 text-brand-orange hover:text-brand-orange/80 font-medium"
             >
               Edit Profile →
             </Link>
@@ -122,23 +122,23 @@ export default async function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="surface-card rounded-xl p-6">
-            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+            <h2 className="text-xl font-semibold mb-4 text-brand-pink">Quick Actions</h2>
             <div className="space-y-3">
               <Link
                 href="/profile"
-                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-blue1/5 transition-colors text-neutral-700 hover:text-brand-blue1"
+                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-pink/20 transition-colors text-muted-foreground hover:text-brand-orange"
               >
                 ✏️ Edit Profile
               </Link>
               <Link
                 href="/blog"
-                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-blue1/5 transition-colors text-neutral-700 hover:text-brand-blue1"
+                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-pink/20 transition-colors text-muted-foreground hover:text-brand-orange"
               >
                 📖 Read Blog
               </Link>
               <Link
                 href="/collections"
-                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-blue1/5 transition-colors text-neutral-700 hover:text-brand-blue1"
+                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-brand-pink/20 transition-colors text-muted-foreground hover:text-brand-orange"
               >
                 🗺️ Browse Collections
               </Link>
@@ -148,7 +148,7 @@ export default async function DashboardPage() {
 
         {/* Coming Soon Card */}
         <div className="surface-card rounded-xl p-8">
-          <h2 className="text-2xl font-semibold mb-4">Dashboard Coming Soon</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-brand-pink">Dashboard Coming Soon</h2>
           <p className="text-neutral-700 mb-4">
             Phase 1 (Backend Foundation) is complete! The full dashboard with community feed,
             quick actions, and personalized content will be built in Phase 3.

@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { Banner } from "@/components/layout/Banner";
 import { PublicLayoutClient } from "./layout-client";
 
 export default function PublicLayout({
@@ -8,9 +9,9 @@ export default function PublicLayout({
 }) {
   return (
     <>
+      <Banner />
       <SiteHeader variant="public" />
       <PublicLayoutClient>{children}</PublicLayoutClient>
     </>
   );
 }
-
