@@ -26,13 +26,13 @@ export function HeroCarousel() {
 
   useEffect(() => {
     if (!isAutoPlaying) return
-    const interval = setInterval(nextSlide, 5000)
+    const interval = setInterval(nextSlide, 4000)
     return () => clearInterval(interval)
   }, [isAutoPlaying, nextSlide])
 
   return (
     <div
-      className="relative h-[400px] w-full overflow-hidden rounded-xl border border-border md:h-[500px]"
+      className="relative h-[400px] w-full overflow-hidden rounded-2xl md:h-[500px]"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
@@ -52,14 +52,23 @@ export function HeroCarousel() {
             className="object-cover"
             priority={index === 0}
           />
+          {/* Gradient overlay for caption readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
       ))}
+
+      {/* Caption */}
+      <div className="absolute inset-x-0 bottom-12 text-center">
+        <p className="text-lg font-semibold tracking-wide text-white drop-shadow-lg">
+          {heroImages[currentSlide]?.caption}
+        </p>
+      </div>
 
       {/* Navigation Arrows */}
       <button
         type="button"
         onClick={() => { prevSlide(); setIsAutoPlaying(false); setTimeout(() => setIsAutoPlaying(true), 10000) }}
-        className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
+        className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5" />
@@ -67,24 +76,24 @@ export function HeroCarousel() {
       <button
         type="button"
         onClick={() => { nextSlide(); setIsAutoPlaying(false); setTimeout(() => setIsAutoPlaying(true), 10000) }}
-        className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
+        className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-brand-blue shadow-md transition-all hover:bg-white"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5" />
       </button>
 
-      {/* Progress Dots */}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-white/60 px-3 py-1.5 backdrop-blur-sm">
+      {/* Dot Indicators */}
+      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
         {heroImages.map((_, index) => (
           <button
             key={`dot-${heroImages[index].id}`}
             type="button"
             onClick={() => goToSlide(index)}
             className={cn(
-              "h-2 rounded-full transition-all duration-300",
+              "h-2.5 rounded-full transition-all duration-300",
               index === currentSlide
-                ? "w-6 bg-brand-orange"
-                : "w-2 bg-brand-blue/30 hover:bg-brand-blue/50"
+                ? "w-7 bg-brand-orange"
+                : "w-2.5 bg-white/60 hover:bg-white/80"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />

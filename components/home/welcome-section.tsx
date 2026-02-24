@@ -1,6 +1,6 @@
 export function WelcomeSection() {
   return (
-    <section className="bg-brand-cream py-24">
+    <section className="bg-white py-24">
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-3xl text-center">
           {/* Title */}

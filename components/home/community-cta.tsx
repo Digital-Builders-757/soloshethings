@@ -12,13 +12,13 @@ export function CommunityCTA() {
           </p>
 
           {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-pink md:text-4xl lg:text-5xl text-balance">
+          <h2 className="font-serif text-3xl font-bold text-white md:text-4xl lg:text-5xl text-balance">
             Go Solo, Together
           </h2>
 
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-pink" />
+          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-peach" />
 
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-brand-pink/90">
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-brand-peach">
             Connect with thousands of solo female travelers from around the world. Share your stories,
             get travel tips, and find your next adventure with a supportive community.
           </p>
@@ -33,7 +33,7 @@ export function CommunityCTA() {
             </Link>
             <Link
               href="/community"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-brand-pink/40 px-8 py-3 text-sm font-semibold text-brand-pink transition-all hover:border-brand-pink hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-blue px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-blue/90 hover:shadow-lg"
             >
               See How SHE Did It
             </Link>

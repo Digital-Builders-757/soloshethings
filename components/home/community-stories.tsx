@@ -8,13 +8,16 @@ export function CommunityStories() {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#FFD0A9]">
-            Real Travelers, Real Stories
-          </p>
-          <h2 className="font-serif text-3xl font-bold text-[#FFD0A9] md:text-4xl lg:text-5xl text-balance">
+          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand-peach/30 bg-brand-peach/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-peach">
+            Community
+          </span>
+          <h2 className="mt-3 font-serif text-3xl font-bold text-brand-peach md:text-4xl lg:text-5xl text-balance">
             Community Solo Stories
           </h2>
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-[#FFD0A9]" />
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-brand-peach/70">
+            Real stories from real solo female travelers
+          </p>
+          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-peach" />
         </div>
 
         {/* Story Cards */}
@@ -23,7 +26,7 @@ export function CommunityStories() {
             <Link
               key={story.id}
               href={`/community/stories/${story.id}`}
-              className="group overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white/10"
+              className="group overflow-hidden rounded-xl border border-brand-peach/20 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:shadow-lg"
             >
               {/* Image */}
               <div className="relative h-[260px] overflow-hidden">
@@ -60,7 +63,7 @@ export function CommunityStories() {
         <div className="mt-12 text-center">
           <Link
             href="/community"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 px-8 py-3 text-sm font-semibold text-white transition-all hover:border-white hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg"
           >
             Read More Stories
           </Link>

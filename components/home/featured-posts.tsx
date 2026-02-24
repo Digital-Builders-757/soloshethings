@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { Sparkles } from "lucide-react"
 import type { WpPost } from "@/lib/wp-types"
 
 interface FeaturedPostsProps {
@@ -9,13 +10,14 @@ interface FeaturedPostsProps {
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-12 text-center">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
+      <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-brand-orange/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-orange">
+        <Sparkles className="h-3.5 w-3.5" />
         {eyebrow}
-      </p>
-      <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
+      </span>
+      <h2 className="mt-3 font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
         {title}
       </h2>
-      <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
+      <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-orange" />
     </div>
   )
 }
@@ -101,9 +103,9 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-blue px-8 py-3 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg"
           >
-            View All Stories
+            View All Posts
           </Link>
         </div>
       </div>

@@ -1,36 +1,24 @@
-import Image from "next/image"
-
 /**
  * Banner Component
  *
- * Site-wide top banner + establishment divider + picture strip with marquee
+ * 1. Orange announcement bar
+ * 2. White brand header with centered "Solo SHE Things Est. 2025"
  */
 
 export function Banner() {
   return (
     <div>
-      {/* Top Announcement Banner */}
-      <div className="bg-brand-blue py-2.5 text-center">
-        <p className="text-sm font-medium tracking-wide text-white">
+      {/* Top Announcement Banner - Orange */}
+      <div className="bg-brand-orange py-2.5 text-center">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-white">
           Discover your Solo SHE Adventure!
         </p>
       </div>
-      {/* Establishment Divider */}
-      <div className="border-b border-border bg-background py-1.5 text-center">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Solo SHE Things &middot; Est. 2025
+      {/* Brand Header - White */}
+      <div className="border-b border-border bg-white py-4 text-center">
+        <p className="font-serif text-xl font-bold uppercase tracking-[0.15em] text-brand-orange md:text-2xl">
+          Solo SHE Things <span className="font-sans text-sm font-medium tracking-[0.2em] text-muted-foreground">Est. 2025</span>
         </p>
-      </div>
-      {/* Picture Banner */}
-      <div className="relative h-[160px] w-full overflow-hidden md:h-[200px]">
-        <Image
-          src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=200&fit=crop"
-          alt="Travel landscape banner"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-brand-blue/40" />
       </div>
     </div>
   )
