@@ -42,9 +42,8 @@ export function Header({ showBanner = false }: HeaderProps) {
           <Image
             src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=200&fit=crop"
             alt="Travel banner"
-            width={1920}
-            height={200}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
             priority
           />
           {/* Gradient Overlay - Using rgba() for proper opacity support */}

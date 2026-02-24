@@ -22,17 +22,17 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-3 text-neutral-900 uppercase tracking-wider">Explore</h4>
             <ul className="space-y-2 text-sm text-neutral-600">
               <li>
-                <Link href="/collections" className="hover:text-brand-blue1 transition-colors">
+                <Link href="/collections" className="hover:text-brand-orange transition-colors">
                   Collections
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-brand-blue1 transition-colors">
+                <Link href="/blog" className="hover:text-brand-orange transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/map" className="hover:text-brand-blue1 transition-colors">
+                <Link href="/map" className="hover:text-brand-orange transition-colors">
                   Map
                 </Link>
               </li>
@@ -42,12 +42,12 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-3 text-neutral-900 uppercase tracking-wider">Join</h4>
             <ul className="space-y-2 text-sm text-neutral-600">
               <li>
-                <Link href="/signup" className="hover:text-brand-blue1 transition-colors">
+                <Link href="/signup" className="hover:text-brand-orange transition-colors">
                   Sign Up
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-brand-blue1 transition-colors">
+                <Link href="/login" className="hover:text-brand-orange transition-colors">
                   Sign In
                 </Link>
               </li>
