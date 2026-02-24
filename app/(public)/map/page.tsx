@@ -7,11 +7,12 @@ export default function MapPage() {
     <main className="min-h-screen bg-white py-16">
       <div className="container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
+
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
             Explore
           </p>
           <h1 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl mb-2">
-            Safe Spots on the Map
+            Saf
           </h1>
           <div className="mb-8 h-px w-16 bg-brand-orange" />
 
@@ -23,8 +24,10 @@ export default function MapPage() {
             </p>
             <a
               href="/collections"
+
               className="inline-block rounded-full bg-brand-orange px-6 py-3 text-white font-semibold transition-all hover:bg-brand-orange/90"
-            >
+
+
               Browse Collections Instead
             </a>
           </div>

@@ -96,6 +96,31 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
               </Link>
             )
           })}
+          {showCtaTile && (
+            <Link
+              href="/blog"
+              className="group gradient-border overflow-hidden rounded-xl transition-all duration-500 hover:-translate-y-2"
+            >
+              <div className="h-full overflow-hidden rounded-lg bg-white">
+                <div className="flex h-full flex-col justify-between gap-6 p-8">
+                  <div>
+                    <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-blue1/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-blue2">
+                      Explore
+                    </span>
+                    <h3 className="font-serif text-2xl font-bold text-neutral-900">
+                      Explore the Blog
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                      Read stories, tips, and destination guides curated for solo travelers.
+                    </p>
+                  </div>
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-blue1 px-4 py-2 text-sm font-semibold text-white transition-all group-hover:bg-brand-blue2">
+                    Browse all posts
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
         </div>
 
         <div className="mt-12 text-center">
