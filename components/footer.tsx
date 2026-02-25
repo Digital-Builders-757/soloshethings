@@ -1,129 +1,115 @@
 import Link from "next/link"
-import { Instagram, Twitter, Youtube, Mail } from "lucide-react"
 
 const footerLinks = {
   destinations: [
     { href: "/destinations?continent=europe", label: "Europe" },
     { href: "/destinations?continent=asia", label: "Asia" },
-    { href: "/destinations?continent=americas", label: "Americas" },
+    { href: "/destinations?continent=americas", label: "South America" },
     { href: "/destinations?continent=africa", label: "Africa" },
   ],
   resources: [
-    { href: "/blog?category=safety-tips", label: "Safety Tips" },
-    { href: "/blog?category=budget", label: "Budget Travel" },
-    { href: "/blog?category=solo-tips", label: "Solo Tips" },
-    { href: "/packing-list", label: "Packing List" },
+    { href: "/blog?category=safety-tips", label: "Safety Guides" },
+    { href: "/packing-list", label: "Packing Lists" },
+    { href: "/insurance", label: "Insurance" },
+    { href: "/hostels", label: "Hostels" },
   ],
   company: [
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-    { href: "/community", label: "Community" },
+    { href: "/about", label: "About Us" },
+    { href: "/careers", label: "Careers" },
     { href: "/press", label: "Press" },
+    { href: "/contact", label: "Contact" },
   ],
 }
 
-const socialLinks = [
-  { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
-  { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
-  { href: "https://youtube.com", icon: Youtube, label: "YouTube" },
-  { href: "mailto:hello@soloshethings.com", icon: Mail, label: "Email" },
+const socials = [
+  { label: "Ig", href: "https://instagram.com" },
+  { label: "Fb", href: "https://facebook.com" },
+  { label: "Tt", href: "https://tiktok.com" },
 ]
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-white">
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="font-serif text-2xl font-bold text-brand-blue">
-              Solo <span className="text-brand-orange">SHE</span> Things
-            </Link>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              A safe space for solo female travelers to discover, share, and connect. Empowering women
-              to explore the world with confidence.
-            </p>
-            <div className="mt-6 flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand-orange hover:text-brand-orange"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Destinations */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Destinations</h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.destinations.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Resources</h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.resources.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Company</h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+    <footer className="bg-[#FFF0F5] py-24 pb-16">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-16 px-8 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        {/* Brand */}
+        <div>
+          <h3 className="font-serif text-[2rem] font-bold text-brand-orange">
+            Solo SHE Things
+          </h3>
+          <p className="mt-4 text-[#555]">
+            Empowering women to see the world.
+          </p>
+          <div className="mt-4 flex gap-3">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-peach text-sm font-bold text-brand-orange transition-colors hover:bg-brand-orange hover:text-white"
+                aria-label={s.label}
+              >
+                {s.label}
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Solo SHE Things. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
-              Terms of Service
-            </Link>
-          </div>
+        {/* Destinations */}
+        <div>
+          <h4 className="mb-8 font-serif text-xl font-bold text-brand-blue">
+            Destinations
+          </h4>
+          <ul className="space-y-3">
+            {footerLinks.destinations.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-[0.95rem] font-medium text-[#555] transition-colors hover:text-brand-orange"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Resources */}
+        <div>
+          <h4 className="mb-8 font-serif text-xl font-bold text-brand-blue">
+            Resources
+          </h4>
+          <ul className="space-y-3">
+            {footerLinks.resources.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-[0.95rem] font-medium text-[#555] transition-colors hover:text-brand-orange"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Company */}
+        <div>
+          <h4 className="mb-8 font-serif text-xl font-bold text-brand-blue">
+            Company
+          </h4>
+          <ul className="space-y-3">
+            {footerLinks.company.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-[0.95rem] font-medium text-[#555] transition-colors hover:text-brand-orange"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

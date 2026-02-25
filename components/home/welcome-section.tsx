@@ -1,32 +1,26 @@
 export function WelcomeSection() {
   return (
-    <section className="bg-brand-cream py-24">
-      <div className="container mx-auto px-6">
-        <div className="mx-auto max-w-3xl text-center">
-          {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
-            Mission
-          </h2>
-
-          {/* Solid accent bar */}
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue" />
-
-          {/* Body copy */}
-          <div className="mt-8 space-y-6 text-lg leading-relaxed text-muted-foreground">
-            <p>
-              SoloSHEThings is a global community designed to empower, inspire and encourage women to
-              step into their own solo adventures. This is a space where stories are shared, confidence
-              is built and courage is contagious.
-            </p>
-            <p>
-              Whether it{"'"}s making a reservation for one, signing up for a class on your own, or
-              traveling halfway across the world solo, every solo step counts.
-            </p>
-            <p>
-              Step outside your comfort zone, try something new, and discover just how capable you are.
-              So tell us -- what is your solo SHE thing?
-            </p>
-          </div>
+    <section className="py-24">
+      <div className="mx-auto max-w-[800px] px-8 text-center">
+        <h2 className="font-serif text-[3.5rem] font-bold italic text-brand-orange">
+          Mission
+        </h2>
+        <div className="mt-8 space-y-8">
+          <p className="text-lg leading-[1.8] text-[#444]">
+            We believe that solo travel is the ultimate act of self-love. It{"'"}s
+            not just about seeing new places; it{"'"}s about discovering who you are
+            when no one is watching.
+          </p>
+          <p className="text-lg leading-[1.8] text-[#444]">
+            Our community is built on trust, transparency, and the shared joy of
+            discovery. We connect women across borders, turning strangers into
+            sisters and destinations into homes.
+          </p>
+          <p className="text-lg leading-[1.8] text-[#444]">
+            Whether you{"'"}re taking your first solo weekend trip or backpacking
+            across a continent, Solo SHE Things provides the resources, safety
+            nets, and inspiration to help you go further.
+          </p>
         </div>
       </div>
     </section>
