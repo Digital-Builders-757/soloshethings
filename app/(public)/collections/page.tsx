@@ -23,7 +23,6 @@ const collections = [
     image: "/images/collection-safety.jpg",
     icon: Shield,
     count: 24,
-    color: "bg-brand-blue",
     featured: true,
     destinations: ["Tokyo", "Reykjavik", "Copenhagen", "Singapore", "Lisbon"],
   },
@@ -35,7 +34,6 @@ const collections = [
     image: "/images/collection-budget.jpg",
     icon: Wallet,
     count: 18,
-    color: "bg-brand-gold",
     featured: false,
     destinations: ["Bangkok", "Medellín", "Budapest", "Hanoi", "Marrakech"],
   },
@@ -47,7 +45,6 @@ const collections = [
     image: "/images/collection-wellness.jpg",
     icon: Heart,
     count: 15,
-    color: "bg-brand-pink",
     featured: false,
     destinations: ["Ubud, Bali", "Rishikesh", "Sedona", "Tulum", "Koh Samui"],
   },
@@ -59,7 +56,6 @@ const collections = [
     image: "/images/collection-first-time.jpg",
     icon: Compass,
     count: 20,
-    color: "bg-brand-orange",
     featured: true,
     destinations: ["London", "Amsterdam", "Melbourne", "Vancouver", "Dublin"],
   },
@@ -71,7 +67,6 @@ const collections = [
     image: "/images/collection-adventure.jpg",
     icon: Mountain,
     count: 22,
-    color: "bg-brand-blue",
     featured: false,
     destinations: ["Queenstown", "Patagonia", "Costa Rica", "Norway", "Nepal"],
   },
@@ -83,7 +78,6 @@ const collections = [
     image: "/images/collection-culture.jpg",
     icon: Palette,
     count: 16,
-    color: "bg-brand-gold",
     featured: false,
     destinations: ["Kyoto", "Fez", "Oaxaca", "Jaipur", "Havana"],
   },
@@ -118,17 +112,17 @@ export default function CollectionsPage() {
     <>
       <main>
         {/* Hero */}
-        <section className="bg-brand-blue py-24 md:py-32">
-          <div className="container mx-auto px-6">
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-peach">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-24 md:py-32">
+          <div className="mx-auto max-w-[1240px] px-8">
+            <div className="mx-auto max-w-[800px] text-center">
+              <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 Solo SHEntries
-              </p>
-              <h1 className="font-serif text-4xl font-bold leading-tight text-brand-peach md:text-5xl lg:text-6xl text-balance">
-                Browse by <span className="text-brand-orange">Collection</span>
+              </span>
+              <h1 className="mt-4 font-serif text-5xl font-bold leading-[0.95] text-brand-blue md:text-6xl lg:text-7xl">
+                Browse by{" "}
+                <span className="italic font-normal text-brand-orange">Collection</span>
               </h1>
-              <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-orange" />
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-brand-peach/80">
+              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#555]">
                 Curated destination guides organized by what matters most to you -- safety, budget,
                 wellness, adventure, and more. Every entry is reviewed and recommended by real solo
                 female travelers.
@@ -138,13 +132,13 @@ export default function CollectionsPage() {
         </section>
 
         {/* Collection Grid */}
-        <section className="bg-white py-24">
-          <div className="container mx-auto px-6">
+        <section className="bg-[#FFF8F3] py-24">
+          <div className="mx-auto max-w-[1240px] px-8">
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {collections.map((collection) => (
                 <div
                   key={collection.id}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex flex-col overflow-hidden rounded-3xl border-2 border-[#eee] bg-white transition-all hover:-translate-y-2 hover:border-brand-gold"
                 >
                   {/* Image */}
                   <div className="relative h-[240px] overflow-hidden">
@@ -156,30 +150,30 @@ export default function CollectionsPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-brand-blue/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     {/* Icon Badge */}
                     <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90">
                       <collection.icon className="h-5 w-5 text-brand-orange" />
                     </div>
                     {collection.featured && (
-                      <span className="absolute right-4 top-4 rounded-full bg-brand-orange px-3 py-1 text-xs font-semibold text-white">
+                      <span className="absolute right-4 top-4 rounded-full bg-brand-orange px-4 py-1.5 text-xs font-bold text-white shadow-md" style={{ transform: "rotate(4deg)" }}>
                         Featured
                       </span>
                     )}
-                    {/* Count */}
-                    <div className="absolute bottom-4 left-4">
-                      <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-brand-blue">
-                        {collection.count} destinations
+                    {/* Bottom overlay info */}
+                    <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                      <h3 className="font-serif text-xl font-bold text-white">
+                        {collection.title}
+                      </h3>
+                      <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-brand-blue">
+                        {collection.count} places
                       </span>
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="font-serif text-xl font-bold text-brand-blue">
-                      {collection.title}
-                    </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    <p className="flex-1 text-sm leading-relaxed text-[#555]">
                       {collection.description}
                     </p>
 
@@ -188,14 +182,14 @@ export default function CollectionsPage() {
                       {collection.destinations.slice(0, 3).map((dest) => (
                         <span
                           key={dest}
-                          className="inline-flex items-center gap-1 rounded-full bg-brand-cream px-3 py-1 text-xs font-medium text-brand-blue"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#FFF8F3] px-3 py-1 text-xs font-medium text-brand-blue"
                         >
                           <MapPin className="h-3 w-3 text-brand-orange" />
                           {dest}
                         </span>
                       ))}
                       {collection.destinations.length > 3 && (
-                        <span className="inline-flex items-center rounded-full bg-brand-peach/30 px-3 py-1 text-xs font-medium text-brand-orange">
+                        <span className="inline-flex items-center rounded-full bg-brand-peach/40 px-3 py-1 text-xs font-bold text-brand-orange">
                           +{collection.destinations.length - 3} more
                         </span>
                       )}
@@ -203,9 +197,9 @@ export default function CollectionsPage() {
 
                     <Link
                       href={`/collections/${collection.id}`}
-                      className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-orange transition-colors hover:text-brand-orange/80"
+                      className="mt-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-orange transition-colors hover:text-brand-blue"
                     >
-                      Explore Collection
+                      Explore
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -216,24 +210,23 @@ export default function CollectionsPage() {
         </section>
 
         {/* Featured Entries */}
-        <section className="bg-brand-cream py-24">
-          <div className="container mx-auto px-6">
-            <div className="mb-12 text-center">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
+        <section className="py-24">
+          <div className="mx-auto max-w-[1240px] px-8">
+            <div className="mb-16 text-center">
+              <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 Popular Reads
-              </p>
-              <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl text-balance">
+              </span>
+              <h2 className="mt-4 font-serif text-3xl font-bold text-brand-blue md:text-4xl">
                 Trending SHEntries
               </h2>
-              <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue" />
             </div>
             <div className="grid gap-8 md:grid-cols-3">
               {featuredEntries.map((entry) => (
                 <article
                   key={entry.title}
-                  className="group overflow-hidden rounded-xl border border-border bg-white transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className="group overflow-hidden rounded-3xl border-2 border-[#eee] bg-white transition-all hover:-translate-y-2 hover:border-brand-gold"
                 >
-                  <div className="relative h-[200px] overflow-hidden">
+                  <div className="relative h-[240px] overflow-hidden">
                     <Image
                       src={entry.image}
                       alt={entry.title}
@@ -243,11 +236,15 @@ export default function CollectionsPage() {
                     />
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-3 w-3 text-brand-orange" />
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-bold uppercase text-brand-orange">
                         {entry.location}
                       </span>
+                    </div>
+                    <h3 className="mt-2 font-serif text-xl font-bold leading-tight text-brand-blue">
+                      {entry.title}
+                    </h3>
+                    <div className="mt-3 flex items-center gap-4 text-xs text-[#666]">
                       <span className="inline-flex items-center gap-1">
                         <Star className="h-3 w-3 fill-brand-gold text-brand-gold" />
                         {entry.rating}
@@ -257,42 +254,46 @@ export default function CollectionsPage() {
                         {entry.readTime}
                       </span>
                     </div>
-                    <h3 className="mt-2 font-serif text-lg font-bold text-brand-blue">
-                      {entry.title}
-                    </h3>
                   </div>
                 </article>
               ))}
+            </div>
+
+            <div className="mt-16 text-center">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-brand-orange px-8 py-3 text-sm font-bold uppercase tracking-wider text-brand-orange transition-all hover:bg-brand-orange hover:text-white"
+              >
+                View All Posts
+              </Link>
             </div>
           </div>
         </section>
 
         {/* CTA */}
-        <section className="bg-brand-orange py-24">
-          <div className="container mx-auto px-6">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-serif text-3xl font-bold text-brand-pink md:text-4xl lg:text-5xl text-balance">
-                Have a Destination to Share?
-              </h2>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-brand-pink/90">
-                Our collections grow through the voices of real travelers. Submit your own SHEntry and
-                help fellow solo female travelers discover their next adventure.
-              </p>
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 text-sm font-semibold text-brand-orange transition-all hover:bg-brand-peach hover:shadow-lg"
-                >
-                  Submit a SHEntry
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/blog"
-                  className="inline-flex items-center gap-2 rounded-full border-2 border-brand-pink/40 px-8 py-3 text-sm font-semibold text-brand-pink transition-all hover:border-brand-pink hover:bg-white/10"
-                >
-                  Read the Blog
-                </Link>
-              </div>
+        <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-28 text-center text-white">
+          <div className="relative z-10 mx-auto max-w-[1240px] px-8">
+            <h2 className="font-serif text-4xl font-bold italic md:text-5xl lg:text-6xl">
+              Have a Destination to Share?
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/90">
+              Our collections grow through the voices of real travelers. Submit your own SHEntry and
+              help fellow solo female travelers discover their next adventure.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-4 text-lg font-bold text-brand-orange transition-all hover:shadow-lg"
+              >
+                Submit a SHEntry
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-white px-10 py-4 text-lg font-bold text-white transition-all hover:bg-white/10"
+              >
+                Read the Blog
+              </Link>
             </div>
           </div>
         </section>

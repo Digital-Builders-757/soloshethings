@@ -1,11 +1,18 @@
 import type { Metadata } from "next"
-import { Rokkitt } from "next/font/google"
+import { Playfair_Display, DM_Sans } from "next/font/google"
 import "./globals.css"
 
-const rokkitt = Rokkitt({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-rokkitt",
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-playfair",
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  weight: ["400", "500", "700"],
 })
 
 export const metadata: Metadata = {
@@ -22,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rokkitt.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${playfairDisplay.variable} ${dmSans.variable} font-sans antialiased`}>{children}</body>
     </html>
   )
 }
