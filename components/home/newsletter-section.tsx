@@ -17,18 +17,18 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="bg-brand-gold py-24">
-      <div className="mx-auto max-w-[1240px] px-8 text-center">
-        <h2 className="font-serif text-[3rem] font-bold text-white">
+    <section className="bg-brand-gold py-14 md:py-24">
+      <div className="mx-auto max-w-[1240px] px-5 text-center md:px-8">
+        <h2 className="font-serif text-2xl font-bold text-white sm:text-3xl md:text-[3rem]">
           The Connection Collective
         </h2>
-        <p className="mt-4 text-xl text-white">
+        <p className="mt-3 text-base text-white md:mt-4 md:text-xl">
           Weekly tips, safety alerts, and inspiration sent to your inbox.
         </p>
 
         <form
           onSubmit={handleSubmit}
-          className="mx-auto mt-8 flex max-w-[500px] gap-4"
+          className="mx-auto mt-6 flex max-w-[500px] flex-col gap-3 sm:flex-row sm:gap-4 md:mt-8"
         >
           <input
             type="email"
@@ -36,12 +36,12 @@ export function NewsletterSection() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="flex-1 rounded-full border-none px-6 py-4 font-sans text-base text-[#1A1A1A] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-brand-blue"
+            className="flex-1 rounded-full border-none px-5 py-3.5 font-sans text-base text-[#1A1A1A] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-brand-blue md:px-6 md:py-4"
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="rounded-full bg-brand-blue px-8 py-4 font-bold uppercase text-white transition-colors hover:bg-brand-blue/90 disabled:opacity-70"
+            className="rounded-full bg-brand-blue px-6 py-3.5 font-bold uppercase text-white transition-colors hover:bg-brand-blue/90 disabled:opacity-70 md:px-8 md:py-4"
           >
             {status === "loading"
               ? "..."

@@ -10,24 +10,24 @@ export function HeroSection() {
   const currentImage = heroImages[activeSlide]
 
   return (
-    <section className="bg-gradient-to-b from-white to-[#FAFAFA] py-24">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-16 px-8 lg:grid-cols-[1fr_1.2fr]">
+    <section className="bg-gradient-to-b from-white to-[#FAFAFA] py-12 md:py-24">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-5 md:gap-16 md:px-8 lg:grid-cols-[1fr_1.2fr]">
         {/* Left: Hero Content */}
-        <div>
-          <h1 className="font-serif text-[5rem] font-bold leading-[0.95] text-brand-blue">
+        <div className="text-center lg:text-left">
+          <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-[5rem]">
             <span className="italic font-normal text-brand-orange">Solo</span>{" "}
             SHE{" "}
             <span className="italic font-normal text-brand-orange">Things</span>
           </h1>
-          <p className="mt-8 max-w-[450px] text-xl leading-relaxed text-[#555]">
+          <p className="mx-auto mt-6 max-w-[450px] text-base leading-relaxed text-[#555] md:mt-8 md:text-xl lg:mx-0">
             Join the global collective of fearless women exploring the world on
             their own terms. Curated destinations, safety guides, and a
             sisterhood that travels with you.
           </p>
-          <div className="mt-8 inline-block -rotate-3">
+          <div className="mt-6 inline-block -rotate-3 md:mt-8">
             <Link
               href="/signup"
-              className="inline-block rounded-full border-2 border-brand-orange bg-brand-orange px-8 py-4 text-base font-bold uppercase tracking-[0.5px] text-white transition-all duration-200 hover:bg-white hover:text-brand-orange"
+              className="inline-block rounded-full border-2 border-brand-orange bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-[0.5px] text-white transition-all duration-200 hover:bg-white hover:text-brand-orange md:px-8 md:py-4 md:text-base"
             >
               Start Your Journey
             </Link>
@@ -35,14 +35,14 @@ export function HeroSection() {
         </div>
 
         {/* Right: Carousel Card */}
-        <div className="relative p-4">
+        <div className="relative px-2 md:p-4">
           {/* Sticker Badge */}
-          <div className="absolute -right-5 top-[30px] z-10 rotate-12 rounded-full bg-brand-orange px-6 py-2 text-[0.9rem] font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)]">
+          <div className="absolute -right-1 top-0 z-10 rotate-12 rounded-full bg-brand-orange px-4 py-1.5 text-xs font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)] md:-right-5 md:top-[30px] md:px-6 md:py-2 md:text-[0.9rem]">
             Trending Now!
           </div>
 
-          {/* Card with peach shadow */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-peach-offset transition-transform duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[24px_24px_0px_var(--brand-peach)]">
+          {/* Card with peach shadow - reduced on mobile */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-[8px_8px_0px_var(--brand-peach)] transition-transform duration-300 md:rounded-3xl md:shadow-peach-offset md:hover:-translate-x-1 md:hover:-translate-y-1 md:hover:shadow-[24px_24px_0px_var(--brand-peach)]">
             <Image
               src={currentImage.src}
               alt={currentImage.alt}
@@ -52,12 +52,12 @@ export function HeroSection() {
               priority
             />
             {/* Overlay */}
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-8">
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-4 md:p-8">
               <div>
-                <h3 className="font-serif text-xl font-bold text-white">
+                <h3 className="font-serif text-base font-bold text-white md:text-xl">
                   {currentImage.caption}
                 </h3>
-                <span className="text-[0.9rem] text-white/90">
+                <span className="text-xs text-white/90 md:text-[0.9rem]">
                   {"Europe's safest solo gem"}
                 </span>
               </div>
@@ -65,7 +65,7 @@ export function HeroSection() {
           </div>
 
           {/* Dots */}
-          <div className="mt-8 flex items-center justify-center gap-2">
+          <div className="mt-6 flex items-center justify-center gap-2 md:mt-8">
             {heroImages.map((_, index) => (
               <button
                 key={index}

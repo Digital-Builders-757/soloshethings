@@ -2,21 +2,21 @@ import Link from "next/link"
 
 export function CommunityCTA() {
   return (
-    <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-[120px]">
-      <div className="relative z-10 mx-auto max-w-[1240px] px-8 text-center">
-        <h2 className="font-serif text-[4.5rem] font-bold italic text-white">
+    <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-16 md:py-[120px]">
+      <div className="relative z-10 mx-auto max-w-[1240px] px-5 text-center md:px-8">
+        <h2 className="font-serif text-3xl font-bold italic text-white sm:text-4xl md:text-5xl lg:text-[4.5rem]">
           Go Solo, Together.
         </h2>
-        <div className="mt-8 flex items-center justify-center gap-8">
+        <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row md:mt-8 md:gap-8">
           <Link
             href="/signup"
-            className="rounded-full bg-white px-10 py-4 text-lg font-bold text-brand-orange transition-all duration-200 hover:bg-brand-peach"
+            className="w-full rounded-full bg-white px-8 py-3.5 text-base font-bold text-brand-orange transition-all duration-200 hover:bg-brand-peach sm:w-auto md:px-10 md:py-4 md:text-lg"
           >
             Join the Community
           </Link>
           <Link
             href="/blog"
-            className="rounded-full border-2 border-white px-10 py-4 text-lg font-bold text-white transition-all duration-200 hover:bg-white/10"
+            className="w-full rounded-full border-2 border-white px-8 py-3.5 text-base font-bold text-white transition-all duration-200 hover:bg-white/10 sm:w-auto md:px-10 md:py-4 md:text-lg"
           >
             Read Manifestos
           </Link>
