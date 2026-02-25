@@ -36,11 +36,6 @@ export function HeroSection() {
 
         {/* Right: Carousel Card */}
         <div className="relative px-2 md:p-4">
-          {/* Sticker Badge */}
-          <div className="absolute -right-1 top-0 z-10 rotate-12 rounded-full bg-brand-orange px-4 py-1.5 text-xs font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)] md:-right-5 md:top-[30px] md:px-6 md:py-2 md:text-[0.9rem]">
-            Trending Now!
-          </div>
-
           {/* Card with peach shadow - reduced on mobile */}
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-[8px_8px_0px_var(--brand-peach)] transition-transform duration-300 md:rounded-3xl md:shadow-peach-offset md:hover:-translate-x-1 md:hover:-translate-y-1 md:hover:shadow-[24px_24px_0px_var(--brand-peach)]">
             <Image
