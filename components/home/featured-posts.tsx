@@ -6,27 +6,20 @@ interface FeaturedPostsProps {
   posts: WpPost[]
 }
 
-function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div className="mb-12 text-center">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
-        {eyebrow}
-      </p>
-      <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
-        {title}
-      </h2>
-      <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
-    </div>
-  )
-}
-
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) {
     return (
-      <section className="bg-white py-24">
-        <div className="container mx-auto px-6">
-          <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
-          <p className="text-center text-muted-foreground">No posts available at the moment.</p>
+      <section className="bg-[#FFF8F3] py-24">
+        <div className="mx-auto max-w-[1240px] px-8">
+          <div className="mb-16 text-center">
+            <span className="mb-4 inline-block -rotate-2 rounded-full bg-brand-gold px-4 py-2 text-[0.8rem] font-bold uppercase tracking-[1px] text-white">
+              Curated for you
+            </span>
+            <h2 className="font-serif text-[3rem] font-bold text-brand-blue">
+              SHE Stories
+            </h2>
+          </div>
+          <p className="text-center text-[#666]">No posts available at the moment.</p>
         </div>
       </section>
     )
@@ -40,10 +33,19 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
       : "md:grid-cols-2 lg:grid-cols-3"
 
   return (
-    <section className="bg-white py-24">
-      <div className="container mx-auto px-6">
-        <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
+    <section className="bg-[#FFF8F3] py-24">
+      <div className="mx-auto max-w-[1240px] px-8">
+        {/* Header with section badge */}
+        <div className="mb-16 text-center">
+          <span className="mb-4 inline-block -rotate-2 rounded-full bg-brand-gold px-4 py-2 text-[0.8rem] font-bold uppercase tracking-[1px] text-white">
+            Curated for you
+          </span>
+          <h2 className="font-serif text-[3rem] font-bold text-brand-blue">
+            SHE Stories
+          </h2>
+        </div>
 
+        {/* Story Cards Grid */}
         <div className={`grid gap-8 ${gridCols}`}>
           {posts.map((post) => {
             const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
@@ -55,55 +57,55 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="group overflow-hidden rounded-xl border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="group overflow-hidden rounded-3xl border-2 border-[#eee] bg-white transition-all duration-300 hover:-translate-y-2.5 hover:border-brand-gold"
               >
                 {/* Image */}
-                <div className="relative h-[280px] overflow-hidden">
+                <div className="relative h-[240px] overflow-hidden">
                   {featuredImage ? (
                     <Image
                       src={featuredImage}
                       alt={post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text || post.title.rendered}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       unoptimized
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-brand-cream">
-                      <span className="text-sm text-muted-foreground">No image</span>
+                    <div className="flex h-full w-full items-center justify-center bg-[#ddd]">
+                      <span className="text-sm text-[#999]">No image</span>
                     </div>
                   )}
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col gap-3 p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-gold">
+                <div className="p-8">
+                  <p className="mb-2 text-[0.8rem] font-bold uppercase text-brand-orange">
                     {new Date(post.date).toLocaleDateString("en-US", {
                       month: "long",
                       year: "numeric",
                     })}
                   </p>
-                  <h3 className="font-serif text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-brand-orange line-clamp-2">
+                  <h3 className="font-serif text-2xl font-bold leading-tight text-[#1A1A1A]">
                     {post.title.rendered}
                   </h3>
                   {excerpt && (
-                    <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{excerpt}...</p>
+                    <p className="mt-3 text-[0.95rem] leading-relaxed text-[#666]">
+                      {excerpt}...
+                    </p>
                   )}
-                  <span className="mt-2 text-sm font-semibold text-brand-orange">
-                    See How SHE Did It &rarr;
-                  </span>
                 </div>
               </Link>
             )
           })}
         </div>
 
-        <div className="mt-12 text-center">
+        {/* View All Button */}
+        <div className="mt-16 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-blue px-8 py-3 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue hover:text-white"
+            className="inline-block rounded-full border-2 border-brand-orange bg-transparent px-8 py-3 text-sm font-bold uppercase text-brand-orange transition-all duration-200 hover:bg-brand-orange hover:text-white"
           >
-            View All Stories
+            View All Posts
           </Link>
         </div>
       </div>

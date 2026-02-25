@@ -151,3 +151,42 @@
     pointer-events: none;
   }
 }
+
+/* Grid pattern overlay for CTA sections (matches reference design) */
+@layer utilities {
+  .grid-pattern-overlay {
+    position: relative;
+  }
+  .grid-pattern-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
+
+/* Peach offset shadow (matches reference carousel card) */
+@layer utilities {
+  .shadow-peach-offset {
+    box-shadow: 20px 20px 0px var(--brand-peach);
+  }
+  .shadow-peach-offset-hover:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 24px 24px 0px var(--brand-peach);
+  }
+}
+
+/* Section badge rotation */
+@layer utilities {
+  .badge-tilt {
+    transform: rotate(-2deg);
+  }
+}

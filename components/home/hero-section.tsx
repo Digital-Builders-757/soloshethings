@@ -1,48 +1,83 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { heroImages } from "@/lib/data"
 
 export function HeroSection() {
+  const [activeSlide, setActiveSlide] = useState(0)
+  const currentImage = heroImages[activeSlide]
+
   return (
-    <section className="bg-brand-peach py-16 md:py-24">
-      <div className="container mx-auto px-6">
-        {/* Row 1 -- Text */}
-        <div className="mb-12 text-center">
-          <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-brand-orange md:text-5xl lg:text-6xl text-balance">
-            Solo SHE Things
+    <section className="bg-gradient-to-b from-white to-[#FAFAFA] py-24">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-16 px-8 lg:grid-cols-[1fr_1.2fr]">
+        {/* Left: Hero Content */}
+        <div>
+          <h1 className="font-serif text-[5rem] font-bold leading-[0.95] text-brand-blue">
+            <span className="italic font-normal text-brand-orange">Solo</span>{" "}
+            SHE{" "}
+            <span className="italic font-normal text-brand-orange">Things</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-foreground/70">
-            A travel blog and community for adventurous solo female travelers.
-            Discover destinations, safety tips, and stories from fearless women
-            around the world.
+          <p className="mt-8 max-w-[450px] text-xl leading-relaxed text-[#555]">
+            Join the global collective of fearless women exploring the world on
+            their own terms. Curated destinations, safety guides, and a
+            sisterhood that travels with you.
           </p>
+          <div className="mt-8 inline-block -rotate-3">
+            <Link
+              href="/signup"
+              className="inline-block rounded-full border-2 border-brand-orange bg-brand-orange px-8 py-4 text-base font-bold uppercase tracking-[0.5px] text-white transition-all duration-200 hover:bg-white hover:text-brand-orange"
+            >
+              Start Your Journey
+            </Link>
+          </div>
         </div>
 
-        {/* Row 2 -- 4 Images */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-          {heroImages.map((image, index) => (
-            <div
-              key={image.id}
-              className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-md"
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                priority={index < 2}
-                loading={index >= 2 ? "lazy" : undefined}
-              />
-              {/* Caption overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-brand-orange/80 px-4 py-3">
-                <p className="text-center text-sm font-semibold tracking-wide text-white">
-                  {image.caption}
-                </p>
+        {/* Right: Carousel Card */}
+        <div className="relative p-4">
+          {/* Sticker Badge */}
+          <div className="absolute -right-5 top-[30px] z-10 rotate-12 rounded-full bg-brand-orange px-6 py-2 text-[0.9rem] font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)]">
+            Trending Now!
+          </div>
+
+          {/* Card with peach shadow */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-peach-offset transition-transform duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[24px_24px_0px_var(--brand-peach)]">
+            <Image
+              src={currentImage.src}
+              alt={currentImage.alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 55vw"
+              priority
+            />
+            {/* Overlay */}
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-8">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-white">
+                  {currentImage.caption}
+                </h3>
+                <span className="text-[0.9rem] text-white/90">
+                  {"Europe's safest solo gem"}
+                </span>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Dots */}
+          <div className="mt-8 flex items-center justify-center gap-2">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setActiveSlide(index)}
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                  index === activeSlide ? "bg-brand-orange" : "bg-[#ddd]"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
