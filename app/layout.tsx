@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rokkitt.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${rokkitt.variable} font-sans antialiased`} suppressHydrationWarning>{children}</body>
     </html>
   )
 }
