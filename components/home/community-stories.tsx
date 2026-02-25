@@ -13,7 +13,7 @@ const voices = [
     name: "Amara",
     age: 31,
     avatar: "https://i.pravatar.cc/150?u=2",
-    rotate: "rotate-2",
+    rotate: "md:rotate-2",
   },
   {
     quote: "Met my best friend through the solo meetup feature in Bali. Forever grateful!",
@@ -27,26 +27,26 @@ const voices = [
     name: "Elena",
     age: 35,
     avatar: "https://i.pravatar.cc/150?u=4",
-    rotate: "-rotate-1",
+    rotate: "md:-rotate-1",
   },
 ]
 
 export function CommunityStories() {
   return (
-    <section className="bg-brand-blue py-24">
-      <div className="mx-auto max-w-[1240px] px-8">
-        <h2 className="mb-16 text-center font-serif text-[3rem] font-bold italic text-white">
+    <section className="bg-brand-blue py-14 md:py-24">
+      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+        <h2 className="mb-10 text-center font-serif text-2xl font-bold italic text-white sm:text-3xl md:mb-16 md:text-[3rem]">
           Community Voices
         </h2>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-8 lg:grid-cols-4">
           {voices.map((voice) => (
             <div
               key={voice.name}
-              className={`flex min-h-[300px] flex-col justify-between rounded-3xl bg-brand-peach p-8 text-brand-blue transition-transform duration-200 hover:scale-[1.02] hover:rotate-1 ${voice.rotate}`}
+              className={`flex min-h-[240px] flex-col justify-between rounded-2xl bg-brand-peach p-6 text-brand-blue transition-transform duration-200 hover:scale-[1.02] hover:rotate-1 md:min-h-[300px] md:rounded-3xl md:p-8 ${voice.rotate}`}
             >
               {/* Avatar */}
-              <div className="mb-4 h-[60px] w-[60px] overflow-hidden rounded-full bg-brand-orange">
+              <div className="mb-3 h-[48px] w-[48px] overflow-hidden rounded-full bg-brand-orange md:mb-4 md:h-[60px] md:w-[60px]">
                 <Image
                   src={voice.avatar}
                   alt={voice.name}
@@ -58,12 +58,12 @@ export function CommunityStories() {
               </div>
 
               {/* Quote */}
-              <p className="text-lg font-medium leading-snug">
+              <p className="text-base font-medium leading-snug md:text-lg">
                 {`"${voice.quote}"`}
               </p>
 
               {/* Name */}
-              <span className="mt-4 block text-[0.9rem] font-bold uppercase tracking-[1px]">
+              <span className="mt-3 block text-[0.85rem] font-bold uppercase tracking-[1px] md:mt-4 md:text-[0.9rem]">
                 {"— "}{voice.name}, {voice.age}
               </span>
             </div>

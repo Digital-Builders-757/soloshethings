@@ -95,32 +95,32 @@ export default function ShopPage() {
     <>
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-24 md:py-32">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.2fr]">
-              <div className="flex flex-col gap-6">
-                <h1 className="font-serif text-5xl font-bold leading-[0.95] text-brand-blue md:text-6xl lg:text-7xl">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-14 md:py-24 lg:py-32">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-[1fr_1.2fr]">
+              <div className="flex flex-col gap-5 text-center md:gap-6 lg:text-left">
+                <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
                   The{" "}
                   <span className="italic font-normal text-brand-orange">SHE</span> Shop
                 </h1>
-                <p className="max-w-[450px] text-lg leading-relaxed text-[#555]">
+                <p className="mx-auto max-w-[450px] text-base leading-relaxed text-[#555] md:text-lg lg:mx-0">
                   Curated travel essentials designed for the solo female traveler. Every purchase
                   supports our mission to empower women to explore the world.
                 </p>
                 <div className="inline-block" style={{ transform: "rotate(-3deg)" }}>
                   <Link
                     href="#products"
-                    className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-8 py-4 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange"
+                    className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange md:px-8 md:py-4"
                   >
                     Shop Now
                   </Link>
                 </div>
               </div>
-              <div className="relative p-4">
-                <div className="sticker-badge absolute right-0 top-8 z-10 rounded-full bg-brand-orange px-6 py-2 text-sm font-bold text-white shadow-lg" style={{ transform: "rotate(12deg)" }}>
+              <div className="relative px-2 md:p-4">
+                <div className="absolute right-0 top-2 z-10 rounded-full bg-brand-orange px-4 py-1.5 text-xs font-bold text-white shadow-lg md:right-0 md:top-8 md:px-6 md:py-2 md:text-sm" style={{ transform: "rotate(12deg)" }}>
                   New Arrivals!
                 </div>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-peach-offset shadow-peach-offset-hover transition-all">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-peach-offset shadow-peach-offset-hover transition-all md:rounded-3xl">
                   <Image
                     src="/images/shop-hero.jpg"
                     alt="Curated travel accessories for solo female travelers"
@@ -135,13 +135,13 @@ export default function ShopPage() {
         </section>
 
         {/* Perks Bar */}
-        <section className="bg-[#FFF8F3] py-8">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <section className="bg-[#FFF8F3] py-6 md:py-8">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
               {perks.map((perk) => (
-                <div key={perk.title} className="flex items-center justify-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-peach">
-                    <perk.icon className="h-5 w-5 text-brand-orange" />
+                <div key={perk.title} className="flex items-center justify-center gap-3 md:gap-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-peach md:h-10 md:w-10">
+                    <perk.icon className="h-4 w-4 text-brand-orange md:h-5 md:w-5" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-foreground">{perk.title}</p>
@@ -154,22 +154,22 @@ export default function ShopPage() {
         </section>
 
         {/* Products */}
-        <section id="products" className="py-24">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="mb-16 text-center">
+        <section id="products" className="py-14 md:py-24">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="mb-10 text-center md:mb-16">
               <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 Travel Essentials
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold text-brand-blue md:text-4xl">
+              <h2 className="mt-4 font-serif text-2xl font-bold text-brand-blue sm:text-3xl md:text-4xl">
                 Shop the Collection
               </h2>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
               {products.map((product) => (
                 <div
                   key={product.id}
-                  className="group flex flex-col overflow-hidden rounded-3xl border-2 border-[#eee] bg-white transition-all hover:-translate-y-2 hover:border-brand-gold"
+                  className="group flex flex-col overflow-hidden rounded-2xl border-2 border-[#eee] bg-white transition-all hover:-translate-y-2 hover:border-brand-gold md:rounded-3xl"
                 >
                   {/* Image */}
                   <div className="relative aspect-square overflow-hidden">
@@ -178,17 +178,17 @@ export default function ShopPage() {
                       alt={product.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     {product.badge && (
-                      <span className="absolute left-4 top-4 rounded-full bg-brand-orange px-4 py-1.5 text-xs font-bold text-white shadow-md" style={{ transform: "rotate(-2deg)" }}>
+                      <span className="absolute left-3 top-3 rounded-full bg-brand-orange px-3 py-1 text-xs font-bold text-white shadow-md md:left-4 md:top-4 md:px-4 md:py-1.5" style={{ transform: "rotate(-2deg)" }}>
                         {product.badge}
                       </span>
                     )}
                   </div>
 
                   {/* Content */}
-                  <div className="flex flex-1 flex-col p-6">
+                  <div className="flex flex-1 flex-col p-4 md:p-6">
                     <div className="flex items-center gap-2">
                       <Star className="h-4 w-4 fill-brand-gold text-brand-gold" />
                       <span className="text-sm font-bold text-foreground">
@@ -198,22 +198,23 @@ export default function ShopPage() {
                         ({product.reviews})
                       </span>
                     </div>
-                    <h3 className="mt-2 font-serif text-xl font-bold text-brand-blue">
+                    <h3 className="mt-2 font-serif text-lg font-bold text-brand-blue md:text-xl">
                       {product.name}
                     </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-[#555]">
+                    <p className="mt-1.5 flex-1 text-sm leading-relaxed text-[#555] md:mt-2">
                       {product.description}
                     </p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="font-serif text-2xl font-bold text-brand-orange">
+                    <div className="mt-3 flex items-center justify-between md:mt-4">
+                      <span className="font-serif text-xl font-bold text-brand-orange md:text-2xl">
                         {product.price}
                       </span>
                       <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-brand-orange px-4 py-2 text-xs font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange md:gap-2 md:px-5 md:py-2.5"
                       >
-                        <ShoppingBag className="h-4 w-4" />
-                        Add to Cart
+                        <ShoppingBag className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                        <span className="hidden sm:inline">Add to Cart</span>
+                        <span className="sm:hidden">Add</span>
                       </button>
                     </div>
                   </div>
@@ -224,20 +225,20 @@ export default function ShopPage() {
         </section>
 
         {/* Coming Soon */}
-        <section className="bg-brand-blue py-24 text-white">
-          <div className="mx-auto max-w-[1240px] px-8">
+        <section className="bg-brand-blue py-14 text-white md:py-24">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
             <div className="mx-auto max-w-[800px] text-center">
-              <h2 className="font-serif text-3xl font-bold italic md:text-4xl">
+              <h2 className="font-serif text-2xl font-bold italic sm:text-3xl md:text-4xl">
                 We Are Always Curating
               </h2>
-              <p className="mt-6 text-lg leading-[1.8] text-white/70">
+              <p className="mt-4 text-base leading-[1.8] text-white/70 md:mt-6 md:text-lg">
                 We are working on new products including safety kits, packing cubes, and exclusive
                 apparel designed specifically for the solo female traveler. Sign up for our newsletter
                 to be the first to know.
               </p>
               <Link
                 href="/signup"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-orange px-8 py-4 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange md:mt-8 md:px-8 md:py-4"
               >
                 Get Early Access
                 <ArrowRight className="h-4 w-4" />
@@ -247,19 +248,19 @@ export default function ShopPage() {
         </section>
 
         {/* CTA */}
-        <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-28 text-center text-white">
-          <div className="relative z-10 mx-auto max-w-[1240px] px-8">
-            <h2 className="font-serif text-4xl font-bold italic md:text-5xl lg:text-6xl">
+        <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-16 text-center text-white md:py-28">
+          <div className="relative z-10 mx-auto max-w-[1240px] px-5 md:px-8">
+            <h2 className="font-serif text-3xl font-bold italic sm:text-4xl md:text-5xl lg:text-6xl">
               Every Purchase Supports the Mission
             </h2>
-            <p className="mx-auto mt-6 max-w-lg text-lg text-white/90">
+            <p className="mx-auto mt-4 max-w-lg text-base text-white/90 md:mt-6 md:text-lg">
               10% of every sale goes directly to supporting women{"'"}s travel scholarships and
               safety initiatives around the world.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row md:mt-10 md:gap-6">
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-4 text-lg font-bold text-brand-orange transition-all hover:shadow-lg"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-bold text-brand-orange transition-all hover:shadow-lg sm:w-auto md:px-10 md:py-4 md:text-lg"
               >
                 Learn About Our Mission
                 <ArrowRight className="h-4 w-4" />

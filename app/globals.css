@@ -176,11 +176,23 @@
 /* Peach offset shadow (matches reference carousel card) */
 @layer utilities {
   .shadow-peach-offset {
-    box-shadow: 20px 20px 0px var(--brand-peach);
+    box-shadow: 8px 8px 0px var(--brand-peach);
   }
   .shadow-peach-offset-hover:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 24px 24px 0px var(--brand-peach);
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0px var(--brand-peach);
+  }
+}
+
+@media (min-width: 768px) {
+  @layer utilities {
+    .shadow-peach-offset {
+      box-shadow: 20px 20px 0px var(--brand-peach);
+    }
+    .shadow-peach-offset-hover:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 24px 24px 0px var(--brand-peach);
+    }
   }
 }
 

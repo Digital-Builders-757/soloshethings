@@ -69,15 +69,15 @@ export default function AboutPage() {
     <>
       <main>
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-24 md:py-32">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="grid items-center gap-16 lg:grid-cols-[1fr_1.2fr]">
-              <div className="flex flex-col gap-6">
-                <h1 className="font-serif text-5xl font-bold leading-[0.95] text-brand-blue md:text-6xl lg:text-7xl">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-14 md:py-24 lg:py-32">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-[1fr_1.2fr]">
+              <div className="flex flex-col gap-5 text-center md:gap-6 lg:text-left">
+                <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
                   <span className="italic font-normal text-brand-orange">She</span> Went{" "}
                   <span className="italic font-normal text-brand-orange">Solo</span>
                 </h1>
-                <p className="max-w-[450px] text-lg leading-relaxed text-[#555]">
+                <p className="mx-auto max-w-[450px] text-base leading-relaxed text-[#555] md:text-lg lg:mx-0">
                   Solo SHE Things was born from a single truth: when a woman decides to explore the
                   world alone, she discovers she was never really alone at all. This is the story of
                   how one solo trip became a global movement.
@@ -85,14 +85,14 @@ export default function AboutPage() {
                 <div className="inline-block" style={{ transform: "rotate(-3deg)" }}>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-8 py-4 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange"
+                    className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange md:px-8 md:py-4"
                   >
                     Get in Touch
                   </Link>
                 </div>
               </div>
-              <div className="relative p-4">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-peach-offset shadow-peach-offset-hover transition-all">
+              <div className="relative px-2 md:p-4">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-peach-offset shadow-peach-offset-hover transition-all md:rounded-3xl">
                   <Image
                     src="/images/about-hero.jpg"
                     alt="Founder of Solo SHE Things traveling solo"
@@ -107,12 +107,12 @@ export default function AboutPage() {
         </section>
 
         {/* Mission Section */}
-        <section className="py-24">
-          <div className="mx-auto max-w-[800px] px-8 text-center">
-            <h2 className="font-serif text-4xl font-bold italic text-brand-orange md:text-5xl">
+        <section className="py-14 md:py-24">
+          <div className="mx-auto max-w-[800px] px-5 text-center md:px-8">
+            <h2 className="font-serif text-3xl font-bold italic text-brand-orange sm:text-4xl md:text-5xl">
               Mission
             </h2>
-            <div className="mt-8 space-y-6 text-lg leading-[1.8] text-[#444]">
+            <div className="mt-6 space-y-5 text-base leading-[1.8] text-[#444] md:mt-8 md:space-y-6 md:text-lg">
               <p>
                 We believe that solo travel is the ultimate act of self-love. It{"'"}s not just about
                 seeing new places; it{"'"}s about discovering who you are when no one is watching.
@@ -132,19 +132,19 @@ export default function AboutPage() {
         </section>
 
         {/* Stats */}
-        <section className="bg-[#FFF8F3] py-16">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <section className="bg-[#FFF8F3] py-12 md:py-16">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex flex-col items-center rounded-3xl border-2 border-[#eee] bg-white p-8 text-center transition-all hover:-translate-y-2 hover:border-brand-gold"
+                  className="flex flex-col items-center rounded-2xl border-2 border-[#eee] bg-white p-5 text-center transition-all hover:-translate-y-2 hover:border-brand-gold md:rounded-3xl md:p-8"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-peach">
-                    <stat.icon className="h-6 w-6 text-brand-orange" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-peach md:h-14 md:w-14">
+                    <stat.icon className="h-5 w-5 text-brand-orange md:h-6 md:w-6" />
                   </div>
-                  <p className="mt-4 font-serif text-3xl font-bold text-brand-blue">{stat.value}</p>
-                  <p className="mt-1 text-sm font-medium text-[#555]">{stat.label}</p>
+                  <p className="mt-3 font-serif text-2xl font-bold text-brand-blue md:mt-4 md:text-3xl">{stat.value}</p>
+                  <p className="mt-1 text-xs font-medium text-[#555] md:text-sm">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -152,27 +152,27 @@ export default function AboutPage() {
         </section>
 
         {/* Values */}
-        <section className="py-24">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="mb-16 text-center">
+        <section className="py-14 md:py-24">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="mb-10 text-center md:mb-16">
               <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 What We Stand For
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold text-brand-blue md:text-4xl">
+              <h2 className="mt-4 font-serif text-2xl font-bold text-brand-blue sm:text-3xl md:text-4xl">
                 Our Values
               </h2>
             </div>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 md:gap-8 lg:grid-cols-4">
               {values.map((value) => (
                 <div
                   key={value.title}
-                  className="flex flex-col items-center rounded-3xl border-2 border-[#eee] bg-white p-8 text-center transition-all hover:-translate-y-2 hover:border-brand-gold"
+                  className="flex flex-col items-center rounded-2xl border-2 border-[#eee] bg-white p-6 text-center transition-all hover:-translate-y-2 hover:border-brand-gold md:rounded-3xl md:p-8"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-peach">
-                    <value.icon className="h-7 w-7 text-brand-orange" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-peach md:h-14 md:w-14">
+                    <value.icon className="h-6 w-6 text-brand-orange md:h-7 md:w-7" />
                   </div>
-                  <h3 className="mt-4 font-serif text-xl font-bold text-brand-blue">{value.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#555]">
+                  <h3 className="mt-3 font-serif text-lg font-bold text-brand-blue md:mt-4 md:text-xl">{value.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[#555] md:mt-3">
                     {value.description}
                   </p>
                 </div>
@@ -182,31 +182,31 @@ export default function AboutPage() {
         </section>
 
         {/* Timeline */}
-        <section className="bg-brand-blue py-24 text-white">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="mb-16 text-center">
+        <section className="bg-brand-blue py-14 text-white md:py-24">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="mb-10 text-center md:mb-16">
               <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 The Journey
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold italic md:text-4xl">
+              <h2 className="mt-4 font-serif text-2xl font-bold italic sm:text-3xl md:text-4xl">
                 How It All Started
               </h2>
             </div>
             <div className="mx-auto max-w-3xl">
-              <div className="relative border-l-2 border-brand-orange/40 pl-8">
+              <div className="relative border-l-2 border-brand-orange/40 pl-6 md:pl-8">
                 {milestones.map((milestone, index) => (
                   <div
                     key={milestone.year}
-                    className={`relative pb-12 ${index === milestones.length - 1 ? "pb-0" : ""}`}
+                    className={`relative pb-10 md:pb-12 ${index === milestones.length - 1 ? "pb-0" : ""}`}
                   >
-                    <div className="absolute -left-[calc(1rem+5px)] top-0 h-4 w-4 rounded-full bg-brand-orange" />
-                    <p className="text-sm font-bold uppercase tracking-wider text-brand-orange">
+                    <div className="absolute -left-[calc(0.75rem+5px)] top-0 h-3 w-3 rounded-full bg-brand-orange md:-left-[calc(1rem+5px)] md:h-4 md:w-4" />
+                    <p className="text-xs font-bold uppercase tracking-wider text-brand-orange md:text-sm">
                       {milestone.year}
                     </p>
-                    <h3 className="mt-1 font-serif text-xl font-bold text-brand-peach">
+                    <h3 className="mt-1 font-serif text-lg font-bold text-brand-peach md:text-xl">
                       {milestone.title}
                     </h3>
-                    <p className="mt-2 leading-relaxed text-white/70">
+                    <p className="mt-1.5 text-sm leading-relaxed text-white/70 md:mt-2 md:text-base">
                       {milestone.description}
                     </p>
                   </div>
@@ -217,11 +217,11 @@ export default function AboutPage() {
         </section>
 
         {/* Founder Section */}
-        <section className="bg-[#FFF8F3] py-24">
-          <div className="mx-auto max-w-[1240px] px-8">
-            <div className="grid items-center gap-16 lg:grid-cols-2">
-              <div className="relative p-4">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-peach-offset shadow-peach-offset-hover transition-all">
+        <section className="bg-[#FFF8F3] py-14 md:py-24">
+          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+            <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-2">
+              <div className="relative order-2 px-2 md:p-4 lg:order-1">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-peach-offset shadow-peach-offset-hover transition-all md:rounded-3xl">
                   <Image
                     src="/images/about-mission.jpg"
                     alt="The Solo SHE Things community"
@@ -230,14 +230,14 @@ export default function AboutPage() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-6">
-                <span className="badge-tilt inline-block w-fit rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+              <div className="order-1 flex flex-col gap-5 text-center md:gap-6 lg:order-2 lg:text-left">
+                <span className="badge-tilt mx-auto inline-block w-fit rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white lg:mx-0">
                   Meet the Founder
                 </span>
-                <h2 className="font-serif text-3xl font-bold italic text-brand-orange md:text-4xl text-balance">
+                <h2 className="font-serif text-2xl font-bold italic text-brand-orange sm:text-3xl text-balance md:text-4xl">
                   The Woman Behind the Movement
                 </h2>
-                <div className="space-y-4 text-lg leading-[1.8] text-[#444]">
+                <div className="space-y-4 text-base leading-[1.8] text-[#444] md:text-lg">
                   <p>
                     After leaving my corporate job in 2019, I booked a one-way ticket to Lisbon with
                     nothing but a carry-on and a whole lot of anxiety. That trip changed my life.
@@ -254,7 +254,7 @@ export default function AboutPage() {
                 </div>
                 <Link
                   href="/contact"
-                  className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange px-8 py-3 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange"
+                  className="mx-auto mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-wider text-white border-2 border-brand-orange transition-all hover:bg-white hover:text-brand-orange md:px-8 lg:mx-0"
                 >
                   Get in Touch
                   <ArrowRight className="h-4 w-4" />
@@ -265,21 +265,21 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-28 text-center text-white">
-          <div className="relative z-10 mx-auto max-w-[1240px] px-8">
-            <h2 className="font-serif text-4xl font-bold italic md:text-5xl lg:text-6xl">
+        <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-16 text-center text-white md:py-28">
+          <div className="relative z-10 mx-auto max-w-[1240px] px-5 md:px-8">
+            <h2 className="font-serif text-3xl font-bold italic sm:text-4xl md:text-5xl lg:text-6xl">
               Go Solo, Together.
             </h2>
-            <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row md:mt-10 md:gap-6">
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-4 text-lg font-bold text-brand-orange transition-all hover:shadow-lg"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-bold text-brand-orange transition-all hover:shadow-lg sm:w-auto md:px-10 md:py-4 md:text-lg"
               >
                 Join the Community
               </Link>
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-white px-10 py-4 text-lg font-bold text-white transition-all hover:bg-white/10"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full border-2 border-white px-8 py-3.5 text-base font-bold text-white transition-all hover:bg-white/10 sm:w-auto md:px-10 md:py-4 md:text-lg"
               >
                 Read the Blog
               </Link>
