@@ -27,9 +27,11 @@ export function HeroSection() {
   return (
     <section className="min-h-[50vh] md:min-h-[calc(100vh-170px)]">
       <div className="grid min-h-[50vh] grid-cols-2 md:min-h-[calc(100vh-170px)]">
-        {/* Left: Orange solid background with content */}
-        <div className="flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
-          <div className="max-w-md text-left">
+        {/* Left: Orange solid background with content + African pattern overlay */}
+        <div className="relative flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
+          {/* Subtle Kente-inspired pattern overlay */}
+          <div className="pointer-events-none absolute inset-0 pattern-kente opacity-60" />
+          <div className="relative z-10 max-w-md text-left">
             <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">
               <span className="text-white">Solo </span>
               <span className="italic text-[#ffd0a9]">SHE </span>

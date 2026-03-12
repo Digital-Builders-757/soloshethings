@@ -9,8 +9,10 @@ import Link from "next/link"
 
 export function CommunityCTA() {
   return (
-    <section className="bg-[#2044e0] py-16 md:py-24">
-      <div className="mx-auto max-w-[800px] px-5 text-center md:px-8">
+    <section className="relative bg-[#2044e0] py-16 md:py-24">
+      {/* Adinkra-inspired pattern overlay */}
+      <div className="pointer-events-none absolute inset-0 pattern-adinkra opacity-50" />
+      <div className="relative z-10 mx-auto max-w-[800px] px-5 text-center md:px-8">
         <h2 className="text-2xl font-bold text-white md:text-[2rem]">
           Ready to Find Your Solo SHE Thing?
         </h2>

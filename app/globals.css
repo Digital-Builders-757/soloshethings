@@ -111,3 +111,83 @@
     overflow: hidden;
   }
 }
+
+/* African-inspired geometric pattern overlays */
+@layer utilities {
+  /* Kente-inspired diagonal stripes */
+  .pattern-kente {
+    background-image: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(255, 208, 169, 0.15) 8px,
+        rgba(255, 208, 169, 0.15) 16px
+      );
+  }
+
+  /* Mudcloth-inspired dots */
+  .pattern-mudcloth {
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(255, 208, 169, 0.2) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(255, 208, 169, 0.2) 2px, transparent 2px);
+    background-size: 24px 24px;
+  }
+
+  /* Adinkra-inspired triangles */
+  .pattern-adinkra {
+    background-image: 
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
+      linear-gradient(225deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%);
+    background-size: 20px 20px;
+  }
+
+  /* Ankara-inspired zigzag */
+  .pattern-ankara {
+    background-image: 
+      linear-gradient(135deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
+      linear-gradient(225deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
+      linear-gradient(45deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
+      linear-gradient(315deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%);
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 0, 8px -8px, 0 8px;
+  }
+
+  /* Geometric border accent */
+  .border-geometric {
+    border-image: repeating-linear-gradient(
+      90deg,
+      #df4915 0px,
+      #df4915 8px,
+      #ffd0a9 8px,
+      #ffd0a9 16px,
+      #2044e0 16px,
+      #2044e0 24px
+    ) 4;
+  }
+
+  /* Decorative African-inspired divider */
+  .divider-african {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      #df4915 0px,
+      #df4915 12px,
+      #ffd0a9 12px,
+      #ffd0a9 24px,
+      #2044e0 24px,
+      #2044e0 36px,
+      #DD9917 36px,
+      #DD9917 48px
+    );
+  }
+
+  /* Subtle texture overlay for images */
+  .texture-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h10v10H0V0zm10 10h10v10H10V10z' fill='%23000' fill-opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+}

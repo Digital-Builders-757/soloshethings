@@ -39,7 +39,7 @@ export function FeaturedPosts({
                 <Link
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-lg bg-[#faf8f5]"
+                  className="group overflow-hidden rounded-lg bg-[#faf8f5] ring-2 ring-transparent transition-all hover:ring-[#ffd0a9]"
                 >
                   {/* Image */}
                   <div className="relative h-[200px] overflow-hidden">

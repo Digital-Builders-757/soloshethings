@@ -22,6 +22,9 @@ export default async function HomePage() {
         {/* 1. Hero */}
         <HeroSection />
         
+        {/* Decorative African-inspired divider */}
+        <div className="divider-african" />
+        
         {/* 2. Real Stories From Solo SHEs */}
         <FeaturedPosts 
           posts={realStoriesPosts} 
@@ -37,6 +40,9 @@ export default async function HomePage() {
         
         {/* 5. A Global Community of Solo SHEs */}
         <CommunityStories />
+        
+        {/* Decorative African-inspired divider */}
+        <div className="divider-african" />
         
         {/* 6. Resources for Your Solo Journey */}
         <ResourcesPosts posts={resourcesPosts} />
