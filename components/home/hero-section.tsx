@@ -5,10 +5,10 @@ import Image from "next/image"
 import Link from "next/link"
 
 const heroSlides = [
-  { src: "/images/hero-1.jpg", location: "Lisbon, Portugal" },
-  { src: "/images/hero-2.jpg", location: "Kyoto, Japan" },
-  { src: "/images/hero-3.jpg", location: "Barcelona, Spain" },
-  { src: "/images/hero-4.jpg", location: "Berlin, Germany" },
+  { src: "/images/hero-lisbon.jpg", location: "Lisbon, Portugal" },
+  { src: "/images/hero-berlin.jpg", location: "Berlin, Germany" },
+  { src: "/images/hero-safari.jpg", location: "Botswana, Africa" },
+  { src: "/images/hero-sculpture.jpg", location: "London, England" },
 ]
 
 export function HeroSection() {
@@ -60,20 +60,6 @@ export function HeroSection() {
             <span className="text-xl font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-2xl">
               {currentSlide.location}
             </span>
-          </div>
-          {/* Slide dots */}
-          <div className="absolute bottom-5 right-5 flex gap-2 md:bottom-8 md:right-8">
-            {heroSlides.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setActiveSlide(index)}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  index === activeSlide ? "bg-white" : "bg-white/50"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
           </div>
         </div>
       </div>
