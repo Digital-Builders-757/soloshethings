@@ -10,7 +10,7 @@ interface FeaturedPostsProps {
 
 export function FeaturedPosts({ 
   posts, 
-  title = "Real Stories From Solo SHEs",
+  title = "Featured Posts From Solo SHEs",
   subtitle = "Discover inspiring journeys from women who traveled solo"
 }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) {

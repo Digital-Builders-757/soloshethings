@@ -22,10 +22,10 @@ export function ResourcesPosts({ posts }: ResourcesPostsProps) {
         {/* Header */}
         <div className="mb-6 text-center md:mb-10">
           <h2 className="text-lg font-bold text-[#df4915] md:text-2xl lg:text-[2rem]">
-            Resources for Your Solo Journey
+            Real Stories From Solo SHEs
           </h2>
           <p className="mt-2 text-sm text-[#4b5563] md:text-base">
-            Whether you{"'"}re planning your first solo experience or looking for inspiration...
+            Discover inspiring journeys from women who traveled solo
           </p>
         </div>
 
