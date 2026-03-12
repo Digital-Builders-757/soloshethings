@@ -30,8 +30,10 @@ export function HeroSection() {
         {/* Left: Orange solid background with content */}
         <div className="flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
           <div className="max-w-md text-left">
-            <h1 className="text-xl font-bold text-white md:text-3xl lg:text-4xl">
-              Solo SHE Things
+            <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">
+              <span className="text-white">Solo </span>
+              <span className="italic text-[#ffd0a9]">SHE </span>
+              <span className="text-white">Things</span>
             </h1>
             <p className="mt-2 text-xs leading-relaxed text-white/90 md:mt-4 md:text-base lg:text-lg">
               Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
