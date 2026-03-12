@@ -1,77 +1,67 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { heroImages } from "@/lib/data"
+
+const heroSlides = [
+  { src: "/images/hero-lisbon.jpg", location: "Lisbon, Portugal" },
+  { src: "/images/hero-berlin.jpg", location: "Berlin, Germany" },
+  { src: "/images/hero-safari.jpg", location: "Botswana, Africa" },
+  { src: "/images/hero-sculpture.jpg", location: "London, England" },
+]
 
 export function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0)
-  const currentImage = heroImages[activeSlide]
+
+  // Auto-advance slides every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const currentSlide = heroSlides[activeSlide]
 
   return (
-    <section className="bg-gradient-to-b from-white to-[#FAFAFA] py-12 md:py-24">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-10 px-5 md:gap-16 md:px-8 lg:grid-cols-[1fr_1.2fr]">
-        {/* Left: Hero Content */}
-        <div className="text-center lg:text-left">
-          <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-[5rem]">
-            <span className="italic font-normal text-brand-orange">Solo</span>{" "}
-            SHE{" "}
-            <span className="italic font-normal text-brand-orange">Things</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-[450px] text-base leading-relaxed text-[#555] md:mt-8 md:text-xl lg:mx-0">
-            Join the global collective of fearless women exploring the world on
-            their own terms. Curated destinations, safety guides, and a
-            sisterhood that travels with you.
-          </p>
-          <div className="mt-6 inline-block -rotate-3 md:mt-8">
+    <section className="min-h-[50vh] md:min-h-[calc(100vh-170px)]">
+      <div className="grid min-h-[50vh] grid-cols-2 md:min-h-[calc(100vh-170px)]">
+        {/* Left: Orange solid background with content */}
+        <div className="flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
+          <div className="max-w-md text-left">
+            <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">
+              <span className="text-white">Solo </span>
+              <span className="italic text-[#ffd0a9]">SHE </span>
+              <span className="text-white">Things</span>
+            </h1>
+            <p className="mt-2 text-xs leading-relaxed text-white/90 md:mt-4 md:text-base lg:text-lg">
+              Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
+            </p>
             <Link
               href="/signup"
-              className="inline-block rounded-full border-2 border-brand-orange bg-brand-orange px-6 py-3 text-sm font-bold uppercase tracking-[0.5px] text-white transition-all duration-200 hover:bg-white hover:text-brand-orange md:px-8 md:py-4 md:text-base"
+              className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#df4915] transition-all hover:bg-white/90 md:mt-6 md:px-6 md:py-3 md:text-base lg:mt-8"
             >
-              Start Your Journey
+              START YOUR JOURNEY
             </Link>
           </div>
         </div>
 
-        {/* Right: Carousel Card */}
-        <div className="relative px-2 md:p-4">
-          {/* Card with peach shadow - reduced on mobile */}
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-[8px_8px_0px_var(--brand-peach)] transition-transform duration-300 md:rounded-3xl md:shadow-peach-offset md:hover:-translate-x-1 md:hover:-translate-y-1 md:hover:shadow-[24px_24px_0px_var(--brand-peach)]">
-            <Image
-              src={currentImage.src}
-              alt={currentImage.alt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 55vw"
-              priority
-            />
-            {/* Overlay */}
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-4 md:p-8">
-              <div>
-                <h3 className="font-serif text-base font-bold text-white md:text-xl">
-                  {currentImage.caption}
-                </h3>
-                <span className="text-xs text-white/90 md:text-[0.9rem]">
-                  {"Europe's safest solo gem"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Dots */}
-          <div className="mt-6 flex items-center justify-center gap-2 md:mt-8">
-            {heroImages.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => setActiveSlide(index)}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  index === activeSlide ? "bg-brand-orange" : "bg-[#ddd]"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+        {/* Right: Image carousel */}
+        <div className="relative min-h-[200px] md:min-h-0">
+          <Image
+            src={currentSlide.src}
+            alt={currentSlide.location}
+            fill
+            className="object-cover"
+            sizes="50vw"
+            priority
+          />
+          {/* Location label */}
+          <div className="absolute bottom-3 left-3 md:bottom-8 md:left-8">
+            <span className="text-sm font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-xl lg:text-2xl">
+              {currentSlide.location}
+            </span>
           </div>
         </div>
       </div>
