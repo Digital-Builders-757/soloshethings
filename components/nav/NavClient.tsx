@@ -35,7 +35,7 @@ export function NavClient({
     >
       <div className="mx-auto flex max-w-[1240px] items-center justify-center px-5 py-3">
         {/* Desktop Nav Links - Centered with 2em gap */}
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-8 xl:flex">
           {allLinks.map((link) => (
             <li key={link.href}>
               <Link
@@ -49,7 +49,7 @@ export function NavClient({
         </ul>
 
         {/* Mobile: Menu Button */}
-        <div className="flex w-full items-center justify-between lg:hidden">
+        <div className="flex w-full items-center justify-between xl:hidden">
           <Link href="/" className="text-lg font-bold text-[#111827]">
             Solo SHE Things
           </Link>
@@ -70,7 +70,7 @@ export function NavClient({
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="border-t border-[#e5e7eb] bg-white lg:hidden">
+        <div className="border-t border-[#e5e7eb] bg-white xl:hidden">
           <div className="mx-auto flex max-w-[1240px] flex-col gap-1 px-5 py-4">
             {allLinks.map((link) => (
               <Link
