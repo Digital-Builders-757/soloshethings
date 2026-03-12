@@ -8,9 +8,10 @@
 export function Banner() {
   return (
     <div className="border-b border-[#e5e7eb]">
-      {/* Top Announcement Banner - #fb5315 */}
-      <div className="bg-[#fb5315] px-4 py-2 text-center">
-        <p className="text-sm text-white">
+      {/* Top Announcement Banner - #fb5315 with subtle pattern */}
+      <div className="relative bg-[#fb5315] px-4 py-2 text-center">
+        <div className="pointer-events-none absolute inset-0 pattern-kente opacity-40" />
+        <p className="relative z-10 text-sm text-white">
           Discover your <span className="font-bold text-[#ffd0a9]">Solo SHE</span> Adventure!
         </p>
       </div>

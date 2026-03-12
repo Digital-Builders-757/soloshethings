@@ -23,8 +23,10 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="bg-[#2044e0] py-16 md:py-24">
-      <div className="mx-auto max-w-[1240px] px-5 text-center md:px-8">
+    <section className="relative bg-[#2044e0] py-16 md:py-24">
+      {/* Mudcloth-inspired pattern overlay */}
+      <div className="pointer-events-none absolute inset-0 pattern-mudcloth opacity-40" />
+      <div className="relative z-10 mx-auto max-w-[1240px] px-5 text-center md:px-8">
         <h2 className="text-2xl font-bold text-white md:text-[2rem]">
           Stay in the Loop
         </h2>

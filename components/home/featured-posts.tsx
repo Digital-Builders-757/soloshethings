@@ -21,8 +21,9 @@ export function FeaturedPosts({
         {/* Header - always visible */}
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
-            Featured Content
+            {title}
           </h2>
+          {subtitle && <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>}
         </div>
 
         {/* 4-card grid or placeholder */}
@@ -38,7 +39,7 @@ export function FeaturedPosts({
                 <Link
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-lg bg-[#faf8f5]"
+                  className="group overflow-hidden rounded-lg bg-[#faf8f5] ring-2 ring-transparent transition-all hover:ring-[#ffd0a9]"
                 >
                   {/* Image */}
                   <div className="relative h-[200px] overflow-hidden">

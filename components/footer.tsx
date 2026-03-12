@@ -110,9 +110,10 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Middle Bar - #e2402a */}
-      <div className="bg-[#e2402a] py-3 text-center">
-        <p className="text-xs font-medium uppercase tracking-wider text-white">
+      {/* Middle Bar - #e2402a with Ankara pattern */}
+      <div className="relative bg-[#e2402a] py-3 text-center">
+        <div className="pointer-events-none absolute inset-0 pattern-ankara opacity-30" />
+        <p className="relative z-10 text-xs font-medium uppercase tracking-wider text-white">
           Conspicuous Legal Links Below
         </p>
       </div>
