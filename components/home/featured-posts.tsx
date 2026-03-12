@@ -10,8 +10,8 @@ interface FeaturedPostsProps {
 
 export function FeaturedPosts({ 
   posts, 
-  title = "Featured Posts From Solo SHEs",
-  subtitle = "Discover inspiring journeys from women who traveled solo"
+  title = "Featured Content",
+  subtitle = ""
 }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) {
     return (
@@ -21,7 +21,7 @@ export function FeaturedPosts({
             <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
               {title}
             </h2>
-            <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>
+            {subtitle && <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>}
           </div>
           <p className="text-center text-[#6b7280]">No posts available at the moment.</p>
         </div>
@@ -37,7 +37,7 @@ export function FeaturedPosts({
           <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
             {title}
           </h2>
-          <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>
+          {subtitle && <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>}
         </div>
 
         {/* 4-card grid */}
