@@ -2,31 +2,19 @@ import Image from "next/image"
 import Link from "next/link"
 import type { WpPost } from "@/lib/wp-types"
 
-interface FeaturedPostsProps {
+interface ResourcesPostsProps {
   posts: WpPost[]
-  title?: string
-  subtitle?: string
 }
 
-export function FeaturedPosts({ 
-  posts, 
-  title = "Real Stories From Solo SHEs",
-  subtitle = "Discover inspiring journeys from women who traveled solo"
-}: FeaturedPostsProps) {
+/**
+ * Resources for Your Solo Journey
+ * 
+ * Same card grid as Real Stories, but different title
+ */
+
+export function ResourcesPosts({ posts }: ResourcesPostsProps) {
   if (!posts || posts.length === 0) {
-    return (
-      <section className="bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
-              {title}
-            </h2>
-            <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>
-          </div>
-          <p className="text-center text-[#6b7280]">No posts available at the moment.</p>
-        </div>
-      </section>
-    )
+    return null
   }
 
   return (
@@ -35,9 +23,11 @@ export function FeaturedPosts({
         {/* Header */}
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
-            {title}
+            Resources for Your Solo Journey
           </h2>
-          <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>
+          <p className="mt-2 text-base text-[#4b5563]">
+            Whether you{"'"}re planning your first solo experience or looking for inspiration...
+          </p>
         </div>
 
         {/* 4-card grid */}

@@ -3,94 +3,53 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Palette */
+  /* New Design Brand Colors */
+  --color-primary-orange: #df4915;
+  --color-primary-blue: #2044e0;
+  --color-header-banner: #fb5315;
+  --color-banner-highlight: #ffd0a9;
+  --color-dark-text: #111827;
+  --color-body-text: #4b5563;
+  --color-light-gray: #6b7280;
+  --color-background-gray: #e5e7eb;
+  --color-card-bg: #faf8f5;
+  --color-footer-top: #f7e8e5;
+  --color-footer-maroon: #8b3a3a;
+  --color-footer-badge: #c53030;
+  --color-footer-middle: #e2402a;
+  --color-footer-bottom: #4b2c2a;
+  --color-read-more: #c53030;
+  --color-tan-cream: #dfb391;
+
+  /* Legacy brand palette mappings */
   --brand-pink: #FCC5E2;
-  --brand-pink-rgb: 252 197 226;
-  --brand-orange: #FB5315;
-  --brand-orange-rgb: 251 83 21;
+  --brand-orange: #df4915;
   --brand-gold: #DD9917;
-  --brand-gold-rgb: 221 153 23;
   --brand-peach: #FFD0A9;
-  --brand-peach-rgb: 255 208 169;
   --brand-blue: #2044E0;
-  --brand-blue-rgb: 32 68 224;
-
-  /* Semantic aliases used across components */
-  --brand-coral: #FB5315;
-  --brand-coral-rgb: 251 83 21;
-  --brand-navy: #2044E0;
-  --brand-navy-rgb: 32 68 224;
-  --brand-blush: #FCC5E2;
-  --brand-blush-rgb: 252 197 226;
-  --brand-sage: #DD9917;
-  --brand-sage-rgb: 221 153 23;
-  --brand-cream: #FFF8F0;
-  --brand-cream-rgb: 255 248 240;
-
-  /* Legacy mappings for backward compat */
-  --brand-blue-1: #2044E0;
-  --brand-blue-1-rgb: 32 68 224;
-  --brand-blue-2: #1A38C0;
-  --brand-blue-2-rgb: 26 56 192;
-  --brand-yellow-1: #FFD0A9;
-  --brand-yellow-1-rgb: 255 208 169;
-  --brand-yellow-2: #FCC5E2;
-  --brand-yellow-2-rgb: 252 197 226;
-  --brand-orange-rgb-legacy: 251 83 21;
-  --brand-pink-dark: #E0408C;
-  --brand-pink-dark-rgb: 224 64 140;
-
-  /* Semantic Color Tokens */
-  --color-primary: var(--brand-orange);
-  --color-primary-2: var(--brand-blue);
-  --color-highlight: var(--brand-peach);
-  --color-highlight-2: var(--brand-pink);
-  --color-accent: var(--brand-gold);
-  --color-bg-dark: var(--brand-blue);
+  --brand-cream: #faf8f5;
 
   /* Core palette - HSL for Tailwind */
   --background: 0 0% 100%;
   --foreground: 220 15% 15%;
-  --card: 0 0% 100%;
+  --card: 36 33% 97%;
   --card-foreground: 220 15% 15%;
   --popover: 0 0% 100%;
   --popover-foreground: 220 15% 15%;
-  --primary: 16 97% 53%;
+  --primary: 14 86% 48%;
   --primary-foreground: 0 0% 100%;
   --secondary: 30 100% 97%;
   --secondary-foreground: 220 15% 15%;
   --muted: 30 20% 96%;
   --muted-foreground: 215 14% 45%;
-  --accent: 43 82% 48%;
+  --accent: 220 77% 51%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 30 20% 90%;
-  --input: 30 20% 92%;
-  --ring: 16 97% 53%;
-  --radius: 0.75rem;
-}
-
-.dark {
-  --background: 220 20% 10%;
-  --foreground: 0 0% 98%;
-  --card: 220 20% 12%;
-  --card-foreground: 0 0% 98%;
-  --popover: 220 20% 12%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 16 97% 58%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 220 15% 20%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 220 15% 20%;
-  --muted-foreground: 220 10% 65%;
-  --accent: 43 82% 52%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 220 15% 20%;
-  --input: 220 15% 20%;
-  --ring: 16 97% 58%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 14 86% 48%;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -99,21 +58,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
   }
-}
-
-/* Clean card surface */
-.surface-card {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
-}
-
-/* Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+  }
 }
 
 /* Custom Scrollbar */
@@ -126,79 +76,38 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-orange);
+  background: var(--color-primary-orange);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-blue);
+  background: var(--color-primary-blue);
 }
 
-/* Clean image utility */
+/* Pill button utility */
+@layer components {
+  .btn-pill {
+    @apply rounded-full px-6 py-3 font-semibold transition-all duration-200;
+    border-radius: 9999px;
+  }
+  .btn-pill-primary {
+    @apply btn-pill text-white;
+    background-color: var(--color-primary-orange);
+  }
+  .btn-pill-primary:hover {
+    @apply opacity-90;
+  }
+  .btn-pill-outline {
+    @apply btn-pill border-2 bg-transparent;
+  }
+}
+
+/* Line clamp utility */
 @layer utilities {
-  .image-clean {
-    filter: none;
-    opacity: 1;
-  }
-}
-
-/* Neutral vignette overlay */
-@layer utilities {
-  .overlay-neutral-vignette {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.15) 100%);
-    pointer-events: none;
-  }
-}
-
-/* Grid pattern overlay for CTA sections (matches reference design) */
-@layer utilities {
-  .grid-pattern-overlay {
-    position: relative;
-  }
-  .grid-pattern-overlay::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.3;
-    pointer-events: none;
-  }
-}
-
-/* Peach offset shadow (matches reference carousel card) */
-@layer utilities {
-  .shadow-peach-offset {
-    box-shadow: 8px 8px 0px var(--brand-peach);
-  }
-  .shadow-peach-offset-hover:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 10px 10px 0px var(--brand-peach);
-  }
-}
-
-@media (min-width: 768px) {
-  @layer utilities {
-    .shadow-peach-offset {
-      box-shadow: 20px 20px 0px var(--brand-peach);
-    }
-    .shadow-peach-offset-hover:hover {
-      transform: translate(-4px, -4px);
-      box-shadow: 24px 24px 0px var(--brand-peach);
-    }
-  }
-}
-
-/* Section badge rotation */
-@layer utilities {
-  .badge-tilt {
-    transform: rotate(-2deg);
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
