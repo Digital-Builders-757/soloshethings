@@ -25,20 +25,20 @@ export function HeroSection() {
   const currentSlide = heroSlides[activeSlide]
 
   return (
-    <section className="min-h-[calc(100vh-170px)]">
-      <div className="grid min-h-[calc(100vh-170px)] grid-cols-1 lg:grid-cols-2">
+    <section className="min-h-[50vh] md:min-h-[calc(100vh-170px)]">
+      <div className="grid min-h-[50vh] grid-cols-2 md:min-h-[calc(100vh-170px)]">
         {/* Left: Orange solid background with content */}
-        <div className="flex items-center justify-center bg-[#df4915] px-8 py-16 lg:px-12 lg:py-24">
-          <div className="max-w-md text-center lg:text-left">
-            <h1 className="text-3xl font-bold text-white md:text-4xl lg:text-[2rem]">
+        <div className="flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
+          <div className="max-w-md text-left">
+            <h1 className="text-xl font-bold text-white md:text-3xl lg:text-4xl">
               Solo SHE Things
             </h1>
-            <p className="mt-4 text-base leading-relaxed text-white/90 md:text-lg">
+            <p className="mt-2 text-xs leading-relaxed text-white/90 md:mt-4 md:text-base lg:text-lg">
               Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
             </p>
             <Link
               href="/signup"
-              className="mt-6 inline-block rounded-full bg-white px-6 py-3 text-base font-semibold text-[#df4915] transition-all hover:bg-white/90 md:mt-8"
+              className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#df4915] transition-all hover:bg-white/90 md:mt-6 md:px-6 md:py-3 md:text-base lg:mt-8"
             >
               START YOUR JOURNEY
             </Link>
@@ -46,18 +46,18 @@ export function HeroSection() {
         </div>
 
         {/* Right: Image carousel */}
-        <div className="relative min-h-[300px] lg:min-h-0">
+        <div className="relative min-h-[200px] md:min-h-0">
           <Image
             src={currentSlide.src}
             alt={currentSlide.location}
             fill
             className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
+            sizes="50vw"
             priority
           />
           {/* Location label */}
-          <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8">
-            <span className="text-xl font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-2xl">
+          <div className="absolute bottom-3 left-3 md:bottom-8 md:left-8">
+            <span className="text-sm font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-xl lg:text-2xl">
               {currentSlide.location}
             </span>
           </div>
