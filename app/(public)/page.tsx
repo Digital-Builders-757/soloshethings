@@ -1,7 +1,5 @@
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
-import { BrandExplainer } from "@/components/home/brand-explainer"
-import { SocialProofStats } from "@/components/home/social-proof-stats"
 import { FeaturedPosts } from "@/components/home/featured-posts"
 import { WelcomeSection } from "@/components/home/welcome-section"
 import { CommunityCTA } from "@/components/home/community-cta"
@@ -24,16 +22,10 @@ export default async function HomePage() {
         {/* 1. Hero */}
         <HeroSection />
         
-        {/* 2. Brand Explainer - intro for first-time visitors */}
-        <BrandExplainer />
-        
-        {/* 3. Social Proof Stats */}
-        <SocialProofStats />
-        
         {/* Decorative African-inspired divider */}
         <div className="divider-african" />
         
-        {/* 4. Real Stories From Solo SHEs */}
+        {/* 2. Real Stories From Solo SHEs */}
         <FeaturedPosts 
           posts={realStoriesPosts} 
           title="Real Stories From Solo SHEs"
