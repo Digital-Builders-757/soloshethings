@@ -39,7 +39,7 @@ export function FeaturedPosts({
                 <Link
                   key={post.id}
                   href={`/blog/${post.slug}`}
-                  className="group hover-lift overflow-hidden rounded-lg bg-[#faf8f5] ring-2 ring-transparent transition-all hover:ring-[#ffd0a9]"
+                  className="group overflow-hidden rounded-lg bg-[#faf8f5] ring-2 ring-transparent transition-all hover:ring-[#ffd0a9]"
                 >
                   {/* Image */}
                   <div className="relative h-[200px] overflow-hidden">
@@ -76,8 +76,8 @@ export function FeaturedPosts({
                         {excerpt}...
                       </p>
                     )}
-                    <span className="mt-3 inline-block text-sm font-medium text-[#c53030] transition-all group-hover:translate-x-1">
-                      Read More &rarr;
+                    <span className="mt-3 inline-block text-sm font-medium text-[#c53030]">
+                      Read More
                     </span>
                   </div>
                 </Link>
