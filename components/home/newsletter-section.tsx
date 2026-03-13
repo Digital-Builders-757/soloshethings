@@ -24,11 +24,11 @@ export function NewsletterSection() {
 
   return (
     <section className="relative bg-[#2044e0] py-16 md:py-24">
-      {/* Mudcloth-inspired pattern overlay */}
-      <div className="pointer-events-none absolute inset-0 pattern-mudcloth opacity-40" />
+      {/* Animated Mudcloth-inspired pattern overlay */}
+      <div className="pointer-events-none absolute inset-0 animate-pattern-drift pattern-mudcloth opacity-40" />
       <div className="relative z-10 mx-auto max-w-[1240px] px-5 text-center md:px-8">
         <h2 className="text-2xl font-bold text-white md:text-[2rem]">
-          Stay in the Loop
+          Stay in the <span className="animate-pulse-glow italic text-[#ffd0a9]">Loop</span>
         </h2>
         <p className="mt-3 text-base text-white/90 md:text-lg">
           Sign up for tips, inspiration, and stories from solo SHEs around the world.
@@ -49,7 +49,7 @@ export function NewsletterSection() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="rounded-full bg-white px-6 py-3 font-semibold text-[#df4915] transition-colors hover:bg-white/90 disabled:opacity-70 sm:rounded-l-none"
+            className="rounded-full bg-white px-6 py-3 font-semibold text-[#df4915] transition-all hover:scale-105 hover:bg-white/90 disabled:opacity-70 sm:rounded-l-none"
           >
             {status === "loading"
               ? "..."
@@ -60,7 +60,7 @@ export function NewsletterSection() {
         </form>
 
         {status === "success" && (
-          <p className="mt-4 text-sm font-medium text-white/90">
+          <p className="animate-slide-in-up mt-4 text-sm font-medium text-white/90">
             Welcome! Check your inbox for confirmation.
           </p>
         )}

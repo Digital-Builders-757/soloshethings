@@ -12,14 +12,14 @@ export function CommunityStories() {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto grid max-w-[1240px] grid-cols-[1fr_3fr] items-center gap-4 px-5 md:gap-10 md:px-8">
-        {/* Left: Earth globe image */}
+        {/* Left: Earth globe image with slow spin */}
         <div className="flex justify-center">
-          <div className="relative h-[100px] w-[100px] md:h-[200px] md:w-[200px] lg:h-[250px] lg:w-[250px]">
+          <div className="animate-spin-slow relative h-[100px] w-[100px] md:h-[200px] md:w-[200px] lg:h-[250px] lg:w-[250px]">
             <Image
               src="/images/earth-globe.png"
               alt="Global community"
               fill
-              className="object-contain"
+              className="object-contain drop-shadow-lg"
               sizes="(max-width: 768px) 100px, 250px"
             />
           </div>
@@ -35,7 +35,7 @@ export function CommunityStories() {
           </p>
           <Link
             href="/signup"
-            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
+            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
           >
             Join the Community
           </Link>

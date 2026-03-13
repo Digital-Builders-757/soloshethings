@@ -12,14 +12,14 @@ export function FounderStory() {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto grid max-w-[1240px] grid-cols-[1fr_3fr] items-center gap-4 px-5 md:gap-10 md:px-8">
-        {/* Left: Founder silhouette image */}
+        {/* Left: Founder silhouette image with float animation */}
         <div className="flex justify-center">
-          <div className="relative h-[150px] w-[120px] md:h-[250px] md:w-[200px] lg:h-[300px] lg:w-[240px]">
+          <div className="animate-float relative h-[150px] w-[120px] md:h-[250px] md:w-[200px] lg:h-[300px] lg:w-[240px]">
             <Image
               src="/images/founder-silhouette.png"
               alt="Founder silhouette"
               fill
-              className="object-contain"
+              className="object-contain drop-shadow-lg"
               sizes="(max-width: 768px) 120px, 240px"
             />
           </div>
@@ -35,7 +35,7 @@ export function FounderStory() {
           </p>
           <Link
             href="/about"
-            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
+            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
           >
             Read the Founder Journal
           </Link>
