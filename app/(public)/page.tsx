@@ -1,5 +1,7 @@
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
+import { BrandExplainer } from "@/components/home/brand-explainer"
+import { SocialProofStats } from "@/components/home/social-proof-stats"
 import { FeaturedPosts } from "@/components/home/featured-posts"
 import { WelcomeSection } from "@/components/home/welcome-section"
 import { CommunityCTA } from "@/components/home/community-cta"
@@ -22,39 +24,45 @@ export default async function HomePage() {
         {/* 1. Hero */}
         <HeroSection />
         
+        {/* 2. Brand Explainer - intro for first-time visitors */}
+        <BrandExplainer />
+        
+        {/* 3. Social Proof Stats */}
+        <SocialProofStats />
+        
         {/* Decorative African-inspired divider */}
         <div className="divider-african" />
         
-        {/* 2. Real Stories From Solo SHEs */}
+        {/* 4. Real Stories From Solo SHEs */}
         <FeaturedPosts 
           posts={realStoriesPosts} 
           title="Real Stories From Solo SHEs"
           subtitle="Discover inspiring journeys from women who traveled solo"
         />
         
-        {/* 3. A Community Built for Solo SHEs */}
+        {/* 5. A Community Built for Solo SHEs */}
         <WelcomeSection />
         
-        {/* 4. Ready to Find Your Solo SHE Thing? */}
-        <CommunityCTA />
-        
-        {/* 5. A Global Community of Solo SHEs */}
+        {/* 6. A Global Community of Solo SHEs */}
         <CommunityStories />
         
         {/* Decorative African-inspired divider */}
         <div className="divider-african" />
         
-        {/* 6. Resources for Your Solo Journey */}
+        {/* 7. Resources for Your Solo Journey */}
         <ResourcesPosts posts={resourcesPosts} />
         
-        {/* 7. Stay in the Loop (Newsletter) */}
+        {/* 8. Stay in the Loop (Newsletter) */}
         <NewsletterSection />
         
-        {/* 8. The Story Behind Solo SHE Things */}
+        {/* 9. The Story Behind Solo SHE Things */}
         <FounderStory />
+        
+        {/* 10. Ready to Find Your Solo SHE Thing? - Single CTA */}
+        <CommunityCTA />
       </main>
       
-      {/* 9. Footer */}
+      {/* Footer */}
       <Footer />
     </>
   )

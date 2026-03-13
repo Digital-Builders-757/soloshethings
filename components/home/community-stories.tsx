@@ -6,7 +6,6 @@
  */
 
 import Image from "next/image"
-import Link from "next/link"
 
 export function CommunityStories() {
   return (
@@ -33,12 +32,6 @@ export function CommunityStories() {
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#4b5563] md:mt-4 md:text-base">
             From Tokyo to Lisbon, from Cape Town to Reykjavik—Solo SHEs are exploring every corner of the globe. Join thousands of women who have discovered the transformative power of traveling alone.
           </p>
-          <Link
-            href="/signup"
-            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
-          >
-            Join the Community
-          </Link>
         </div>
       </div>
     </section>

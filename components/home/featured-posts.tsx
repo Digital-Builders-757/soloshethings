@@ -13,7 +13,11 @@ export function FeaturedPosts({
   title = "Featured Content",
   subtitle = ""
 }: FeaturedPostsProps) {
-  const hasPosts = posts && posts.length > 0
+  // Filter out "Hello world!" post and any test posts
+  const filteredPosts = posts?.filter(post => 
+    !post.title.rendered.toLowerCase().includes("hello world")
+  ) || []
+  const hasPosts = filteredPosts.length > 0
 
   return (
     <section className="bg-white py-16 md:py-20">
@@ -29,11 +33,13 @@ export function FeaturedPosts({
         {/* 4-card grid or placeholder */}
         {hasPosts ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {posts.slice(0, 4).map((post) => {
+            {filteredPosts.slice(0, 4).map((post, index) => {
               const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
               const excerpt = post.excerpt.rendered
                 ? post.excerpt.rendered.replace(/<[^>]*>/g, "").trim().substring(0, 120)
                 : ""
+              // Alternate badge types - first post is Founder's Journal, rest are Community Story
+              const badgeType = index === 0 ? "Founder's Journal" : "Community Story"
 
               return (
                 <Link
@@ -57,6 +63,10 @@ export function FeaturedPosts({
                         <span className="text-sm text-[#6b7280]">No image</span>
                       </div>
                     )}
+                    {/* Badge */}
+                    <span className="absolute left-2 top-2 rounded-full bg-[#df4915] px-2 py-0.5 text-[10px] font-semibold text-white">
+                      {badgeType}
+                    </span>
                   </div>
 
                   {/* Content */}
