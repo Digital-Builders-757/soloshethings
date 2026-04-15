@@ -38,6 +38,29 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      {/* Brown decorative wavy line at bottom */}
+      <div className="absolute -bottom-1 left-0 right-0 z-10">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="block h-[30px] w-full md:h-[50px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,30 Q180,50 360,30 T720,30 T1080,30 T1440,30"
+            stroke="#7a331b"
+            strokeWidth="4"
+            fill="none"
+          />
+          <path
+            d="M0,40 Q180,20 360,40 T720,40 T1080,40 T1440,40"
+            stroke="#7a331b"
+            strokeWidth="3"
+            fill="none"
+          />
+        </svg>
+      </div>
     </section>
   )
 }

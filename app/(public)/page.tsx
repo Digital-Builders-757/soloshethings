@@ -8,14 +8,20 @@ import { AboutPreview } from "@/components/home/about-preview"
 export default async function HomePage() {
   return (
     <>
-      <main>
+      <main className="overflow-hidden">
         <HeroSection />
-        <WelcomeSection />
-        <CommunityCTA />
+        <div className="pt-8 md:pt-12">
+          <WelcomeSection />
+        </div>
+        <div className="pt-8 md:pt-12">
+          <CommunityCTA />
+        </div>
         <NewsletterSection />
         <AboutPreview />
       </main>
-      <Footer />
+      <div className="pt-8 md:pt-12">
+        <Footer />
+      </div>
     </>
   )
 }

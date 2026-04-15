@@ -26,7 +26,30 @@ const storyImages = [
 
 export function WelcomeSection() {
   return (
-    <section className="bg-[#f7e8be] py-16 md:py-24">
+    <section className="relative bg-[#f7e8be] py-16 md:py-24">
+      {/* Brown decorative wavy line at top */}
+      <div className="absolute -top-1 left-0 right-0 z-10">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="block h-[30px] w-full md:h-[50px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,25 Q180,45 360,25 T720,25 T1080,25 T1440,25"
+            stroke="#7a331b"
+            strokeWidth="4"
+            fill="none"
+          />
+          <path
+            d="M0,35 Q180,15 360,35 T720,35 T1080,35 T1440,35"
+            stroke="#7a331b"
+            strokeWidth="3"
+            fill="none"
+          />
+        </svg>
+      </div>
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-12 text-center">
@@ -56,6 +79,30 @@ export function WelcomeSection() {
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* Brown decorative wavy line at bottom */}
+      <div className="absolute -bottom-1 left-0 right-0 z-10">
+        <svg
+          viewBox="0 0 1440 60"
+          preserveAspectRatio="none"
+          className="block h-[30px] w-full md:h-[50px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,30 Q180,10 360,30 T720,30 T1080,30 T1440,30"
+            stroke="#7a331b"
+            strokeWidth="4"
+            fill="none"
+          />
+          <path
+            d="M0,40 Q180,60 360,40 T720,40 T1080,40 T1440,40"
+            stroke="#7a331b"
+            strokeWidth="3"
+            fill="none"
+          />
+        </svg>
       </div>
     </section>
   )
