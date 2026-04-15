@@ -8,16 +8,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div 
-      className="min-h-screen"
-      style={{
-        backgroundImage: "url('/images/wavy-pattern.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "repeat",
-        backgroundAttachment: "fixed",
-      }}
-    >
+    <div className="min-h-screen bg-white">
       <Banner />
       <SiteHeader variant="public" />
       <PublicLayoutClient>{children}</PublicLayoutClient>

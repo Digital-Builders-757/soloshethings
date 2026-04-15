@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { PatternSection } from "@/components/ui/pattern-section"
 
 const storyImages = [
   {
@@ -26,8 +27,8 @@ const storyImages = [
 
 export function WelcomeSection() {
   return (
-    <section className="bg-[#f7e8be] py-16 md:py-24">
-      <div className="container mx-auto px-6">
+    <PatternSection tone="cream" patternTop className="py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-12 md:pt-16">
         {/* Header */}
         <div className="mb-12 text-center">
           <h2 className="font-serif text-3xl font-bold text-[#e34b16] md:text-4xl">
@@ -57,6 +58,6 @@ export function WelcomeSection() {
           ))}
         </div>
       </div>
-    </section>
+    </PatternSection>
   )
 }

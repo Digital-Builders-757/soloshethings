@@ -1,10 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
+import { PatternSection } from "@/components/ui/pattern-section"
 
 export function AboutPreview() {
   return (
-    <section className="bg-white py-16 md:py-24">
-      <div className="container mx-auto px-6">
+    <PatternSection tone="white" patternTop className="py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-12 md:pt-16">
         <div className="mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-2">
           {/* Image */}
           <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-[#d9d9d9]">
@@ -35,6 +36,6 @@ export function AboutPreview() {
           </div>
         </div>
       </div>
-    </section>
+    </PatternSection>
   )
 }
