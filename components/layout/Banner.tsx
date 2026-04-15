@@ -1,37 +1,23 @@
-import Image from "next/image"
+import Link from "next/link"
 
 /**
  * Banner Component
  *
- * Site-wide top banner + establishment divider + picture strip with marquee
+ * Site-wide top banner with orange background and centered logo
+ * Matches Figma design for Solo SHE Things
  */
 
 export function Banner() {
   return (
-    <div>
-      {/* Top Announcement Banner */}
-      <div className="bg-brand-blue py-2.5 text-center">
-        <p className="text-sm font-medium tracking-wide text-white">
-          Discover your Solo SHE Adventure!
+    <div className="bg-[#e34b16] py-4 text-center">
+      <Link href="/" className="inline-block">
+        <h1 className="font-serif text-2xl font-bold tracking-wide text-white md:text-3xl">
+          SOLO<span className="font-normal">SHE</span>THINGS
+        </h1>
+        <p className="mt-1 text-xs tracking-[0.2em] text-white/90">
+          Est. 2025
         </p>
-      </div>
-      {/* Establishment Divider */}
-      <div className="border-b border-border bg-background py-1.5 text-center">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Solo SHE Things &middot; Est. 2025
-        </p>
-      </div>
-      {/* Picture Banner */}
-      <div className="relative h-[160px] w-full overflow-hidden md:h-[200px]">
-        <Image
-          src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=200&fit=crop"
-          alt="Travel landscape banner"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-brand-blue/40" />
-      </div>
+      </Link>
     </div>
   )
 }

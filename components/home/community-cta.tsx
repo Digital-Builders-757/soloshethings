@@ -1,41 +1,70 @@
+import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+
+const communityImages = [
+  {
+    id: 1,
+    src: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop",
+    alt: "Women travelers connecting",
+  },
+  {
+    id: 2,
+    src: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=400&h=300&fit=crop",
+    alt: "Solo travel adventure",
+  },
+  {
+    id: 3,
+    src: "https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=400&h=300&fit=crop",
+    alt: "Travel community moments",
+  },
+]
 
 export function CommunityCTA() {
   return (
-    <section className="bg-brand-orange py-24">
+    <section className="bg-[#e34b16] py-16 md:py-24">
       <div className="container mx-auto px-6">
-        <div className="mx-auto max-w-3xl text-center">
-          {/* Eyebrow */}
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-peach">
-            Join 10,000+ Travelers
-          </p>
-
+        <div className="mx-auto max-w-4xl">
           {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-pink md:text-4xl lg:text-5xl text-balance">
-            Go Solo, Together
-          </h2>
+          <div className="mb-8 text-center">
+            <h2 className="font-serif text-3xl font-bold text-[#fab642] md:text-4xl">
+              A Community Built for Solo SHEs
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-white/90">
+              Connect with women who understand the joys and challenges of solo travel. Share your experiences, find travel buddies, and get inspired by stories from around the world.
+            </p>
+          </div>
 
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-pink" />
+          {/* Community Image Cards */}
+          <div className="mb-10 grid grid-cols-3 gap-4">
+            {communityImages.map((image) => (
+              <div
+                key={image.id}
+                className="aspect-square overflow-hidden rounded-xl bg-[#d9d9d9]"
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={400}
+                  height={400}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
 
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-brand-pink/90">
-            Connect with thousands of solo female travelers from around the world. Share your stories,
-            get travel tips, and find your next adventure with a supportive community.
-          </p>
-
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          {/* Action Buttons */}
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/signup"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 text-sm font-semibold text-brand-orange transition-all hover:bg-brand-peach hover:shadow-lg"
+              href="/collections"
+              className="inline-flex items-center justify-center rounded-full border-2 border-white bg-transparent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-white hover:text-[#e34b16]"
             >
-              Join the SHEsisterhood
-              <ArrowRight className="h-4 w-4" />
+              Discover Solo Stories
             </Link>
             <Link
-              href="/community"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-brand-pink/40 px-8 py-3 text-sm font-semibold text-brand-pink transition-all hover:border-brand-pink hover:bg-white/10"
+              href="/signup"
+              className="inline-flex items-center justify-center rounded-full border-2 border-white bg-transparent px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-white hover:text-[#e34b16]"
             >
-              See How SHE Did It
+              Create Your Free Profile
             </Link>
           </div>
         </div>

@@ -8,10 +8,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="min-h-screen bg-white">
       <Banner />
       <SiteHeader variant="public" />
       <PublicLayoutClient>{children}</PublicLayoutClient>
-    </>
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, Mail, Check } from "lucide-react"
+import { Mail, Check } from "lucide-react"
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("")
@@ -20,46 +20,39 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="bg-brand-cream py-24">
+    <section className="bg-[#c4722a] py-16 md:py-20">
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-xl text-center">
-          {/* Eyebrow */}
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
-            Stay Connected
-          </p>
-
           {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
-            The Connection Collective
+          <h2 className="font-serif text-3xl font-bold text-white md:text-4xl">
+            Stay in the Loop
           </h2>
-          <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
 
-          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Sign up to stay current on all of my latest tips, tricks, photos, and destination guides.
+          <p className="mt-4 text-white/90">
+            Sign up for tips, inspiration, and stories from solo SHEs around the world.
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="mt-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-0">
               <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-12 rounded-full border-2 border-border bg-white pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:border-brand-orange sm:rounded-r-none"
+                  className="h-12 rounded-full border-2 border-white bg-white pl-5 pr-4 text-[#3a3a3a] placeholder:text-[#a8a8a8] focus:border-[#7a331b] sm:rounded-r-none"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={status === "loading"}
-                className="h-12 gap-2 rounded-full bg-brand-orange px-6 text-white transition-all hover:bg-brand-orange/90 sm:rounded-l-none"
+                className="h-12 gap-2 rounded-full bg-[#fab642] px-6 text-[#7a331b] font-bold transition-all hover:bg-[#fab642]/90 sm:rounded-l-none"
               >
                 {status === "loading" ? (
                   <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#7a331b]/30 border-t-[#7a331b]" />
                     Subscribing...
                   </>
                 ) : status === "success" ? (
@@ -69,8 +62,8 @@ export function NewsletterSection() {
                   </>
                 ) : (
                   <>
+                    <Mail className="h-4 w-4" />
                     Subscribe
-                    <Send className="h-4 w-4" />
                   </>
                 )}
               </Button>
@@ -78,15 +71,11 @@ export function NewsletterSection() {
           </form>
 
           {status === "success" && (
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-gold/20 px-4 py-2 text-sm text-brand-blue">
-              <Check className="h-4 w-4 text-brand-gold" />
-              Welcome to the collective! Check your inbox for a confirmation.
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm text-[#7a331b]">
+              <Check className="h-4 w-4 text-[#e34b16]" />
+              Welcome! Check your inbox for a confirmation.
             </div>
           )}
-
-          <p className="mt-6 text-xs text-muted-foreground">
-            Join 10,000+ solo female travelers. Unsubscribe anytime.
-          </p>
         </div>
       </div>
     </section>

@@ -1,50 +1,58 @@
 "use client"
 
 import Image from "next/image"
-import { heroImages } from "@/lib/data"
+import Link from "next/link"
 
 export function HeroSection() {
   return (
-    <section className="bg-brand-peach py-16 md:py-24">
-      <div className="container mx-auto px-6">
-        {/* Row 1 -- Text */}
-        <div className="mb-12 text-center">
-          <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-brand-orange md:text-5xl lg:text-6xl text-balance">
-            Solo SHE Things
+    <section className="relative">
+      <div className="grid lg:grid-cols-2">
+        {/* Left Panel - Orange with text */}
+        <div className="flex flex-col justify-center bg-[#e34b16] px-8 py-16 md:px-12 lg:px-16 lg:py-24">
+          {/* SOLO SHE THINGS with styled text */}
+          <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl xl:text-7xl">
+            <span className="font-serif text-[#f7e8be]">SOLO</span>
+            <span 
+              className="mx-1 inline-block font-serif italic text-[#fab642]"
+              style={{ 
+                fontStyle: "italic",
+                transform: "rotate(-3deg)",
+                display: "inline-block"
+              }}
+            >
+              SHE
+            </span>
+            <span className="font-serif text-[#f7e8be]">THINGS</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-foreground/70">
-            A travel blog and community for adventurous solo female travelers.
-            Discover destinations, safety tips, and stories from fearless women
-            around the world.
+          
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-[#f7e8be]/90 md:text-xl">
+            Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
           </p>
+          
+          <Link
+            href="/signup"
+            className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-[#fab642] px-10 py-4 text-base font-bold text-[#7a331b] transition-all hover:bg-[#f5a830] hover:shadow-lg"
+          >
+            Start Your Journey
+          </Link>
         </div>
 
-        {/* Row 2 -- 4 Images */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-          {heroImages.map((image, index) => (
-            <div
-              key={image.id}
-              className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-md"
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                priority={index < 2}
-                loading={index >= 2 ? "lazy" : undefined}
-              />
-              {/* Caption overlay */}
-              <div className="absolute inset-x-0 bottom-0 bg-brand-orange/80 px-4 py-3">
-                <p className="text-center text-sm font-semibold tracking-wide text-white">
-                  {image.caption}
-                </p>
-              </div>
-            </div>
-          ))}
+        {/* Right Panel - Image */}
+        <div className="relative h-[400px] lg:h-auto lg:min-h-[500px]">
+          <Image
+            src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&h=800&fit=crop"
+            alt="Woman traveler in Botswana, Africa"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Location caption */}
+          <div className="absolute bottom-4 right-4 rounded-lg bg-black/50 px-4 py-2 backdrop-blur-sm">
+            <p className="text-sm font-medium text-white">Botswana, Africa</p>
+          </div>
         </div>
       </div>
+      
     </section>
   )
 }

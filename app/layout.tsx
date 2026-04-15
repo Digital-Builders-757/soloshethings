@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${rokkitt.variable} font-sans antialiased`}>{children}</body>
+    <html lang="en" className="bg-background">
+      <body className={`${rokkitt.variable} font-sans antialiased`} suppressHydrationWarning>{children}</body>
     </html>
   )
 }

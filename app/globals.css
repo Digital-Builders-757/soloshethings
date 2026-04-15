@@ -3,71 +3,77 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Palette */
-  --brand-pink: #FCC5E2;
-  --brand-pink-rgb: 252 197 226;
-  --brand-orange: #FB5315;
-  --brand-orange-rgb: 251 83 21;
-  --brand-gold: #DD9917;
-  --brand-gold-rgb: 221 153 23;
-  --brand-peach: #FFD0A9;
-  --brand-peach-rgb: 255 208 169;
-  --brand-blue: #2044E0;
-  --brand-blue-rgb: 32 68 224;
+  /* Brand Palette - Figma Design */
+  --brand-orange: #e34b16;
+  --brand-orange-rgb: 227 75 22;
+  --brand-brown: #7a331b;
+  --brand-brown-rgb: 122 51 27;
+  --brand-cream: #f7e8be;
+  --brand-cream-rgb: 247 232 190;
+  --brand-gold: #fab642;
+  --brand-gold-rgb: 250 182 66;
+  --brand-gray: #d9d9d9;
+  --brand-gray-rgb: 217 217 217;
+  --brand-dark: #3a3a3a;
+  --brand-dark-rgb: 58 58 58;
 
-  /* Semantic aliases used across components */
-  --brand-coral: #FB5315;
-  --brand-coral-rgb: 251 83 21;
-  --brand-navy: #2044E0;
-  --brand-navy-rgb: 32 68 224;
-  --brand-blush: #FCC5E2;
-  --brand-blush-rgb: 252 197 226;
-  --brand-sage: #DD9917;
-  --brand-sage-rgb: 221 153 23;
-  --brand-cream: #FFF8F0;
-  --brand-cream-rgb: 255 248 240;
+  /* Legacy/compat aliases */
+  --brand-pink: #f7e8be;
+  --brand-pink-rgb: 247 232 190;
+  --brand-peach: #f7e8be;
+  --brand-peach-rgb: 247 232 190;
+  --brand-blue: #3a3a3a;
+  --brand-blue-rgb: 58 58 58;
+  --brand-coral: #e34b16;
+  --brand-coral-rgb: 227 75 22;
+  --brand-navy: #3a3a3a;
+  --brand-navy-rgb: 58 58 58;
+  --brand-blush: #f7e8be;
+  --brand-blush-rgb: 247 232 190;
+  --brand-sage: #fab642;
+  --brand-sage-rgb: 250 182 66;
 
   /* Legacy mappings for backward compat */
-  --brand-blue-1: #2044E0;
-  --brand-blue-1-rgb: 32 68 224;
-  --brand-blue-2: #1A38C0;
-  --brand-blue-2-rgb: 26 56 192;
-  --brand-yellow-1: #FFD0A9;
-  --brand-yellow-1-rgb: 255 208 169;
-  --brand-yellow-2: #FCC5E2;
-  --brand-yellow-2-rgb: 252 197 226;
-  --brand-orange-rgb-legacy: 251 83 21;
-  --brand-pink-dark: #E0408C;
-  --brand-pink-dark-rgb: 224 64 140;
+  --brand-blue-1: #3a3a3a;
+  --brand-blue-1-rgb: 58 58 58;
+  --brand-blue-2: #2a2a2a;
+  --brand-blue-2-rgb: 42 42 42;
+  --brand-yellow-1: #f7e8be;
+  --brand-yellow-1-rgb: 247 232 190;
+  --brand-yellow-2: #fab642;
+  --brand-yellow-2-rgb: 250 182 66;
+  --brand-orange-rgb-legacy: 227 75 22;
+  --brand-pink-dark: #7a331b;
+  --brand-pink-dark-rgb: 122 51 27;
 
   /* Semantic Color Tokens */
   --color-primary: var(--brand-orange);
-  --color-primary-2: var(--brand-blue);
-  --color-highlight: var(--brand-peach);
-  --color-highlight-2: var(--brand-pink);
+  --color-primary-2: var(--brand-brown);
+  --color-highlight: var(--brand-cream);
+  --color-highlight-2: var(--brand-gold);
   --color-accent: var(--brand-gold);
-  --color-bg-dark: var(--brand-blue);
+  --color-bg-dark: var(--brand-dark);
 
   /* Core palette - HSL for Tailwind */
   --background: 0 0% 100%;
-  --foreground: 220 15% 15%;
+  --foreground: 0 0% 23%;
   --card: 0 0% 100%;
-  --card-foreground: 220 15% 15%;
+  --card-foreground: 0 0% 23%;
   --popover: 0 0% 100%;
-  --popover-foreground: 220 15% 15%;
-  --primary: 16 97% 53%;
+  --popover-foreground: 0 0% 23%;
+  --primary: 15 83% 49%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 30 100% 97%;
-  --secondary-foreground: 220 15% 15%;
-  --muted: 30 20% 96%;
-  --muted-foreground: 215 14% 45%;
-  --accent: 43 82% 48%;
-  --accent-foreground: 0 0% 100%;
+  --secondary: 43 85% 86%;
+  --secondary-foreground: 15 58% 30%;
+  --muted: 43 85% 86%;
+  --muted-foreground: 0 0% 35%;
+  --accent: 37 95% 62%;
+  --accent-foreground: 15 58% 30%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 30 20% 90%;
-  --input: 30 20% 92%;
-  --ring: 16 97% 53%;
+  --border: 43 40% 85%;
+  --input: 43 40% 90%;
+  --ring: 15 83% 49%;
   --radius: 0.75rem;
 }
 

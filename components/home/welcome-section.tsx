@@ -1,34 +1,63 @@
+import Image from "next/image"
+import Link from "next/link"
+import { PatternSection } from "@/components/ui/pattern-section"
+
+const storyImages = [
+  {
+    id: 1,
+    src: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=500&fit=crop",
+    alt: "Solo traveler exploring mountains",
+  },
+  {
+    id: 2,
+    src: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400&h=500&fit=crop",
+    alt: "Woman traveling through historic city",
+  },
+  {
+    id: 3,
+    src: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=400&h=500&fit=crop",
+    alt: "Adventure travel moment",
+  },
+  {
+    id: 4,
+    src: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=500&fit=crop",
+    alt: "Solo exploration journey",
+  },
+]
+
 export function WelcomeSection() {
   return (
-    <section className="bg-brand-cream py-24">
-      <div className="container mx-auto px-6">
-        <div className="mx-auto max-w-3xl text-center">
-          {/* Title */}
-          <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
-            Mission
+    <PatternSection tone="cream" patternTop className="py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-12 md:pt-16">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <h2 className="font-serif text-3xl font-bold text-[#e34b16] md:text-4xl">
+            Real Stories From Solo SHEs
           </h2>
+          <p className="mx-auto mt-4 max-w-xl text-[#3a3a3a]/80">
+            Discover inspiring journeys from women who traveled solo
+          </p>
+        </div>
 
-          {/* Solid accent bar */}
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue" />
-
-          {/* Body copy */}
-          <div className="mt-8 space-y-6 text-lg leading-relaxed text-muted-foreground">
-            <p>
-              SoloSHEThings is a global community designed to empower, inspire and encourage women to
-              step into their own solo adventures. This is a space where stories are shared, confidence
-              is built and courage is contagious.
-            </p>
-            <p>
-              Whether it{"'"}s making a reservation for one, signing up for a class on your own, or
-              traveling halfway across the world solo, every solo step counts.
-            </p>
-            <p>
-              Step outside your comfort zone, try something new, and discover just how capable you are.
-              So tell us -- what is your solo SHE thing?
-            </p>
-          </div>
+        {/* Story Cards Grid */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {storyImages.map((image) => (
+            <Link
+              key={image.id}
+              href="/collections"
+              className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-[#d9d9d9] transition-transform hover:scale-[1.02]"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            </Link>
+          ))}
         </div>
       </div>
-    </section>
+    </PatternSection>
   )
 }

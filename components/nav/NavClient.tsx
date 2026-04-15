@@ -30,7 +30,7 @@ export function NavClient({
 
   useEffect(() => {
     if (!showStickyNav) return;
-    const handleScroll = () => setIsScrolled(window.scrollY > 400);
+    const handleScroll = () => setIsScrolled(window.scrollY > 200);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showStickyNav]);
@@ -45,7 +45,7 @@ export function NavClient({
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+          className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
         >
           {link.label}
         </Link>
@@ -56,14 +56,14 @@ export function NavClient({
     <>
       <Link
         href="/login"
-        className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+        className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
       >
         Sign In
       </Link>
       <Link href="/signup">
         <Button
           size="sm"
-          className="rounded-full bg-brand-orange px-6 text-white transition-all hover:bg-brand-orange/90"
+          className="rounded-full bg-[#e34b16] px-6 text-white transition-all hover:bg-[#c43d10]"
         >
           Get Started
         </Button>
@@ -73,53 +73,50 @@ export function NavClient({
 
   return (
     <>
-      {/* Main Nav - Black/Navy editorial */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-blue">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="font-serif text-2xl font-bold tracking-wide text-white">
-              Solo <span className="text-brand-orange">SHE</span> Things
-            </Link>
+      {/* Main Nav - Clean white background */}
+      <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white">
+        {/* Desktop Navigation - Hidden on mobile */}
+        <div className="container mx-auto hidden px-6 py-4 md:block">
+          <nav className="flex items-center justify-center gap-8" aria-label="Main navigation">
+            {allLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation">
-              {allLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {authActions}
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button
-              type="button"
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-white" />
-              ) : (
-                <Menu className="h-6 w-6 text-white" />
-              )}
-            </button>
-          </div>
+        {/* Mobile Header - Only visible on mobile */}
+        <div className="container mx-auto flex items-center justify-between px-6 py-3 md:hidden">
+          <Link href="/" className="font-serif text-lg font-bold text-[#e34b16]">
+            Solo SHE Things
+          </Link>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6 text-[#3a3a3a]" />
+            ) : (
+              <Menu className="h-6 w-6 text-[#3a3a3a]" />
+            )}
+          </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-white/10 bg-brand-blue md:hidden">
+          <div className="border-t border-[#e5e5e5] bg-white md:hidden">
             <nav className="container mx-auto flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
               {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+                  className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -130,7 +127,7 @@ export function NavClient({
                   <>
                     {authLinks.map((link) => (
                       <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                        <Button variant="outline" className="w-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/10">
                           {link.label}
                         </Button>
                       </Link>
@@ -140,12 +137,12 @@ export function NavClient({
                 ) : (
                   <>
                     <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+                      <Button variant="outline" className="w-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/10">
                         Sign In
                       </Button>
                     </Link>
                     <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="w-full bg-brand-orange text-white hover:bg-brand-orange/90">
+                      <Button className="w-full bg-[#e34b16] text-white hover:bg-[#c43d10]">
                         Get Started
                       </Button>
                     </Link>
@@ -161,15 +158,15 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-brand-blue shadow-lg transition-all duration-500",
+            "fixed left-0 right-0 top-0 z-50 border-b border-[#e5e5e5] bg-white shadow-sm transition-all duration-500",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"
         >
           <div className="container mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
-              <Link href="/" className="font-serif text-xl font-bold tracking-wide text-white">
-                Solo <span className="text-brand-orange">SHE</span> Things
+              <Link href="/" className="font-serif text-xl font-bold text-[#e34b16]">
+                SOLO<span className="font-normal">SHE</span>THINGS
               </Link>
 
               <div className="hidden items-center gap-6 md:flex">
@@ -177,7 +174,7 @@ export function NavClient({
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+                    className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
                   >
                     {link.label}
                   </Link>
@@ -191,7 +188,7 @@ export function NavClient({
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle menu"
               >
-                <Menu className="h-6 w-6 text-white" />
+                <Menu className="h-6 w-6 text-[#3a3a3a]" />
               </button>
             </div>
           </div>

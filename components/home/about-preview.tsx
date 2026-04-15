@@ -1,68 +1,42 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Globe, Users, Heart } from "lucide-react"
-
-const stats = [
-  { icon: Globe, label: "Countries Visited", value: "45+" },
-  { icon: Users, label: "Community Members", value: "10K+" },
-  { icon: Heart, label: "Stories Shared", value: "500+" },
-]
+import { PatternSection } from "@/components/ui/pattern-section"
 
 export function AboutPreview() {
   return (
-    <section className="bg-white py-24">
-      <div className="container mx-auto px-6">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+    <PatternSection tone="white" patternTop className="py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-12 md:pt-16">
+        <div className="mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-2">
           {/* Image */}
-          <div className="relative h-[400px] overflow-hidden rounded-xl lg:h-[500px]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-[#d9d9d9]">
             <Image
-              src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=800&h=1000&fit=crop"
-              alt="Founder traveling solo"
+              src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&h=750&fit=crop"
+              alt="Founder of Solo SHE Things"
               fill
               className="object-cover"
             />
           </div>
 
           {/* Content */}
-          <div className="flex flex-col gap-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
-              Meet the Founder
-            </p>
-
-            <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl text-balance">
-              About Solo SHE Things
+          <div className="flex flex-col gap-4">
+            <h2 className="font-serif text-4xl font-bold text-[#e34b16] md:text-5xl">
+              Our Story
             </h2>
             <div className="h-px w-16 bg-brand-orange" />
 
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              We are more than just a platform -- we are a movement. Solo SHE Things empowers women
-              to explore the world confidently, share their stories authentically, and build meaningful
-              connections with fellow adventurers.
+            <p className="text-lg leading-relaxed text-[#3a3a3a]">
+              Solo SHE Things started with a simple question: Why does solo travel feel so different for women? Our founder set out to create a space where women could share their experiences, find resources, and connect with like-minded travelers.
             </p>
-
-            {/* Stats */}
-            <div className="mt-4 grid grid-cols-3 gap-6">
-              {stats.map((stat) => (
-                <div key={stat.label} className="rounded-xl border border-border bg-brand-cream p-4 text-center">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-orange/10">
-                    <stat.icon className="h-5 w-5 text-brand-orange" />
-                  </div>
-                  <p className="mt-2 font-serif text-2xl font-bold text-brand-blue">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </div>
 
             <Link
               href="/about"
-              className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-brand-orange px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-orange/90 hover:shadow-lg"
+              className="mt-4 inline-flex w-fit items-center justify-center rounded-full bg-[#fab642] px-8 py-4 text-sm font-bold text-[#7a331b] transition-all hover:bg-[#fab642]/90"
             >
-              Read My Story
-              <ArrowRight className="h-4 w-4" />
+              Read the Founder Journal
             </Link>
           </div>
         </div>
       </div>
-    </section>
+    </PatternSection>
   )
 }
