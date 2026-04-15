@@ -1,90 +1,81 @@
+"use client"
+
 import Link from "next/link"
-import { Instagram, Twitter, Youtube, Mail } from "lucide-react"
+import { useState } from "react"
+import { Globe } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
-const footerLinks = {
-  destinations: [
-    { href: "/destinations?continent=europe", label: "Europe" },
-    { href: "/destinations?continent=asia", label: "Asia" },
-    { href: "/destinations?continent=americas", label: "Americas" },
-    { href: "/destinations?continent=africa", label: "Africa" },
-  ],
-  resources: [
-    { href: "/blog?category=safety-tips", label: "Safety Tips" },
-    { href: "/blog?category=budget", label: "Budget Travel" },
-    { href: "/blog?category=solo-tips", label: "Solo Tips" },
-    { href: "/packing-list", label: "Packing List" },
-  ],
-  company: [
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-    { href: "/community", label: "Community" },
-    { href: "/press", label: "Press" },
-  ],
-}
+const exploreLinks = [
+  { href: "/blog", label: "Stories" },
+  { href: "/collections", label: "Solo SHEtories" },
+  { href: "/destinations", label: "Destinations" },
+]
 
-const socialLinks = [
-  { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
-  { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
-  { href: "https://youtube.com", icon: Youtube, label: "YouTube" },
-  { href: "mailto:hello@soloshethings.com", icon: Mail, label: "Email" },
+const companyLinks = [
+  { href: "/about", label: "About Us" },
+  { href: "/contact", label: "Contact" },
+  { href: "/careers", label: "Careers" },
 ]
 
 export function Footer() {
+  const [email, setEmail] = useState("")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle newsletter signup
+    setEmail("")
+  }
+
   return (
-    <footer className="border-t border-border bg-white">
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+    <footer className="bg-[#e34b16]">
+      <div className="container mx-auto px-6 py-12">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="font-serif text-2xl font-bold text-brand-blue">
-              Solo <span className="text-brand-orange">SHE</span> Things
+          <div className="lg:col-span-1">
+            <Link href="/" className="inline-flex items-center gap-2">
+              <Globe className="h-6 w-6 text-white" />
+              <span className="font-serif text-lg font-bold text-white">SHE</span>
             </Link>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              A safe space for solo female travelers to discover, share, and connect. Empowering women
-              to explore the world with confidence.
-            </p>
-            <div className="mt-6 flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand-orange hover:text-brand-orange"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
+            <div className="mt-2">
+              <span className="inline-block rounded bg-[#7a331b] px-2 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                Solo SHE Things
+              </span>
             </div>
+            <p className="mt-4 text-sm leading-relaxed text-white/80">
+              Empowering women to explore the world on their own terms.
+            </p>
           </div>
 
-          {/* Destinations */}
+          {/* Newsletter */}
+          <div className="lg:col-span-1">
+            <h3 className="text-sm font-semibold text-white">Newsletter</h3>
+            <form onSubmit={handleSubmit} className="mt-4">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-10 rounded-md border-white/20 bg-white/10 text-white placeholder:text-white/60 focus:border-white"
+              />
+              <Button
+                type="submit"
+                className="mt-2 w-full rounded-md bg-[#fab642] text-sm font-semibold text-[#3a3a3a] hover:bg-[#f5a830]"
+              >
+                Subscribe
+              </Button>
+            </form>
+          </div>
+
+          {/* Explore */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Destinations</h3>
+            <h3 className="text-sm font-semibold text-white">Explore</h3>
             <ul className="mt-4 space-y-3">
-              {footerLinks.destinations.map((link) => (
+              {exploreLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Resources</h3>
-            <ul className="mt-4 space-y-3">
-              {footerLinks.resources.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
+                    className="text-sm text-white/80 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -95,13 +86,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-blue">Company</h3>
+            <h3 className="text-sm font-semibold text-white">Company</h3>
             <ul className="mt-4 space-y-3">
-              {footerLinks.company.map((link) => (
+              {companyLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-brand-orange"
+                    className="text-sm text-white/80 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -112,16 +103,16 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Solo SHE Things. All rights reserved.
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-8 md:flex-row">
+          <p className="text-sm text-white/80">
+            &copy; 2026 Solo SHE Things. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
+            <Link href="/privacy" className="text-sm text-white/80 transition-colors hover:text-white">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground transition-colors hover:text-brand-orange">
-              Terms of Service
+            <Link href="/terms" className="text-sm text-white/80 transition-colors hover:text-white">
+              Terms & Conditions
             </Link>
           </div>
         </div>
