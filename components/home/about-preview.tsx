@@ -22,6 +22,7 @@ export function AboutPreview() {
             <h2 className="font-serif text-4xl font-bold text-[#e34b16] md:text-5xl">
               Our Story
             </h2>
+            <div className="h-px w-16 bg-brand-orange" />
 
             <p className="text-lg leading-relaxed text-[#3a3a3a]">
               Solo SHE Things started with a simple question: Why does solo travel feel so different for women? Our founder set out to create a space where women could share their experiences, find resources, and connect with like-minded travelers.
