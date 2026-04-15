@@ -6,18 +6,7 @@ import Link from "next/link"
 export function HeroSection() {
   return (
     <section className="relative">
-      {/* Wavy pattern background */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('/images/wavy-pattern.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
-      
-      <div className="relative z-10 grid lg:grid-cols-2">
+      <div className="grid lg:grid-cols-2">
         {/* Left Panel - Orange with text */}
         <div className="flex flex-col justify-center bg-[#e34b16] px-8 py-16 md:px-12 lg:px-16 lg:py-24">
           {/* SOLO SHE THINGS with styled text */}

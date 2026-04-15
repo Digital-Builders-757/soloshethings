@@ -26,15 +26,7 @@ const storyImages = [
 
 export function WelcomeSection() {
   return (
-    <section 
-      className="relative py-16 md:py-24"
-      style={{
-        backgroundImage: "url('/images/wavy-pattern.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <section className="relative bg-[#f7e8be] py-16 md:py-24">
       {/* Brown decorative wavy line at top */}
       <div className="absolute -top-1 left-0 right-0 z-10">
         <svg
@@ -58,7 +50,7 @@ export function WelcomeSection() {
           />
         </svg>
       </div>
-      <div className="container relative z-10 mx-auto px-6">
+      <div className="container mx-auto px-6">
         {/* Header */}
         <div className="mb-12 text-center">
           <h2 className="font-serif text-3xl font-bold text-[#e34b16] md:text-4xl">

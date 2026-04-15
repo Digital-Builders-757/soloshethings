@@ -10,18 +10,12 @@ export default async function HomePage() {
     <>
       <main className="overflow-hidden">
         <HeroSection />
-        <div className="pt-8 md:pt-12">
-          <WelcomeSection />
-        </div>
-        <div className="pt-8 md:pt-12">
-          <CommunityCTA />
-        </div>
+        <WelcomeSection />
+        <CommunityCTA />
         <NewsletterSection />
         <AboutPreview />
       </main>
-      <div className="pt-8 md:pt-12">
-        <Footer />
-      </div>
+      <Footer />
     </>
   )
 }
