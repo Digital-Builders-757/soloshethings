@@ -6,18 +6,43 @@ import Link from "next/link"
 export function HeroSection() {
   return (
     <section className="relative">
-      <div className="grid lg:grid-cols-2">
+      {/* Wavy pattern background */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url('/images/wavy-pattern.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      
+      <div className="relative z-10 grid lg:grid-cols-2">
         {/* Left Panel - Orange with text */}
         <div className="flex flex-col justify-center bg-[#e34b16] px-8 py-16 md:px-12 lg:px-16 lg:py-24">
-          <h1 className="font-serif text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl text-balance">
-            SOLO<span className="font-normal">SHE</span>THINGS
+          {/* SOLO SHE THINGS with styled text */}
+          <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl xl:text-7xl">
+            <span className="font-serif text-[#f7e8be]">SOLO</span>
+            <span 
+              className="mx-1 inline-block font-serif italic text-[#fab642]"
+              style={{ 
+                fontStyle: "italic",
+                transform: "rotate(-3deg)",
+                display: "inline-block"
+              }}
+            >
+              SHE
+            </span>
+            <span className="font-serif text-[#f7e8be]">THINGS</span>
           </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-white/90">
+          
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-[#f7e8be]/90 md:text-xl">
             Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
           </p>
+          
           <Link
             href="/signup"
-            className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-[#fab642] px-8 py-3 text-sm font-semibold text-[#3a3a3a] transition-all hover:bg-[#f5a830] hover:shadow-lg"
+            className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-[#fab642] px-10 py-4 text-base font-bold text-[#7a331b] transition-all hover:bg-[#f5a830] hover:shadow-lg"
           >
             Start Your Journey
           </Link>
@@ -38,8 +63,9 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      
       {/* Brown decorative wavy line at bottom */}
-      <div className="absolute -bottom-1 left-0 right-0 z-10">
+      <div className="absolute -bottom-1 left-0 right-0 z-20">
         <svg
           viewBox="0 0 1440 60"
           preserveAspectRatio="none"
