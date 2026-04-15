@@ -21,30 +21,7 @@ const communityImages = [
 
 export function CommunityCTA() {
   return (
-    <section className="relative bg-[#e34b16] py-16 md:py-24">
-      {/* Brown decorative wavy line at top */}
-      <div className="absolute -top-1 left-0 right-0 z-10">
-        <svg
-          viewBox="0 0 1440 60"
-          preserveAspectRatio="none"
-          className="block h-[30px] w-full md:h-[50px]"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0,25 Q180,45 360,25 T720,25 T1080,25 T1440,25"
-            stroke="#7a331b"
-            strokeWidth="4"
-            fill="none"
-          />
-          <path
-            d="M0,35 Q180,15 360,35 T720,35 T1080,35 T1440,35"
-            stroke="#7a331b"
-            strokeWidth="3"
-            fill="none"
-          />
-        </svg>
-      </div>
+    <section className="bg-[#e34b16] py-16 md:py-24">
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-4xl">
           {/* Title */}
