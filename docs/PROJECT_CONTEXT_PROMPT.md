@@ -6,12 +6,50 @@
 
 1. **`docs/DOCUMENTATION_INDEX.md`** - Master navigation map
 2. **`docs/ARCHITECTURE_CONSTITUTION.md`** - Foundational principles and non-negotiables
-3. **Key Contracts:**
+3. **`docs/PROJECT_CONTEXT_PROMPT.md`** - This repo-level operating brief
+4. **`.cursorrules`** - Local coding-agent rules and non-negotiables
+5. **Key Contracts:**
    - `docs/contracts/AUTH_CONTRACT.md` - Authentication behavior
    - `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md` - Query patterns
    - `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md` - Access control
    - `docs/contracts/BILLING_STRIPE_CONTRACT.md` - Subscription behavior (if touching billing)
    - `docs/contracts/WORDPRESS_CONTENT_CONTRACT.md` - WordPress integration (if touching blog)
+6. **If local `.cursor/` commands exist, use them as workflow helpers only**
+   - See `docs/procedures/LOCAL_CURSOR_WORKFLOW.md`
+   - If `.cursor/` and `docs/` disagree, `docs/` win
+
+## Architecture Snapshot (LLM Mental Model)
+
+SoloSheThings is a **headless content + app architecture**:
+- **WordPress** = public editorial content truth
+- **Supabase** = identity, profiles, subscriptions, UGC, moderation, storage
+- **Next.js App Router** = delivery, preview, revalidation, routing, and secure server-only orchestration
+
+Practical rule:
+- public editorial/blog concerns usually point toward WordPress contracts
+- private/auth/community concerns usually point toward Supabase contracts
+- Next.js owns the surface composition and boundary enforcement
+
+## Local Cursor Command Workflow
+
+This repo may have a local `.cursor/` command pack for commands like:
+- `/plan`
+- `/implement`
+- `/verify`
+- `/ship`
+- `/pr`
+- `/continue`
+- `/debug`
+- `/triage`
+- `/retro`
+
+Important:
+- `.cursor/` is intentionally local and usually gitignored
+- the command pack is for workflow acceleration only
+- **`docs/` + `.cursorrules` remain the source of truth**
+
+Reference:
+- `docs/procedures/LOCAL_CURSOR_WORKFLOW.md`
 
 ## Red-Zone Files
 
