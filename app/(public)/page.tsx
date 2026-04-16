@@ -10,25 +10,11 @@ export default async function HomePage() {
     <>
       <main className="overflow-hidden">
         <HeroSection />
-        
-        {/* Decorative African-inspired divider */}
-        <div className="divider-african" />
-        
-        {/* 2. Real Stories From Solo SHEs */}
-        <FeaturedPosts 
-          posts={realStoriesPosts} 
-          title="Real Stories From Solo SHEs"
-          subtitle="Discover inspiring journeys from women who traveled solo"
-        />
-        
-        {/* 3. A Community Built for Solo SHEs */}
         <WelcomeSection />
         <CommunityCTA />
         <NewsletterSection />
         <AboutPreview />
       </main>
-      
-      {/* 9. Footer */}
       <Footer />
     </>
   )

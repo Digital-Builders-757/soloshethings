@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,9 @@ export function NavClient({
   publicLinks,
   authLinks = [],
   isAuthenticated,
+  showStickyNav = true,
 }: NavClientProps) {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -166,30 +168,15 @@ export function NavClient({
               <Link href="/" className="font-serif text-xl font-bold text-[#e34b16]">
                 SOLO<span className="font-normal">SHE</span>THINGS
               </Link>
-            ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-[#e5e7eb] pt-4">
-              {isAuthenticated ? (
-                <>
-                  {authLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-[#374151] hover:bg-[#f3f4f6] hover:text-[#111827]"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                  <LogoutButton />
-                </>
-              ) : (
-                <>
+
+              <div className="hidden items-center gap-6 md:flex">
+                {allLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
                   >
-                    Sign In
+                    {link.label}
                   </Link>
                 ))}
                 {authActions}
@@ -205,8 +192,8 @@ export function NavClient({
               </button>
             </div>
           </div>
-        </div>
+        </nav>
       )}
-    </nav>
+    </>
   );
 }
