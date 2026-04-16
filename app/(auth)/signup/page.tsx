@@ -5,96 +5,172 @@
  * Follows: docs/contracts/AUTH_CONTRACT.md
  */
 
-'use client'
+"use client"
 
-import { signup } from '@/app/actions/auth'
-import Link from 'next/link'
-import { useFormState } from 'react-dom'
+import { signup } from "@/app/actions/auth"
+import Link from "next/link"
+import { useFormState } from "react-dom"
+import { Mail, Lock, User } from "lucide-react"
 
 export default function SignupPage() {
   const [state, formAction] = useFormState(signup, null)
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-16">
-      <div className="max-w-md w-full surface-card rounded-2xl p-8">
-        <h1 className="text-4xl font-bold mb-8 text-center text-brand-blue">Create Account</h1>
+    <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-16">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#efdac1] bg-white shadow-[0_30px_80px_rgba(122,51,27,0.12)] lg:grid-cols-[1.02fr_0.98fr]">
+        {/* Branded panel */}
+        <div className="relative isolate hidden flex-col justify-center overflow-hidden bg-[#7a331b] px-8 py-12 text-[#fff5df] lg:flex lg:px-12 lg:py-16">
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-16 opacity-30"
+            style={{
+              backgroundImage: "url('/images/wavy-pattern.png')",
+              backgroundPosition: "center bottom",
+              backgroundRepeat: "repeat-x",
+              backgroundSize: "cover",
+            }}
+            aria-hidden="true"
+          />
+          <div className="pointer-events-none absolute -right-10 bottom-1/4 h-44 w-44 rounded-full bg-[#fab642]/10 blur-3xl" aria-hidden="true" />
 
-        {state?.error && (
-          <div className="mb-4 p-4 bg-red-50/80 border border-red-200/60 rounded-xl text-red-700 text-sm backdrop-blur-sm">
-            {state.error}
+          <div className="relative z-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#fab642]">Join the circle</p>
+            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-[#f7e8be] xl:text-[2.75rem]">
+              Create your{" "}
+              <span className="italic text-[#fab642]">Solo SHE</span> account
+            </h1>
+            <p className="mt-5 max-w-sm text-base leading-7 text-[#fff5df]/82">
+              Stories, safety-minded notes, and community—built for women who are learning to trust
+              themselves on the road.
+            </p>
+            <ul className="mt-8 space-y-3 text-sm leading-6 text-[#fff5df]/88">
+              <li className="flex gap-3">
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#fab642]" />
+                Save your profile and keep your journey organized.
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#fab642]" />
+                Be first to know when new chapters of the platform go live.
+              </li>
+            </ul>
+            <Link
+              href="/login"
+              className="mt-8 inline-flex text-sm font-semibold uppercase tracking-[0.14em] text-[#fab642] transition-colors hover:text-[#f5b137]"
+            >
+              Already have an account? Sign in →
+            </Link>
           </div>
-        )}
+        </div>
 
-        <form action={formAction} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2 text-neutral-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-3 border border-neutral-300/60 rounded-xl focus-ring bg-white/80 backdrop-blur-sm transition-all"
-              placeholder="your@email.com"
-              required
-            />
-          </div>
+        {/* Mobile brand strip */}
+        <div className="border-b border-[#efdac1] bg-[#7a331b] px-6 py-8 text-center lg:hidden">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#fab642]">Join the circle</p>
+          <h1 className="mt-2 font-serif text-2xl font-bold text-[#f7e8be]">Create account</h1>
+        </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2 text-neutral-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full px-4 py-3 border border-neutral-300/60 rounded-xl focus-ring bg-white/80 backdrop-blur-sm transition-all"
-              placeholder="••••••••"
-              minLength={6}
-              required
-            />
-          </div>
+        {/* Form */}
+        <div className="flex flex-col justify-center bg-[#fffaf0] px-6 py-10 sm:px-10 sm:py-12">
+          <div className="mx-auto w-full max-w-md">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#a14b24] lg:hidden">Account</p>
+            <h2 className="mt-2 hidden font-serif text-3xl font-bold text-[#7a331b] lg:block">Create account</h2>
+            <p className="mt-2 text-sm leading-6 text-[#6d5849] lg:mt-3">
+              A few details and you are in—same warmth as the homepage, none of the cold SaaS vibes.
+            </p>
 
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium mb-2 text-neutral-700">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              className="w-full px-4 py-3 border border-neutral-300/60 rounded-xl focus-ring bg-white/80 backdrop-blur-sm transition-all"
-              placeholder="choose a username"
-              pattern="[a-zA-Z0-9_]+"
-              title="Username can only contain letters, numbers, and underscores"
-              required
-            />
-          </div>
+            {state?.error && (
+              <div
+                className="mt-6 rounded-2xl border border-red-200/80 bg-red-50/95 p-4 text-sm text-red-800"
+                role="alert"
+              >
+                {state.error}
+              </div>
+            )}
 
-          <div className="bg-brand-peach/20 border border-brand-peach/40 text-foreground p-4 rounded-xl">
-            <p className="text-sm font-medium">
-              🎁 Start with a 7-day free trial - Full access to all features
+            <form action={formAction} className="mt-8 space-y-5">
+              <div>
+                <label htmlFor="email" className="mb-2 block text-sm font-semibold text-[#7a331b]">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="password" className="mb-2 block text-sm font-semibold text-[#7a331b]">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    placeholder="••••••••"
+                    minLength={6}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="username" className="mb-2 block text-sm font-semibold text-[#7a331b]">
+                  Username
+                </label>
+                <div className="relative">
+                  <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    placeholder="choose a username"
+                    pattern="[a-zA-Z0-9_]+"
+                    title="Username can only contain letters, numbers, and underscores"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#efd4b2] bg-[#f7e8be]/50 p-4 text-[#7a331b]">
+                <p className="text-sm font-semibold leading-6">
+                  Start with a 7-day free trial—full access to explore what we are building.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98]"
+              >
+                Sign up
+              </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <Link
+                href="/login"
+                className="text-sm font-semibold text-[#e34b16] underline-offset-4 transition-colors hover:text-[#c74010] hover:underline"
+              >
+                Already have an account? Sign in
+              </Link>
+            </div>
+
+            <p className="mt-8 text-center text-xs text-[#6d5849]/85">
+              <Link href="/" className="font-medium text-[#7a331b] underline-offset-2 hover:underline">
+                ← Back to home
+              </Link>
             </p>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-brand-orange text-white px-8 py-3 rounded-full font-semibold hover:bg-brand-orange/90 transition-all active:scale-[0.98]"
-          >
-            Sign Up
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <Link
-            href="/login"
-            className="text-brand-orange hover:text-brand-orange/80 font-medium"
-          >
-            Already have an account? Sign in
-          </Link>
         </div>
       </div>
     </main>
-  );
+  )
 }
-
