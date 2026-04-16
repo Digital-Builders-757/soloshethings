@@ -1,72 +1,58 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
-const heroSlides = [
-  { src: "/images/hero-lisbon.jpg", location: "Lisbon, Portugal" },
-  { src: "/images/hero-berlin.jpg", location: "Berlin, Germany" },
-  { src: "/images/hero-safari.jpg", location: "Botswana, Africa" },
-  { src: "/images/hero-sculpture.jpg", location: "London, England" },
-]
-
 export function HeroSection() {
-  const [activeSlide, setActiveSlide] = useState(0)
-
-  // Auto-advance slides every 6 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % heroSlides.length)
-    }, 6000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const currentSlide = heroSlides[activeSlide]
-
   return (
-    <section className="min-h-[50vh] md:min-h-[calc(100vh-170px)]">
-      <div className="grid min-h-[50vh] grid-cols-2 md:min-h-[calc(100vh-170px)]">
-        {/* Left: Orange solid background with content + African pattern overlay */}
-        <div className="relative flex items-center justify-center bg-[#df4915] px-4 py-8 md:px-8 md:py-16 lg:px-12 lg:py-24">
-          {/* Subtle Kente-inspired pattern overlay */}
-          <div className="pointer-events-none absolute inset-0 pattern-kente opacity-60" />
-          <div className="relative z-10 max-w-md text-left">
-            <h1 className="text-xl font-bold md:text-3xl lg:text-4xl">
-              <span className="text-white">Solo </span>
-              <span className="italic text-[#ffd0a9]">SHE </span>
-              <span className="text-white">Things</span>
-            </h1>
-            <p className="mt-2 text-xs leading-relaxed text-white/90 md:mt-4 md:text-base lg:text-lg">
-              Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
-            </p>
-            <Link
-              href="/signup"
-              className="mt-4 inline-block rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#df4915] transition-all hover:bg-white/90 md:mt-6 md:px-6 md:py-3 md:text-base lg:mt-8"
+    <section className="relative">
+      <div className="grid lg:grid-cols-2">
+        {/* Left Panel - Orange with text */}
+        <div className="flex flex-col justify-center bg-[#e34b16] px-8 py-16 md:px-12 lg:px-16 lg:py-24">
+          {/* SOLO SHE THINGS with styled text */}
+          <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl xl:text-7xl">
+            <span className="font-serif text-[#f7e8be]">SOLO</span>
+            <span 
+              className="mx-1 inline-block font-serif italic text-[#fab642]"
+              style={{ 
+                fontStyle: "italic",
+                transform: "rotate(-3deg)",
+                display: "inline-block"
+              }}
             >
-              START YOUR JOURNEY
-            </Link>
-          </div>
+              SHE
+            </span>
+            <span className="font-serif text-[#f7e8be]">THINGS</span>
+          </h1>
+          
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-[#f7e8be]/90 md:text-xl">
+            Join a global community of women sharing their stories, inspiring one another, and discovering what they are capable of doing on their own.
+          </p>
+          
+          <Link
+            href="/signup"
+            className="mt-8 inline-flex w-fit items-center justify-center rounded-full bg-[#fab642] px-10 py-4 text-base font-bold text-[#7a331b] transition-all hover:bg-[#f5a830] hover:shadow-lg"
+          >
+            Start Your Journey
+          </Link>
         </div>
 
-        {/* Right: Image carousel */}
-        <div className="relative min-h-[200px] md:min-h-0">
+        {/* Right Panel - Image */}
+        <div className="relative h-[400px] lg:h-auto lg:min-h-[500px]">
           <Image
-            src={currentSlide.src}
-            alt={currentSlide.location}
+            src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&h=800&fit=crop"
+            alt="Woman traveler in Botswana, Africa"
             fill
             className="object-cover"
-            sizes="50vw"
             priority
           />
-          {/* Location label */}
-          <div className="absolute bottom-3 left-3 md:bottom-8 md:left-8">
-            <span className="text-sm font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] md:text-xl lg:text-2xl">
-              {currentSlide.location}
-            </span>
+          {/* Location caption */}
+          <div className="absolute bottom-4 right-4 rounded-lg bg-black/50 px-4 py-2 backdrop-blur-sm">
+            <p className="text-sm font-medium text-white">Botswana, Africa</p>
           </div>
         </div>
       </div>
+      
     </section>
   )
 }

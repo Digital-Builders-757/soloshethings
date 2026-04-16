@@ -3,53 +3,100 @@
 @tailwind utilities;
 
 :root {
-  /* New Design Brand Colors */
-  --color-primary-orange: #df4915;
-  --color-primary-blue: #2044e0;
-  --color-header-banner: #fb5315;
-  --color-banner-highlight: #ffd0a9;
-  --color-dark-text: #111827;
-  --color-body-text: #4b5563;
-  --color-light-gray: #6b7280;
-  --color-background-gray: #e5e7eb;
-  --color-card-bg: #faf8f5;
-  --color-footer-top: #f7e8e5;
-  --color-footer-maroon: #8b3a3a;
-  --color-footer-badge: #c53030;
-  --color-footer-middle: #e2402a;
-  --color-footer-bottom: #4b2c2a;
-  --color-read-more: #c53030;
-  --color-tan-cream: #dfb391;
+  /* Brand Palette - Figma Design */
+  --brand-orange: #e34b16;
+  --brand-orange-rgb: 227 75 22;
+  --brand-brown: #7a331b;
+  --brand-brown-rgb: 122 51 27;
+  --brand-cream: #f7e8be;
+  --brand-cream-rgb: 247 232 190;
+  --brand-gold: #fab642;
+  --brand-gold-rgb: 250 182 66;
+  --brand-gray: #d9d9d9;
+  --brand-gray-rgb: 217 217 217;
+  --brand-dark: #3a3a3a;
+  --brand-dark-rgb: 58 58 58;
 
-  /* Legacy brand palette mappings */
-  --brand-pink: #FCC5E2;
-  --brand-orange: #df4915;
-  --brand-gold: #DD9917;
-  --brand-peach: #FFD0A9;
-  --brand-blue: #2044E0;
-  --brand-cream: #faf8f5;
+  /* Legacy/compat aliases */
+  --brand-pink: #f7e8be;
+  --brand-pink-rgb: 247 232 190;
+  --brand-peach: #f7e8be;
+  --brand-peach-rgb: 247 232 190;
+  --brand-blue: #3a3a3a;
+  --brand-blue-rgb: 58 58 58;
+  --brand-coral: #e34b16;
+  --brand-coral-rgb: 227 75 22;
+  --brand-navy: #3a3a3a;
+  --brand-navy-rgb: 58 58 58;
+  --brand-blush: #f7e8be;
+  --brand-blush-rgb: 247 232 190;
+  --brand-sage: #fab642;
+  --brand-sage-rgb: 250 182 66;
+
+  /* Legacy mappings for backward compat */
+  --brand-blue-1: #3a3a3a;
+  --brand-blue-1-rgb: 58 58 58;
+  --brand-blue-2: #2a2a2a;
+  --brand-blue-2-rgb: 42 42 42;
+  --brand-yellow-1: #f7e8be;
+  --brand-yellow-1-rgb: 247 232 190;
+  --brand-yellow-2: #fab642;
+  --brand-yellow-2-rgb: 250 182 66;
+  --brand-orange-rgb-legacy: 227 75 22;
+  --brand-pink-dark: #7a331b;
+  --brand-pink-dark-rgb: 122 51 27;
+
+  /* Semantic Color Tokens */
+  --color-primary: var(--brand-orange);
+  --color-primary-2: var(--brand-brown);
+  --color-highlight: var(--brand-cream);
+  --color-highlight-2: var(--brand-gold);
+  --color-accent: var(--brand-gold);
+  --color-bg-dark: var(--brand-dark);
 
   /* Core palette - HSL for Tailwind */
   --background: 0 0% 100%;
-  --foreground: 220 15% 15%;
-  --card: 36 33% 97%;
-  --card-foreground: 220 15% 15%;
+  --foreground: 0 0% 23%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 23%;
   --popover: 0 0% 100%;
-  --popover-foreground: 220 15% 15%;
-  --primary: 14 86% 48%;
+  --popover-foreground: 0 0% 23%;
+  --primary: 15 83% 49%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 30 100% 97%;
-  --secondary-foreground: 220 15% 15%;
-  --muted: 30 20% 96%;
-  --muted-foreground: 215 14% 45%;
-  --accent: 220 77% 51%;
-  --accent-foreground: 0 0% 100%;
+  --secondary: 43 85% 86%;
+  --secondary-foreground: 15 58% 30%;
+  --muted: 43 85% 86%;
+  --muted-foreground: 0 0% 35%;
+  --accent: 37 95% 62%;
+  --accent-foreground: 15 58% 30%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 14 86% 48%;
-  --radius: 0.5rem;
+  --border: 43 40% 85%;
+  --input: 43 40% 90%;
+  --ring: 15 83% 49%;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 220 20% 10%;
+  --foreground: 0 0% 98%;
+  --card: 220 20% 12%;
+  --card-foreground: 0 0% 98%;
+  --popover: 220 20% 12%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 16 97% 58%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 15% 20%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 220 15% 20%;
+  --muted-foreground: 220 10% 65%;
+  --accent: 43 82% 52%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 220 15% 20%;
+  --input: 220 15% 20%;
+  --ring: 16 97% 58%;
 }
 
 @layer base {
@@ -66,6 +113,20 @@
   }
 }
 
+/* Clean card surface */
+.surface-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -76,118 +137,28 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary-orange);
+  background: var(--brand-orange);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-blue);
+  background: var(--brand-blue);
 }
 
-/* Pill button utility */
-@layer components {
-  .btn-pill {
-    @apply rounded-full px-6 py-3 font-semibold transition-all duration-200;
-    border-radius: 9999px;
-  }
-  .btn-pill-primary {
-    @apply btn-pill text-white;
-    background-color: var(--color-primary-orange);
-  }
-  .btn-pill-primary:hover {
-    @apply opacity-90;
-  }
-  .btn-pill-outline {
-    @apply btn-pill border-2 bg-transparent;
-  }
-}
-
-/* Line clamp utility */
+/* Clean image utility */
 @layer utilities {
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .image-clean {
+    filter: none;
+    opacity: 1;
   }
 }
 
-/* African-inspired geometric pattern overlays */
+/* Neutral vignette overlay */
 @layer utilities {
-  /* Kente-inspired diagonal stripes */
-  .pattern-kente {
-    background-image: 
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 8px,
-        rgba(255, 208, 169, 0.15) 8px,
-        rgba(255, 208, 169, 0.15) 16px
-      );
-  }
-
-  /* Mudcloth-inspired dots */
-  .pattern-mudcloth {
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(255, 208, 169, 0.2) 2px, transparent 2px),
-      radial-gradient(circle at 75% 75%, rgba(255, 208, 169, 0.2) 2px, transparent 2px);
-    background-size: 24px 24px;
-  }
-
-  /* Adinkra-inspired triangles */
-  .pattern-adinkra {
-    background-image: 
-      linear-gradient(135deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
-      linear-gradient(225deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%);
-    background-size: 20px 20px;
-  }
-
-  /* Ankara-inspired zigzag */
-  .pattern-ankara {
-    background-image: 
-      linear-gradient(135deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
-      linear-gradient(225deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
-      linear-gradient(45deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%),
-      linear-gradient(315deg, rgba(255, 208, 169, 0.12) 25%, transparent 25%);
-    background-size: 16px 16px;
-    background-position: 0 0, 8px 0, 8px -8px, 0 8px;
-  }
-
-  /* Geometric border accent */
-  .border-geometric {
-    border-image: repeating-linear-gradient(
-      90deg,
-      #df4915 0px,
-      #df4915 8px,
-      #ffd0a9 8px,
-      #ffd0a9 16px,
-      #2044e0 16px,
-      #2044e0 24px
-    ) 4;
-  }
-
-  /* Decorative African-inspired divider */
-  .divider-african {
-    height: 4px;
-    background: repeating-linear-gradient(
-      90deg,
-      #df4915 0px,
-      #df4915 12px,
-      #ffd0a9 12px,
-      #ffd0a9 24px,
-      #2044e0 24px,
-      #2044e0 36px,
-      #DD9917 36px,
-      #DD9917 48px
-    );
-  }
-
-  /* Subtle texture overlay for images */
-  .texture-overlay::after {
-    content: '';
+  .overlay-neutral-vignette {
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h10v10H0V0zm10 10h10v10H10V10z' fill='%23000' fill-opacity='0.02'/%3E%3C/svg%3E");
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.15) 100%);
     pointer-events: none;
   }
 }

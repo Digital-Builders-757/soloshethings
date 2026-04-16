@@ -1,48 +1,63 @@
-/**
- * A Community Built for Solo SHEs
- * 
- * Two-column: 75% text left, 25% image right
- * Text right-aligned, CTA pill button
- */
-
 import Image from "next/image"
 import Link from "next/link"
+import { PatternSection } from "@/components/ui/pattern-section"
+
+const storyImages = [
+  {
+    id: 1,
+    src: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=500&fit=crop",
+    alt: "Solo traveler exploring mountains",
+  },
+  {
+    id: 2,
+    src: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400&h=500&fit=crop",
+    alt: "Woman traveling through historic city",
+  },
+  {
+    id: 3,
+    src: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=400&h=500&fit=crop",
+    alt: "Adventure travel moment",
+  },
+  {
+    id: 4,
+    src: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=500&fit=crop",
+    alt: "Solo exploration journey",
+  },
+]
 
 export function WelcomeSection() {
   return (
-    <section className="bg-white py-16 md:py-20">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-[3fr_1fr] items-center gap-4 px-5 md:gap-10 md:px-8">
-        {/* Left: Text content - right aligned */}
-        <div className="text-right">
-          <h2 className="text-lg font-bold text-[#df4915] md:text-2xl lg:text-[2rem]">
-            A Community Built for Solo SHEs
+    <PatternSection tone="cream" patternTop className="py-16 md:py-24">
+      <div className="container mx-auto px-6 pt-12 md:pt-16">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <h2 className="font-serif text-3xl font-bold text-[#e34b16] md:text-4xl">
+            Real Stories From Solo SHEs
           </h2>
-          <p className="ml-auto mt-2 max-w-xl text-sm leading-relaxed text-[#4b5563] md:mt-4 md:text-base">
-            Connect with women who understand the joys and challenges of solo travel. Share your experiences, find travel buddies, and get inspired by stories from around the world.
+          <p className="mx-auto mt-4 max-w-xl text-[#3a3a3a]/80">
+            Discover inspiring journeys from women who traveled solo
           </p>
-          <div className="mt-4 flex justify-end md:mt-6">
-            <Link
-              href="/collections"
-              className="inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#c4400f] md:px-6 md:py-3 md:text-base"
-            >
-              Discover Solo Stories
-            </Link>
-          </div>
         </div>
 
-        {/* Right: Woman silhouette image */}
-        <div className="flex justify-start">
-          <div className="relative h-[150px] w-[120px] md:h-[250px] md:w-[200px] lg:h-[300px] lg:w-[240px]">
-            <Image
-              src="/images/woman-silhouette.png"
-              alt="Solo SHE silhouette"
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 120px, 240px"
-            />
-          </div>
+        {/* Story Cards Grid */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {storyImages.map((image) => (
+            <Link
+              key={image.id}
+              href="/collections"
+              className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-[#d9d9d9] transition-transform hover:scale-[1.02]"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            </Link>
+          ))}
         </div>
       </div>
-    </section>
+    </PatternSection>
   )
 }

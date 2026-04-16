@@ -1,28 +1,60 @@
-/**
- * A Global Community of Solo SHEs
- * 
- * Two-column: 25% image left, 75% text right
- * Earth globe image on left
- */
-
 import Image from "next/image"
 import Link from "next/link"
+import { communityStories } from "@/lib/data"
 
 export function CommunityStories() {
   return (
-    <section className="bg-white py-16 md:py-20">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-[1fr_3fr] items-center gap-4 px-5 md:gap-10 md:px-8">
-        {/* Left: Earth globe image */}
-        <div className="flex justify-center">
-          <div className="relative h-[100px] w-[100px] md:h-[200px] md:w-[200px] lg:h-[250px] lg:w-[250px]">
-            <Image
-              src="/images/earth-globe.png"
-              alt="Global community"
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 100px, 250px"
-            />
-          </div>
+    <section className="bg-brand-blue py-24">
+      <div className="container mx-auto px-6">
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#FFD0A9]">
+            Real Travelers, Real Stories
+          </p>
+          <h2 className="font-serif text-3xl font-bold text-[#FFD0A9] md:text-4xl lg:text-5xl text-balance">
+            Community Solo Stories
+          </h2>
+          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-[#FFD0A9]" />
+        </div>
+
+        {/* Story Cards */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {communityStories.map((story) => (
+            <Link
+              key={story.id}
+              href={`/community/stories/${story.id}`}
+              className="group overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white/10"
+            >
+              {/* Image */}
+              <div className="relative h-[260px] overflow-hidden">
+                <Image
+                  src={story.image || "/placeholder.svg"}
+                  alt={story.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-brand-blue/70 px-4 py-3 backdrop-blur-sm">
+                  <h3 className="font-serif text-lg font-semibold text-[#FFD0A9]">
+                    {story.title}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <p className="line-clamp-3 text-sm leading-relaxed text-[#FFD0A9]/80">
+                  {story.excerpt}
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-brand-coral/30" />
+                  <p className="text-sm font-medium text-white">
+                    {story.author.name}
+                    <span className="block text-xs text-white/60">{story.author.location}</span>
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
 
         {/* Right: Text content */}
@@ -34,8 +66,8 @@ export function CommunityStories() {
             From Tokyo to Lisbon, from Cape Town to Reykjavik—Solo SHEs are exploring every corner of the globe. Join thousands of women who have discovered the transformative power of traveling alone.
           </p>
           <Link
-            href="/signup"
-            className="mt-4 inline-block rounded-full bg-[#df4915] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#c4400f] md:mt-6 md:px-6 md:py-3 md:text-base"
+            href="/community"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 px-8 py-3 text-sm font-semibold text-white transition-all hover:border-white hover:bg-white/10"
           >
             Join the Community
           </Link>

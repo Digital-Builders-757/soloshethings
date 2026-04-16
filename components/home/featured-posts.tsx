@@ -8,96 +8,106 @@ interface FeaturedPostsProps {
   subtitle?: string
 }
 
-export function FeaturedPosts({ 
-  posts, 
-  title = "Featured Content",
-  subtitle = ""
-}: FeaturedPostsProps) {
-  const hasPosts = posts && posts.length > 0
+function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="mb-12 text-center">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
+        {eyebrow}
+      </p>
+      <h2 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl text-balance">
+        {title}
+      </h2>
+      <div className="mx-auto mt-4 h-px w-16 bg-brand-orange" />
+    </div>
+  )
+}
+
+export function FeaturedPosts({ posts }: FeaturedPostsProps) {
+  if (!posts || posts.length === 0) {
+    return (
+      <section className="bg-white py-24">
+        <div className="container mx-auto px-6">
+          <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
+          <p className="text-center text-muted-foreground">No posts available at the moment.</p>
+        </div>
+      </section>
+    )
+  }
+
+  const gridCols =
+    posts.length === 1
+      ? "md:grid-cols-1 max-w-xl mx-auto"
+      : posts.length === 2
+      ? "md:grid-cols-2 max-w-4xl mx-auto"
+      : "md:grid-cols-2 lg:grid-cols-3"
 
   return (
-    <section className="bg-white py-16 md:py-20">
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        {/* Header - always visible */}
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-[#df4915] md:text-[2rem]">
-            {title}
-          </h2>
-          {subtitle && <p className="mt-2 text-base text-[#4b5563]">{subtitle}</p>}
+    <section className="bg-white py-24">
+      <div className="container mx-auto px-6">
+        <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
+
+        <div className={`grid gap-8 ${gridCols}`}>
+          {posts.map((post) => {
+            const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
+            const excerpt = post.excerpt.rendered
+              ? post.excerpt.rendered.replace(/<[^>]*>/g, "").trim().substring(0, 150)
+              : ""
+
+            return (
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                className="group overflow-hidden rounded-xl border border-border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              >
+                {/* Image */}
+                <div className="relative h-[280px] overflow-hidden">
+                  {featuredImage ? (
+                    <Image
+                      src={featuredImage}
+                      alt={post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text || post.title.rendered}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-brand-cream">
+                      <span className="text-sm text-muted-foreground">No image</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col gap-3 p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-gold">
+                    {new Date(post.date).toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <h3 className="font-serif text-xl font-bold text-foreground transition-colors duration-300 group-hover:text-brand-orange line-clamp-2">
+                    {post.title.rendered}
+                  </h3>
+                  {excerpt && (
+                    <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{excerpt}...</p>
+                  )}
+                  <span className="mt-2 text-sm font-semibold text-brand-orange">
+                    See How SHE Did It &rarr;
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
 
-        {/* 4-card grid or placeholder */}
-        {hasPosts ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {posts.slice(0, 4).map((post) => {
-              const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url
-              const excerpt = post.excerpt.rendered
-                ? post.excerpt.rendered.replace(/<[^>]*>/g, "").trim().substring(0, 120)
-                : ""
-
-              return (
-                <Link
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="group overflow-hidden rounded-lg bg-[#faf8f5] ring-2 ring-transparent transition-all hover:ring-[#ffd0a9]"
-                >
-                  {/* Image */}
-                  <div className="relative h-[200px] overflow-hidden">
-                    {featuredImage ? (
-                      <Image
-                        src={featuredImage}
-                        alt={post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text || post.title.rendered}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#e5e7eb]">
-                        <span className="text-sm text-[#6b7280]">No image</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4">
-                    <p className="text-xs text-[#6b7280]">
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </p>
-                    <h3 className="mt-1 text-base font-bold leading-tight text-[#111827]">
-                      {post.title.rendered}
-                    </h3>
-                    {excerpt && (
-                      <p className="mt-2 line-clamp-3 text-sm text-[#4b5563]">
-                        {excerpt}...
-                      </p>
-                    )}
-                    <span className="mt-3 inline-block text-sm font-medium text-[#c53030]">
-                      Read More
-                    </span>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="overflow-hidden rounded-lg bg-[#faf8f5]">
-                <div className="h-[200px] bg-[#e5e7eb]" />
-                <div className="p-4">
-                  <div className="h-3 w-20 rounded bg-[#e5e7eb]" />
-                  <div className="mt-2 h-5 w-full rounded bg-[#e5e7eb]" />
-                  <div className="mt-2 h-4 w-3/4 rounded bg-[#e5e7eb]" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="mt-12 text-center">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-brand-blue px-8 py-3 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue hover:text-white"
+          >
+            View All Stories
+          </Link>
+        </div>
       </div>
     </section>
   )

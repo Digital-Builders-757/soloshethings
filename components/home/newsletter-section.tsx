@@ -2,12 +2,9 @@
 
 import React from "react"
 import { useState } from "react"
-
-/**
- * Stay in the Loop (Newsletter)
- * 
- * Full-width blue section with email signup
- */
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Mail, Check } from "lucide-react"
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("")
@@ -23,47 +20,63 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="relative bg-[#2044e0] py-16 md:py-24">
-      {/* Mudcloth-inspired pattern overlay */}
-      <div className="pointer-events-none absolute inset-0 pattern-mudcloth opacity-40" />
-      <div className="relative z-10 mx-auto max-w-[1240px] px-5 text-center md:px-8">
-        <h2 className="text-2xl font-bold text-white md:text-[2rem]">
-          Stay in the Loop
-        </h2>
-        <p className="mt-3 text-base text-white/90 md:text-lg">
-          Sign up for tips, inspiration, and stories from solo SHEs around the world.
-        </p>
+    <section className="bg-[#c4722a] py-16 md:py-20">
+      <div className="container mx-auto px-6">
+        <div className="mx-auto max-w-xl text-center">
+          {/* Title */}
+          <h2 className="font-serif text-3xl font-bold text-white md:text-4xl">
+            Stay in the Loop
+          </h2>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mx-auto mt-6 flex max-w-[400px] flex-col gap-3 sm:flex-row sm:gap-0 md:mt-8"
-        >
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="flex-1 rounded-full border-2 border-white bg-transparent px-5 py-3 text-base text-white placeholder:text-white/60 focus:outline-none sm:rounded-r-none"
-          />
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="rounded-full bg-white px-6 py-3 font-semibold text-[#df4915] transition-colors hover:bg-white/90 disabled:opacity-70 sm:rounded-l-none"
-          >
-            {status === "loading"
-              ? "..."
-              : status === "success"
-              ? "Subscribed!"
-              : "Subscribe"}
-          </button>
-        </form>
-
-        {status === "success" && (
-          <p className="mt-4 text-sm font-medium text-white/90">
-            Welcome! Check your inbox for confirmation.
+          <p className="mt-4 text-white/90">
+            Sign up for tips, inspiration, and stories from solo SHEs around the world.
           </p>
-        )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="mt-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-0">
+              <div className="relative flex-1">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-12 rounded-full border-2 border-white bg-white pl-5 pr-4 text-[#3a3a3a] placeholder:text-[#a8a8a8] focus:border-[#7a331b] sm:rounded-r-none"
+                />
+              </div>
+              <Button
+                type="submit"
+                disabled={status === "loading"}
+                className="h-12 gap-2 rounded-full bg-[#fab642] px-6 text-[#7a331b] font-bold transition-all hover:bg-[#fab642]/90 sm:rounded-l-none"
+              >
+                {status === "loading" ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#7a331b]/30 border-t-[#7a331b]" />
+                    Subscribing...
+                  </>
+                ) : status === "success" ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Subscribed!
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4" />
+                    Subscribe
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+
+          {status === "success" && (
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm text-[#7a331b]">
+              <Check className="h-4 w-4 text-[#e34b16]" />
+              Welcome! Check your inbox for a confirmation.
+            </div>
+          )}
+        </div>
       </div>
     </section>
   )
