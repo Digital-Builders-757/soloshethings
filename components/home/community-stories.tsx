@@ -57,12 +57,19 @@ export function CommunityStories() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
+        {/* Right: Text content */}
+        <div className="text-left">
+          <h2 className="text-lg font-bold text-[#df4915] md:text-2xl lg:text-[2rem]">
+            A Global Community of Solo SHEs
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#4b5563] md:mt-4 md:text-base">
+            From Tokyo to Lisbon, from Cape Town to Reykjavik—Solo SHEs are exploring every corner of the globe. Join thousands of women who have discovered the transformative power of traveling alone.
+          </p>
           <Link
             href="/community"
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 px-8 py-3 text-sm font-semibold text-white transition-all hover:border-white hover:bg-white/10"
           >
-            Read More Stories
+            Join the Community
           </Link>
         </div>
       </div>

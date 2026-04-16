@@ -4,6 +4,8 @@ import type { WpPost } from "@/lib/wp-types"
 
 interface FeaturedPostsProps {
   posts: WpPost[]
+  title?: string
+  subtitle?: string
 }
 
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {

@@ -84,7 +84,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Company Column */}
           <div>
             <h3 className="text-sm font-semibold text-white">Company</h3>
             <ul className="mt-4 space-y-3">
@@ -101,6 +101,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
+      </div>
 
         {/* Bottom Section */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-8 md:flex-row">
