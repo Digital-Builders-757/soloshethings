@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { LogoutButton } from "./logout-button";
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { Menu, X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { LogoutButton } from "./logout-button"
 
 type NavLink = {
-  href: string;
-  label: string;
-};
+  href: string
+  label: string
+}
 
 type NavClientProps = {
-  publicLinks: NavLink[];
-  authLinks?: NavLink[];
-  isAuthenticated: boolean;
-  showStickyNav?: boolean;
-};
+  publicLinks: NavLink[]
+  authLinks?: NavLink[]
+  isAuthenticated: boolean
+  showStickyNav?: boolean
+}
 
 export function NavClient({
   publicLinks,
@@ -25,128 +25,131 @@ export function NavClient({
   isAuthenticated,
   showStickyNav = true,
 }: NavClientProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    if (!showStickyNav) return;
-    const handleScroll = () => setIsScrolled(window.scrollY > 200);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [showStickyNav]);
+    if (!showStickyNav) return
 
-  const allLinks = isAuthenticated
-    ? [...publicLinks, ...authLinks]
-    : publicLinks;
+    const handleScroll = () => setIsScrolled(window.scrollY > 72)
+    handleScroll()
 
-  const authActions = isAuthenticated ? (
-    <>
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [showStickyNav])
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+
+  const actionArea = isAuthenticated ? (
+    <div className="flex items-center gap-3">
       {authLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
+          className="text-sm font-semibold text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
         >
           {link.label}
         </Link>
       ))}
       <LogoutButton />
-    </>
+    </div>
   ) : (
-    <>
+    <div className="flex items-center gap-3">
       <Link
         href="/login"
-        className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
+        className="text-sm font-semibold text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
       >
         Sign In
       </Link>
-      <Link href="/signup">
-        <Button
-          size="sm"
-          className="rounded-full bg-[#e34b16] px-6 text-white transition-all hover:bg-[#c43d10]"
-        >
-          Get Started
-        </Button>
-      </Link>
-    </>
-  );
+      <Button asChild className="h-11 rounded-full bg-[#e34b16] px-6 text-sm font-semibold text-white hover:bg-[#c74010]">
+        <Link href="/signup">Get Started</Link>
+      </Button>
+    </div>
+  )
 
   return (
     <>
-      {/* Main Nav - Clean white background */}
-      <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white">
-        {/* Desktop Navigation - Hidden on mobile */}
-        <div className="container mx-auto hidden px-6 py-4 md:block">
-          <nav className="flex items-center justify-center gap-8" aria-label="Main navigation">
-            {allLinks.map((link) => (
+      <header className="relative z-40 border-b border-[#ead8c2] bg-white/95 backdrop-blur">
+        <div className="container mx-auto hidden grid-cols-[auto_1fr_auto] items-center gap-8 px-6 py-5 lg:grid">
+          <Link href="/" className="leading-none text-[#e34b16]">
+            <span className="block font-serif text-[1.9rem] font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_2px_0_#7a331b]">
+              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            </span>
+          </Link>
+
+          <nav className="flex items-center justify-center gap-7" aria-label="Main navigation">
+            {publicLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
+                className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
+
+          <div className="flex justify-end">{actionArea}</div>
         </div>
 
-        {/* Mobile Header - Only visible on mobile */}
-        <div className="container mx-auto flex items-center justify-between px-6 py-3 md:hidden">
-          <Link href="/" className="font-serif text-lg font-bold text-[#e34b16]">
-            Solo SHE Things
+        <div className="container mx-auto flex items-center justify-between px-6 py-4 lg:hidden">
+          <Link href="/" className="leading-none text-[#e34b16]">
+            <span className="block font-serif text-xl font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_1px_0_#7a331b]">
+              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            </span>
           </Link>
           <button
             type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
             aria-label="Toggle menu"
+            className="rounded-full border border-[#ead8c2] p-2 text-[#7a331b] transition-colors hover:border-[#e34b16] hover:text-[#e34b16]"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-[#3a3a3a]" />
-            ) : (
-              <Menu className="h-6 w-6 text-[#3a3a3a]" />
-            )}
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-[#e5e5e5] bg-white md:hidden">
-            <nav className="container mx-auto flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
-              {allLinks.map((link) => (
+          <div className="border-t border-[#ead8c2] bg-white lg:hidden">
+            <nav className="container mx-auto flex flex-col gap-5 px-6 py-6" aria-label="Mobile navigation">
+              {publicLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
+                  onClick={closeMobileMenu}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="flex flex-col gap-2 pt-4">
+
+              <div className="border-t border-[#ead8c2] pt-5">
                 {isAuthenticated ? (
-                  <>
+                  <div className="flex flex-col gap-3">
                     {authLinks.map((link) => (
-                      <Link key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/10">
-                          {link.label}
-                        </Button>
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={closeMobileMenu}
+                        className="text-sm font-semibold text-[#3a3a3a]"
+                      >
+                        {link.label}
                       </Link>
                     ))}
-                    <div className="w-full"><LogoutButton /></div>
-                  </>
+                    <LogoutButton />
+                  </div>
                 ) : (
-                  <>
-                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/10">
+                  <div className="flex flex-col gap-3">
+                    <Button asChild variant="outline" className="h-11 rounded-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/5 hover:text-[#e34b16]">
+                      <Link href="/login" onClick={closeMobileMenu}>
                         Sign In
-                      </Button>
-                    </Link>
-                    <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button className="w-full bg-[#e34b16] text-white hover:bg-[#c43d10]">
+                      </Link>
+                    </Button>
+                    <Button asChild className="h-11 rounded-full bg-[#e34b16] text-white hover:bg-[#c74010]">
+                      <Link href="/signup" onClick={closeMobileMenu}>
                         Get Started
-                      </Button>
-                    </Link>
-                  </>
+                      </Link>
+                    </Button>
+                  </div>
                 )}
               </div>
             </nav>
@@ -154,46 +157,35 @@ export function NavClient({
         )}
       </header>
 
-      {/* Sticky Nav - Appears after scrolling */}
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed left-0 right-0 top-0 z-50 border-b border-[#e5e5e5] bg-white shadow-sm transition-all duration-500",
+            "fixed inset-x-0 top-0 z-50 hidden border-b border-[#ead8c2] bg-white/95 shadow-[0_16px_50px_rgba(122,51,27,0.12)] backdrop-blur transition-all duration-300 lg:block",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"
         >
-          <div className="container mx-auto px-6 py-3">
-            <div className="flex items-center justify-between">
-              <Link href="/" className="font-serif text-xl font-bold text-[#e34b16]">
-                SOLO<span className="font-normal">SHE</span>THINGS
-              </Link>
+          <div className="container mx-auto flex items-center justify-between gap-8 px-6 py-3.5">
+            <Link href="/" className="font-serif text-lg font-bold uppercase tracking-[0.08em] text-[#7a331b]">
+              SOLO <span className="italic text-[#e34b16]">SHE</span> THINGS
+            </Link>
 
-              <div className="hidden items-center gap-6 md:flex">
-                {allLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm font-medium text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                {authActions}
-              </div>
-
-              <button
-                type="button"
-                className="md:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                <Menu className="h-6 w-6 text-[#3a3a3a]" />
-              </button>
+            <div className="flex items-center gap-6">
+              {publicLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
+
+            <div>{actionArea}</div>
           </div>
         </nav>
       )}
     </>
-  );
+  )
 }
