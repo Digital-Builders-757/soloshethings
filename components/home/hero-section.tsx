@@ -12,19 +12,10 @@ export function HeroSection() {
     <section className="relative border-b border-[#efdac1] bg-white">
       <div className="grid min-h-[calc(100svh-8rem)] lg:grid-cols-[1.03fr_0.97fr]">
         <div className="relative isolate overflow-hidden bg-[#d85a23] px-6 py-16 sm:px-10 md:px-12 lg:px-16 lg:py-20 xl:px-20">
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-90"
-            style={{
-              backgroundImage: "url('/images/wavy-pattern.png')",
-              backgroundPosition: "center top",
-              backgroundRepeat: "repeat-x",
-              backgroundSize: "cover",
-            }}
-            aria-hidden="true"
-          />
+          {/* Soft glow only — no wavy band here; welcome section owns the pattern below the fold */}
           <div className="pointer-events-none absolute -left-20 top-1/3 h-56 w-56 rounded-full bg-[#f7e8be]/10 blur-3xl" aria-hidden="true" />
 
-          <div className="relative z-10 flex h-full max-w-xl flex-col justify-center pb-24 lg:pb-28">
+          <div className="relative z-10 flex h-full max-w-xl flex-col justify-center pb-10 lg:pb-14">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff0d2]">
               Stories, safety, and sisterhood
             </p>
