@@ -1,23 +1,19 @@
 import Link from "next/link"
 
-/**
- * Banner Component
- *
- * Site-wide top banner with orange background and centered logo
- * Matches Figma design for Solo SHE Things
- */
-
 export function Banner() {
   return (
-    <div className="bg-[#e34b16] py-4 text-center">
-      <Link href="/" className="inline-block">
-        <h1 className="font-serif text-2xl font-bold tracking-wide text-white md:text-3xl">
-          SOLO<span className="font-normal">SHE</span>THINGS
-        </h1>
-        <p className="mt-1 text-xs tracking-[0.2em] text-white/90">
-          Est. 2025
+    <div className="border-b border-[#ebd3b2] bg-[#f7e8be]">
+      <div className="container mx-auto flex flex-col gap-2 px-6 py-3 text-center text-[#6c351f] sm:flex-row sm:items-center sm:justify-between sm:text-left">
+        <p className="text-[0.8rem] font-semibold tracking-[0.14em] text-[#7a331b]">
+          Editorial travel journal and community for women exploring solo
         </p>
-      </Link>
+        <Link
+          href="/signup"
+          className="text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
+        >
+          Join the journey
+        </Link>
+      </div>
     </div>
   )
 }

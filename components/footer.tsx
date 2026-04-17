@@ -1,82 +1,61 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
-import { Globe } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Instagram, Globe, Mail } from "lucide-react"
 
 const exploreLinks = [
-  { href: "/blog", label: "Stories" },
-  { href: "/collections", label: "Solo SHEtories" },
-  { href: "/destinations", label: "Destinations" },
+  { href: "/blog", label: "Travel + SHE Things" },
+  { href: "/collections", label: "Solo SHEntries" },
+  { href: "/shop", label: "Shop" },
 ]
 
 const companyLinks = [
-  { href: "/about", label: "About Us" },
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-  { href: "/careers", label: "Careers" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms & Conditions" },
 ]
 
 export function Footer() {
-  const [email, setEmail] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle newsletter signup
-    setEmail("")
-  }
-
   return (
-    <footer className="bg-[#e34b16]">
-      <div className="container mx-auto px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Section */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <Globe className="h-6 w-6 text-white" />
-              <span className="font-serif text-lg font-bold text-white">SHE</span>
-            </Link>
-            <div className="mt-2">
-              <span className="inline-block rounded bg-[#7a331b] px-2 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                Solo SHE Things
-              </span>
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-white/80">
-              Empowering women to explore the world on their own terms.
+    <footer className="bg-[#7a331b] text-[#fff5df]">
+      <div className="container mx-auto px-6 py-14 md:py-16">
+        <div className="grid gap-12 border-b border-white/12 pb-12 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
+          <div className="max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#fab642]">
+              Solo SHE Things
             </p>
-          </div>
+            <h2 className="mt-4 font-serif text-4xl font-bold uppercase leading-none text-[#f7e8be] sm:text-5xl">
+              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-7 text-[#fff5df]/78">
+              A warmer, wiser corner of the internet for women traveling on their own terms, with stories, tools, and community to help every next step feel more possible.
+            </p>
 
-          {/* Newsletter */}
-          <div className="lg:col-span-1">
-            <h3 className="text-sm font-semibold text-white">Newsletter</h3>
-            <form onSubmit={handleSubmit} className="mt-4">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-10 rounded-md border-white/20 bg-white/10 text-white placeholder:text-white/60 focus:border-white"
-              />
-              <Button
-                type="submit"
-                className="mt-2 w-full rounded-md bg-[#fab642] text-sm font-semibold text-[#3a3a3a] hover:bg-[#f5a830]"
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href="mailto:hello@soloshethings.com"
+                className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-sm font-medium text-[#fff5df] transition-colors hover:bg-white/14"
               >
-                Subscribe
-              </Button>
-            </form>
+                <Mail className="h-4 w-4" />
+                hello@soloshethings.com
+              </a>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-sm font-medium text-[#fff5df] transition-colors hover:bg-white/14"
+              >
+                <Globe className="h-4 w-4" />
+                Contact us
+              </Link>
+            </div>
           </div>
 
-          {/* Explore */}
           <div>
-            <h3 className="text-sm font-semibold text-white">Explore</h3>
-            <ul className="mt-4 space-y-3">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#fab642]">Explore</h3>
+            <ul className="mt-5 space-y-3">
               {exploreLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/80 transition-colors hover:text-white"
-                  >
+                  <Link href={link.href} className="text-base text-[#fff5df]/80 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -84,16 +63,12 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
           <div>
-            <h3 className="text-sm font-semibold text-white">Company</h3>
-            <ul className="mt-4 space-y-3">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#fab642]">Company</h3>
+            <ul className="mt-5 space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/80 transition-colors hover:text-white"
-                  >
+                  <Link href={link.href} className="text-base text-[#fff5df]/80 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -102,18 +77,19 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-8 md:flex-row">
-          <p className="text-sm text-white/80">
-            &copy; 2026 Solo SHE Things. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="text-sm text-white/80 transition-colors hover:text-white">
-              Privacy Policy
+        <div className="flex flex-col gap-5 pt-8 text-sm text-[#fff5df]/72 md:flex-row md:items-center md:justify-between">
+          <p>&copy; 2026 Solo SHE Things. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-white/8 px-4 py-2 text-sm font-medium text-[#fff5df] transition-colors hover:bg-white/14"
+            >
+              Start your journey
             </Link>
-            <Link href="/terms" className="text-sm text-white/80 transition-colors hover:text-white">
-              Terms & Conditions
-            </Link>
+            <span className="inline-flex items-center gap-2 text-[#fff5df]/72">
+              <Instagram className="h-4 w-4" />
+              @soloshethings
+            </span>
           </div>
         </div>
       </div>
