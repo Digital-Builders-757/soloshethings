@@ -9,11 +9,40 @@
 
 import { login } from "@/app/actions/auth"
 import Link from "next/link"
-import { useFormState } from "react-dom"
-import { Mail, Lock } from "lucide-react"
+import { useFormState, useFormStatus } from "react-dom"
+import { Mail, Lock, Sparkles } from "lucide-react"
+import { useRef } from "react"
+
+// Demo credentials for testing
+const DEMO_EMAIL = "demo@soloshethings.com"
+const DEMO_PASSWORD = "DemoUser123!"
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+    >
+      {pending ? "Signing in..." : "Sign in"}
+    </button>
+  )
+}
 
 export default function LoginPage() {
   const [state, formAction] = useFormState(login, null)
+  const formRef = useRef<HTMLFormElement>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+
+  const handleDemoLogin = () => {
+    if (emailRef.current && passwordRef.current && formRef.current) {
+      emailRef.current.value = DEMO_EMAIL
+      passwordRef.current.value = DEMO_PASSWORD
+      formRef.current.requestSubmit()
+    }
+  }
 
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-16">
@@ -80,14 +109,15 @@ export default function LoginPage() {
               </div>
             )}
 
-            <form action={formAction} className="mt-8 space-y-5">
+            <form ref={formRef} action={formAction} className="mt-8 flex flex-col gap-5">
               <div>
                 <label htmlFor="email" className="mb-2 block text-sm font-semibold text-[#7a331b]">
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
+                  <Mail className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#a14b24]" />
                   <input
+                    ref={emailRef}
                     type="email"
                     id="email"
                     name="email"
@@ -103,8 +133,9 @@ export default function LoginPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
+                  <Lock className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#a14b24]" />
                   <input
+                    ref={passwordRef}
                     type="password"
                     id="password"
                     name="password"
@@ -115,11 +146,24 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              <SubmitButton />
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-[#efdac1]" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-[#fffaf0] px-2 text-[#6d5849]">Or</span>
+                </div>
+              </div>
+
               <button
-                type="submit"
-                className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98]"
+                type="button"
+                onClick={handleDemoLogin}
+                className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-[#fab642] bg-[#fff8eb] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-all hover:bg-[#fab642]/20 active:scale-[0.98]"
               >
-                Sign in
+                <Sparkles className="size-4" />
+                Try Demo Account
               </button>
             </form>
 
