@@ -1,102 +1,52 @@
-/**
- * Badge Component
- *
- * Small status indicators and labels
- *
- * Variants:
- * - primary: Brand blue
- * - secondary: Neutral gray
- * - success: Green
- * - warning: Yellow
- * - danger: Red/Orange
- * - neutral: Gray
- *
- * Sizes: sm, md (default), lg
- *
- * Features:
- * - Removable with close button
- * - Custom icon support
- */
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import { cva, type VariantProps } from "class-variance-authority"
 
-import { cn } from '@/lib/utils'
-import { HTMLAttributes, forwardRef } from 'react'
+import { cn } from "@/lib/utils"
 
-export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'neutral'
-  size?: 'sm' | 'md' | 'lg'
-  removable?: boolean
-  onRemove?: () => void
-}
-
-const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  (
-    {
-      className,
-      variant = 'primary',
-      size = 'md',
-      removable = false,
-      onRemove,
-      children,
-      ...props
+const badgeVariants = cva(
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        secondary:
+          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+        destructive:
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+        outline:
+          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+        ghost:
+          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
     },
-    ref
-  ) => {
-    const baseStyles =
-      'inline-flex items-center font-medium rounded-full whitespace-nowrap'
-
-    const variants = {
-      primary: 'bg-brand-blue1 text-white',
-      secondary: 'bg-neutral-200 text-neutral-900',
-      success: 'bg-green-100 text-green-800',
-      warning: 'bg-brand-yellow1 text-black',
-      danger: 'bg-red-100 text-red-800',
-      neutral: 'bg-neutral-100 text-neutral-700',
-    }
-
-    const sizes = {
-      sm: 'px-2 py-0.5 text-xs',
-      md: 'px-3 py-1 text-sm',
-      lg: 'px-4 py-1.5 text-base',
-    }
-
-    return (
-      <span
-        ref={ref}
-        className={cn(baseStyles, variants[variant], sizes[size], className)}
-        {...props}
-      >
-        {children}
-        {removable && onRemove && (
-          <button
-            type="button"
-            onClick={onRemove}
-            className="ml-1.5 inline-flex items-center justify-center rounded-full hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-black/20"
-            aria-label="Remove"
-          >
-            <svg
-              className={cn(
-                size === 'sm' && 'h-3 w-3',
-                size === 'md' && 'h-4 w-4',
-                size === 'lg' && 'h-5 w-5'
-              )}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        )}
-      </span>
-    )
+    defaultVariants: {
+      variant: "default",
+    },
   }
 )
 
-Badge.displayName = 'Badge'
+function Badge({
+  className,
+  variant = "default",
+  render,
+  ...props
+}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(
+      {
+        className: cn(badgeVariants({ variant }), className),
+      },
+      props
+    ),
+    render,
+    state: {
+      slot: "badge",
+      variant,
+    },
+  })
+}
 
-export { Badge }
+export { Badge, badgeVariants }

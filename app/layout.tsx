@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Rokkitt, Geist } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -25,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("bg-background", "font-sans", geist.variable)}>
-      <body className={`${rokkitt.variable} font-sans antialiased`} suppressHydrationWarning>{children}</body>
+      <body className={`${rokkitt.variable} font-sans antialiased`} suppressHydrationWarning>
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   )
 }

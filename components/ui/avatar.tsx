@@ -1,113 +1,109 @@
-/**
- * Avatar Component
- *
- * User profile picture with fallback to initials
- *
- * Sizes: xs, sm, md (default), lg, xl
- *
- * Features:
- * - Image with fallback to initials
- * - Placeholder for missing images
- * - Online status indicator (future)
- * - Accessible alt text
- */
+"use client"
 
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import { HTMLAttributes, forwardRef, useState } from 'react'
+import * as React from "react"
+import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 
-export interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
-  src?: string | null
-  alt?: string
-  fallback?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  status?: 'online' | 'offline' | 'away' | null
+import { cn } from "@/lib/utils"
+
+function Avatar({
+  className,
+  size = "default",
+  ...props
+}: AvatarPrimitive.Root.Props & {
+  size?: "default" | "sm" | "lg"
+}) {
+  return (
+    <AvatarPrimitive.Root
+      data-slot="avatar"
+      data-size={size}
+      className={cn(
+        "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  (
-    {
-      className,
-      src,
-      alt = 'Avatar',
-      fallback,
-      size = 'md',
-      status = null,
-      ...props
-    },
-    ref
-  ) => {
-    const [imageError, setImageError] = useState(false)
+function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
+  return (
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn(
+        "aspect-square size-full rounded-full object-cover",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-    const sizes = {
-      xs: 'h-6 w-6 text-xs',
-      sm: 'h-8 w-8 text-sm',
-      md: 'h-10 w-10 text-base',
-      lg: 'h-12 w-12 text-lg',
-      xl: 'h-16 w-16 text-xl',
-    }
+function AvatarFallback({
+  className,
+  ...props
+}: AvatarPrimitive.Fallback.Props) {
+  return (
+    <AvatarPrimitive.Fallback
+      data-slot="avatar-fallback"
+      className={cn(
+        "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-    const statusSizes = {
-      xs: 'h-1.5 w-1.5',
-      sm: 'h-2 w-2',
-      md: 'h-2.5 w-2.5',
-      lg: 'h-3 w-3',
-      xl: 'h-4 w-4',
-    }
+function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
+  return (
+    <span
+      data-slot="avatar-badge"
+      className={cn(
+        "absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground bg-blend-color ring-2 ring-background select-none",
+        "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden",
+        "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2",
+        "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-    const statusColors = {
-      online: 'bg-green-500',
-      offline: 'bg-neutral-400',
-      away: 'bg-yellow-500',
-    }
+function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="avatar-group"
+      className={cn(
+        "group/avatar-group flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-    const showImage = src && !imageError
-    const showFallback = !showImage && fallback
+function AvatarGroupCount({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="avatar-group-count"
+      className={cn(
+        "relative flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm text-muted-foreground ring-2 ring-background group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-6 [&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-    return (
-      <div ref={ref} className={cn('relative inline-block', className)} {...props}>
-        <div
-          className={cn(
-            'rounded-full overflow-hidden flex items-center justify-center',
-            sizes[size],
-            !showImage && 'bg-brand-blue1 text-white font-semibold'
-          )}
-        >
-          {showImage ? (
-            <Image
-              src={src!}
-              alt={alt}
-              fill
-              className="object-cover"
-              onError={() => setImageError(true)}
-            />
-          ) : showFallback ? (
-            <span>{fallback}</span>
-          ) : (
-            <svg
-              className="h-full w-full text-neutral-400"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-          )}
-        </div>
-        {status && (
-          <span
-            className={cn(
-              'absolute bottom-0 right-0 rounded-full border-2 border-white',
-              statusSizes[size],
-              statusColors[status]
-            )}
-            aria-label={`Status: ${status}`}
-          />
-        )}
-      </div>
-    )
-  }
-)
-
-Avatar.displayName = 'Avatar'
-
-export { Avatar }
+export {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarBadge,
+}
