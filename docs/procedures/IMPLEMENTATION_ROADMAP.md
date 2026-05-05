@@ -19,7 +19,7 @@
 
 **Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
 
-**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` (auth + dashboard foundation first, then the remaining app batches).
+**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` (auth + dashboard foundation first, then the site polish/performance follow-up and remaining app batches).
 
 ---
 

@@ -94,7 +94,26 @@ The site should be stronger at:
 
 ---
 
-### 3. Profile and account continuity
+### 3. Site polish, performance, and docs hardening
+
+**Why this is next:** once the dashboard foundation is in place, the whole app needs the clean/fast pass that makes the product feel finished.
+
+**Work order:** `docs/procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md`
+
+**Focus areas:**
+- shared shell cleanup
+- responsive route sweep
+- loading and perceived performance
+- docs and QA hardening
+
+**Definition of done:**
+- the app feels clean on every screen
+- loading feels calmer and faster
+- docs still match the real implementation
+
+---
+
+### 4. Profile and account continuity
 
 **Why this matters:** auth only feels complete when profile and account flows are easy to recover.
 
@@ -116,7 +135,7 @@ The site should be stronger at:
 
 ---
 
-### 4. Public/private surface QA
+### 5. Public/private surface QA
 
 **Why this stays in the queue:** the product should never leak or confuse access boundaries.
 
@@ -138,7 +157,7 @@ The site should be stronger at:
 
 ---
 
-### 5. Smoke tests, docs sync, and release prep
+### 6. Smoke tests, docs sync, and release prep
 
 **Why this is last:** fixes only stick if they’re verified and documented.
 
