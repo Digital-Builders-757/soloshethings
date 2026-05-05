@@ -15,7 +15,7 @@ export default async function AuthLayout({
   return (
     <div className="flex min-h-screen flex-col bg-[#fffaf0]">
       <Banner />
-      <SiteHeader variant="auth" />
+      <SiteHeader />
       <div className="flex flex-1 flex-col">{children}</div>
     </div>
   )

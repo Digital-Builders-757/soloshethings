@@ -104,6 +104,8 @@ if (!post) {
 - `/community` - Community features
 - `/admin/*` - Admin features
 
+**Middleware:** `middleware.ts` requires a verified user (`supabase.auth.getUser()`) for these URL prefixes (and other app paths such as `/dashboard`, `/profile`, `/places`, `/submit`): `/posts`, `/saved`, `/settings`, `/messages`, `/upload`, `/community`, `/admin`. Unauthenticated requests are redirected to `/login` with `redirectTo` preserved.
+
 **Access Control:**
 ```typescript
 // ✅ CORRECT: Block anonymous access

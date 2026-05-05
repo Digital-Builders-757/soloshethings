@@ -10,6 +10,7 @@
  * - Allow public routes without auth
  */
 
+import { getPostAuthRedirectPath } from '@/lib/auth-redirects'
 import { updateSession } from '@/lib/supabase/middleware'
 import { type NextRequest, NextResponse } from 'next/server'
 
@@ -25,14 +26,20 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl
   const pathname = url.pathname
 
-  // Define protected routes (require authentication)
+  // Protected routes — see docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md
   const protectedRoutes = [
     '/dashboard',
     '/profile',
     '/settings',
     '/submit',
     '/saved',
-    '/app', // All routes under (app) route group
+    '/places',
+    '/posts',
+    '/messages',
+    '/upload',
+    '/community',
+    '/admin',
+    '/app',
   ]
 
   // Define auth routes (redirect to dashboard if already logged in)
@@ -46,9 +53,16 @@ export async function middleware(request: NextRequest) {
   // Check if current path is an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route))
 
-  // If user is authenticated and trying to access auth routes, redirect to dashboard
+  // Authenticated users skip auth pages — redirect using profile role when available
   if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    const dest = getPostAuthRedirectPath(profile?.role)
+    return NextResponse.redirect(new URL(dest, request.url))
   }
 
   // If user is NOT authenticated and trying to access protected routes, redirect to login

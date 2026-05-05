@@ -5,20 +5,23 @@
 **Implementation Status:** ✅ Implemented (Phase 1 MVP)
 - ✅ Signup with profile bootstrap (`app/actions/auth.ts`)
 - ✅ Login with profile check (`app/actions/auth.ts`)
-- ✅ Logout (`app/actions/auth.ts`)
+- ✅ Logout (`app/actions/auth.ts`) — redirects to `/login` after sign-out
 - ✅ Route protection middleware (`middleware.ts`)
 - ✅ Functional auth pages (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Profile query module (`lib/queries/profiles.ts`)
 - ✅ Profile update server action (`app/actions/profile.ts`)
 - ✅ Profile edit page (`app/(app)/profile/page.tsx`)
 - ✅ Dashboard with profile display (`app/(app)/dashboard/page.tsx`)
-- ✅ Header with auth state (`components/nav/header.tsx`)
+- ✅ Header with auth state (`components/layout/SiteHeader.tsx`, `components/nav/NavClient.tsx`)
+- ✅ Missing-profile UX: `ProfileErrorFallback` when bounded repair cannot create/load a row (`app/(app)/dashboard`, `app/(app)/profile`); no redirect loop—sign-out is the primary retry path
+- ✅ Signup: profile insert failure calls `signOut()` so users are not signed in without a `profiles` row (service-role user deletion is not used in app code)
+- ✅ Profile repair helper: one insert plus optional read-after-write race check in `getProfileWithBoundedRepair` (`lib/queries/profiles.ts`)
 - ⏳ Stripe subscription creation (TODO: Phase 4)
 - ⏳ Welcome email (TODO: Phase 4)
 
 ## Non-Negotiables
 
-1. **Use getUser, Not getSession** - For ALL auth decisions, MUST use `getUser()` from `@supabase/auth-helpers-nextjs`, not `getSession()`.
+1. **Use getUser, Not getSession** - For ALL auth decisions, MUST use `getUser()` from `lib/supabase/server` (which calls `supabase.auth.getUser()`), not `getSession()`.
 2. **Server-Side Auth Checks** - All protected routes MUST verify authentication server-side.
 3. **Profile Bootstrap on Signup** - Every authenticated user MUST have a corresponding `profiles` row created immediately after signup.
 4. **Role-Based Redirects** - After login/signup, redirect based on `profiles.role` field.
@@ -64,6 +67,8 @@
    ↓
 9. User sees dashboard
 ```
+
+**Implementation note:** When Supabase requires email confirmation, `signUp` may not return a session. After the profile row is created, the app redirects to `/login?notice=confirm_email` instead of `/dashboard` so users are not sent to a protected route without a session.
 
 ### Pseudo-Code
 
@@ -220,7 +225,7 @@ async function repairProfile(userId: string, email: string) {
    ↓
 5. Clear client-side state
    ↓
-6. Redirect to /login
+6. Redirect to `/login` (optionally with `?signedOut=1` for a confirmation banner)
    ↓
 7. Show login page
 ```
