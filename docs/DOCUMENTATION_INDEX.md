@@ -117,6 +117,7 @@ Workflow documentation and step-by-step processes.
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Current execution order for the next auth/dashboard and app-polish batches
+- **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
 - **[procedures/README.md](./procedures/README.md)** - Queue entry point for Cursor and handoffs
 - **[procedures/LOCAL_CURSOR_WORKFLOW.md](./procedures/LOCAL_CURSOR_WORKFLOW.md)** - Local Cursor slash-command workflow, headless CMS mental model, and how local `.cursor/` helpers relate to `docs/` truth
 

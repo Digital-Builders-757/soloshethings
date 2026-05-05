@@ -42,9 +42,11 @@ The site should be stronger at:
 
 ## Execution order
 
-### 1. Auth session hardening
+### 1. Auth + dashboard foundation
 
-**Why this first:** if auth is shaky, everything downstream gets noisier.
+**Why this first:** if auth is shaky, the dashboard cannot feel trustworthy.
+
+**Work order:** `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
 
 **Source docs:**
 - `docs/contracts/AUTH_CONTRACT.md`
@@ -56,6 +58,8 @@ The site should be stronger at:
 - profile bootstrap and repair rules
 - middleware / route protection behavior
 - session handoff after refresh or logout
+- header auth state
+- dashboard shell and visual hierarchy
 - clear error states for auth failures
 
 **Definition of done:**
@@ -63,10 +67,11 @@ The site should be stronger at:
 - redirects are consistent
 - protected routes stay protected
 - auth behavior matches the contract docs
+- dashboard feels like a real home base, not a placeholder
 
 ---
 
-### 2. Dashboard shell and navigation polish
+### 2. Dashboard shell and visual polish
 
 **Why this is next:** the dashboard is the first real app surface people feel after auth.
 
