@@ -2,6 +2,8 @@
 
 **Purpose:** Definitive QA run to verify MVP is usable and stable before declaring "MVP done."
 
+**Automated gate (local / CI):** `npm run lint`, `npm run typecheck`, and `npm run build` should all pass. Auth flows below are **manual** and require a running app plus Supabase (see `.env.local`).
+
 **When to Run:** Before any demo, before tagging "MVP ready", after major changes.
 
 **Duration:** ~20 minutes
@@ -42,8 +44,10 @@
 - [ ] Go to `/signup`
 - [ ] Fill form (email, password, username)
 - [ ] Submit form
-- [ ] Should redirect to `/dashboard` after successful signup
-- [ ] Profile should be created automatically
+- [ ] **If email confirmation is off in Supabase:** redirect to `/dashboard` and profile row exists
+- [ ] **If email confirmation is on:** redirect to `/login?notice=confirm_email` after profile insert (no session yet)
+- [ ] Profile row should exist in `profiles` after signup completes (check Supabase)
+- [ ] **If profile insert fails:** form shows error and session is cleared (`signOut`); user is not left signed in without a profile
 
 ### ✅ Test 6: Dashboard After Signup
 - [ ] After signup, verify dashboard loads
@@ -55,7 +59,7 @@
 ### ✅ Test 7: Profile Edit
 - [ ] Go to `/profile`
 - [ ] Edit username, full name, or bio
-- [ ] Click "Save Changes"
+- [ ] Click "Save changes"
 - [ ] Should see success message
 - [ ] Hard refresh `/profile` page
 - [ ] Values should persist (not reset)
@@ -73,9 +77,9 @@
 
 ### ✅ Test 9: Logout Flow
 - [ ] While logged in, click "Sign Out" button
-- [ ] Should redirect to home (`/`) or login page
+- [ ] Should redirect to `/login?signedOut=1` (banner may confirm sign-out)
 - [ ] Session should be cleared
-- [ ] Header should show "Sign In" instead of "Sign Out"
+- [ ] Header should show "Sign In" instead of account links
 
 ### ✅ Test 10: Protected Route After Logout
 - [ ] After logout, try to visit `/dashboard`
@@ -84,16 +88,16 @@
 
 ### ✅ Test 11: Login After Logout
 - [ ] Logout (if not already logged out)
-- [ ] Go to `/login`
+- [ ] Go to `/login` (optionally with `?redirectTo=/profile`)
 - [ ] Enter credentials
 - [ ] Submit form
-- [ ] Should redirect to `/dashboard`
+- [ ] Should redirect to `redirectTo` when present and safe (same-origin path), else default post-auth path (currently `/dashboard` for all roles)
 - [ ] Dashboard should load cleanly
 - [ ] No errors in console
 
 ### ✅ Test 12: Auth Route Redirect
-- [ ] While logged in, try to visit `/login`
-- [ ] Should redirect to `/dashboard` (middleware prevents access to auth routes when authenticated)
+- [ ] While logged in, try to visit `/login` or `/signup`
+- [ ] Middleware should redirect away (destination from `profiles.role` via `getPostAuthRedirectPath`; currently `/dashboard` for `talent` and `client`)
 
 ---
 
@@ -114,9 +118,9 @@
 - [ ] **MUST NOT retry indefinitely**
 
 **If Repair Fails:**
-- [ ] Should show error page (not redirect loop)
-- [ ] Error message should be user-safe
-- [ ] Should provide escape hatch (link back to login)
+- [ ] Dashboard and `/profile` show **ProfileErrorFallback**: static message, **no redirects** between pages
+- [ ] Primary escape: **Sign out & try again**; also **Contact support** and **Back to home**
+- [ ] Login repair failure: user is signed out and sees a safe form error (no retry loop in-session)
 
 ---
 
@@ -162,10 +166,10 @@
 ## G) Performance & Errors
 
 ### ✅ Test 19: Build Check
+- [ ] Run `npm run lint` (zero warnings)
+- [ ] Run `npm run typecheck`
 - [ ] Run `npm run build`
 - [ ] Build should complete without errors
-- [ ] No TypeScript errors
-- [ ] No linting errors
 
 ### ✅ Test 20: Runtime Errors
 - [ ] Check browser console (all tests above)

@@ -12,10 +12,14 @@
  */
 
 import "server-only";
+import { generateUsername } from '@/lib/auth-utils';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/database';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
+
+const profileSelect =
+  'id, username, full_name, bio, avatar_url, role, privacy_level, created_at, updated_at' as const
 
 /**
  * Get user profile by ID
@@ -28,7 +32,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, username, full_name, bio, avatar_url, role, privacy_level, created_at, updated_at')
+    .select(profileSelect)
     .eq('id', userId)
     .maybeSingle();
     
@@ -56,5 +60,47 @@ export async function getCurrentUserProfile(): Promise<Profile | null> {
   }
   
   return getProfile(user.id);
+}
+
+/**
+ * Fetch profile for an authenticated user; if missing, run one bounded repair insert (AUTH_CONTRACT).
+ */
+export async function getProfileWithBoundedRepair(
+  userId: string,
+  email: string | null | undefined
+): Promise<Profile | null> {
+  const existing = await getProfile(userId);
+  if (existing) return existing;
+
+  console.warn(`Missing profile for user ${userId}, attempting bounded repair`);
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('profiles')
+    .insert({
+      id: userId,
+      username: generateUsername(email ?? 'user'),
+      role: 'talent',
+      privacy_level: 'public',
+    })
+    .select(profileSelect)
+    .single();
+
+  if (error || !data) {
+    console.error('Profile repair failed:', error);
+    const { data: raced, error: refetchError } = await supabase
+      .from('profiles')
+      .select(profileSelect)
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (refetchError) {
+      console.error('Profile refetch after repair failed:', refetchError);
+    }
+    if (raced) return raced;
+    return null;
+  }
+
+  return data;
 }
 

@@ -1,16 +1,12 @@
 /**
  * Site Header Component
- * 
+ *
  * Server Component that handles auth check and renders navigation
  * Editorial navigation labels for the Solo SHE Things brand
  */
 
-import { getUser } from "@/lib/supabase/server";
 import { NavClient } from "@/components/nav/NavClient";
-
-type SiteHeaderProps = {
-  variant?: "public" | "auth" | "app";
-};
+import { getUser } from "@/lib/supabase/server";
 
 const publicNavLinks = [
   { href: "/", label: "Home" },
@@ -22,21 +18,12 @@ const publicNavLinks = [
 ];
 
 const authNavLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/profile", label: "My Profile" },
+  { href: "/dashboard", label: "Account home" },
+  { href: "/profile", label: "Profile" },
+  { href: "/submit", label: "Submit" },
 ];
 
-export async function SiteHeader({ variant = "public" }: SiteHeaderProps) {
-  if (variant === "auth") {
-    return (
-      <NavClient
-        publicLinks={publicNavLinks}
-        isAuthenticated={false}
-        showStickyNav={true}
-      />
-    );
-  }
-
+export async function SiteHeader() {
   const user = await getUser();
   const isAuthenticated = !!user;
 

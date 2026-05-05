@@ -19,6 +19,8 @@
 
 **Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
 
+**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` (auth + dashboard foundation first, then the site polish/performance follow-up and remaining app batches).
+
 ---
 
 ## ✅ PHASE 1: BACKEND FOUNDATION - COMPLETE
@@ -326,11 +328,11 @@ Use the Design System components to build all pages with real functionality.
 - 🚧 Phase 2: Design System - Core Components (50%)
 
 **Next Steps:**
-1. Build remaining feedback components (Alert, Skeleton, Spinner, Modal, Toast)
-2. Build trust & safety components (Privacy Toggle, Privacy Badge, Report Button)
-3. Build Empty State component
-4. Create/update documentation (DESIGN_SYSTEM.md, etc.)
-5. Begin Phase 3: Page Implementation
+1. Read `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`
+2. Fix auth session handoff and redirect behavior
+3. Polish the dashboard shell and navigation for logged-in users
+4. Then return to the remaining design system items (feedback, trust/safety, empty state)
+5. Resume Phase 3 page implementation after the catch-up queue is closed
 
 ### Quick Start Commands
 

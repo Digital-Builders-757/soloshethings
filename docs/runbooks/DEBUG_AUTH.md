@@ -16,8 +16,8 @@
 
 3. **Profile missing after signup**
    - User created but profile doesn't exist
-   - Dashboard shows "Profile not found"
-   - Redirect loops
+   - Dashboard or profile shows `ProfileErrorFallback` (static page, not a redirect loop)
+   - User should sign out and back in, or use support link
 
 4. **Wrong redirect after login**
    - User redirected to wrong dashboard

@@ -14,6 +14,7 @@
 - **UI Foundation (Phase 2 partial)** - Brand tokens, typography, core components ✅
 - **Visual Design Enhancement** - Gradient border system, enhanced brand color vibrancy ✅
 - **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
+- **Auth + public/private surfaces (2026-05)** - Middleware and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live middleware prefixes.
 
 ### 🚧 In Progress
 
@@ -211,7 +212,7 @@ A feature is **VERIFIED** when all of the following checks pass:
 
 - [ ] RLS policies enabled and tested
 - [ ] Explicit selects in all queries (no `select('*')`)
-- [ ] Auth checks use `getUser()` (not `getSession()`)
+- [x] Auth checks use `getUser()` (not `getSession()`) — middleware + `lib/supabase/server`
 - [ ] No service role key in client code
 - [ ] Input validation on all forms
 - [ ] Webhook signatures verified (if applicable)
