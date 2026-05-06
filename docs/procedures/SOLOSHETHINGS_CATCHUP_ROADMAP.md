@@ -143,10 +143,13 @@ The site should be stronger at:
 
 **Why this is last:** fixes only stick if they’re verified and documented.
 
+**Work order:** `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`
+
 **Source docs:**
 - `docs/proof/MVP_SMOKE_CHECKLIST.md`
 - `docs/proof/E2E_SMOKE_PATHS.md`
 - `docs/procedures/PRE_PUSH_CHECKLIST.md`
+- `docs/procedures/RELEASE_PROCEDURE.md`
 
 **Definition of done:**
 - auth and dashboard flows are smoke-tested

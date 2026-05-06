@@ -120,6 +120,7 @@ Workflow documentation and step-by-step processes.
 - **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
 - **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
 - **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness
+- **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Final MVP smoke, docs sync, and release prep batch
 - **[procedures/README.md](./procedures/README.md)** - Queue entry point for Cursor and handoffs
 - **[procedures/LOCAL_CURSOR_WORKFLOW.md](./procedures/LOCAL_CURSOR_WORKFLOW.md)** - Local Cursor slash-command workflow, headless CMS mental model, and how local `.cursor/` helpers relate to `docs/` truth
 

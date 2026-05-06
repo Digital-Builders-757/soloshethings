@@ -6,6 +6,7 @@ Start here:
 - `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`
 - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - `docs/contracts/AUTH_CONTRACT.md`
