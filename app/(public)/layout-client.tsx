@@ -5,5 +5,5 @@ export function PublicLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <div className="flex min-h-0 min-w-0 flex-1 flex-col shell-pb-safe">{children}</div>;
 }

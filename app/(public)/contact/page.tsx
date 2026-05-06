@@ -65,13 +65,13 @@ export default function ContactPage() {
 
   return (
     <>
-      <main>
+      <main className="min-w-0 overflow-x-clip shell-pb-safe">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-14 md:py-24 lg:py-32">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-12 md:py-20 lg:py-28">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-[1fr_1.2fr]">
               <div className="flex flex-col gap-5 text-center md:gap-6 lg:text-left">
-                <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
+                <h1 className="text-balance break-words font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
                   Let{"'"}s{" "}
                   <span className="italic font-normal text-brand-orange">Connect</span>
                 </h1>
@@ -114,7 +114,7 @@ export default function ContactPage() {
 
         {/* Contact Reasons */}
         <section className="bg-[#FFF8F3] py-12 md:py-16">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
               {contactReasons.map((reason) => (
                 <div
@@ -138,7 +138,7 @@ export default function ContactPage() {
 
         {/* Contact Form + Social */}
         <section className="py-14 md:py-24">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid gap-10 md:gap-12 lg:grid-cols-5">
               {/* Form */}
               <div className="lg:col-span-3">
@@ -323,7 +323,7 @@ export default function ContactPage() {
 
         {/* CTA */}
         <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-16 text-center text-white md:py-28">
-          <div className="relative z-10 mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="relative z-10 mx-auto max-w-[1240px] shell-inline">
             <h2 className="font-serif text-3xl font-bold italic sm:text-4xl md:text-5xl lg:text-6xl">
               Not Ready to Reach Out?
             </h2>

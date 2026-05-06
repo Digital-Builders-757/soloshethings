@@ -67,13 +67,13 @@ const stats = [
 export default function AboutPage() {
   return (
     <>
-      <main>
+      <main className="min-w-0 overflow-x-clip">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-14 md:py-24 lg:py-32">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#FAFAFA_100%)] py-12 md:py-20 lg:py-28">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-[1fr_1.2fr]">
               <div className="flex flex-col gap-5 text-center md:gap-6 lg:text-left">
-                <h1 className="font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
+                <h1 className="text-balance break-words font-serif text-4xl font-bold leading-[0.95] text-brand-blue sm:text-5xl md:text-6xl lg:text-7xl">
                   <span className="italic font-normal text-brand-orange">She</span> Went{" "}
                   <span className="italic font-normal text-brand-orange">Solo</span>
                 </h1>
@@ -108,7 +108,7 @@ export default function AboutPage() {
 
         {/* Mission Section */}
         <section className="py-14 md:py-24">
-          <div className="mx-auto max-w-[800px] px-5 text-center md:px-8">
+          <div className="mx-auto max-w-[800px] shell-inline text-center">
             <h2 className="font-serif text-3xl font-bold italic text-brand-orange sm:text-4xl md:text-5xl">
               Mission
             </h2>
@@ -133,7 +133,7 @@ export default function AboutPage() {
 
         {/* Stats */}
         <section className="bg-[#FFF8F3] py-12 md:py-16">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
               {stats.map((stat) => (
                 <div
@@ -153,7 +153,7 @@ export default function AboutPage() {
 
         {/* Values */}
         <section className="py-14 md:py-24">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="mb-10 text-center md:mb-16">
               <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 What We Stand For
@@ -183,7 +183,7 @@ export default function AboutPage() {
 
         {/* Timeline */}
         <section className="bg-brand-blue py-14 text-white md:py-24">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="mb-10 text-center md:mb-16">
               <span className="badge-tilt inline-block rounded-full bg-brand-gold px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
                 The Journey
@@ -218,7 +218,7 @@ export default function AboutPage() {
 
         {/* Founder Section */}
         <section className="bg-[#FFF8F3] py-14 md:py-24">
-          <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="mx-auto max-w-[1240px] shell-inline">
             <div className="grid items-center gap-10 md:gap-16 lg:grid-cols-2">
               <div className="relative order-2 px-2 md:p-4 lg:order-1">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-peach-offset shadow-peach-offset-hover transition-all md:rounded-3xl">
@@ -266,7 +266,7 @@ export default function AboutPage() {
 
         {/* CTA */}
         <section className="grid-pattern-overlay overflow-hidden bg-brand-orange py-16 text-center text-white md:py-28">
-          <div className="relative z-10 mx-auto max-w-[1240px] px-5 md:px-8">
+          <div className="relative z-10 mx-auto max-w-[1240px] shell-inline">
             <h2 className="font-serif text-3xl font-bold italic sm:text-4xl md:text-5xl lg:text-6xl">
               Go Solo, Together.
             </h2>

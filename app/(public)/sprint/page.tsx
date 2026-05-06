@@ -117,15 +117,15 @@ export default function SprintPage() {
   const progressPercent = Math.round((doneTasks / totalTasks) * 100)
 
   return (
-    <main className="min-h-screen bg-white py-16">
-      <div className="container mx-auto px-6">
+    <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip bg-white">
+      <div className="container mx-auto">
         <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-12">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
               Design Sprint
             </p>
-            <h1 className="font-serif text-3xl font-bold text-brand-navy md:text-4xl lg:text-5xl">
+            <h1 className="text-balance font-serif text-3xl font-bold text-brand-navy md:text-4xl lg:text-5xl">
               Sprint Dashboard
             </h1>
             <div className="mt-4 h-px w-16 bg-brand-coral" />
@@ -169,21 +169,21 @@ export default function SprintPage() {
                   </div>
                   <ul className="space-y-3" role="list">
                     {group.tasks.map((task) => (
-                      <li key={task.label} className="flex items-start gap-3">
+                      <li key={task.label} className="flex items-start gap-3 border-b border-border/50 pb-3 last:border-b-0 last:pb-0">
                         <StatusIcon status={task.status} />
-                        <div className="flex-1">
+                        <div className="min-w-0 flex-1">
                           <span
                             className={
                               task.status === "done"
-                                ? "text-sm text-muted-foreground line-through"
-                                : "text-sm text-foreground"
+                                ? "text-sm text-muted-foreground line-through break-words"
+                                : "text-sm text-foreground break-words"
                             }
                           >
                             {task.label}
                           </span>
                         </div>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                          className={`shrink-0 self-start rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${
                             task.status === "done"
                               ? "bg-brand-sage/10 text-brand-sage"
                               : task.status === "in-progress"

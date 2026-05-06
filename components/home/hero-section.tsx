@@ -10,8 +10,8 @@ const heroHighlights = [
 export function HeroSection() {
   return (
     <section className="relative border-b border-[#efdac1] bg-white">
-      <div className="grid min-h-[calc(100svh-8rem)] lg:grid-cols-[1.03fr_0.97fr]">
-        <div className="relative isolate overflow-hidden bg-[#d85a23] px-6 py-16 sm:px-10 md:px-12 lg:px-16 lg:py-20 xl:px-20">
+      <div className="grid min-h-[calc(100dvh-var(--shell-chrome-height)-env(safe-area-inset-bottom,0px))] lg:grid-cols-[1.03fr_0.97fr]">
+        <div className="relative isolate overflow-hidden bg-[#d85a23] py-10 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:py-14 sm:pl-8 sm:pr-8 md:px-10 lg:px-14 lg:py-20 xl:px-20">
           {/* Soft glow only — no wavy band here; welcome section owns the pattern below the fold */}
           <div className="pointer-events-none absolute -left-20 top-1/3 h-56 w-56 rounded-full bg-[#f7e8be]/10 blur-3xl" aria-hidden="true" />
 
@@ -20,11 +20,11 @@ export function HeroSection() {
               Stories, safety, and sisterhood
             </p>
 
-            <h1 className="mt-5 font-serif text-[3rem] font-bold uppercase leading-[0.92] tracking-[0.03em] text-[#fff4df] sm:text-[4rem] lg:text-[5.25rem] xl:text-[5.9rem]">
+            <h1 className="mt-4 break-words font-serif text-[clamp(1.95rem,6vw,4.65rem)] font-bold uppercase leading-[0.95] tracking-[0.03em] text-[#fff4df] sm:mt-5 lg:mt-5">
               SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
             </h1>
 
-            <p className="mt-6 max-w-lg text-lg leading-8 text-[#fff6e8] sm:text-[1.2rem] sm:leading-8">
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-[#fff6e8] sm:mt-6 sm:text-lg sm:leading-8">
               Join a global community of women sharing their stories, inspiring one another,
               and discovering what they are capable of doing on their own.
             </p>

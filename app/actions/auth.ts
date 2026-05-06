@@ -12,10 +12,10 @@
 
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
 import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
-import { generateUsername } from '@/lib/auth-utils'
+import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
+import { createClient } from '@/lib/supabase/server'
 import type { user_role } from '@/types/database'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -115,59 +115,17 @@ export async function login(
     }
 
     const userId = authData.user.id
+    const profile = await getProfileWithBoundedRepair(userId, authData.user.email ?? email)
 
-    const { data: existing } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', userId)
-      .maybeSingle()
-
-    if (!existing) {
-      console.warn('Profile missing for user:', userId)
-
-      const { error: repairError } = await supabase
-        .from('profiles')
-        .insert({
-          id: userId,
-          username: generateUsername(email),
-          role: 'talent',
-          privacy_level: 'public',
-        })
-        .select('id')
-        .single()
-
-      if (repairError) {
-        console.error('Profile repair failed:', repairError)
-        const { data: raced } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', userId)
-          .maybeSingle()
-
-        if (!raced) {
-          await supabase.auth.signOut()
-          return {
-            error:
-              'Your account is missing profile data and we could not fix it automatically. Please contact support.',
-          }
-        }
-      }
-    }
-
-    const { data: roleRow } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .maybeSingle()
-
-    if (!roleRow) {
+    if (!profile) {
       await supabase.auth.signOut()
       return {
-        error: 'Your profile could not be loaded. Please try again or contact support.',
+        error:
+          'Your profile could not be loaded. Please try again or contact support if this continues.',
       }
     }
 
-    role = roleRow.role
+    role = profile.role
     revalidatePath('/', 'layout')
   } catch (error) {
     console.error('Login error:', error)
@@ -179,16 +137,17 @@ export async function login(
   redirect(nextPath)
 }
 
-/**
- * Logout — contract: return users to sign-in after session ends
- */
-export async function logout() {
+/** Sign out on the server (clears cookies on the response). Client navigates to login — avoids redirect/try-catch issues in client handlers. See AUTH_CONTRACT.md */
+export async function logout(): Promise<
+  { error: string } | { ok: true }
+> {
   const supabase = await createClient()
 
   try {
     const { error } = await supabase.auth.signOut()
 
     if (error) {
+      console.error('Logout Supabase error:', error)
       return { error: 'We could not sign you out. Please try again.' }
     }
 
@@ -198,5 +157,5 @@ export async function logout() {
     return { error: 'Something went wrong while signing out.' }
   }
 
-  redirect('/login?signedOut=1')
+  return { ok: true }
 }

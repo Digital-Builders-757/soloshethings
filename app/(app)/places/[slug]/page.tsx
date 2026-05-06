@@ -1,77 +1,76 @@
 /**
- * Community Place/Story Detail Page
- * 
- * Authenticated route - requires login
- * Full community post content (auth-gated)
- * Public previews shown on home page, full content here
+ * Community place/story detail (authenticated shell).
+ * Middleware enforces session; this page repeats getUser() per AUTH_CONTRACT.
  */
 
-import Link from 'next/link';
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+
+import { getUser } from '@/lib/supabase/server'
 
 type Props = {
-  params: Promise<{ slug: string }>;
-};
+  params: Promise<{ slug: string }>
+}
 
 export default async function PlaceDetailPage({ params }: Props) {
-  const { slug } = await params;
-  
-  // TODO: Auth check
-  // const user = await getUser();
-  // if (!user) redirect('/login');
-  
-  // TODO: Fetch community post by slug
-  // const post = await getCommunityPost(slug, user.id);
-  // if (!post) notFound();
-  
+  const { slug } = await params
+
+  const user = await getUser()
+  if (!user) {
+    redirect(`/login?redirectTo=${encodeURIComponent(`/places/${slug}`)}`)
+  }
+
   return (
-    <main className="min-h-screen py-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Auth-gated placeholder */}
-        <div className="bg-brand-yellow1 text-black p-6 rounded-lg mb-8">
-          <p className="font-semibold">
-            🔒 This is an authenticated route. Full implementation coming in Phase 1.
+    <main className="section-y shell-inline mx-auto min-w-0 max-w-4xl flex-1 overflow-x-clip py-10 sm:py-14">
+      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-[#6d5849]">
+        <Link href="/dashboard" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+          My dashboard
+        </Link>
+        <span className="mx-2 text-[#d9c4a8]" aria-hidden>
+          /
+        </span>
+        <span className="font-medium text-[#7a331b]">Place</span>
+      </nav>
+
+      <div className="min-w-0">
+        <div className="surface-card mb-8 rounded-xl p-6 text-[#7a331b]">
+          <p className="text-sm font-semibold leading-relaxed">
+            Signed-in only. Full community posts and place pages will load here in a future release.
           </p>
-          <p className="mt-2">
-            Place slug: {slug}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Slug: <span className="font-mono text-[#3a3a3a]">{slug}</span>
           </p>
         </div>
-        
+
         <article>
-          {/* Placeholder content - will be replaced with real community post */}
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Community Place/Story Title
+            <h1 className="mb-4 text-balance font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl md:text-5xl">
+              Community place or story
             </h1>
-            <div className="text-neutral-600 mb-6">
-              <span>By Community Member</span>
-              <span className="mx-2">•</span>
-              <time dateTime="2025-01-27">January 27, 2025</time>
+            <div className="mb-6 text-muted-foreground">
+              <span>Preview</span>
+              <span className="mx-2" aria-hidden>
+                •
+              </span>
+              <time dateTime="2026-01-27">January 27, 2026</time>
             </div>
-            <div className="aspect-video bg-neutral-200 rounded-lg mb-8"></div>
+            <div className="mb-8 aspect-video rounded-xl bg-muted" />
           </header>
-          
-          <div className="prose prose-lg max-w-none">
+
+          <div className="prose prose-neutral max-w-none text-muted-foreground">
             <p>
-              Full community post content will be displayed here. This content
-              requires authentication to view. Public previews are shown on the
-              home page to encourage signups.
-            </p>
-            <p>
-              Privacy controls (public/private) will be enforced via RLS policies.
+              When live, this page will show the full post. Public listings stay on marketing routes;
+              member-only detail stays behind auth and RLS.
             </p>
           </div>
         </article>
-        
-        <nav className="mt-16 pt-8 border-t border-neutral-200">
-          <Link
-            href="/"
-            className="text-brand-blue1 hover:text-brand-blue2 font-medium"
-          >
-            ← Back to Home
+
+        <nav className="mt-12 border-t border-border pt-8" aria-label="Secondary">
+          <Link href="/collections" className="text-sm font-semibold text-[#e34b16] hover:text-[#c74010]">
+            ← Browse collections
           </Link>
         </nav>
       </div>
     </main>
-  );
+  )
 }
-

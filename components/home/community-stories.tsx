@@ -5,7 +5,7 @@ import { communityStories } from "@/lib/data"
 export function CommunityStories() {
   return (
     <section className="bg-brand-blue py-24">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto shell-inline">
         {/* Header */}
         <div className="mb-12 text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#FFD0A9]">

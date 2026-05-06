@@ -195,3 +195,26 @@ Make sure:
 - `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
 - `docs/proof/QA_CHECKLIST.md`
 - `docs/proof/E2E_SMOKE_PATHS.md`
+
+---
+
+## Implementation notes (Batch 2 — site polish + performance)
+
+**Shell & safe areas**
+
+- `app/layout.tsx`: `body` uses `min-h-dvh overflow-x-clip` so the document column clips horizontal bleed on small viewports.
+- `components/layout/Banner.tsx`: top padding respects `env(safe-area-inset-top)` under `viewportFit=cover`.
+- `components/nav/NavClient.tsx`: slightly reduced header / sticky vertical padding; mobile menu uses `max-height` + scroll with `overscroll-y-contain`; sticky reveal threshold aligned to the tighter header.
+- `app/globals.css`: `--shell-chrome-height` tuned for hero `min-height` math; `.section-y` vertical rhythm slightly tightened on small breakpoints; route groups use existing `shell-inline` + `shell-pb-safe`.
+
+**Loading & skeletons**
+
+- `components/ui/skeleton.tsx`: `motion-safe:animate-pulse-soft` (Tailwind `pulse-soft` in `tailwind.config.ts`) for calmer loading feedback.
+- `app/(public|app|auth)/loading.tsx`: `min-w-0`, `overflow-x-clip`, and stable skeleton heights where helpful.
+
+**Routes**
+
+- Core `main` wrappers: `overflow-x-clip` + `min-w-0` on blog, collections, map, about, contact, sprint, app shell `main`, auth wrapper, and related pages to reduce horizontal overflow.
+- `components/home/hero-section.tsx`: hero min-height subtracts bottom safe inset; headline `clamp` softened; left column horizontal padding respects safe-area insets on small screens; `break-words` on the H1.
+- `app/(app)/submit/page.tsx` & `app/(app)/places/[slug]/page.tsx`: aligned with `section-y` + `shell-inline` and overflow-safe width constraints.
+- `app/(public)/sprint/page.tsx`: task rows use `min-w-0` / `break-words` so long labels do not blow out layout on narrow screens.

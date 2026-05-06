@@ -26,7 +26,7 @@ export function NewsletterSection() {
 
   return (
     <section className="bg-[#f7e8be] py-16 md:py-24">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto shell-inline">
         <div className="overflow-hidden rounded-[2.5rem] bg-[#fffaf0] shadow-[0_30px_80px_rgba(122,51,27,0.12)]">
           <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="bg-[#7a331b] px-8 py-10 text-[#fff5df] md:px-10 md:py-12">

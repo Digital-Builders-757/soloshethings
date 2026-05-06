@@ -10,6 +10,14 @@
 4. **Critical Paths Only** - Focus on user-blocking issues.
 5. **Production-Like Data** - Use realistic test data.
 
+## Automation alignment (2026-05)
+
+These paths were written for a **full** product (trials, Stripe, uploads, saved posts). The **current MVP** implements anonymous blog read, auth, dashboard, profile, and static/marketing routes — not all scripted flows exist yet.
+
+- **Path 1:** The root layout title is **site metadata** (e.g. “Solo SHE Things - Safe Travels for Solo Female Travelers”), not necessarily matching `/Blog/`. Prefer `page.goto('/blog')` plus visible list/post content (or a flexible title regex) instead of `toHaveTitle(/Blog/)` only.
+- **Path 2:** `data-testid="trial-countdown"` and trial read limits are **not** in the app yet. Signup may land on `/login?notice=confirm_email` when Supabase email confirmation is enabled — do not assume an immediate `/dashboard` session.
+- **Paths 3–5:** Subscription checkout, community post upload, and `/saved` flows are **targets for when those features ship**; for today’s release confidence use **`docs/proof/MVP_SMOKE_CHECKLIST.md`**.
+
 ## Smoke Test Paths
 
 ### Path 1: Anonymous User Reads Blog Post

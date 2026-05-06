@@ -13,9 +13,11 @@
 
 export default function CollectionsPage() {
   return (
-    <main className="min-h-screen py-16 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-orange">Browse Collections</h1>
+    <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-6 text-balance break-words font-serif text-3xl font-bold text-brand-orange md:mb-8 md:text-4xl">
+          Browse Collections
+        </h1>
         
         {/* Filter UI Stub */}
         <div className="mb-8">

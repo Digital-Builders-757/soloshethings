@@ -21,9 +21,11 @@ export default async function BlogPage() {
   const posts: WpPostListResponse = await getWpPosts({ perPage: 12 });
 
   return (
-    <main className="min-h-screen py-16 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-brand-orange">SHE <span className="text-brand-blue">Stories</span> & Guides</h1>
+    <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-6 text-balance break-words font-serif text-3xl font-bold text-brand-orange md:mb-8 md:text-4xl lg:text-5xl">
+          SHE <span className="text-brand-blue">Stories</span> & Guides
+        </h1>
         
         {!wpConfigured || posts.length === 0 ? (
           <div className="text-center py-16">

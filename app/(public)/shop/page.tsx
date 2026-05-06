@@ -22,11 +22,11 @@ const launchHighlights = [
 export default function ShopPage() {
   return (
     <>
-      <main className="overflow-hidden">
+      <main className="min-w-0 overflow-x-clip">
         {/* Hero — homepage sibling: warm orange editorial + image */}
         <section className="relative border-b border-[#efdac1] bg-white">
           <div className="grid lg:grid-cols-[1.06fr_0.94fr]">
-            <div className="relative isolate overflow-hidden bg-[#d85a23] px-6 py-14 sm:px-10 md:px-12 lg:px-14 lg:py-20">
+            <div className="relative isolate overflow-hidden bg-[#d85a23] shell-inline py-12 sm:py-14 lg:py-20">
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-90"
                 style={{
@@ -46,7 +46,7 @@ export default function ShopPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#fff0d2]">
                   The shop • Opening soon
                 </p>
-                <h1 className="mt-5 font-serif text-4xl font-bold uppercase leading-[0.95] tracking-[0.03em] text-[#fff4df] sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem]">
+                <h1 className="mt-5 break-words font-serif text-4xl font-bold uppercase leading-[0.95] tracking-[0.03em] text-[#fff4df] sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem]">
                   The{" "}
                   <span className="italic font-normal normal-case tracking-normal text-[#fab642]">
                     SHE

@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
+import { Badge } from '@/components/ui/badge'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { getUser } from '@/lib/supabase/server'
 
@@ -68,27 +69,30 @@ export default async function DashboardPage() {
   const user = await getUser()
 
   if (!user) {
-    redirect('/login')
+    redirect('/login?redirectTo=/dashboard')
   }
 
   const profile = await getProfileWithBoundedRepair(user.id, user.email)
 
   if (!profile) {
-    return <ProfileErrorFallback context="dashboard" />
+    return <ProfileErrorFallback context="dashboard" userEmail={user.email} />
   }
 
   const displayName = profile.full_name?.trim() || profile.username
+  const memberSinceLabel = profile.created_at
+    ? new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(
+        new Date(profile.created_at)
+      )
+    : null
 
   return (
     <div className="relative isolate">
-      {/* Soft top atmosphere — matches brand marketing pages */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#f7e8be]/50 via-[#fffaf0]/30 to-transparent"
         aria-hidden
       />
 
-      <div className="relative mx-auto w-full max-w-6xl px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-10 lg:px-8 lg:pb-20 lg:pt-12">
-        {/* —— Welcome —— */}
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-6 sm:px-6 sm:pb-16 sm:pt-9 lg:px-8 lg:pb-20 lg:pt-11">
         <header className="overflow-hidden rounded-[1.75rem] border border-[#ead8c2] bg-gradient-to-br from-white via-[#fffdf8] to-[#f7e8be]/35 shadow-[0_20px_60px_rgba(122,51,27,0.08)]">
           <div className="relative px-5 py-8 sm:p-8 md:p-10 lg:p-11">
             <div
@@ -101,19 +105,43 @@ export default async function DashboardPage() {
             />
 
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#a14b24] sm:text-xs sm:tracking-[0.28em]">
-              Your dashboard
+              Your home base
             </p>
-            <h1 className="mt-3 max-w-3xl font-serif text-display-md text-[#7a331b] sm:text-display-lg">
-              Welcome home,{' '}
-              <span className="text-[#e34b16] italic">{displayName}</span>
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <Badge
+                variant="neutral"
+                size="sm"
+                className="border border-[#ead8c2] bg-white/90 font-semibold capitalize text-[#7a331b]"
+              >
+                {roleLabel(profile.role)}
+              </Badge>
+              {memberSinceLabel ? (
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#a14b24]/90">
+                  Member since {memberSinceLabel}
+                </span>
+              ) : null}
+            </div>
+
+            <h1 className="mt-4 max-w-3xl font-serif text-display-md text-[#7a331b] sm:text-display-lg">
+              Welcome back,{' '}
+              <span
+                className="text-[#e34b16] italic"
+                data-testid="user-name"
+              >
+                {displayName}
+              </span>
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#6d5849] sm:text-[1.05rem] sm:leading-7">
-              <span className="font-medium text-[#7a331b]">{roleLabel(profile.role)}</span>
-              <span className="text-[#6d5849]/80"> · </span>
+              Everything signed-in lives here—tune how you show up, then pick up wherever you left
+              off across the site.
+            </p>
+            <p className="mt-2 max-w-2xl text-sm text-[#6d5849]/90">
+              <span className="sr-only">Account email:</span>
               Signed in as <span className="font-medium text-[#7a331b]">{user.email}</span>
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 href="/profile"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#e34b16] px-6 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(227,75,22,0.32)] transition hover:bg-[#c74010] sm:px-7"
@@ -125,83 +153,82 @@ export default async function DashboardPage() {
                 href="/collections"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d9c4a8] bg-white/90 px-6 text-sm font-semibold text-[#7a331b] shadow-sm transition hover:border-[#e34b16]/45 hover:text-[#e34b16] sm:px-7"
               >
-                Browse Solo SHEntries
+                Solo SHEntries
               </Link>
               <Link
                 href="/submit"
-                className="inline-flex min-h-12 items-center justify-center text-sm font-semibold text-[#e34b16] underline-offset-4 hover:underline sm:px-2"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-transparent px-1 text-sm font-semibold text-[#e34b16] underline-offset-4 hover:underline sm:px-3"
               >
                 Share a story →
               </Link>
             </div>
+
+            <nav
+              className="mt-8 border-t border-[#ead8c2]/70 pt-6 sm:mt-10"
+              aria-label="Explore more of the site"
+            >
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#a14b24]">
+                Browse next
+              </p>
+              <ul className="mt-3 flex list-none flex-wrap gap-x-1 gap-y-2 text-sm font-semibold text-[#7a331b]">
+                <li>
+                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/blog">
+                    Blog
+                  </Link>
+                </li>
+                <li aria-hidden className="select-none text-[#d9c4a8]">
+                  ·
+                </li>
+                <li>
+                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/map">
+                    Map
+                  </Link>
+                </li>
+                <li aria-hidden className="select-none text-[#d9c4a8]">
+                  ·
+                </li>
+                <li>
+                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/sprint">
+                    Sprint
+                  </Link>
+                </li>
+                <li aria-hidden className="select-none text-[#d9c4a8]">
+                  ·
+                </li>
+                <li>
+                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/shop">
+                    Shop
+                  </Link>
+                </li>
+                <li aria-hidden className="select-none text-[#d9c4a8]">
+                  ·
+                </li>
+                <li>
+                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/contact">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </header>
 
-        <div className="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_min(100%,20rem)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_22rem]">
-          {/* —— Quick actions —— */}
-          <section aria-labelledby="dash-actions-heading" className="min-w-0">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-              <div>
-                <h2
-                  id="dash-actions-heading"
-                  className="font-serif text-xl font-bold text-[#7a331b] sm:text-2xl"
-                >
-                  Where to next
-                </h2>
-                <p className="mt-1 max-w-xl text-sm leading-relaxed text-[#6d5849] sm:text-base">
-                  Pick up threads from your last visit or explore something new.
-                </p>
-              </div>
-            </div>
-
-            <ul className="mt-6 grid list-none gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5">
-              <ActionTile
-                href="/profile"
-                icon={UserRound}
-                title="Profile & visibility"
-                description="Name, bio, and how you appear to others."
-                cta="Open profile"
-              />
-              <ActionTile
-                href="/blog"
-                icon={BookOpen}
-                title="Travel + SHE Things"
-                description="Stories, notes, and guides from the road."
-                cta="Read the blog"
-              />
-              <ActionTile
-                href="/map"
-                icon={MapPin}
-                title="Map & places"
-                description="Inspiration for your next solo adventure."
-                cta="Open map"
-              />
-              <ActionTile
-                href="/submit"
-                icon={Sparkles}
-                title="Submit a story"
-                description="Tips, wins, or lessons for the collective."
-                cta="Start a submission"
-              />
-            </ul>
-          </section>
-
-          {/* —— Account snapshot —— */}
+        <div className="mt-10 grid gap-10 lg:mt-11 lg:grid-cols-[minmax(0,1fr)_min(100%,20rem)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <aside
-            className="surface-card rounded-[1.25rem] p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start"
+            className="surface-card order-1 rounded-[1.25rem] p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:order-2 lg:self-start"
             aria-labelledby="dash-snapshot-heading"
           >
             <h2 id="dash-snapshot-heading" className="font-serif text-lg font-bold text-[#7a331b]">
-              At a glance
+              Profile snapshot
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Your public-facing basics. @{profile.username}
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              How you show up across Solo SHE Things.<span className="font-medium text-[#7a331b]"> @{profile.username}</span>
             </p>
 
             <dl className="mt-6 space-y-5 text-sm">
               <div>
                 <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
-                  Display
+                  Display name
                 </dt>
                 <dd className="mt-1.5 font-medium text-foreground">
                   {profile.full_name?.trim() || profile.username}
@@ -221,19 +248,76 @@ export default async function DashboardPage() {
                   <dd className="mt-1.5 leading-relaxed text-muted-foreground">{profile.bio}</dd>
                 </div>
               ) : (
-                <p className="rounded-xl border border-dashed border-[#ead8c2] bg-[#fffdf8] px-3 py-3 text-sm leading-relaxed text-[#6d5849]">
-                  Add a short bio on your profile so other travelers can connect with you.
-                </p>
+                <div>
+                  <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
+                    Bio
+                  </dt>
+                  <dd className="mt-1.5">
+                    <p className="rounded-xl border border-dashed border-[#ead8c2] bg-[#fffdf8] px-3 py-3 text-sm leading-relaxed text-[#6d5849]">
+                      Add a short bio—others see it when your profile is public.
+                    </p>
+                  </dd>
+                </div>
               )}
             </dl>
 
             <Link
               href="/profile"
-              className="mt-6 flex min-h-11 w-full items-center justify-center rounded-full border border-[#ead8c2] bg-white text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+              className="mt-7 flex min-h-11 w-full items-center justify-center rounded-full border border-[#ead8c2] bg-white text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
             >
-              Manage profile
+              Open full profile
             </Link>
           </aside>
+
+          <section
+            aria-labelledby="dash-actions-heading"
+            className="order-2 min-w-0 lg:order-1"
+          >
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+              <div>
+                <h2
+                  id="dash-actions-heading"
+                  className="font-serif text-xl font-bold text-[#7a331b] sm:text-2xl"
+                >
+                  Quick actions
+                </h2>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#6d5849] sm:text-base">
+                  Common places members open from here—everything stays one tap away on mobile too.
+                </p>
+              </div>
+            </div>
+
+            <ul className="mt-8 grid list-none gap-4 sm:mt-9 sm:grid-cols-2 sm:gap-5">
+              <ActionTile
+                href="/profile"
+                icon={UserRound}
+                title="Profile & visibility"
+                description="Username, bio, and who can see your details."
+                cta="Open profile"
+              />
+              <ActionTile
+                href="/blog"
+                icon={BookOpen}
+                title="Travel + SHE Things"
+                description="Stories, notes, and guides from the road."
+                cta="Read the blog"
+              />
+              <ActionTile
+                href="/map"
+                icon={MapPin}
+                title="Map & places"
+                description="Ideas for your next solo outing."
+                cta="Open map"
+              />
+              <ActionTile
+                href="/submit"
+                icon={Sparkles}
+                title="Submit a story"
+                description="Share a lesson, ritual, or field note with the collective."
+                cta="Start a submission"
+              />
+            </ul>
+          </section>
         </div>
       </div>
     </div>

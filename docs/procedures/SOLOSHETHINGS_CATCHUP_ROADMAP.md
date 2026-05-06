@@ -2,6 +2,8 @@
 
 **Last updated:** May 5, 2026
 
+**Execution status:** Steps **1–4** below are **implemented** in the repo (see each linked work order’s *Implementation notes*). **Active:** step **5** — smoke tests, docs sync, and release prep.
+
 This is the current execution order for the next SoloSHEThings improvement batches.
 Use it with `docs/procedures/IMPLEMENTATION_ROADMAP.md` and the contracts in `docs/contracts/`.
 
@@ -78,7 +80,8 @@ The site should be stronger at:
 **Current surfaces:**
 - `app/(app)/dashboard/page.tsx`
 - `app/(app)/layout.tsx`
-- `components/nav/header.tsx`
+- `components/layout/SiteHeader.tsx`
+- `components/nav/NavClient.tsx`
 
 **Focus areas:**
 - dashboard hierarchy and welcome state
@@ -113,58 +116,40 @@ The site should be stronger at:
 
 ---
 
-### 4. Profile and account continuity
+### 4. Launch hardening, profile continuity, and access-control QA
 
-**Why this matters:** auth only feels complete when profile and account flows are easy to recover.
+**Why this is next:** after the core visual pass, finish the trust and boundary details that make the app feel actually shippable.
 
-**Current surfaces:**
-- `app/(app)/profile/page.tsx`
-- `app/actions/profile.ts`
-- any account/settings screens already in the app
+**Work order:** `docs/procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md`
 
 **Focus areas:**
 - profile edit and persistence
-- role-aware behavior where needed
-- avatar / identity continuity
-- settings/account affordances
+- bounded missing-profile fallback
+- authenticated vs anonymous route behavior
+- subscription-gated or private surfaces if applicable
+- safe redirects from private pages
+- loading states and responsive leftovers that still feel unfinished
 
 **Definition of done:**
 - profile changes are dependable
 - account flows are easy to find and understand
 - user identity feels consistent after login
-
----
-
-### 5. Public/private surface QA
-
-**Why this stays in the queue:** the product should never leak or confuse access boundaries.
-
-**Source docs:**
-- `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`
-- `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md`
-- `docs/SECURITY_INVARIANTS.md`
-
-**Focus areas:**
-- authenticated vs anonymous route behavior
-- subscription-gated surfaces if applicable
-- safe redirects from private pages
-- content visibility rules in the public shell
-
-**Definition of done:**
 - access rules are easy to reason about
-- private content stays private
-- public pages do not feel bolted on
+- the app feels launch-ready instead of merely functional
 
 ---
 
-### 6. Smoke tests, docs sync, and release prep
+### 5. Smoke tests, docs sync, and release prep
 
 **Why this is last:** fixes only stick if they’re verified and documented.
+
+**Work order:** `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`
 
 **Source docs:**
 - `docs/proof/MVP_SMOKE_CHECKLIST.md`
 - `docs/proof/E2E_SMOKE_PATHS.md`
 - `docs/procedures/PRE_PUSH_CHECKLIST.md`
+- `docs/procedures/RELEASE_PROCEDURE.md`
 
 **Definition of done:**
 - auth and dashboard flows are smoke-tested

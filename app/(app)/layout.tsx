@@ -14,12 +14,12 @@ export default function AppLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#fffaf0]">
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-[#fffaf0]">
       <Banner />
       <SiteHeader />
       <main
         id="app-main"
-        className="relative flex min-h-0 min-w-0 flex-1 flex-col"
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-x-clip shell-pb-safe"
       >
         {children}
       </main>
