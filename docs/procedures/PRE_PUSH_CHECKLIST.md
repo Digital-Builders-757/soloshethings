@@ -72,6 +72,8 @@ supabase db diff --schema public
 - ✅ No unexpected schema changes
 - ✅ Migration files exist for all schema changes
 
+**Windows / local note:** This command starts a shadow database and **requires Docker Desktop** for default local Supabase workflows. If Docker is not available, run diff from a machine that has it, or validate schema against your linked Supabase project using the [Supabase CLI migration docs](https://supabase.com/docs/guides/cli/local-development).
+
 **If Fails:**
 - Create migration file: `supabase migration new <description>`
 - Update `docs/database_schema_audit.md`

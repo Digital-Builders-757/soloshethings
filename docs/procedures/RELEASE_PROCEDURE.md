@@ -30,8 +30,8 @@
 ### Configuration
 
 - [ ] Environment variables set in Vercel
-- [ ] Stripe webhooks configured
-- [ ] WordPress webhooks configured
+- [ ] Stripe webhooks configured (when subscription billing is enabled—not required for current MVP)
+- [ ] WordPress webhook / revalidation secret configured when using headless blog (`POST /api/revalidate`)
 - [ ] Error monitoring configured
 
 ### Documentation
@@ -99,18 +99,22 @@ vercel --prod
 - [ ] Deployment successful (no build errors)
 - [ ] Application loads correctly
 - [ ] Authentication works
-- [ ] Database queries work
-- [ ] Stripe webhooks receive events
-- [ ] WordPress content loads
+- [ ] Database queries work (dashboard / profile)
+- [ ] Stripe webhooks receive events (when billing is enabled)
+- [ ] WordPress / blog routes behave as expected (`/blog`, `/blog/[slug]` when `WP_URL` is set; graceful fallback when not)
 
-**Functional Tests:**
+**Functional Tests (current MVP):**
 
 - [ ] User can sign up
 - [ ] User can log in
-- [ ] User can create profile
-- [ ] User can create post
-- [ ] Subscription flow works
-- [ ] Blog posts load
+- [ ] User can open dashboard and profile; profile edits persist
+- [ ] Anonymous visitor is redirected from protected routes (e.g. `/dashboard` → `/login?redirectTo=...`)
+- [ ] Blog list and post pages load when WordPress is configured; no crash when it is not
+
+**Functional Tests (full product — when those features ship):**
+
+- [ ] User can create community post (not in current MVP)
+- [ ] Subscription / checkout flow works (not in current MVP)
 
 **Monitoring:**
 
@@ -166,13 +170,13 @@ Set in Vercel dashboard:
 
 1. **Get Revalidation URL**
    ```
-   https://your-app.vercel.app/api/revalidate/wordpress
+   https://your-app.vercel.app/api/revalidate
    ```
+   The app implements a single `POST` handler in `app/api/revalidate/route.ts` (JSON body includes `secret`; see `docs/contracts/WORDPRESS_CONTENT_CONTRACT.md`).
 
 2. **Configure in WordPress**
-   - Set webhook URL
-   - Set webhook secret
-   - Add to Vercel environment variables
+   - `POST` to that URL with the shared secret in the JSON body (not a separate `/api/revalidate/wordpress` path)
+   - Set `REVALIDATE_SECRET` / env per `docs/procedures/ENVIRONMENT_PROCEDURE.md`
 
 ## Rollback Procedure
 

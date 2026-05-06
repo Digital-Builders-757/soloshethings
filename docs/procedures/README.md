@@ -19,7 +19,7 @@ Queue order (see `SOLOSHETHINGS_CATCHUP_ROADMAP.md`):
 4. Launch hardening, profile/account continuity, and access-control QA
 5. Smoke tests, docs sync, and release prep
 
-**Status (2026-05-05):** Items **1–4** are implemented in the repo. **Next:** item **5** before tagging a release.
+**Status (2026-05-06):** Items **1–5** are complete (including smoke, docs sync, and release prep). **Next:** pick work from `IMPLEMENTATION_ROADMAP.md` / product priorities.
 
 Rules:
 - Work top to bottom.

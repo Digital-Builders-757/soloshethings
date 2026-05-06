@@ -83,7 +83,7 @@ Foundational principles and architectural decisions.
 
 - **[ARCHITECTURE_CONSTITUTION.md](./ARCHITECTURE_CONSTITUTION.md)** - Foundational principles, tech stack, non-negotiables, and architectural rules
 - **[PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md)** - Read-first prompt for agents/devs before changing code
-- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Next.js 15 App Router + strict TypeScript conventions and patterns
+- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Next.js 16 App Router + strict TypeScript conventions and patterns
 - **[SECURITY_INVARIANTS.md](./SECURITY_INVARIANTS.md)** - Security rules that must never be violated
 
 ### Truth Layer
@@ -116,7 +116,7 @@ Workflow documentation and step-by-step processes.
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, and rollback steps
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
-- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–4** shipped in app; **§5** = smoke, docs sync, release prep)
+- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–5** complete for May 2026 smoke + release milestone)
 - **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
 - **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
 - **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness
@@ -262,10 +262,10 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-05-05  
+**Last Updated:** 2026-05-06  
 **Maintainer:** Development Team
 
-**Recent sync:** Catch-up items **1–4** in `procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` are reflected in app code (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes). Next execution step on that roadmap is **§5** (smoke, docs sync, release prep).
+**Recent sync:** Catch-up item **§5** (smoke verification, docs sync, release prep) completed per `procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`. Items **1–5** in `procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` are done for this release milestone.
 
 ---
 

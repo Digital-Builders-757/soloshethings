@@ -1,6 +1,6 @@
 # Coding Standards
 
-**Purpose:** Next.js 15 App Router + strict TypeScript conventions for SoloSheThings codebase.
+**Purpose:** Next.js 16 App Router + strict TypeScript conventions for SoloSheThings codebase.
 
 ## Non-Negotiables
 

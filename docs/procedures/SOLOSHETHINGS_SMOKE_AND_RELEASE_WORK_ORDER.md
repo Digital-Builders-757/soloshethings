@@ -27,8 +27,7 @@ Run the core app checks against the current code.
 - `/signup`
 - `/dashboard`
 - `/profile`
-- `/contact`
-- `/contact-us`
+- `/contact` (marketing contact lives here; there is no `/contact-us` route)
 - any other route that is part of the current MVP flow
 
 **What to verify:**
@@ -48,8 +47,7 @@ Make sure the docs still describe the real product.
 
 **Source docs:**
 - `docs/DOCUMENTATION_INDEX.md`
-- `docs/WORK_ORDER.md`
-- `docs/procedures/README.md`
+- `docs/procedures/README.md` (work queue entry point; there is no separate `docs/WORK_ORDER.md`)
 - `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`
 - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - `docs/proof/MVP_SMOKE_CHECKLIST.md`
@@ -172,7 +170,7 @@ Fix only what is clearly failing or regressing. Keep the scope on the current MV
 
 ### Prompt 2, docs sync
 
-Read `docs/DOCUMENTATION_INDEX.md`, `docs/WORK_ORDER.md`, `docs/procedures/README.md`, `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`, and `docs/procedures/IMPLEMENTATION_ROADMAP.md`.
+Read `docs/DOCUMENTATION_INDEX.md`, `docs/procedures/README.md`, `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`, and `docs/procedures/IMPLEMENTATION_ROADMAP.md`.
 
 Make sure the docs still tell the truth about the current SoloSHEThings state:
 - queue order matches reality
@@ -213,4 +211,3 @@ Keep it minimal and shippable.
 - `docs/procedures/PRE_PUSH_CHECKLIST.md`
 - `docs/procedures/RELEASE_PROCEDURE.md`
 - `docs/DOCUMENTATION_INDEX.md`
-- `docs/WORK_ORDER.md`

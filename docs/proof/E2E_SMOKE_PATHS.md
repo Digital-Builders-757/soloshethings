@@ -492,15 +492,13 @@ AND wp_post_slug = '<post-slug>';
 
 ## Smoke Test Execution
 
-### Manual Execution
+### Manual execution (current MVP gate)
 
-**Before Each Deployment:**
-1. Run all 5 smoke test paths manually
-2. Document results (pass/fail for each step)
-3. Fix any failures before deploying
-4. Re-test after fixes
+**Before each deployment**, treat [MVP_SMOKE_CHECKLIST.md](./MVP_SMOKE_CHECKLIST.md) as the **release gate** for what ships today (auth, dashboard, profile, blog fallbacks, build hygiene). Walk sections **A–D** (and **G** for lint/typecheck/build), on **mobile and desktop** breakpoints as described there.
 
-### Automated Execution (Playwright)
+The five Playwright paths below are a **mixed** document: Path 1 (blog read) is relevant when `WP_URL` is set; Path 2’s trial UI is **not** in the app yet; Paths 3–5 target **future** billing, community posts, and saved posts. Do **not** block MVP release on those paths until the features exist—use them as backlog automation targets.
+
+### Automated execution (Playwright)
 
 **Setup:**
 ```bash
@@ -522,9 +520,9 @@ npx playwright test tests/smoke/
     npx playwright test tests/smoke/ --reporter=html
 ```
 
-**Block Deployment on Failure:**
-- Configure CI/CD to fail build if smoke tests fail
-- Require all paths to pass before merge
+**Block deployment on failure (when tests exist):**
+- Configure CI/CD to fail if the **checked-in** Playwright smoke suite fails
+- For the **current** MVP, also require `npm run lint`, `npm run typecheck`, and `npm run build`, plus the manual checklist above
 
 ## Test Data Requirements
 
@@ -562,15 +560,20 @@ TEST_USER_SUBSCRIBED=subscribed@example.com
 TEST_USER_OTHER=other@example.com
 ```
 
-## Smoke Test Checklist
+## Smoke test checklist
 
-Before deployment:
+**MVP (shippable today)** — before deployment:
 
-- [ ] Path 1: Anonymous user reads blog post - ✅ Pass
-- [ ] Path 2: Signup → Profile → Trial Read Limit - ✅ Pass
-- [ ] Path 3: Subscribe → Unlock Full Access - ✅ Pass
-- [ ] Path 4: Upload Photo to Post with Privacy - ✅ Pass
-- [ ] Path 5: Save WP Post → View Saved List - ✅ Pass
+- [ ] [MVP_SMOKE_CHECKLIST.md](./MVP_SMOKE_CHECKLIST.md) sections **A–D** pass (auth boundaries, dashboard, profile, critical failures)
+- [ ] **G:** `npm run lint`, `npm run typecheck`, `npm run build` pass
+- [ ] Spot-check **A–D** at ~375px, ~768px, and ~1280px widths
+
+**Future / full product** (when features land — do not treat as MVP blockers until then):
+
+- [ ] Path 2: Signup → profile → trial read limit (needs trial UI + enforcement)
+- [ ] Path 3: Subscribe → full access (needs Stripe checkout in app)
+- [ ] Path 4: Upload photo to post / avatar (needs community post flow)
+- [ ] Path 5: Save WP post → saved list (needs `/saved` UX)
 
 ## Failure Response
 

@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
+// Pin workspace root so Next doesn't pick a parent directory when multiple lockfiles exist (see Next.js lockfile warning).
+const projectRoot = __dirname;
+
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: projectRoot,
+  turbopack: {
+    root: projectRoot,
+  },
   images: {
     remotePatterns: [
       {

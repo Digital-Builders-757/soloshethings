@@ -752,6 +752,22 @@ Next Steps:
 - Consider adding WordPress domain to `next.config.ts` remotePatterns for full image optimization
 - Monitor build performance with Next.js 16
 
+#### 2026-05-06 - Catch-up §5 smoke/release docs + Next workspace root
+
+**Status:** ✅ VERIFIED (automated gates)
+
+**Description:**
+- Completed catch-up batch 5: MVP smoke verification (HTTP redirect + build sanity), documentation sync (MVP vs future E2E paths, `/api/revalidate`, contact route, queue references), and release-prep notes (`PRE_PUSH_CHECKLIST` Docker caveat for `supabase db diff`).
+- Pinned Next.js workspace root in `next.config.ts` (`outputFileTracingRoot`, `turbopack.root`) to silence wrong-root warnings when multiple lockfiles exist up-tree.
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build` pass locally
+- Unauthenticated `GET /dashboard` → redirect to `/login?redirectTo=/dashboard` (production server)
+
+**Next Steps:**
+- Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
+- Run `supabase db diff` where Docker / CLI is available
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS

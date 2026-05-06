@@ -4,7 +4,7 @@
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** May 5, 2026
+**Last Updated:** May 6, 2026
 
 ---
 
@@ -19,7 +19,9 @@
 
 **Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
 
-**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — steps **1–4** are implemented; **§5** is smoke, docs sync, and release prep.
+**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — items **1–5** completed for the May 2026 smoke + release milestone.
+
+**Execution queue vs phase roadmap:** The catch-up roadmap is the **current shipping order**. The phase percentages below (design system %, page implementation, etc.) are the **longer product roadmap**; they can lag behind or diverge from catch-up work without contradiction—use catch-up for “what we do next,” phases for “what the full product blueprint still contains.”
 
 ---
 
@@ -325,13 +327,13 @@ Use the Design System components to build all pages with real functionality.
 **Last Completed:**
 - ✅ Phase 1: Backend Foundation (100%)
 - ✅ Phase 1: WordPress Editorial Layer (100%)
-- ✅ Catch-up **1–4** (`SOLOSHETHINGS_CATCHUP_ROADMAP.md`): auth + dashboard, shell polish, site polish/performance, launch hardening — **in code** (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes)
+- ✅ Catch-up **1–5** (`SOLOSHETHINGS_CATCHUP_ROADMAP.md`): includes smoke verification, docs sync, and release prep (May 2026)
 - 🚧 Phase 2: Design System - Core Components (50%)
 
 **Next Steps:**
-1. Run catch-up **§5**: `docs/proof/MVP_SMOKE_CHECKLIST.md`, keep `docs/proof/E2E_SMOKE_PATHS.md` honest vs the live app, `docs/procedures/PRE_PUSH_CHECKLIST.md`, then release per `RELEASE_PROCEDURE.md`
-2. Continue Phase 2 design system items (feedback, trust/safety, empty state)
-3. Resume Phase 3 page implementation when priorities allow
+1. Continue Phase 2 design system items (feedback, trust/safety, empty state)
+2. Resume Phase 3 page implementation when priorities allow
+3. Re-run `docs/proof/MVP_SMOKE_CHECKLIST.md` before demos or production pushes
 
 ### Quick Start Commands
 

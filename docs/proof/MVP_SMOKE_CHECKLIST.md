@@ -222,6 +222,6 @@ These are expected MVP limitations, not bugs:
 
 ---
 
-**Last Updated:** 2026-05-05  
+**Last Updated:** 2026-05-06  
 **Maintainer:** Development Team
 
