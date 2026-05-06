@@ -18,9 +18,9 @@ const publicNavLinks = [
 ];
 
 const authNavLinks = [
-  { href: "/dashboard", label: "Account home" },
-  { href: "/profile", label: "Profile" },
-  { href: "/submit", label: "Submit" },
+  { href: "/dashboard", label: "My dashboard" },
+  { href: "/profile", label: "My profile" },
+  { href: "/submit", label: "Submit story" },
 ];
 
 export async function SiteHeader() {
@@ -32,6 +32,7 @@ export async function SiteHeader() {
       publicLinks={publicNavLinks}
       authLinks={authNavLinks}
       isAuthenticated={isAuthenticated}
+      accountHint={user?.email ?? undefined}
       showStickyNav={true}
     />
   );

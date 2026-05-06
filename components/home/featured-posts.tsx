@@ -26,7 +26,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) {
     return (
       <section className="bg-white py-24">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto shell-inline">
           <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
           <p className="text-center text-muted-foreground">No posts available at the moment.</p>
         </div>
@@ -43,7 +43,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
 
   return (
     <section className="bg-white py-24">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto shell-inline">
         <SectionHeader eyebrow="Curated for you" title="SHE Stories" />
 
         <div className={`grid gap-8 ${gridCols}`}>

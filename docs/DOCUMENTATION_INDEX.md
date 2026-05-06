@@ -116,7 +116,7 @@ Workflow documentation and step-by-step processes.
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, and rollback steps
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
-- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Current execution order for the next auth/dashboard and app-polish batches
+- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–4** shipped in app; **§5** = smoke, docs sync, release prep)
 - **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
 - **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
 - **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness
@@ -261,8 +261,10 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-04-16  
+**Last Updated:** 2026-05-05  
 **Maintainer:** Development Team
+
+**Recent sync:** Catch-up items **1–4** in `procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` are reflected in app code (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes). Next execution step on that roadmap is **§5** (smoke, docs sync, release prep).
 
 ---
 

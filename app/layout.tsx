@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Rokkitt } from "next/font/google"
 import "./globals.css"
 
@@ -15,6 +15,13 @@ export const metadata: Metadata = {
   keywords: ["solo travel", "female travelers", "travel blog", "women travel", "travel community"],
 }
 
+/** Enables `env(safe-area-inset-*)` for notched devices when used with `shell-inline` / layout padding. */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${rokkitt.variable} font-sans antialiased`} suppressHydrationWarning>{children}</body>
+      <body
+        className={`${rokkitt.variable} font-sans antialiased min-h-dvh overflow-x-clip`}
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   )
 }

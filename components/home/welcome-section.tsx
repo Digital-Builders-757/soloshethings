@@ -36,7 +36,7 @@ const storyCards = [
 export function WelcomeSection() {
   return (
     <PatternSection tone="cream" patternTop className="py-16 md:py-24" id="stories">
-      <div className="container mx-auto px-6 pt-10 md:pt-16">
+      <div className="container mx-auto shell-inline pt-8 md:pt-12 lg:pt-14">
         <div className="flex flex-col gap-5 md:max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a14b24]">
             Real stories from solo SHEs

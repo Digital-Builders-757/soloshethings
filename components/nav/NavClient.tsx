@@ -13,10 +13,18 @@ type NavLink = {
   label: string
 }
 
+function isRouteActive(pathname: string, href: string) {
+  if (pathname === href) return true
+  if (href === "/") return false
+  return pathname.startsWith(`${href}/`)
+}
+
 type NavClientProps = {
   publicLinks: NavLink[]
   authLinks?: NavLink[]
   isAuthenticated: boolean
+  /** Shown subtly when signed in (e.g. email) — from server `getUser()`, no stale client session. */
+  accountHint?: string
   showStickyNav?: boolean
 }
 
@@ -24,6 +32,7 @@ export function NavClient({
   publicLinks,
   authLinks = [],
   isAuthenticated,
+  accountHint,
   showStickyNav = true,
 }: NavClientProps) {
   const pathname = usePathname()
@@ -33,7 +42,7 @@ export function NavClient({
   useEffect(() => {
     if (!showStickyNav) return
 
-    const handleScroll = () => setIsScrolled(window.scrollY > 72)
+    const handleScroll = () => setIsScrolled(window.scrollY > 56)
     handleScroll()
 
     window.addEventListener("scroll", handleScroll)
@@ -49,19 +58,29 @@ export function NavClient({
         aria-label="Your account"
         className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-2 border-l border-[#ead8c2] pl-4 lg:gap-x-3 lg:pl-5"
       >
+        {accountHint ? (
+          <span
+            className="hidden max-w-[11rem] truncate text-xs font-medium text-[#6d5849] lg:block"
+            title={accountHint}
+          >
+            {accountHint}
+          </span>
+        ) : null}
         {authLinks.map((link) => {
-          const isActive = pathname === link.href
+          const isActive = isRouteActive(pathname, link.href)
+          const isDashboard = link.href === '/dashboard'
           return (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "whitespace-nowrap rounded-full px-1.5 py-1 text-sm font-semibold transition-colors",
+                'whitespace-nowrap rounded-full px-1.5 py-1 text-sm font-semibold transition-colors',
                 isActive
-                  ? "text-[#e34b16] underline decoration-[#e34b16]/40 decoration-2 underline-offset-4"
-                  : "text-[#3a3a3a] hover:text-[#e34b16]"
+                  ? 'text-[#e34b16] underline decoration-[#e34b16]/40 decoration-2 underline-offset-4'
+                  : 'text-[#3a3a3a] hover:text-[#e34b16]',
+                !isActive && isDashboard && 'bg-[#fffaf0] px-2.5 ring-1 ring-[#ead8c2]/90 ring-offset-1 ring-offset-white'
               )}
-              aria-current={isActive ? "page" : undefined}
+              aria-current={isActive ? 'page' : undefined}
             >
               {link.label}
             </Link>
@@ -77,9 +96,14 @@ export function NavClient({
     return (
       <div className="border-t border-[#ead8c2] pt-5">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a14b24]">Your account</p>
+        {accountHint ? (
+          <p className="mt-2 truncate text-xs font-medium text-[#6d5849]" title={accountHint}>
+            {accountHint}
+          </p>
+        ) : null}
         <div className="mt-3 flex flex-col gap-2">
           {authLinks.map((link) => {
-            const isActive = pathname === link.href
+            const isActive = isRouteActive(pathname, link.href)
             return (
               <Link
                 key={link.href}
@@ -120,19 +144,22 @@ export function NavClient({
   return (
     <>
       <header className="relative z-40 border-b border-[#ead8c2] bg-white/95 backdrop-blur">
-        <div className="container mx-auto hidden grid-cols-[auto_1fr_auto] items-center gap-6 px-6 py-5 lg:grid lg:gap-8">
-          <Link href="/" className="leading-none text-[#e34b16]">
-            <span className="block font-serif text-[1.9rem] font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_2px_0_#7a331b]">
+        <div className="container mx-auto hidden grid-cols-[auto_1fr_auto] items-center gap-3 py-3 shell-inline lg:grid lg:gap-5 xl:gap-6">
+          <Link href="/" className="min-w-0 shrink-0 leading-none text-[#e34b16]">
+            <span className="block font-serif text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_2px_0_#7a331b]">
               SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
             </span>
           </Link>
 
-          <nav className="flex min-w-0 items-center justify-center gap-5 xl:gap-7" aria-label="Main navigation">
+          <nav
+            className="flex min-w-0 w-full items-center justify-center gap-3 overflow-x-auto [scrollbar-width:none] sm:gap-4 md:gap-5 xl:gap-7 [&::-webkit-scrollbar]:hidden"
+            aria-label="Main navigation"
+          >
             {publicLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
+                className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#7a331b] transition-colors hover:text-[#e34b16] sm:text-sm sm:tracking-[0.14em]"
               >
                 {link.label}
               </Link>
@@ -144,7 +171,7 @@ export function NavClient({
           </div>
         </div>
 
-        <div className="container mx-auto flex items-center justify-between px-6 py-4 lg:hidden">
+        <div className="container mx-auto flex min-h-12 items-center justify-between py-2.5 shell-inline lg:hidden">
           <Link href="/" className="leading-none text-[#e34b16]">
             <span className="block font-serif text-xl font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_1px_0_#7a331b]">
               SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
@@ -162,8 +189,8 @@ export function NavClient({
         </div>
 
         {isMobileMenuOpen && (
-          <div className="border-t border-[#ead8c2] bg-white lg:hidden">
-            <nav className="container mx-auto flex flex-col gap-5 px-6 py-6" aria-label="Mobile navigation">
+          <div className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-[#ead8c2] bg-white lg:hidden">
+            <nav className="container mx-auto flex flex-col gap-4 py-5 shell-inline" aria-label="Mobile navigation">
               {publicLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -203,22 +230,22 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed inset-x-0 top-0 z-50 hidden border-b border-[#ead8c2] bg-white/95 shadow-[0_16px_50px_rgba(122,51,27,0.12)] backdrop-blur transition-all duration-300 lg:block",
+            "fixed inset-x-0 top-0 z-50 hidden border-b border-[#ead8c2] bg-white/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_16px_50px_rgba(122,51,27,0.12)] backdrop-blur transition-all duration-300 lg:block",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"
         >
-          <div className="container mx-auto flex items-center justify-between gap-6 px-6 py-3.5">
-            <Link href="/" className="font-serif text-lg font-bold uppercase tracking-[0.08em] text-[#7a331b]">
+          <div className="container mx-auto flex items-center justify-between gap-3 py-2.5 shell-inline lg:gap-5">
+            <Link href="/" className="min-w-0 shrink-0 font-serif text-base font-bold uppercase tracking-[0.08em] text-[#7a331b] lg:text-lg">
               SOLO <span className="italic text-[#e34b16]">SHE</span> THINGS
             </Link>
 
-            <div className="flex min-w-0 flex-1 items-center justify-center gap-5">
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-3 overflow-x-auto [scrollbar-width:none] md:gap-5 [&::-webkit-scrollbar]:hidden">
               {publicLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
+                  className="shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#7a331b] transition-colors hover:text-[#e34b16] xl:text-xs xl:tracking-[0.14em]"
                 >
                   {link.label}
                 </Link>

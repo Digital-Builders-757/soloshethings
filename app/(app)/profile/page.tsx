@@ -14,14 +14,14 @@ export default async function ProfilePage() {
   const user = await getUser()
 
   if (!user) {
-    redirect('/login')
+    redirect('/login?redirectTo=/profile')
   }
 
   const profile = await getProfileWithBoundedRepair(user.id, user.email)
 
   if (!profile) {
-    return <ProfileErrorFallback context="profile" />
+    return <ProfileErrorFallback context="profile" userEmail={user.email} />
   }
 
-  return <ProfileForm profile={profile} />
+  return <ProfileForm key={profile.updated_at} profile={profile} />
 }

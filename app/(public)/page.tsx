@@ -8,7 +8,7 @@ import { AboutPreview } from "@/components/home/about-preview"
 export default async function HomePage() {
   return (
     <>
-      <main className="overflow-hidden">
+      <main className="min-w-0 overflow-x-clip">
         <HeroSection />
         <WelcomeSection />
         <CommunityCTA />

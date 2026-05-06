@@ -8,7 +8,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-white">
       <Banner />
       <SiteHeader />
       <PublicLayoutClient>{children}</PublicLayoutClient>

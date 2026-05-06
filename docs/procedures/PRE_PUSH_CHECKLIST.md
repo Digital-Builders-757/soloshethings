@@ -6,7 +6,7 @@
 
 ```bash
 # Run all mandatory checks (stop on first failure)
-npm run type-check && \
+npm run typecheck && \
 npm run lint && \
 npm run build && \
 supabase db diff --schema public && \
@@ -19,7 +19,7 @@ echo "✅ All checks passed"
 
 **Command:**
 ```bash
-npm run type-check
+npm run typecheck
 ```
 
 **Must Pass:**
@@ -227,7 +227,7 @@ Copy this into your PR description:
 - [ ] Bug fix description
 
 ## Pre-Push Checks
-- [x] `npm run type-check` passed
+- [x] `npm run typecheck` passed
 - [x] `npm run lint` passed
 - [x] `npm run build` passed
 - [x] `supabase db diff` shows expected changes (or no changes)
@@ -276,7 +276,7 @@ Copy this into your PR description:
 
 ```bash
 # 1. Type check
-npm run type-check || exit 1
+npm run typecheck || exit 1
 
 # 2. Lint
 npm run lint || exit 1
@@ -302,7 +302,7 @@ echo "✅ All checks passed - ready to push"
 ## One-Liner (Fastest)
 
 ```bash
-npm run type-check && npm run lint && npm run build && echo "✅ Ready to push"
+npm run typecheck && npm run lint && npm run build && echo "✅ Ready to push"
 ```
 
 ## When to Stop
@@ -345,7 +345,7 @@ npm run type-check && npm run lint && npm run build && echo "✅ Ready to push"
 
 ```bash
 # Full verification (use /verify command)
-npm run build && npm run lint && npm run type-check
+npm run build && npm run lint && npm run typecheck
 
 # Schema verification
 supabase db diff --schema public

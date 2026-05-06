@@ -4,7 +4,7 @@
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** January 27, 2025
+**Last Updated:** May 5, 2026
 
 ---
 
@@ -19,7 +19,7 @@
 
 **Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
 
-**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` (auth + dashboard foundation first, then the site polish/performance pass and launch hardening).
+**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — steps **1–4** are implemented; **§5** is smoke, docs sync, and release prep.
 
 ---
 
@@ -325,20 +325,19 @@ Use the Design System components to build all pages with real functionality.
 **Last Completed:**
 - ✅ Phase 1: Backend Foundation (100%)
 - ✅ Phase 1: WordPress Editorial Layer (100%)
+- ✅ Catch-up **1–4** (`SOLOSHETHINGS_CATCHUP_ROADMAP.md`): auth + dashboard, shell polish, site polish/performance, launch hardening — **in code** (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes)
 - 🚧 Phase 2: Design System - Core Components (50%)
 
 **Next Steps:**
-1. Read `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`
-2. Fix auth session handoff and redirect behavior
-3. Polish the dashboard shell and navigation for logged-in users
-4. Then return to the remaining design system items (feedback, trust/safety, empty state)
-5. Resume Phase 3 page implementation after the catch-up queue is closed
+1. Run catch-up **§5**: `docs/proof/MVP_SMOKE_CHECKLIST.md`, keep `docs/proof/E2E_SMOKE_PATHS.md` honest vs the live app, `docs/procedures/PRE_PUSH_CHECKLIST.md`, then release per `RELEASE_PROCEDURE.md`
+2. Continue Phase 2 design system items (feedback, trust/safety, empty state)
+3. Resume Phase 3 page implementation when priorities allow
 
 ### Quick Start Commands
 
 **To resume development:**
 ```bash
-cd "C:\Users\young\OneDrive\Desktop\Project Files\SoloSHEThings"
+cd "path-to/SoloSHEThings"   # Your clone, e.g. Desktop\Project Files\SoloSHEThings
 npm run dev
 # Visit http://localhost:3000
 ```

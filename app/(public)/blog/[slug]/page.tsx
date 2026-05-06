@@ -71,11 +71,11 @@ export default async function BlogPostPage({ params }: Props) {
   const author = post._embedded?.author?.[0]?.name || "Solo SHE Things";
 
   return (
-    <main className="min-h-screen py-16 px-4">
-      <div className="max-w-4xl mx-auto">
+    <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip">
+      <div className="mx-auto max-w-4xl">
         <article>
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-brand-orange">
+            <h1 className="mb-4 text-balance break-words font-serif text-3xl font-bold leading-tight text-brand-orange md:text-4xl lg:text-5xl">
               {post.title.rendered}
             </h1>
             <div className="text-neutral-600 mb-6">

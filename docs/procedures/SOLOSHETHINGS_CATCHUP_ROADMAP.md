@@ -2,6 +2,8 @@
 
 **Last updated:** May 5, 2026
 
+**Execution status:** Steps **1–4** below are **implemented** in the repo (see each linked work order’s *Implementation notes*). **Active:** step **5** — smoke tests, docs sync, and release prep.
+
 This is the current execution order for the next SoloSHEThings improvement batches.
 Use it with `docs/procedures/IMPLEMENTATION_ROADMAP.md` and the contracts in `docs/contracts/`.
 
@@ -78,7 +80,8 @@ The site should be stronger at:
 **Current surfaces:**
 - `app/(app)/dashboard/page.tsx`
 - `app/(app)/layout.tsx`
-- `components/nav/header.tsx`
+- `components/layout/SiteHeader.tsx`
+- `components/nav/NavClient.tsx`
 
 **Focus areas:**
 - dashboard hierarchy and welcome state

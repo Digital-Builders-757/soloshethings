@@ -175,6 +175,11 @@ const config: Config = {
           '0%, 100%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.05)' },
         },
+        /** Calmer than default `pulse` — route loading skeletons */
+        'pulse-soft': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.72' },
+        },
       },
       animation: {
         "gradient-shift": "gradient-shift 8s ease infinite",
@@ -189,6 +194,7 @@ const config: Config = {
         'gentle-rise': 'gentle-rise 1s ease-out forwards',
         'gentle-glow': 'gentle-glow 2s ease-in-out infinite',
         'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
+        'pulse-soft': 'pulse-soft 2.25s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },

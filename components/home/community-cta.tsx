@@ -19,7 +19,7 @@ export function CommunityCTA() {
       <div className="pointer-events-none absolute -left-20 top-10 h-52 w-52 rounded-full bg-[#f7e8be]/10 blur-3xl" aria-hidden="true" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-[#fab642]/20 blur-3xl" aria-hidden="true" />
 
-      <div className="container relative z-10 mx-auto px-6">
+      <div className="container relative z-10 mx-auto shell-inline">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start lg:gap-14 xl:gap-16">
           {/* Left: copy + pillars + CTAs */}
           <div className="max-w-xl lg:max-w-none lg:pt-1">

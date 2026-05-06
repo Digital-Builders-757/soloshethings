@@ -10,6 +10,10 @@
 
 **Environment:** Test on **Vercel Production** (or preview) and once locally if possible.
 
+**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
+
+**Device matrix (manual):** Re-run sections **A–D** at **~375px wide** (mobile), **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible.
+
 ---
 
 ## A) Anonymous User Tests
@@ -19,6 +23,8 @@
 - [ ] Page loads without errors
 - [ ] No console errors
 - [ ] Navigation visible
+- [ ] At ~375px viewport width: **no horizontal scroll** on the main column (hero + first sections)
+- [ ] Optional: slow 3G — confirm a **loading skeleton** appears briefly (route `loading.tsx`) instead of a long blank paint
 
 ### ✅ Test 2: Blog List (No WP_URL)
 - [ ] Visit `/blog`
@@ -58,11 +64,13 @@
 
 ### ✅ Test 7: Profile Edit
 - [ ] Go to `/profile`
-- [ ] Edit username, full name, or bio
+- [ ] Edit username, full name, **visibility (privacy)**, or bio
 - [ ] Click "Save changes"
-- [ ] Should see success message
+- [ ] Should see success message (**"Profile saved."**); list should refresh server data (`router.refresh` + keyed form)
 - [ ] Hard refresh `/profile` page
 - [ ] Values should persist (not reset)
+
+**Edge recovery:** `updateProfile` can **INSERT** a `profiles` row if none exists when Save runs (rare—normally the page only shows the form after `getProfileWithBoundedRepair` succeeds). Useful if the row disappears between render and submit or via a future entry point.
 
 ### ✅ Test 8: Profile Persistence
 - [ ] Edit profile on `/profile`
@@ -76,10 +84,10 @@
 ## C) Auth Boundary Tests
 
 ### ✅ Test 9: Logout Flow
-- [ ] While logged in, click "Sign Out" button
+- [ ] While logged in, click **Sign out** (header)
 - [ ] Should redirect to `/login?signedOut=1` (banner may confirm sign-out)
 - [ ] Session should be cleared
-- [ ] Header should show "Sign In" instead of account links
+- [ ] Header should show **Sign In** / **Get Started** instead of **My dashboard** / **My profile** links
 
 ### ✅ Test 10: Protected Route After Logout
 - [ ] After logout, try to visit `/dashboard`
@@ -111,16 +119,17 @@
 
 **Test:**
 - [ ] Login with the test user
-- [ ] Should attempt profile repair (bounded, max 1 retry)
-- [ ] Profile should be recreated automatically
-- [ ] Should land on dashboard successfully
-- [ ] **MUST NOT create redirect loop**
-- [ ] **MUST NOT retry indefinitely**
+- [ ] **Bounded repair (server):** `getProfileWithBoundedRepair` runs **one** insert attempt per page load (plus read-after-write race handling)—not an infinite loop
+- [ ] If repair succeeds: land on **dashboard** with data; `/profile` loads the form
+- [ ] **MUST NOT** create an automatic **redirect loop** between `/dashboard` and `/profile`
 
-**If Repair Fails:**
-- [ ] Dashboard and `/profile` show **ProfileErrorFallback**: static message, **no redirects** between pages
-- [ ] Primary escape: **Sign out & try again**; also **Contact support** and **Back to home**
-- [ ] Login repair failure: user is signed out and sees a safe form error (no retry loop in-session)
+**If repair fails (both app surfaces):**
+- [ ] Dashboard and `/profile` show **`ProfileErrorFallback`**: static message, signed-in **email** shown, **no redirects** between pages
+- [ ] **Refresh page** (`router.refresh`) and **Hard reload** (`location.reload()`) on `ProfileErrorFallback` run a fresh server load (bounded repair runs again **once** for that request)
+- [ ] **Sign out & try again**, **Contact support**, **Back to home** all work
+- [ ] Login repair failure path: user is signed out and sees a safe form error (no in-session retry loop)
+
+**Note:** If the fallback is showing, the user **cannot** reach the profile form until repair succeeds or an admin fixes the row—by design avoids UX loops.
 
 ---
 
@@ -189,7 +198,8 @@
 
 **Optional but Recommended:**
 - ✅ Tests E-F pass (edge cases and WordPress)
-- ✅ Tests run on both local and Vercel production
+- ✅ Tests run on **local and Vercel production**
+- ✅ Sections A–D spot-checked at **mobile (~375px)**, **tablet (~768px)**, and **desktop (~1280px)** viewports
 
 ---
 
@@ -212,6 +222,6 @@ These are expected MVP limitations, not bugs:
 
 ---
 
-**Last Updated:** 2025-01-27  
+**Last Updated:** 2026-05-05  
 **Maintainer:** Development Team
 

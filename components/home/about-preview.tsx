@@ -5,7 +5,7 @@ import { PatternSection } from "@/components/ui/pattern-section"
 export function AboutPreview() {
   return (
     <PatternSection tone="white" patternTop className="py-16 md:py-24">
-      <div className="container mx-auto px-6 pt-10 md:pt-16">
+      <div className="container mx-auto shell-inline pt-10 md:pt-16">
         <div className="grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
           <div className="relative overflow-hidden rounded-[2rem] border border-[#efdac1] bg-[#f2dfc3] shadow-[0_30px_70px_rgba(122,51,27,0.1)]">
             <div className="relative aspect-[4/5]">

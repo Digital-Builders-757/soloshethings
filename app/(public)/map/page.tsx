@@ -4,13 +4,12 @@
  */
 export default function MapPage() {
   return (
-    <main className="min-h-screen bg-white py-16">
-      <div className="container mx-auto px-6">
-        <div className="max-w-7xl mx-auto">
+    <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip bg-white">
+      <div className="mx-auto max-w-7xl">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
             Explore
           </p>
-          <h1 className="font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl mb-2">
+          <h1 className="mb-2 text-balance break-words font-serif text-3xl font-bold text-brand-orange md:text-4xl lg:text-5xl">
             Safe Spots on the Map
           </h1>
           <div className="mb-8 h-px w-16 bg-brand-orange" />
@@ -33,7 +32,6 @@ export default function MapPage() {
           <div className="mt-8 aspect-video rounded-xl border border-border bg-brand-cream flex items-center justify-center">
             <p className="text-muted-foreground">Map will be implemented here in Phase 2</p>
           </div>
-        </div>
       </div>
     </main>
   );

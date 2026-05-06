@@ -225,3 +225,20 @@ Only fix what materially improves the launch readiness of the app. Keep the chan
 - `docs/procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md`
 - `docs/proof/QA_CHECKLIST.md`
 - `docs/proof/E2E_SMOKE_PATHS.md`
+
+---
+
+## Implementation notes (Batch 3 — launch hardening)
+
+**Profile & account**
+
+- `app/actions/profile.ts`: single `getUser`/`createClient` import; `revalidatePath('/', 'layout')` after successful save so the shell can pick up layout-scoped data if needed.
+- `components/profile/profile-form.tsx`: `useFormStatus` submit state (“Saving…”); `min-w-0` / `overflow-x-clip`; accessible success/error regions (`role`, `aria-live`); shorter success copy; `autoComplete` on fields.
+- `app/(app)/profile/loading.tsx`: skeleton aligned with the profile form card.
+- `components/profile/profile-error-fallback.tsx`: clearer copy about **one bounded repair per load**; `role="alert"`; cross-links between **dashboard** and **profile** so users are never marooned.
+- `components/profile/retry-page-button.tsx`: **Refresh** (`router.refresh()`) for a new server render + bounded repair, plus **Hard reload** as an escape hatch.
+
+**Route boundaries**
+
+- `app/(app)/places/[slug]/page.tsx` and `app/(app)/submit/page.tsx`: server `getUser()` + `redirect('/login?redirectTo=…')` in addition to middleware (defense in depth, matches AUTH_CONTRACT).
+- `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`: middleware example query param corrected to **`redirectTo`** (matches `middleware.ts` and the login form).

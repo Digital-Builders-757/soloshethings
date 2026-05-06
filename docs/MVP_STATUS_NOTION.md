@@ -15,6 +15,9 @@
 - **Visual Design Enhancement** - Gradient border system, enhanced brand color vibrancy ✅
 - **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
 - **Auth + public/private surfaces (2026-05)** - Middleware and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live middleware prefixes.
+- **Site shell + perceived performance (2026-05)** - Shared safe-area gutters (`shell-inline`, `shell-pb-safe`), section vertical rhythm (`section-y`), route-level `loading.tsx` skeletons, hero `min-height` tied to `--shell-chrome-height`, nav overflow scroll on tight desktop widths.
+- **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
+- **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
 ### 🚧 In Progress
 

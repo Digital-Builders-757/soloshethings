@@ -27,16 +27,20 @@ export function LogoutButton({
     setIsLoading(true)
     try {
       const result = await logout()
-      if (result?.error) {
+      if ('error' in result) {
         console.error('Logout error:', result.error)
-        setIsLoading(false)
         router.push('/login')
         router.refresh()
+        return
       }
+      router.push('/login?signedOut=1')
       router.refresh()
-    } catch {
+    } catch (error) {
+      console.error('Logout error:', error)
       router.push('/login')
       router.refresh()
+    } finally {
+      setIsLoading(false)
     }
   }
 

@@ -16,8 +16,12 @@ export function getPostAuthRedirectPath(role: user_role | null | undefined): str
   }
 }
 
+/** Paths that must never be post-login redirects (avoid loops back to auth). */
+const AUTH_PATH_PREFIXES = ['/login', '/signup'] as const
+
 /**
  * Only allow same-origin relative paths (prevents open redirects).
+ * Rejects login/signup so `redirectTo` query cannot bounce users after sign-in.
  */
 export function getSafeInternalRedirectPath(
   path: string | null | undefined,
@@ -27,5 +31,11 @@ export function getSafeInternalRedirectPath(
   const trimmed = path.trim()
   if (!trimmed.startsWith('/') || trimmed.startsWith('//')) return fallback
   if (trimmed.includes('://')) return fallback
+  const lower = trimmed.split('?')[0]?.split('#')[0]?.toLowerCase() ?? trimmed
+  for (const prefix of AUTH_PATH_PREFIXES) {
+    if (lower === prefix || lower.startsWith(`${prefix}/`)) {
+      return fallback
+    }
+  }
   return trimmed
 }
