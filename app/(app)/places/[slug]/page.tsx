@@ -3,13 +3,23 @@
  * Middleware enforces session; this page repeats getUser() per AUTH_CONTRACT.
  */
 
+import Image from 'next/image'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
+import { ReportPostForm } from '@/components/safety/report-post-form'
+import { getCommunityPostDetail } from '@/lib/queries/community-posts'
 import { getUser } from '@/lib/supabase/server'
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+function formatPublishedAt(value: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  }).format(new Date(value))
 }
 
 export default async function PlaceDetailPage({ params }: Props) {
@@ -20,8 +30,17 @@ export default async function PlaceDetailPage({ params }: Props) {
     redirect(`/login?redirectTo=${encodeURIComponent(`/places/${slug}`)}`)
   }
 
+  const post = await getCommunityPostDetail(slug)
+
+  if (!post || post.status !== 'published') {
+    notFound()
+  }
+
+  const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
+  const isOwnPost = post.author_id === user.id
+
   return (
-    <main className="section-y shell-inline mx-auto min-w-0 max-w-4xl flex-1 overflow-x-clip py-10 sm:py-14">
+    <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-[#6d5849]">
         <Link href="/dashboard" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
           My dashboard
@@ -29,47 +48,109 @@ export default async function PlaceDetailPage({ params }: Props) {
         <span className="mx-2 text-[#d9c4a8]" aria-hidden>
           /
         </span>
-        <span className="font-medium text-[#7a331b]">Place</span>
+        <Link href="/submit" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+          My stories
+        </Link>
+        <span className="mx-2 text-[#d9c4a8]" aria-hidden>
+          /
+        </span>
+        <span className="font-medium text-[#7a331b]">Story detail</span>
       </nav>
 
-      <div className="min-w-0">
-        <div className="surface-card mb-8 rounded-xl p-6 text-[#7a331b]">
-          <p className="text-sm font-semibold leading-relaxed">
-            Signed-in only. Full community posts and place pages will load here in a future release.
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Slug: <span className="font-mono text-[#3a3a3a]">{slug}</span>
-          </p>
-        </div>
-
-        <article>
-          <header className="mb-8">
-            <h1 className="mb-4 text-balance font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl md:text-5xl">
-              Community place or story
-            </h1>
-            <div className="mb-6 text-muted-foreground">
-              <span>Preview</span>
-              <span className="mx-2" aria-hidden>
-                •
-              </span>
-              <time dateTime="2026-01-27">January 27, 2026</time>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <article className="min-w-0">
+          <header className="editorial-card-strong overflow-hidden p-6 sm:p-8 lg:p-10">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
+              <span>{post.is_public ? 'Public member story' : 'Private story'}</span>
+              <span aria-hidden>•</span>
+              <span>Published</span>
             </div>
-            <div className="mb-8 aspect-video rounded-xl bg-muted" />
+
+            <h1 className="mt-4 text-balance font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl md:text-5xl">
+              {post.title}
+            </h1>
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6d5849]">
+              <span>
+                By <span className="font-semibold text-[#7a331b]">{authorName}</span>
+              </span>
+              <span aria-hidden>•</span>
+              <time dateTime={post.created_at}>{formatPublishedAt(post.created_at)}</time>
+              {post.images.length > 0 ? (
+                <>
+                  <span aria-hidden>•</span>
+                  <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
+                </>
+              ) : null}
+            </div>
+
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-[#6d5849] sm:text-base">
+              This detail page is now the real view for community stories. If something here breaks trust or safety,
+              members can send a private report for review.
+            </p>
           </header>
 
-          <div className="prose prose-neutral max-w-none text-muted-foreground">
-            <p>
-              When live, this page will show the full post. Public listings stay on marketing routes;
-              member-only detail stays behind auth and RLS.
-            </p>
-          </div>
+          {post.images.length > 0 ? (
+            <section className="mt-6 grid gap-4 sm:grid-cols-2" aria-label="Story photos">
+              {post.images.map((image, index) => (
+                <div key={image.id} className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-[#ead8c2] bg-[#f6efe4] shadow-sm">
+                  {image.signedUrl ? (
+                    <Image
+                      src={image.signedUrl}
+                      alt={image.alt_text ?? `${post.title} photo ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-[#6d5849]">
+                      Photo preview unavailable right now.
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          ) : null}
+
+          <section className="editorial-card mt-6 p-6 sm:p-8">
+            <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Story</h2>
+            <div className="prose prose-neutral mt-4 max-w-none whitespace-pre-wrap break-words text-[#4f4034]">
+              {post.content}
+            </div>
+          </section>
         </article>
 
-        <nav className="mt-12 border-t border-border pt-8" aria-label="Secondary">
-          <Link href="/collections" className="text-sm font-semibold text-[#e34b16] hover:text-[#c74010]">
-            ← Browse collections
-          </Link>
-        </nav>
+        <aside className="space-y-5 lg:sticky lg:top-24">
+          {isOwnPost ? (
+            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your post</p>
+              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">You are viewing your own story</h2>
+              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
+                Reporting is meant for someone else&apos;s public post. You can keep editing and cleanup work in future community tools.
+              </p>
+            </div>
+          ) : post.is_public ? (
+            <ReportPostForm postId={post.id} path={`/places/${post.id}`} postTitle={post.title} />
+          ) : (
+            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Privacy</p>
+              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Private stories stay scoped</h2>
+              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
+                This post is private, so reporting from the shared story detail surface is not enabled.
+              </p>
+            </div>
+          )}
+
+          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">What changed</p>
+            <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
+              <li>• Story detail now renders saved community post content instead of a placeholder shell.</li>
+              <li>• Public stories can be privately reported into the existing moderation table.</li>
+              <li>• Duplicate open reports from the same account are blocked.</li>
+            </ul>
+          </div>
+        </aside>
       </div>
     </main>
   )

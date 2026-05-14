@@ -5,6 +5,7 @@
  */
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { SubmitForm } from '@/components/submit/submit-form'
@@ -76,11 +77,20 @@ export default async function SubmitPage() {
                       </div>
 
                       <div>
-                        <h3 className="font-serif text-xl font-semibold text-[#7a331b]">{post.title}</h3>
+                        <h3 className="font-serif text-xl font-semibold text-[#7a331b]">
+                          <Link href={`/places/${post.id}`} className="transition hover:text-[#e34b16]">
+                            {post.title}
+                          </Link>
+                        </h3>
                         <p className="mt-2 line-clamp-4 text-sm leading-6 text-[#6d5849]">{post.content}</p>
                       </div>
 
-                      <p className="text-xs text-muted-foreground">Saved {formatSubmittedAt(post.created_at)}</p>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-xs text-muted-foreground">Saved {formatSubmittedAt(post.created_at)}</p>
+                        <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                          Open story detail →
+                        </Link>
+                      </div>
                     </div>
                   </article>
                 ))}

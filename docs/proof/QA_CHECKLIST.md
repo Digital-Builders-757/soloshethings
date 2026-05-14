@@ -83,9 +83,11 @@ curl -I https://app.com/blog
 - [ ] User can upload images (multiple)
 - [ ] User can set privacy level (public/private)
 - [ ] Post submission succeeds
-- [ ] Post appears in community feed
+- [ ] Recent submissions link to the post detail page
 - [ ] Post detail page loads correctly
 - [ ] Images display correctly
+- [ ] Public post detail exposes a report form for non-authors
+- [ ] Report submission succeeds and blocks duplicate open reports
 
 **Verification:**
 ```sql
