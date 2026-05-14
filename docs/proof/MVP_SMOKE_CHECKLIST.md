@@ -159,6 +159,7 @@
 
 ### ✅ Test 16: Owner Edit, Photo Management, and Archive Controls
 - [ ] Open one of your own published stories from `/submit` or `/places`
+- [ ] If you opened from a filtered `/submit` view, confirm story detail breadcrumbs point back to that same owner-history context
 - [ ] Update the title, story text, or visibility from the owner controls card
 - [ ] Confirm the detail page refreshes with the saved values
 - [ ] Remove one existing story photo from the owner photo manager and confirm it disappears after refresh
@@ -171,6 +172,7 @@
 - [ ] Restore that story from `/submit`
 - [ ] Confirm `/submit` shows the restored confirmation and owner controls are available again
 - [ ] Confirm the current `/submit` filter/search context stays intact after the restore refresh
+- [ ] Archive from story detail after opening via `/submit` and confirm you land back in that same filtered `/submit` context with the archived confirmation visible
 - [ ] Confirm the restored story is reachable again from `/places`, `/places/[id]`, and `/saved`
 
 ### ✅ Test 17: Session Expiry

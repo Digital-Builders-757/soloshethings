@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -272,6 +273,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                 const coverImage = post.images[0]?.signedUrl ?? null
                 const isOwnPost = post.author_id === user.id
                 const latestReport = latestReportsByPostId.get(post.id)
+                const detailHref = buildStoryDetailHref(post.id, currentPath)
 
                 return (
                   <article key={post.id} className="editorial-card overflow-hidden">
@@ -333,7 +335,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                       </div>
 
                       <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                        <Link href={`/places/${post.id}`} className="transition hover:text-[#e34b16]">
+                        <Link href={detailHref} className="transition hover:text-[#e34b16]">
                           {post.title}
                         </Link>
                       </h2>
@@ -348,7 +350,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                       <div className="mt-6 space-y-3">
                         <SaveCommunityPostButton postId={post.id} path={currentPath} initialSaved variant="card" />
                         <div className="flex flex-wrap items-center gap-4">
-                          <Link href={`/places/${post.id}`} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                          <Link href={detailHref} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                             Open story →
                           </Link>
                           {latestReport ? (

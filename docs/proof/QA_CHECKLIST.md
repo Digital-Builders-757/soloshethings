@@ -90,9 +90,11 @@ curl -I https://app.com/blog
 - [ ] Story owner can remove an existing story image from the detail page
 - [ ] Story owner can add more story images from the detail page without exceeding the 5-photo limit
 - [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
+- [ ] Opening a story from `/places`, `/saved`, `/reports`, or `/submit` carries that source context into the detail breadcrumb
 - [ ] `/submit` exposes owner-only search and quick filters for all, published, archived, public, private, and photo stories
 - [ ] Story owner can restore an archived post from `/submit` and it returns to `/places`, `/places/[id]`, and `/saved`
 - [ ] Restoring from a filtered `/submit` view preserves the current owner history search/filter context
+- [ ] Archiving from story detail after entering from `/submit` returns to the same filtered owner-history view with confirmation state
 - [ ] Community feed featured filter only shows `is_featured = true` stories
 - [ ] Saved stories featured filter only shows saved posts with `is_featured = true`
 - [ ] Featured stories render a visible featured tag on `/places`, `/saved`, and `/places/[id]`

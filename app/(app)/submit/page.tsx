@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 
 import { RestoreCommunityPostButton } from '@/components/submit/restore-community-post-button'
 import { SubmitForm } from '@/components/submit/submit-form'
+import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { getRecentPostsForAuthor } from '@/lib/queries/community-posts'
 import { getUser } from '@/lib/supabase/server'
 
@@ -90,6 +91,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
   })
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All stories'
   const showFilteredEmptyState = recentPosts.length > 0 && filteredPosts.length === 0
+  const currentPath = buildSubmitHref(activeView, query)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-5xl flex-1 overflow-x-clip">
@@ -232,6 +234,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                   <div className="mt-6 space-y-4">
                     {filteredPosts.map((post) => {
                       const isArchived = post.status === 'archived'
+                      const detailHref = buildStoryDetailHref(post.id, currentPath)
 
                       return (
                         <article key={post.id} className="overflow-hidden rounded-3xl border border-[#ead8c2] bg-white shadow-sm">
@@ -269,7 +272,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                                 <p>
                                   Archived stories stay off community surfaces until you restore them. Restoring puts them back into the feed, detail, and saved surfaces.
                                 </p>
-                                <RestoreCommunityPostButton postId={post.id} path={buildSubmitHref(activeView, query)} />
+                                <RestoreCommunityPostButton postId={post.id} path={currentPath} />
                               </div>
                             ) : null}
 
@@ -280,7 +283,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                                   Browse feed
                                 </Link>
                                 {!isArchived ? (
-                                  <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                                  <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                                     Manage story →
                                   </Link>
                                 ) : (

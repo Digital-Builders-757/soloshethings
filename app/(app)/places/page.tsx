@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { getCommunityFeedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -142,6 +143,7 @@ export default async function PlacesPage({ searchParams }: Props) {
 
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All stories'
   const showFilteredEmptyState = posts.length > 0 && filteredPosts.length === 0
+  const currentPath = buildPlacesHref(activeView, query, page)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -299,6 +301,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const isOwnPost = post.author_id === user.id
                 const coverImage = post.images[0]?.signedUrl ?? null
                 const latestReport = latestReportsByPostId.get(post.id)
+                const detailHref = buildStoryDetailHref(post.id, currentPath)
 
                 return (
                   <article key={post.id} className="editorial-card overflow-hidden">
@@ -364,7 +367,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                       </div>
 
                       <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                        <Link href={`/places/${post.id}`} className="transition hover:text-[#e34b16]">
+                        <Link href={detailHref} className="transition hover:text-[#e34b16]">
                           {post.title}
                         </Link>
                       </h2>
@@ -380,7 +383,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                         <div className="space-y-2">
                           <SaveCommunityPostButton
                             postId={post.id}
-                            path={buildPlacesHref(activeView, query, page)}
+                            path={currentPath}
                             initialSaved={savedPostIds.has(post.id)}
                           />
                           <p className="text-xs text-[#6d5849]">
@@ -393,7 +396,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                           <Link href={latestReport ? '/reports' : '/saved'} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
                             {latestReport ? 'Track report' : 'Saved list'}
                           </Link>
-                          <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                          <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                             Open story →
                           </Link>
                         </div>

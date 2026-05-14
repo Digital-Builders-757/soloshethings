@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { Badge } from '@/components/ui/badge'
+import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
 import { getUser } from '@/lib/supabase/server'
 import type { report_status } from '@/types/database'
@@ -100,6 +101,7 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All reports'
   const showFilteredEmptyState = reports.length > 0 && filteredReports.length === 0
+  const currentPath = buildReportsHref(activeView, query)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -241,7 +243,7 @@ export default async function ReportsPage({ searchParams }: Props) {
             <section className="mt-6 space-y-4">
               {filteredReports.map((report) => {
                 const postTitle = report.post?.title ?? 'Story no longer available'
-                const postHref = report.post?.id ? `/places/${report.post.id}` : null
+                const postHref = report.post?.id ? buildStoryDetailHref(report.post.id, currentPath) : null
 
                 return (
                   <article key={report.id} className="editorial-card p-5 sm:p-6">

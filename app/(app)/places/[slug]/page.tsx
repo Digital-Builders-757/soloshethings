@@ -11,6 +11,7 @@ import { SaveCommunityPostButton } from '@/components/cards/save-community-post-
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
+import { getCommunityReturnLink } from '@/lib/community-navigation'
 import { getCommunityPostDetail } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -18,6 +19,7 @@ import { getUser } from '@/lib/supabase/server'
 
 type Props = {
   params: Promise<{ slug: string }>
+  searchParams?: Promise<{ returnTo?: string }>
 }
 
 function formatPublishedAt(value: string) {
@@ -40,8 +42,9 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
   }
 }
 
-export default async function PlaceDetailPage({ params }: Props) {
+export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const { slug } = await params
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
 
   const user = await getUser()
   if (!user) {
@@ -56,6 +59,8 @@ export default async function PlaceDetailPage({ params }: Props) {
 
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
   const isOwnPost = post.author_id === user.id
+  const returnLink = getCommunityReturnLink(resolvedSearchParams?.returnTo)
+  const submitReturnTo = returnLink.href.split('?')[0] === '/submit' ? returnLink.href : null
   const savedPostIds = await getSavedCommunityPostIds(user.id, [post.id])
   const latestReportsByPostId = await getLatestMemberPostReportsForPosts(user.id, [post.id])
   const latestReport = latestReportsByPostId.get(post.id)
@@ -71,8 +76,8 @@ export default async function PlaceDetailPage({ params }: Props) {
         <span className="mx-2 text-[#d9c4a8]" aria-hidden>
           /
         </span>
-        <Link href="/places" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-          Browse stories
+        <Link href={returnLink.href} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+          {returnLink.label}
         </Link>
         <span className="mx-2 text-[#d9c4a8]" aria-hidden>
           /
@@ -196,6 +201,7 @@ export default async function PlaceDetailPage({ params }: Props) {
                 title={post.title}
                 content={post.content}
                 isPublic={post.is_public}
+                submitReturnTo={submitReturnTo}
               />
               <OwnerPostImageManager
                 key={`${post.updated_at}-${post.images.map((image) => image.id).join(',')}`}

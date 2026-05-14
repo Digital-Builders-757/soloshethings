@@ -1,6 +1,7 @@
 'use client'
 
 import { archiveCommunityPost, updateCommunityPost } from '@/app/actions/community-posts'
+import { appendQueryParam } from '@/lib/community-navigation'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
@@ -11,6 +12,7 @@ type OwnerCommunityPostManagerProps = {
   title: string
   content: string
   isPublic: boolean
+  submitReturnTo?: string | null
 }
 
 function SaveChangesButton() {
@@ -41,7 +43,7 @@ function ArchiveButton() {
   )
 }
 
-export function OwnerCommunityPostManager({ postId, path, title, content, isPublic }: OwnerCommunityPostManagerProps) {
+export function OwnerCommunityPostManager({ postId, path, title, content, isPublic, submitReturnTo }: OwnerCommunityPostManagerProps) {
   const router = useRouter()
   const [updateState, updateAction] = useFormState(updateCommunityPost, null)
   const [archiveState, archiveAction] = useFormState(archiveCommunityPost, null)
@@ -55,12 +57,16 @@ export function OwnerCommunityPostManager({ postId, path, title, content, isPubl
     }
   }, [router, updateState?.success])
 
+  const archiveRedirectPath = useMemo(() => {
+    return submitReturnTo ? appendQueryParam(submitReturnTo, 'storyArchived', '1') : '/submit?storyArchived=1'
+  }, [submitReturnTo])
+
   useEffect(() => {
     if (archiveState?.archived) {
-      router.push('/submit?storyArchived=1')
+      router.push(archiveRedirectPath)
       router.refresh()
     }
-  }, [archiveState?.archived, router])
+  }, [archiveRedirectPath, archiveState?.archived, router])
 
   const helperText = useMemo(() => {
     if (draftIsPublic) {
