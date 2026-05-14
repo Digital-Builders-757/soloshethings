@@ -10,6 +10,7 @@ import { notFound, redirect } from 'next/navigation'
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
+import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
 import { getCommunityPostDetail } from '@/lib/queries/community-posts'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -139,14 +140,23 @@ export default async function PlaceDetailPage({ params }: Props) {
           </div>
 
           {isOwnPost ? (
-            <OwnerCommunityPostManager
-              key={post.updated_at}
-              postId={post.id}
-              path={`/places/${post.id}`}
-              title={post.title}
-              content={post.content}
-              isPublic={post.is_public}
-            />
+            <>
+              <OwnerCommunityPostManager
+                key={post.updated_at}
+                postId={post.id}
+                path={`/places/${post.id}`}
+                title={post.title}
+                content={post.content}
+                isPublic={post.is_public}
+              />
+              <OwnerPostImageManager
+                key={`${post.updated_at}-${post.images.map((image) => image.id).join(',')}`}
+                postId={post.id}
+                path={`/places/${post.id}`}
+                title={post.title}
+                images={post.images}
+              />
+            </>
           ) : post.is_public ? (
             <ReportPostForm postId={post.id} path={`/places/${post.id}`} postTitle={post.title} />
           ) : (
@@ -165,6 +175,7 @@ export default async function PlaceDetailPage({ params }: Props) {
               <li>• Story detail now renders saved community post content instead of a placeholder shell.</li>
               <li>• Owners can now edit title, story copy, and visibility from their story detail page.</li>
               <li>• Owners can archive a story to remove it from community surfaces without fake delete copy.</li>
+              <li>• Owners can now remove old photos and add new ones from the story detail page.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
             </ul>
           </div>

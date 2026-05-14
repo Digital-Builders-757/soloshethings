@@ -22,6 +22,8 @@ type OwnerCommunityPostState = {
   success?: boolean
   archived?: boolean
   message?: string
+  uploadedCount?: number
+  removedImageId?: string
 }
 
 function parsePrivacy(raw: FormDataEntryValue | null) {
@@ -67,6 +69,43 @@ async function getOwnedCommunityPost(postId: string, userId: string) {
   }
 
   return { post, lookupError: null }
+}
+
+async function getOwnedPostImages(postId: string) {
+  const supabase = await createClient()
+  const { data: images, error } = await supabase
+    .from('post_images')
+    .select('id, storage_path, order')
+    .eq('post_id', postId)
+    .order('order', { ascending: true })
+
+  if (error) {
+    console.error('Owned post images lookup error:', error)
+    return { images: null, lookupError: 'Could not check this story\'s photos right now. Please try again.' }
+  }
+
+  return { images: images ?? [], lookupError: null }
+}
+
+async function getOwnedPostImage(postId: string, imageId: string) {
+  const supabase = await createClient()
+  const { data: image, error } = await supabase
+    .from('post_images')
+    .select('id, storage_path')
+    .eq('id', imageId)
+    .eq('post_id', postId)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Owned post image lookup error:', error)
+    return { image: null, lookupError: 'Could not check this story image right now. Please try again.' }
+  }
+
+  if (!image) {
+    return { image: null, lookupError: 'That story image is not available from your account.' }
+  }
+
+  return { image, lookupError: null }
 }
 
 function revalidateCommunityPostSurfaces(postId: string, path?: string) {
@@ -262,6 +301,178 @@ export async function updateCommunityPost(
   return {
     success: true,
     message: `Updated "${title}".`,
+  }
+}
+
+export async function addImagesToCommunityPost(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to manage story photos.' }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+  const imageFiles = formData
+    .getAll('images')
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0)
+
+  if (!postId) {
+    return { error: 'Missing story details for this photo upload.' }
+  }
+
+  if (imageFiles.length === 0) {
+    return { error: 'Choose at least one image to upload.' }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status !== 'published') {
+    return { error: 'Archived stories stay read-only for now.' }
+  }
+
+  const { images: existingImages, lookupError: imagesLookupError } = await getOwnedPostImages(postId)
+  if (imagesLookupError || !existingImages) {
+    return { error: imagesLookupError ?? 'Could not check this story\'s photos right now. Please try again.' }
+  }
+
+  if (existingImages.length + imageFiles.length > POST_IMAGE_MAX_FILES) {
+    return { error: `You can keep up to ${POST_IMAGE_MAX_FILES} images on a story.` }
+  }
+
+  const nextOrder = existingImages.reduce((maxOrder, image) => Math.max(maxOrder, image.order), -1) + 1
+
+  for (const file of imageFiles) {
+    const fileValidationError = validatePostImageFile(file)
+    if (fileValidationError) {
+      return { error: fileValidationError }
+    }
+  }
+
+  const supabase = await createClient()
+  const uploadedPaths: string[] = []
+
+  try {
+    const imageRows: Array<{
+      post_id: string
+      image_url: string
+      storage_path: string
+      alt_text: string | null
+      order: number
+    }> = []
+
+    for (const [index, file] of imageFiles.entries()) {
+      const storagePath = buildPostImageStoragePath(user.id, post.id, file)
+      const { data: publicUrlData } = supabase.storage.from(POST_IMAGE_BUCKET).getPublicUrl(storagePath)
+      const { error: uploadError } = await supabase.storage.from(POST_IMAGE_BUCKET).upload(storagePath, file, {
+        cacheControl: '3600',
+        contentType: file.type,
+        upsert: false,
+      })
+
+      if (uploadError) {
+        console.error('Add post image upload error:', uploadError)
+        throw new Error('Could not upload one of your images.')
+      }
+
+      uploadedPaths.push(storagePath)
+      imageRows.push({
+        post_id: post.id,
+        image_url: publicUrlData.publicUrl,
+        storage_path: storagePath,
+        alt_text: null,
+        order: nextOrder + index,
+      })
+    }
+
+    const { error: imageInsertError } = await supabase.from('post_images').insert(imageRows)
+
+    if (imageInsertError) {
+      console.error('Add post image metadata error:', imageInsertError)
+      throw new Error('Could not save your new image details.')
+    }
+
+    revalidateCommunityPostSurfaces(postId, path)
+
+    return {
+      success: true,
+      uploadedCount: imageRows.length,
+      message: `Added ${imageRows.length} photo${imageRows.length === 1 ? '' : 's'} to "${post.title}".`,
+    }
+  } catch (error) {
+    if (uploadedPaths.length > 0) {
+      const { error: cleanupError } = await supabase.storage.from(POST_IMAGE_BUCKET).remove(uploadedPaths)
+      if (cleanupError) {
+        console.error('Add post image cleanup error:', cleanupError)
+      }
+    }
+
+    console.error('Add images to community post exception:', error)
+    return { error: error instanceof Error ? error.message : 'Could not update this story\'s photos right now.' }
+  }
+}
+
+export async function removeImageFromCommunityPost(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to manage story photos.' }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+  const imageId = `${formData.get('imageId') ?? ''}`.trim()
+
+  if (!postId || !imageId) {
+    return { error: 'Missing story image details for this remove action.' }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status !== 'published') {
+    return { error: 'Archived stories stay read-only for now.' }
+  }
+
+  const { image, lookupError: imageLookupError } = await getOwnedPostImage(postId, imageId)
+  if (imageLookupError || !image?.storage_path) {
+    return { error: imageLookupError ?? 'That story image is not available from your account.' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('post_images')
+    .delete()
+    .eq('id', imageId)
+    .eq('post_id', postId)
+
+  if (error) {
+    console.error('Remove post image metadata error:', error)
+    return { error: 'Could not remove this photo right now.' }
+  }
+
+  const { error: storageError } = await supabase.storage.from(POST_IMAGE_BUCKET).remove([image.storage_path])
+  if (storageError) {
+    console.error('Remove post image storage error:', storageError)
+  }
+
+  revalidateCommunityPostSurfaces(postId, path)
+
+  return {
+    success: true,
+    removedImageId: imageId,
+    message: `Removed a photo from "${post.title}".`,
   }
 }
 

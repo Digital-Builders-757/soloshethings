@@ -87,6 +87,8 @@ curl -I https://app.com/blog
 - [ ] Post detail page loads correctly
 - [ ] Images display correctly
 - [ ] Story owner can edit title, content, and visibility from the detail page
+- [ ] Story owner can remove an existing story image from the detail page
+- [ ] Story owner can add more story images from the detail page without exceeding the 5-photo limit
 - [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
 - [ ] Public post detail exposes a report form for non-authors
 - [ ] Report submission succeeds and blocks duplicate open reports

@@ -51,14 +51,14 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               <li>• Title, description, privacy, and optional images save into Supabase now.</li>
               <li>• Images upload server-side with validation and per-user storage paths.</li>
               <li>• Your recent submissions render back here with signed image URLs for verification.</li>
-              <li>• Story detail now includes owner edit and archive controls for published posts.</li>
+              <li>• Story detail now includes owner edit, archive, and photo-management controls for published posts.</li>
             </ul>
           </div>
 
           <div className="editorial-card p-5 sm:p-6">
             <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Recent submissions</h2>
             <p className="mt-2 text-sm leading-6 text-[#6d5849]">
-              A quick confirmation surface for your latest posts, now with a clear handoff into owner controls.
+              A quick confirmation surface for your latest posts, now with a clear handoff into owner controls and photo management.
             </p>
 
             {recentPosts.length === 0 ? (

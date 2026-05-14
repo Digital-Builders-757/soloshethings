@@ -150,10 +150,13 @@
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
-### ✅ Test 16: Owner Edit and Archive Controls
+### ✅ Test 16: Owner Edit, Photo Management, and Archive Controls
 - [ ] Open one of your own published stories from `/submit` or `/places`
 - [ ] Update the title, story text, or visibility from the owner controls card
 - [ ] Confirm the detail page refreshes with the saved values
+- [ ] Remove one existing story photo from the owner photo manager and confirm it disappears after refresh
+- [ ] Add one or more new story photos from the owner photo manager without exceeding the 5-photo limit
+- [ ] Confirm the newly added photos render on the detail page and `/submit` recent submissions surface
 - [ ] Archive that story
 - [ ] Confirm `/submit` shows the archived confirmation and the story is labeled archived
 - [ ] Confirm the archived story is no longer reachable from `/places`, `/places/[id]`, or `/saved`
