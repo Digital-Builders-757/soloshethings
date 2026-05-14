@@ -139,14 +139,17 @@
 - [ ] While logged in, open dashboard in multiple tabs
 - [ ] Edit profile in one tab
 
-### ✅ Test 15: Save and Unsave a Community Story
+### ✅ Test 15: Save, Search, and Filter Community Stories
 - [ ] While logged in, open `/places`
 - [ ] Save a visible community story from a feed card
 - [ ] Open that story detail and confirm the save control renders the saved state
+- [ ] Return to `/places` and use keyword search to find a known story by title, story text, or member name
+- [ ] Toggle the quick views for `Public`, `My stories`, `Saved`, and `With photos` and confirm counts/results update honestly
 - [ ] Visit `/saved` and confirm the story appears there
 - [ ] Remove the save from `/saved`
 - [ ] Refresh `/saved` and confirm the story is gone
 - [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
+- [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
