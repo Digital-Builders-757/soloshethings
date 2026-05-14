@@ -10,6 +10,7 @@ import { getUser } from '@/lib/supabase/server'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All saves' },
+  { value: 'featured', label: 'Featured' },
   { value: 'public', label: 'Public' },
   { value: 'private', label: 'Private' },
   { value: 'mine', label: 'Your stories' },
@@ -69,6 +70,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
   const ownSavedPostsCount = savedPosts.filter((post) => post.author_id === user.id).length
   const publicSavedPostsCount = savedPosts.filter((post) => post.is_public).length
   const privateSavedPostsCount = savedPosts.filter((post) => !post.is_public).length
+  const featuredSavedPostsCount = savedPosts.filter((post) => post.is_featured).length
   const postsWithPhotosCount = savedPosts.filter((post) => post.images.length > 0).length
 
   const filteredPosts = savedPosts.filter((post) => {
@@ -82,6 +84,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
 
     const matchesView =
       activeView === 'all' ||
+      (activeView === 'featured' && post.is_featured) ||
       (activeView === 'public' && post.is_public) ||
       (activeView === 'private' && !post.is_public) ||
       (activeView === 'mine' && post.author_id === user.id) ||
@@ -115,6 +118,9 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {privateSavedPostsCount} private
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {featuredSavedPostsCount} featured
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {ownSavedPostsCount} yours
@@ -266,6 +272,12 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                           <>
                             <span aria-hidden>•</span>
                             <span>Your post</span>
+                          </>
+                        ) : null}
+                        {post.is_featured ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>Featured</span>
                           </>
                         ) : null}
                         {post.images.length > 0 ? (

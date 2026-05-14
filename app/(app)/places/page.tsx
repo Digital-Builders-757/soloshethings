@@ -11,6 +11,7 @@ import { getUser } from '@/lib/supabase/server'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All stories' },
+  { value: 'featured', label: 'Featured' },
   { value: 'public', label: 'Public' },
   { value: 'mine', label: 'My stories' },
   { value: 'saved', label: 'Saved' },
@@ -94,6 +95,7 @@ export default async function PlacesPage({ searchParams }: Props) {
   )
   const ownPostsCount = posts.filter((post) => post.author_id === user.id).length
   const publicPostsCount = posts.filter((post) => post.is_public).length
+  const featuredPostsCount = posts.filter((post) => post.is_featured).length
   const savedPostsCount = posts.filter((post) => savedPostIds.has(post.id)).length
   const postsWithPhotosCount = posts.filter((post) => post.images.length > 0).length
 
@@ -108,6 +110,7 @@ export default async function PlacesPage({ searchParams }: Props) {
 
     const matchesView =
       activeView === 'all' ||
+      (activeView === 'featured' && post.is_featured) ||
       (activeView === 'public' && post.is_public) ||
       (activeView === 'mine' && post.author_id === user.id) ||
       (activeView === 'saved' && savedPostIds.has(post.id)) ||
@@ -137,6 +140,9 @@ export default async function PlacesPage({ searchParams }: Props) {
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {publicPostsCount} public
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {featuredPostsCount} featured
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {ownPostsCount} yours
@@ -297,6 +303,12 @@ export default async function PlacesPage({ searchParams }: Props) {
                           <>
                             <span aria-hidden>•</span>
                             <span>Saved</span>
+                          </>
+                        ) : null}
+                        {post.is_featured ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>Featured</span>
                           </>
                         ) : null}
                         {post.images.length > 0 ? (

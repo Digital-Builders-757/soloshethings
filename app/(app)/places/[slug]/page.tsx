@@ -68,6 +68,12 @@ export default async function PlaceDetailPage({ params }: Props) {
           <header className="editorial-card-strong overflow-hidden p-6 sm:p-8 lg:p-10">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
               <span>{post.is_public ? 'Public member story' : 'Private story'}</span>
+              {post.is_featured ? (
+                <>
+                  <span aria-hidden>•</span>
+                  <span>Featured</span>
+                </>
+              ) : null}
               <span aria-hidden>•</span>
               <span>Published</span>
             </div>
@@ -169,6 +175,16 @@ export default async function PlaceDetailPage({ params }: Props) {
             </div>
           )}
 
+          {post.is_featured ? (
+            <div className="rounded-[1.75rem] border border-[#f4c7a8] bg-[#fff7f0] p-5 shadow-sm sm:p-6">
+              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Featured story</p>
+              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Community-highlighted right now</h2>
+              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
+                This story is marked as featured, so members can now find it faster from both the browse feed and saved list.
+              </p>
+            </div>
+          ) : null}
+
           <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
             <p className="eyebrow text-[0.65rem] tracking-[0.22em]">What changed</p>
             <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
@@ -177,6 +193,7 @@ export default async function PlaceDetailPage({ params }: Props) {
               <li>• Owners can archive a story to remove it from community surfaces without fake delete copy.</li>
               <li>• Owners can now remove old photos and add new ones from the story detail page.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
+              <li>• Featured stories are now visibly tagged across browse, saved, and detail surfaces.</li>
             </ul>
           </div>
         </aside>
