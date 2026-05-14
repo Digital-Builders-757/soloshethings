@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { RestoreCommunityPostButton } from '@/components/submit/restore-community-post-button'
 import { SubmitForm } from '@/components/submit/submit-form'
 import { getRecentPostsForAuthor } from '@/lib/queries/community-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -20,7 +21,7 @@ function formatSubmittedAt(value: string) {
 }
 
 type SubmitPageProps = {
-  searchParams?: Promise<{ storyArchived?: string }>
+  searchParams?: Promise<{ storyArchived?: string; storyRestored?: string }>
 }
 
 export default async function SubmitPage({ searchParams }: SubmitPageProps) {
@@ -41,6 +42,11 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               Story archived. It is now out of the feed, detail, and saved surfaces.
             </div>
           ) : null}
+          {params.storyRestored === '1' ? (
+            <div className="mb-6 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800" role="status">
+              Story restored. It is back in your community surfaces and ready for owner controls again.
+            </div>
+          ) : null}
           <SubmitForm recentPostCount={recentPosts.length} />
         </div>
 
@@ -52,6 +58,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               <li>• Images upload server-side with validation and per-user storage paths.</li>
               <li>• Your recent submissions render back here with signed image URLs for verification.</li>
               <li>• Story detail now includes owner edit, archive, and photo-management controls for published posts.</li>
+              <li>• Archived stories can now be restored from your recent submissions list when you want them live again.</li>
             </ul>
           </div>
 
@@ -102,9 +109,12 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                         </div>
 
                         {isArchived ? (
-                          <p className="rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-3 text-sm text-[#6d5849]">
-                            Archived stories stay off community surfaces for now and cannot be reopened from this pass.
-                          </p>
+                          <div className="space-y-3 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-3 text-sm text-[#6d5849]">
+                            <p>
+                              Archived stories stay off community surfaces until you restore them. Restoring puts them back into the feed, detail, and saved surfaces.
+                            </p>
+                            <RestoreCommunityPostButton postId={post.id} path="/submit" />
+                          </div>
                         ) : null}
 
                         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -117,7 +127,9 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                               <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                                 Manage story →
                               </Link>
-                            ) : null}
+                            ) : (
+                              <span className="text-sm font-semibold text-[#9b7455]">Restore to reopen owner controls</span>
+                            )}
                           </div>
                         </div>
                       </div>

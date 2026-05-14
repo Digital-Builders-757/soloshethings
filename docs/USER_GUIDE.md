@@ -139,7 +139,7 @@ SoloSheThings has five distinct user roles, each with specific capabilities and 
 - ✅ Create community posts (unlimited)
 - ✅ Upload images to posts (multiple images)
 - ✅ Edit own posts
-- ✅ Delete own posts
+- ✅ Archive and restore own community posts
 - ✅ Set post privacy (public/private)
 - ✅ Save WordPress posts
 - ✅ Save community posts
@@ -489,8 +489,8 @@ Next billing: January 15, 2025
 
 **Content Deletion:**
 ```
-"Are you sure you want to delete this post? This action cannot be undone."
-[Delete Post] [Cancel]
+"Archive this story to remove it from community surfaces. You can restore it later from your recent submissions."
+[Archive Story] [Cancel]
 ```
 
 **Privacy Settings:**
@@ -537,6 +537,7 @@ Next billing: January 15, 2025
 3. Publishes post
 4. Post appears in community feed
 5. Other users can view (if public)
+6. Owner can archive from story detail and restore later from `/submit`
 
 ### Moderation Flow
 

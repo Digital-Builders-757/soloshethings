@@ -167,6 +167,9 @@
 - [ ] Archive that story
 - [ ] Confirm `/submit` shows the archived confirmation and the story is labeled archived
 - [ ] Confirm the archived story is no longer reachable from `/places`, `/places/[id]`, or `/saved`
+- [ ] Restore that story from `/submit`
+- [ ] Confirm `/submit` shows the restored confirmation and owner controls are available again
+- [ ] Confirm the restored story is reachable again from `/places`, `/places/[id]`, and `/saved`
 
 ### ✅ Test 17: Session Expiry
 - [ ] Login
@@ -236,7 +239,7 @@ These are expected MVP limitations, not bugs:
 
 - WordPress preview mode may show published content only (Phase 1 limitation)
 - No Stripe subscription yet (explicitly NOT MVP)
-- Community browsing is now live at `/places`, but richer filters, saves, and editing controls are still incomplete
+- Community browsing is now live at `/places`, and owner archive/restore now covers the basic self-service post lifecycle, but richer filters, saves, and editing controls are still incomplete
 - Submit flow now creates community posts, links recent submissions into `/places/[slug]`, and public detail pages expose a lightweight report form backed by the `reports` table
 - Members can now open `/reports` to review their own report history, filter by status, and jump back to the associated story when it is still available
 - Avatar uploads are implemented, but richer avatar management is still incomplete

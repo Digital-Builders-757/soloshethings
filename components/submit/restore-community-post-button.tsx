@@ -1,0 +1,52 @@
+'use client'
+
+import { restoreCommunityPost } from '@/app/actions/community-posts'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useFormState, useFormStatus } from 'react-dom'
+
+type RestoreCommunityPostButtonProps = {
+  postId: string
+  path: string
+}
+
+function RestoreButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815] disabled:pointer-events-none disabled:opacity-60"
+    >
+      {pending ? 'Restoring…' : 'Restore story'}
+    </button>
+  )
+}
+
+export function RestoreCommunityPostButton({ postId, path }: RestoreCommunityPostButtonProps) {
+  const router = useRouter()
+  const [state, action] = useFormState(restoreCommunityPost, null)
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push('/submit?storyRestored=1')
+      router.refresh()
+    }
+  }, [router, state?.success])
+
+  return (
+    <form action={action} className="space-y-3">
+      <input type="hidden" name="postId" value={postId} />
+      <input type="hidden" name="path" value={path} />
+
+      {state?.error ? (
+        <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-3 text-sm text-red-800" role="alert">
+          {state.error}
+        </div>
+      ) : null}
+
+      <RestoreButton />
+    </form>
+  )
+}

@@ -21,6 +21,7 @@ type OwnerCommunityPostState = {
   error?: string
   success?: boolean
   archived?: boolean
+  restored?: boolean
   message?: string
   uploadedCount?: number
   removedImageId?: string
@@ -520,5 +521,52 @@ export async function archiveCommunityPost(
     success: true,
     archived: true,
     message: `Archived "${post.title}".`,
+  }
+}
+
+export async function restoreCommunityPost(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to restore a story.' }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+
+  if (!postId) {
+    return { error: 'Missing story details for this restore action.' }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status === 'published') {
+    return { error: 'This story is already published.' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('community_posts')
+    .update({ status: 'published' })
+    .eq('id', postId)
+    .eq('author_id', user.id)
+
+  if (error) {
+    console.error('Restore community post error:', error)
+    return { error: 'Could not restore this story right now.' }
+  }
+
+  revalidateCommunityPostSurfaces(postId, path)
+
+  return {
+    success: true,
+    restored: true,
+    message: `Restored "${post.title}".`,
   }
 }

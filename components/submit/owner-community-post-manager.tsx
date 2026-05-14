@@ -75,7 +75,7 @@ export function OwnerCommunityPostManager({ postId, path, title, content, isPubl
       <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Manage your story</p>
       <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Edit title, story text, or visibility</h2>
       <p className="mt-3 text-sm leading-6 text-[#6d5849]">
-        This first owner-controls pass updates your saved story details and lets you archive a post when you no longer want it in member surfaces.
+        This owner-controls pass updates your saved story details and lets you archive a post when you no longer want it in member surfaces. Archived stories can now be restored from your recent submissions list.
       </p>
 
       {updateState?.message ? (
@@ -157,7 +157,7 @@ export function OwnerCommunityPostManager({ postId, path, title, content, isPubl
         <input type="hidden" name="path" value={path} />
         <p className="text-sm font-semibold text-[#7a331b]">Need to take this out of circulation?</p>
         <p className="mt-2 text-sm leading-6 text-[#6d5849]">
-          Archiving removes the story from feed, detail, and saved surfaces without pretending it is deleted forever.
+          Archiving removes the story from feed, detail, and saved surfaces without pretending it is deleted forever. If you change your mind later, you can restore it from /submit.
         </p>
         <div className="mt-4">
           <ArchiveButton />
