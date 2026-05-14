@@ -25,6 +25,16 @@ const VIEW_OPTIONS = [
 
 type ViewFilter = (typeof VIEW_OPTIONS)[number]['value']
 
+function normalizePage(value?: string) {
+  const parsed = Number.parseInt(value ?? '1', 10)
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1
+  }
+
+  return Math.min(parsed, 5)
+}
+
 function formatSubmittedAt(value: string) {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
@@ -40,7 +50,7 @@ function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
 }
 
-function buildSubmitHref(view: ViewFilter, query: string) {
+function buildSubmitHref(view: ViewFilter, query: string, page = 1) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -51,11 +61,15 @@ function buildSubmitHref(view: ViewFilter, query: string) {
     params.set('q', query)
   }
 
+  if (page > 1) {
+    params.set('page', String(page))
+  }
+
   return `/submit${params.size > 0 ? `?${params.toString()}` : ''}`
 }
 
 type SubmitPageProps = {
-  searchParams?: Promise<{ storyArchived?: string; storyRestored?: string; q?: string; view?: string }>
+  searchParams?: Promise<{ storyArchived?: string; storyRestored?: string; q?: string; view?: string; page?: string }>
 }
 
 export default async function SubmitPage({ searchParams }: SubmitPageProps) {
@@ -67,6 +81,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
   const params = searchParams ? await searchParams : {}
   const query = normalizeQuery(params.q)
   const activeView = normalizeView(params.view)
+  const page = normalizePage(params.page)
   const recentPosts = await getRecentPostsForAuthor(user.id, 24)
   const counts = {
     published: recentPosts.filter((post) => post.status === 'published').length,
@@ -75,7 +90,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
     private: recentPosts.filter((post) => !post.is_public).length,
     photos: recentPosts.filter((post) => post.images.length > 0).length,
   }
-  const filteredPosts = recentPosts.filter((post) => {
+  const matchingPosts = recentPosts.filter((post) => {
     const matchesQuery =
       query.length === 0 || [post.title, post.content].join(' ').toLowerCase().includes(query.toLowerCase())
 
@@ -89,9 +104,14 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
 
     return matchesQuery && matchesView
   })
+  const pageSize = 8
+  const requestedPostCount = page * pageSize
+  const hasMorePosts = matchingPosts.length > requestedPostCount
+  const filteredPosts = matchingPosts.slice(0, requestedPostCount)
+
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All stories'
-  const showFilteredEmptyState = recentPosts.length > 0 && filteredPosts.length === 0
-  const currentPath = buildSubmitHref(activeView, query)
+  const showFilteredEmptyState = recentPosts.length > 0 && matchingPosts.length === 0
+  const currentPath = buildSubmitHref(activeView, query, page)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-5xl flex-1 overflow-x-clip">
@@ -211,7 +231,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                       return (
                         <Link
                           key={option.value}
-                          href={buildSubmitHref(option.value, query)}
+                          href={buildSubmitHref(option.value, query, 1)}
                           aria-current={isActive ? 'page' : undefined}
                           className={
                             isActive
@@ -231,8 +251,9 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                     No stories match this view yet. Try a different keyword or switch filters to get back to your full submission history.
                   </div>
                 ) : (
-                  <div className="mt-6 space-y-4">
-                    {filteredPosts.map((post) => {
+                  <>
+                    <div className="mt-6 space-y-4">
+                      {filteredPosts.map((post) => {
                       const isArchived = post.status === 'archived'
                       const detailHref = buildStoryDetailHref(post.id, currentPath)
 
@@ -294,8 +315,50 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                           </div>
                         </article>
                       )
-                    })}
-                  </div>
+                      })}
+                    </div>
+
+                    {hasMorePosts ? (
+                      <section className="mt-6 rounded-[1.75rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 sm:p-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#7a331b]">Loaded {filteredPosts.length} submission entries so far</p>
+                            <p className="mt-1 text-sm text-[#6d5849]">
+                              Need older owner history? Load the next set without dropping your current filter handoff.
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3">
+                            {page > 1 ? (
+                              <Link
+                                href={buildSubmitHref(activeView, query, page - 1)}
+                                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                              >
+                                Show fewer
+                              </Link>
+                            ) : null}
+                            <Link
+                              href={buildSubmitHref(activeView, query, page + 1)}
+                              className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                            >
+                              Load older submissions
+                            </Link>
+                          </div>
+                        </div>
+                      </section>
+                    ) : page > 1 ? (
+                      <section className="mt-6 rounded-[1.75rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 sm:p-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-sm text-[#6d5849]">You have reached the oldest story in this filtered submission history.</p>
+                          <Link
+                            href={buildSubmitHref(activeView, query, page - 1)}
+                            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                          >
+                            Show fewer
+                          </Link>
+                        </div>
+                      </section>
+                    ) : null}
+                  </>
                 )}
               </>
             )}

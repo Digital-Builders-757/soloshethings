@@ -149,10 +149,12 @@
 - [ ] Use `Show fewer` and confirm the feed steps back without dropping that context
 - [ ] Visit `/saved` and confirm the story appears there
 - [ ] Use saved-story search or quick filters (for example Public, Private, Your stories, Reported by you, or With photos) and confirm the list updates without leaking hidden stories
+- [ ] If enough saved stories exist, use `Load more saves` and `Show fewer` to confirm the current saved-list context is preserved
 - [ ] Remove the save from `/saved` and confirm the current saved-list search/filter context is preserved after refresh
 - [ ] Refresh `/saved` and confirm the story is gone
 - [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
 - [ ] If you reported the story, confirm `/places`, `/saved`, and `/places/[id]` show the latest report status and link back to `/reports`
+- [ ] Open `/reports` and, if enough report entries exist, use `Load older reports` and `Show fewer` to confirm the current report-history context is preserved
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
@@ -168,6 +170,7 @@
 - [ ] Archive that story
 - [ ] Confirm `/submit` shows the archived confirmation and the story is labeled archived
 - [ ] Use `/submit` search or quick filters (for example Archived, Private, or With photos) to find the story without leaving owner history
+- [ ] If enough owner stories exist, use `Load older submissions` and `Show fewer` to confirm the current owner-history context is preserved
 - [ ] Confirm the archived story is no longer reachable from `/places`, `/places/[id]`, or `/saved`
 - [ ] Restore that story from `/submit`
 - [ ] Confirm `/submit` shows the restored confirmation and owner controls are available again

@@ -105,6 +105,7 @@ curl -I https://app.com/blog
 - [ ] Successful report submission links members to `/reports`
 - [ ] Already-reported stories show the latest member-visible report status on `/places`, `/saved`, and `/places/[id]`
 - [ ] `/reports` lists the signed-in member's own post reports with status filters and story links
+- [ ] `/saved`, `/reports`, and `/submit` each offer load-more / show-fewer controls that preserve the current search and filter context
 
 **Verification:**
 ```sql

@@ -26,6 +26,7 @@ type Props = {
   searchParams?: Promise<{
     q?: string
     view?: string
+    page?: string
   }>
 }
 
@@ -44,6 +45,16 @@ function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
 }
 
+function normalizePage(value?: string) {
+  const parsed = Number.parseInt(value ?? '1', 10)
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1
+  }
+
+  return Math.min(parsed, 5)
+}
+
 function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
   switch (status) {
     case 'resolved':
@@ -57,7 +68,7 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
   }
 }
 
-function buildSavedHref(view: ViewFilter, query: string) {
+function buildSavedHref(view: ViewFilter, query: string, page = 1) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -68,6 +79,10 @@ function buildSavedHref(view: ViewFilter, query: string) {
     params.set('q', query)
   }
 
+  if (page > 1) {
+    params.set('page', String(page))
+  }
+
   const search = params.toString()
   return search ? `/saved?${search}` : '/saved'
 }
@@ -76,6 +91,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
   const activeView = normalizeView(resolvedSearchParams?.view)
+  const page = normalizePage(resolvedSearchParams?.page)
   const user = await getUser()
 
   if (!user) {
@@ -94,7 +110,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
   const reportedSavedPostsCount = savedPosts.filter((post) => latestReportsByPostId.has(post.id)).length
   const postsWithPhotosCount = savedPosts.filter((post) => post.images.length > 0).length
 
-  const filteredPosts = savedPosts.filter((post) => {
+  const matchingPosts = savedPosts.filter((post) => {
     const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
     const matchesQuery =
       query.length === 0 ||
@@ -115,9 +131,14 @@ export default async function SavedPostsPage({ searchParams }: Props) {
     return matchesQuery && matchesView
   })
 
+  const pageSize = 12
+  const requestedPostCount = page * pageSize
+  const hasMorePosts = matchingPosts.length > requestedPostCount
+  const filteredPosts = matchingPosts.slice(0, requestedPostCount)
+
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All saves'
-  const showFilteredEmptyState = savedPosts.length > 0 && filteredPosts.length === 0
-  const currentPath = buildSavedHref(activeView, query)
+  const showFilteredEmptyState = savedPosts.length > 0 && matchingPosts.length === 0
+  const currentPath = buildSavedHref(activeView, query, page)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -236,7 +257,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                 return (
                   <Link
                     key={option.value}
-                    href={buildSavedHref(option.value, query)}
+                    href={buildSavedHref(option.value, query, 1)}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -267,8 +288,9 @@ export default async function SavedPostsPage({ searchParams }: Props) {
               </div>
             </section>
           ) : (
-            <section className="mt-6 grid gap-5 lg:grid-cols-2">
-              {filteredPosts.map((post) => {
+            <>
+              <section className="mt-6 grid gap-5 lg:grid-cols-2">
+                {filteredPosts.map((post) => {
                 const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
                 const coverImage = post.images[0]?.signedUrl ?? null
                 const isOwnPost = post.author_id === user.id
@@ -363,8 +385,46 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                     </div>
                   </article>
                 )
-              })}
-            </section>
+                })}
+              </section>
+
+              {hasMorePosts ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <div>
+                    <p className="text-sm font-semibold text-[#7a331b]">Loaded {filteredPosts.length} saved stories so far</p>
+                    <p className="mt-1 text-sm text-[#6d5849]">
+                      Need more from your library? Load the next set without dropping your current search or filters.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {page > 1 ? (
+                      <Link
+                        href={buildSavedHref(activeView, query, page - 1)}
+                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                      >
+                        Show fewer
+                      </Link>
+                    ) : null}
+                    <Link
+                      href={buildSavedHref(activeView, query, page + 1)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                    >
+                      Load more saves
+                    </Link>
+                  </div>
+                </section>
+              ) : page > 1 ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <p className="text-sm text-[#6d5849]">You have reached the oldest saved story in this filtered view.</p>
+                  <Link
+                    href={buildSavedHref(activeView, query, page - 1)}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                  >
+                    Show fewer
+                  </Link>
+                </section>
+              ) : null}
+            </>
           )}
         </>
       )}

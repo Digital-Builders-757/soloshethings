@@ -21,6 +21,7 @@ type Props = {
   searchParams?: Promise<{
     q?: string
     view?: string
+    page?: string
   }>
 }
 
@@ -39,7 +40,17 @@ function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
 }
 
-function buildReportsHref(view: ViewFilter, query: string) {
+function normalizePage(value?: string) {
+  const parsed = Number.parseInt(value ?? '1', 10)
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1
+  }
+
+  return Math.min(parsed, 5)
+}
+
+function buildReportsHref(view: ViewFilter, query: string, page = 1) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -48,6 +59,10 @@ function buildReportsHref(view: ViewFilter, query: string) {
 
   if (query) {
     params.set('q', query)
+  }
+
+  if (page > 1) {
+    params.set('page', String(page))
   }
 
   const search = params.toString()
@@ -71,6 +86,7 @@ export default async function ReportsPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
   const activeView = normalizeView(resolvedSearchParams?.view)
+  const page = normalizePage(resolvedSearchParams?.page)
   const user = await getUser()
 
   if (!user) {
@@ -85,7 +101,7 @@ export default async function ReportsPage({ searchParams }: Props) {
     dismissed: reports.filter((report) => report.status === 'dismissed').length,
   }
 
-  const filteredReports = reports.filter((report) => {
+  const matchingReports = reports.filter((report) => {
     const title = report.post?.title ?? 'Story no longer available'
     const matchesQuery =
       query.length === 0 ||
@@ -99,9 +115,14 @@ export default async function ReportsPage({ searchParams }: Props) {
     return matchesQuery && matchesView
   })
 
+  const pageSize = 12
+  const requestedReportCount = page * pageSize
+  const hasMoreReports = matchingReports.length > requestedReportCount
+  const filteredReports = matchingReports.slice(0, requestedReportCount)
+
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All reports'
-  const showFilteredEmptyState = reports.length > 0 && filteredReports.length === 0
-  const currentPath = buildReportsHref(activeView, query)
+  const showFilteredEmptyState = reports.length > 0 && matchingReports.length === 0
+  const currentPath = buildReportsHref(activeView, query, page)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -214,7 +235,7 @@ export default async function ReportsPage({ searchParams }: Props) {
                 return (
                   <Link
                     key={option.value}
-                    href={buildReportsHref(option.value, query)}
+                    href={buildReportsHref(option.value, query, 1)}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -240,8 +261,9 @@ export default async function ReportsPage({ searchParams }: Props) {
               </Link>
             </section>
           ) : (
-            <section className="mt-6 space-y-4">
-              {filteredReports.map((report) => {
+            <>
+              <section className="mt-6 space-y-4">
+                {filteredReports.map((report) => {
                 const postTitle = report.post?.title ?? 'Story no longer available'
                 const postHref = report.post?.id ? buildStoryDetailHref(report.post.id, currentPath) : null
 
@@ -295,8 +317,46 @@ export default async function ReportsPage({ searchParams }: Props) {
                     </div>
                   </article>
                 )
-              })}
-            </section>
+                })}
+              </section>
+
+              {hasMoreReports ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <div>
+                    <p className="text-sm font-semibold text-[#7a331b]">Loaded {filteredReports.length} reports so far</p>
+                    <p className="mt-1 text-sm text-[#6d5849]">
+                      Need older moderation updates? Load the next set without dropping your current status view.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {page > 1 ? (
+                      <Link
+                        href={buildReportsHref(activeView, query, page - 1)}
+                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                      >
+                        Show fewer
+                      </Link>
+                    ) : null}
+                    <Link
+                      href={buildReportsHref(activeView, query, page + 1)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                    >
+                      Load older reports
+                    </Link>
+                  </div>
+                </section>
+              ) : page > 1 ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <p className="text-sm text-[#6d5849]">You have reached the oldest report in this filtered history.</p>
+                  <Link
+                    href={buildReportsHref(activeView, query, page - 1)}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                  >
+                    Show fewer
+                  </Link>
+                </section>
+              ) : null}
+            </>
           )}
         </>
       )}
