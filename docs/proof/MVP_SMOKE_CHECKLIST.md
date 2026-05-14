@@ -145,6 +145,8 @@
 - [ ] Open that story detail and confirm the save control renders the saved state
 - [ ] Return to `/places` and use keyword search to find a known story by title, story text, or member name
 - [ ] Toggle the quick views for `Public`, `My stories`, `Saved`, and `With photos` and confirm counts/results update honestly
+- [ ] Use `Load older stories` and confirm the next feed slice keeps the current search/filter context
+- [ ] Use `Show fewer` and confirm the feed steps back without dropping that context
 - [ ] Visit `/saved` and confirm the story appears there
 - [ ] Remove the save from `/saved`
 - [ ] Refresh `/saved` and confirm the story is gone

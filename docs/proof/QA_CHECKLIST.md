@@ -90,6 +90,7 @@ curl -I https://app.com/blog
 - [ ] Story owner can remove an existing story image from the detail page
 - [ ] Story owner can add more story images from the detail page without exceeding the 5-photo limit
 - [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
+- [ ] Community feed can load older stories while preserving the current search/filter state
 - [ ] Public post detail exposes a report form for non-authors
 - [ ] Report submission succeeds and blocks duplicate open reports
 

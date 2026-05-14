@@ -23,6 +23,7 @@ type Props = {
   searchParams?: Promise<{
     q?: string
     view?: string
+    page?: string
   }>
 }
 
@@ -41,7 +42,17 @@ function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
 }
 
-function buildPlacesHref(view: ViewFilter, query: string) {
+function normalizePage(value?: string) {
+  const parsed = Number.parseInt(value ?? '1', 10)
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 1
+  }
+
+  return Math.min(parsed, 5)
+}
+
+function buildPlacesHref(view: ViewFilter, query: string, page = 1) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -52,6 +63,10 @@ function buildPlacesHref(view: ViewFilter, query: string) {
     params.set('q', query)
   }
 
+  if (page > 1) {
+    params.set('page', String(page))
+  }
+
   const search = params.toString()
   return search ? `/places?${search}` : '/places'
 }
@@ -60,6 +75,9 @@ export default async function PlacesPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
   const activeView = normalizeView(resolvedSearchParams?.view)
+  const page = normalizePage(resolvedSearchParams?.page)
+  const pageSize = 24
+  const requestedPostCount = page * pageSize
 
   const user = await getUser()
 
@@ -67,7 +85,9 @@ export default async function PlacesPage({ searchParams }: Props) {
     redirect('/login?redirectTo=/places')
   }
 
-  const posts = await getCommunityFeedPosts(user.id)
+  const feedPosts = await getCommunityFeedPosts(user.id, requestedPostCount + 1)
+  const hasMorePosts = feedPosts.length > requestedPostCount
+  const posts = feedPosts.slice(0, requestedPostCount)
   const savedPostIds = await getSavedCommunityPostIds(
     user.id,
     posts.map((post) => post.id)
@@ -211,7 +231,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 return (
                   <Link
                     key={option.value}
-                    href={buildPlacesHref(option.value, query)}
+                    href={buildPlacesHref(option.value, query, 1)}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -242,8 +262,9 @@ export default async function PlacesPage({ searchParams }: Props) {
               </div>
             </section>
           ) : (
-            <section className="mt-6 grid gap-5 lg:grid-cols-2">
-              {filteredPosts.map((post) => {
+            <>
+              <section className="mt-6 grid gap-5 lg:grid-cols-2">
+                {filteredPosts.map((post) => {
                 const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
                 const isOwnPost = post.author_id === user.id
                 const coverImage = post.images[0]?.signedUrl ?? null
@@ -310,7 +331,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                         <div className="space-y-2">
                           <SaveCommunityPostButton
                             postId={post.id}
-                            path={buildPlacesHref(activeView, query)}
+                            path={buildPlacesHref(activeView, query, page)}
                             initialSaved={savedPostIds.has(post.id)}
                           />
                           <p className="text-xs text-[#6d5849]">
@@ -331,8 +352,46 @@ export default async function PlacesPage({ searchParams }: Props) {
                     </div>
                   </article>
                 )
-              })}
-            </section>
+                })}
+              </section>
+
+              {hasMorePosts ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <div>
+                    <p className="text-sm font-semibold text-[#7a331b]">Loaded {posts.length} stories so far</p>
+                    <p className="mt-1 text-sm text-[#6d5849]">
+                      Need more to browse? Load the next set of older stories without leaving your current filters.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {page > 1 ? (
+                      <Link
+                        href={buildPlacesHref(activeView, query, page - 1)}
+                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                      >
+                        Show fewer
+                      </Link>
+                    ) : null}
+                    <Link
+                      href={buildPlacesHref(activeView, query, page + 1)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                    >
+                      Load older stories
+                    </Link>
+                  </div>
+                </section>
+              ) : page > 1 ? (
+                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                  <p className="text-sm text-[#6d5849]">You have reached the oldest story in this feed slice.</p>
+                  <Link
+                    href={buildPlacesHref(activeView, query, page - 1)}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                  >
+                    Show fewer
+                  </Link>
+                </section>
+              ) : null}
+            </>
           )}
         </>
       )}
