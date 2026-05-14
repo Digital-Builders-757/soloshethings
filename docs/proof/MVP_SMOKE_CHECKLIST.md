@@ -209,8 +209,9 @@ These are expected MVP limitations, not bugs:
 
 - WordPress preview mode may show published content only (Phase 1 limitation)
 - No Stripe subscription yet (explicitly NOT MVP)
-- No community posting yet (explicitly NOT MVP)
-- No avatar uploads yet (explicitly NOT MVP)
+- Broader community browsing and moderation surfaces are still incomplete
+- Submit flow now creates community posts and uploads images, but this page is still the primary verification surface
+- Avatar uploads are implemented, but richer avatar management is still incomplete
 
 ---
 
@@ -222,6 +223,6 @@ These are expected MVP limitations, not bugs:
 
 ---
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-13  
 **Maintainer:** Development Team
 

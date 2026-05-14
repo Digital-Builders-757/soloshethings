@@ -1,11 +1,22 @@
 /**
  * Submit a Spot/Story Page
  *
- * Authenticated route — middleware + server `getUser()` per AUTH_CONTRACT.
+ * Authenticated route, server `getUser()` per AUTH_CONTRACT.
  */
 
-import { getUser } from '@/lib/supabase/server'
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
+
+import { SubmitForm } from '@/components/submit/submit-form'
+import { getRecentPostsForAuthor } from '@/lib/queries/community-posts'
+import { getUser } from '@/lib/supabase/server'
+
+function formatSubmittedAt(value: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
 
 export default async function SubmitPage() {
   const user = await getUser()
@@ -13,92 +24,71 @@ export default async function SubmitPage() {
     redirect('/login?redirectTo=/submit')
   }
 
+  const recentPosts = await getRecentPostsForAuthor(user.id)
+
   return (
-    <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-3xl flex-1 overflow-x-clip">
-      <h1 className="mb-6 font-serif text-3xl font-bold text-[#7a331b] sm:mb-8 sm:text-4xl">Submit a Safe Spot</h1>
+    <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-5xl flex-1 overflow-x-clip">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)] lg:items-start">
+        <SubmitForm recentPostCount={recentPosts.length} />
 
-      <div className="surface-card mb-8 p-5 text-foreground sm:p-6">
-        <p className="text-sm font-semibold leading-relaxed sm:text-base">
-          This route is signed-in only. The full submission flow ships in a later release—form fields below
-          are a layout preview.
-        </p>
-      </div>
-
-      <form className="space-y-6">
-        <div>
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            className="w-full min-w-0 rounded-lg border border-neutral-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-[#e34b16]"
-            placeholder="Name of the safe spot or story title"
-            disabled
-          />
-        </div>
-
-        <div>
-          <label htmlFor="description" className="mb-2 block text-sm font-medium">
-            Description *
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={6}
-            className="w-full min-w-0 rounded-lg border border-neutral-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-[#e34b16]"
-            placeholder="Tell us about this safe spot or share your travel story..."
-            disabled
-          />
-        </div>
-
-        <div>
-          <label htmlFor="images" className="mb-2 block text-sm font-medium">
-            Photos
-          </label>
-          <div className="rounded-lg border-2 border-dashed border-neutral-300 p-6 text-center sm:p-8">
-            <p className="text-neutral-600">Image upload will be implemented in a future release.</p>
-            <p className="mt-2 text-sm text-neutral-500">
-              Privacy: We do not use face recognition on your photos.
-            </p>
+        <aside className="space-y-4">
+          <div className="surface-card p-5 text-foreground sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.2em]">What saves right now</p>
+            <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
+              <li>• Title, description, privacy, and optional images save into Supabase now.</li>
+              <li>• Images upload server-side with validation and per-user storage paths.</li>
+              <li>• Your recent submissions render back here with signed image URLs for verification.</li>
+            </ul>
           </div>
-        </div>
 
-        <div>
-          <label htmlFor="privacy" className="mb-2 block text-sm font-medium">
-            Privacy Setting
-          </label>
-          <select
-            id="privacy"
-            name="privacy"
-            className="w-full min-w-0 rounded-lg border border-neutral-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-[#e34b16]"
-            disabled
-          >
-            <option value="public">Public — authenticated members can see</option>
-            <option value="private">Private — only you can see</option>
-          </select>
-        </div>
+          <div className="editorial-card p-5 sm:p-6">
+            <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Recent submissions</h2>
+            <p className="mt-2 text-sm leading-6 text-[#6d5849]">
+              A quick confirmation surface while the broader community feed is still being built.
+            </p>
 
-        <div className="rounded-lg bg-neutral-50 p-4">
-          <p className="text-sm text-neutral-700">
-            <strong>Privacy note:</strong> Your photos are yours. We do not use face recognition on
-            user-uploaded content. See our{" "}
-            <a href="/privacy" className="font-medium text-[#e34b16] hover:text-[#c74010]">
-              Privacy Policy
-            </a>{" "}
-            for more information.
-          </p>
-        </div>
+            {recentPosts.length === 0 ? (
+              <p className="mt-6 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-4 text-sm text-[#6d5849]">
+                No posts yet. Your first saved spot or story will show up here.
+              </p>
+            ) : (
+              <div className="mt-6 space-y-4">
+                {recentPosts.map((post) => (
+                  <article key={post.id} className="overflow-hidden rounded-3xl border border-[#ead8c2] bg-white shadow-sm">
+                    {post.images[0]?.signedUrl ? (
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f6efe4]">
+                        <Image
+                          src={post.images[0].signedUrl}
+                          alt={post.images[0].alt_text ?? post.title}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 1024px) 28rem, 100vw"
+                          unoptimized
+                        />
+                      </div>
+                    ) : null}
 
-        <button
-          type="submit"
-          className="w-full rounded-lg bg-[#e34b16] px-8 py-3 font-semibold text-white transition-colors hover:bg-[#c74010] disabled:cursor-not-allowed disabled:opacity-50"
-          disabled
-        >
-          Submit (coming soon)
-        </button>
-      </form>
+                    <div className="space-y-3 p-5">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
+                        <span>{post.is_public ? 'Public' : 'Private'}</span>
+                        <span aria-hidden>•</span>
+                        <span>{post.images.length} image{post.images.length === 1 ? '' : 's'}</span>
+                      </div>
+
+                      <div>
+                        <h3 className="font-serif text-xl font-semibold text-[#7a331b]">{post.title}</h3>
+                        <p className="mt-2 line-clamp-4 text-sm leading-6 text-[#6d5849]">{post.content}</p>
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">Saved {formatSubmittedAt(post.created_at)}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
     </main>
   )
 }
