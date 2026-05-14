@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
+import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
@@ -196,6 +197,8 @@ export default async function PlacesPage({ searchParams }: Props) {
           </Link>
         </div>
       </header>
+
+      <CommunitySurfaceNav active="places" />
 
       {posts.length === 0 ? (
         <section className="editorial-card mt-6 p-6 sm:p-8">

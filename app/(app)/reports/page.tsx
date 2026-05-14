@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Badge } from '@/components/ui/badge'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
@@ -169,6 +170,8 @@ export default async function ReportsPage({ searchParams }: Props) {
           </Link>
         </div>
       </header>
+
+      <CommunitySurfaceNav active="reports" />
 
       {reports.length === 0 ? (
         <section className="editorial-card mt-6 p-6 sm:p-8">

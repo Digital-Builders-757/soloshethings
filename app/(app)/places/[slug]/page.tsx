@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
+import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
@@ -84,6 +85,8 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
         </span>
         <span className="font-medium text-[#7a331b]">Story detail</span>
       </nav>
+
+      <CommunitySurfaceNav active={returnLink.active} backHref={returnLink.href} backLabel={returnLink.label} />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <article className="min-w-0">

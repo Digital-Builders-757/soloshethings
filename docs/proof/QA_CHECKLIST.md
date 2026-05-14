@@ -91,6 +91,7 @@ curl -I https://app.com/blog
 - [ ] Story owner can add more story images from the detail page without exceeding the 5-photo limit
 - [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
 - [ ] Opening a story from `/places`, `/saved`, `/reports`, or `/submit` carries that source context into the detail breadcrumb
+- [ ] `/places`, `/saved`, `/reports`, `/submit`, and story detail all expose the shared community workspace nav
 - [ ] `/submit` exposes owner-only search and quick filters for all, published, archived, public, private, and photo stories
 - [ ] Story owner can restore an archived post from `/submit` and it returns to `/places`, `/places/[id]`, and `/saved`
 - [ ] Restoring from a filtered `/submit` view preserves the current owner history search/filter context

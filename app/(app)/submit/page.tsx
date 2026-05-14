@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { RestoreCommunityPostButton } from '@/components/submit/restore-community-post-button'
 import { SubmitForm } from '@/components/submit/submit-form'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
@@ -141,6 +142,8 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               <li>• Archived stories can now be restored from your recent submissions list when you want them live again.</li>
             </ul>
           </div>
+
+          <CommunitySurfaceNav active="submit" />
 
           <div className="editorial-card p-5 sm:p-6">
             <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Recent submissions</h2>

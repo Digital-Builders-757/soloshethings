@@ -1,5 +1,7 @@
 import { getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 
+export type CommunitySurfaceKey = 'places' | 'saved' | 'reports' | 'submit'
+
 export function buildStoryDetailHref(postId: string, returnTo?: string) {
   const safeReturnTo = getSafeInternalRedirectPath(returnTo, '')
 
@@ -11,23 +13,41 @@ export function buildStoryDetailHref(postId: string, returnTo?: string) {
   return `/places/${postId}?${params.toString()}`
 }
 
-export function getCommunityReturnLink(returnTo?: string) {
-  const href = getSafeInternalRedirectPath(returnTo, '/places')
-  const pathname = href.split('?')[0]?.split('#')[0] ?? href
+export function getCommunitySurfaceKey(path?: string): CommunitySurfaceKey {
+  const pathname = (path ?? '').split('?')[0]?.split('#')[0] ?? path ?? ''
 
   if (pathname === '/saved') {
-    return { href, label: 'Saved stories' }
+    return 'saved'
   }
 
   if (pathname === '/reports') {
-    return { href, label: 'Safety reports' }
+    return 'reports'
   }
 
   if (pathname === '/submit') {
-    return { href, label: 'Recent submissions' }
+    return 'submit'
   }
 
-  return { href, label: 'Browse stories' }
+  return 'places'
+}
+
+export function getCommunityReturnLink(returnTo?: string) {
+  const href = getSafeInternalRedirectPath(returnTo, '/places')
+  const active = getCommunitySurfaceKey(href)
+
+  if (active === 'saved') {
+    return { href, label: 'Saved stories', active }
+  }
+
+  if (active === 'reports') {
+    return { href, label: 'Safety reports', active }
+  }
+
+  if (active === 'submit') {
+    return { href, label: 'Recent submissions', active }
+  }
+
+  return { href, label: 'Browse stories', active }
 }
 
 export function appendQueryParam(path: string, key: string, value: string) {
