@@ -5,7 +5,7 @@
 ## Non-Negotiables
 
 1. **Test Before Production** - All changes must be tested in staging/dev before production.
-2. **Database Migrations First** - Apply database migrations before deploying code.
+2. **Database Migrations First** - Applied automatically on branch pushes via GitHub Actions (see Database section below); the app deployment must never depend on schema that is not yet migrated.
 3. **Environment Variables Verified** - Verify all environment variables are set correctly.
 4. **Rollback Plan Ready** - Always have a rollback plan before deploying.
 5. **Monitor After Deploy** - Monitor application after deployment for errors.
@@ -24,7 +24,8 @@
 
 - [ ] Migrations created (if needed)
 - [ ] Migrations tested locally
-- [ ] Migrations applied to staging (if available)
+- [ ] GitHub Actions **Supabase migrations (staging)** workflow succeeded on `develop` (staging Supabase stays in sync on each push)
+- [ ] GitHub Actions **Supabase migrations (production)** workflow succeeded on `main` before or together with verifying the production deployment (migration job must finish successfully)
 - [ ] Backup created (production)
 
 ### Configuration
@@ -49,26 +50,35 @@
 git pull origin main
 
 # 2. Run checks
-npm run build
-npm run lint
-npm run test # When tests are implemented
+pnpm install
+pnpm run build
+pnpm run lint
+pnpm run test # When tests are implemented
 
 # 3. Verify environment variables
 # Check Vercel dashboard for all required variables
 ```
 
-### 2. Database Migration (If Needed)
+### 2. Database Migration (automatic + exceptions)
+
+**Default (automated CI):**
+
+- **`develop` pushes** trigger [`.github/workflows/supabase-migrations-develop.yml`](../../.github/workflows/supabase-migrations-develop.yml)—committed SQL in `supabase/migrations/` is applied to **staging** (Supabase CLI: `supabase link` + `supabase db push`).
+- **`main` pushes** trigger [`.github/workflows/supabase-migrations-main.yml`](../../.github/workflows/supabase-migrations-main.yml)—same for **production**.
+
+See [MIGRATION_PROCEDURE.md](./MIGRATION_PROCEDURE.md) (CI/CD section) for the exact GitHub secret names. Do not commit tokens or database passwords.
+
+**Manual Supabase CLI (break-glass):** If Actions are unavailable or you must apply migrations outside CI:
 
 ```bash
-# Apply migrations to production
-supabase link --project-ref <production-project-ref>
-supabase db push
+supabase link --project-ref <project-ref>
+supabase db push --yes
 
-# Verify migration
-supabase db diff
+# Optional: inspect drift after changes
+supabase db diff --linked --schema public
 ```
 
-**Important:** Apply migrations BEFORE deploying code that depends on them.
+**Important:** Deploy application code only after migrations that block the release are confirmed applied (`db push` / migration history succeeds). **Storage** bucket and dashboard-only SQL (**e.g. [`docs/supabase/storage_setup_dashboard.sql`](../supabase/storage_setup_dashboard.sql)**) remain a **manual per-environment step** when needed—they are not run by migration workflows.
 
 ### 3. Deploy to Vercel
 
@@ -128,9 +138,9 @@ vercel --prod
 ### Build Settings
 
 **Framework Preset:** Next.js  
-**Build Command:** `npm run build`  
+**Build Command:** `pnpm run build`  
 **Output Directory:** `.next`  
-**Install Command:** `npm install`
+**Install Command:** leave default or **`pnpm install`** (Vercel detects [`pnpm-lock.yaml`](../../pnpm-lock.yaml) and uses **pnpm**; avoid mixing with npm lockfiles—this repo relies on **`pnpm-lock.yaml`** only.)
 
 ### Environment Variables
 

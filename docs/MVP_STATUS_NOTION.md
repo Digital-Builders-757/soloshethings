@@ -832,6 +832,21 @@ Next Steps:
 - Add richer restore/delete lifecycle options if owners need more than simple archive and restore
 - Consider pagination or stronger sorting if owner submission history grows beyond the current first-pass list
 
+#### 2026-05-14 - CI: pnpm + automated Supabase migrations (GitHub Actions)
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- **Lint/build CI** aligned with repo installs: `.github/workflows/lint-and-build.yml` uses **pnpm** (`pnpm/action-setup`, `pnpm install --frozen-lockfile`, `pnpm run lint` / `pnpm run build`); stale **`package-lock.json`** removed so **`pnpm-lock.yaml`** is the single lockfile (matches Vercel when `pnpm-lock.yaml` is present).
+- **Hosted migrations:** `.github/workflows/supabase-migrations-develop.yml` (`develop` → staging) and `supabase-migrations-main.yml` (`main` → production) install pinned Supabase CLI **2.98.2**, `supabase link`, `supabase db push --yes`; secrets documented in [`docs/procedures/MIGRATION_PROCEDURE.md`](docs/procedures/MIGRATION_PROCEDURE.md) / [`docs/procedures/RELEASE_PROCEDURE.md`](docs/procedures/RELEASE_PROCEDURE.md).
+- **CLI scaffold:** [`supabase/config.toml`](supabase/config.toml), [`supabase/seed.sql`](supabase/seed.sql), [`supabase/.gitignore`](supabase/.gitignore) committed so CI/local CLI has a baseline config (dashboard-only storage SQL stays manual per [`docs/supabase/storage_setup_dashboard.sql`](docs/supabase/storage_setup_dashboard.sql)).
+
+**Verification:**
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` (Next.js reported existing webpack/OpenTelemetry warnings from dependencies; build exited successfully)
+
+**Next Steps:**
+- Add GitHub Actions secrets (`SUPABASE_ACCESS_TOKEN`, staging/production project refs + DB passwords); confirm first workflow runs succeed after merge/push paths
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS

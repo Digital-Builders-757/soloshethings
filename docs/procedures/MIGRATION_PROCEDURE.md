@@ -10,6 +10,31 @@
 4. **RLS Policies Required** - All new tables must have RLS enabled with policies.
 5. **Regenerate Types** - Always regenerate TypeScript types after schema changes.
 
+## CI/CD (GitHub Actions)
+
+Committed migrations in `supabase/migrations/` can be deployed to hosted Supabase by GitHub Actions (Supabase CLI: `supabase link` → `supabase db push`). Workflows:
+
+| Workflow | Trigger | Remote target |
+|----------|---------|----------------|
+| [.github/workflows/supabase-migrations-develop.yml](../../.github/workflows/supabase-migrations-develop.yml) | `push` to `develop`, `workflow_dispatch` | Staging Supabase |
+| [.github/workflows/supabase-migrations-main.yml](../../.github/workflows/supabase-migrations-main.yml) | `push` to `main`, `workflow_dispatch` | Production Supabase |
+
+**Repository secrets (Actions → Secrets and variables → Actions):**
+
+- `SUPABASE_ACCESS_TOKEN`
+- `SUPABASE_STAGING_PROJECT_ID`, `SUPABASE_STAGING_DB_PASSWORD`
+- `SUPABASE_PRODUCTION_PROJECT_ID`, `SUPABASE_PRODUCTION_DB_PASSWORD`
+
+Never commit secret values. For break-glass use, you can still apply migrations locally with `supabase link` and `supabase db push`; see Quick Reference below.
+
+### Not deployed by workflows
+
+**Manual per environment:** Some operations are not reliably applied via the migration CLI—for example **`docs/supabase/storage_setup_dashboard.sql`** (storage buckets / `storage.objects` policies via the Dashboard SQL Editor), as documented in that file. Run that SQL after **`db push` succeeds for that environment**, when bucket policy setup is needed.
+
+### Troubleshooting: missing `supabase/config.toml`
+
+If cloning a fresh checkout, the repo keeps [`supabase/config.toml`](../../supabase/config.toml) for the CLI (`db push`, local `supabase db reset`). Restore it via `supabase init` if absent; never remove committed migrations.
+
 ## Migration Workflow (Step-by-Step)
 
 ### Step 1: Update database_schema_audit.md First
@@ -578,7 +603,7 @@ supabase db dump -f backup_$(date +%Y%m%d).sql
 6. ✅ Verify schema: `supabase db diff`
 7. ✅ Update `DATABASE_REPORT.md` (if needed)
 8. ✅ Test application
-9. ✅ Apply to production (with backup)
+9. ✅ Hosted deploy: GitHub Actions applies migrations on `develop` (staging) and `main` (production); create a **production backup** before promoting breaking changes, and use `workflow_dispatch` to re-run if needed
 
 ---
 
