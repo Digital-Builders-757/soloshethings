@@ -38,18 +38,29 @@ const nextConfig: NextConfig = {
   },
 };
 
-const sentryBuild =
-  process.env.SENTRY_AUTH_TOKEN &&
-  process.env.SENTRY_ORG &&
-  process.env.SENTRY_PROJECT
-    ? withSentryConfig(nextConfig, {
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        silent: !process.env.CI,
-        widenClientFileUpload: true,
-      })
+const sentryOrg = process.env.SENTRY_ORG?.trim();
+const sentryProject = process.env.SENTRY_PROJECT?.trim();
+
+/** When org + project are set, wrap for tunnel + optional source maps (authToken may be unset locally). */
+const exportConfig =
+  sentryOrg && sentryProject
+    ? withSentryConfig(
+        nextConfig,
+        {
+          org: sentryOrg,
+          project: sentryProject,
+          authToken: process.env.SENTRY_AUTH_TOKEN?.trim(),
+          silent: !process.env.CI,
+          widenClientFileUpload: true,
+          tunnelRoute: "/monitoring",
+          webpack: {
+            automaticVercelMonitors: true,
+            treeshake: {
+              removeDebugLogging: true,
+            },
+          },
+        },
+      )
     : nextConfig;
 
-export default sentryBuild;
-
+export default exportConfig;
