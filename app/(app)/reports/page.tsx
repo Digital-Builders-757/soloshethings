@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Badge } from '@/components/ui/badge'
-import { buildStoryDetailHref } from '@/lib/community-navigation'
+import { appendCommunityAuthorParams, buildStoryDetailHref } from '@/lib/community-navigation'
 import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
 import { getUser } from '@/lib/supabase/server'
 import type { report_status } from '@/types/database'
@@ -23,6 +23,8 @@ type Props = {
     q?: string
     view?: string
     page?: string
+    author?: string
+    authorLabel?: string
   }>
 }
 
@@ -41,6 +43,10 @@ function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
 }
 
+function normalizeAuthor(value?: string) {
+  return value?.trim() ?? ''
+}
+
 function normalizePage(value?: string) {
   const parsed = Number.parseInt(value ?? '1', 10)
 
@@ -51,7 +57,7 @@ function normalizePage(value?: string) {
   return Math.min(parsed, 5)
 }
 
-function buildReportsHref(view: ViewFilter, query: string, page = 1) {
+function buildReportsHref(view: ViewFilter, query: string, page = 1, authorId?: string, authorLabel?: string) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -61,6 +67,8 @@ function buildReportsHref(view: ViewFilter, query: string, page = 1) {
   if (query) {
     params.set('q', query)
   }
+
+  appendCommunityAuthorParams(params, authorId, authorLabel)
 
   if (page > 1) {
     params.set('page', String(page))
@@ -87,6 +95,8 @@ export default async function ReportsPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
   const activeView = normalizeView(resolvedSearchParams?.view)
+  const activeAuthorId = normalizeAuthor(resolvedSearchParams?.author)
+  const activeAuthorLabel = normalizeAuthor(resolvedSearchParams?.authorLabel)
   const page = normalizePage(resolvedSearchParams?.page)
   const user = await getUser()
 
@@ -104,16 +114,18 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   const matchingReports = reports.filter((report) => {
     const title = report.post?.title ?? 'Story no longer available'
+    const authorName = report.post?.author?.full_name?.trim() || report.post?.author?.username || 'Solo SHE member'
     const matchesQuery =
       query.length === 0 ||
-      [title, REPORT_REASON_LABELS[report.reason], report.description ?? '', report.admin_notes ?? '']
+      [title, authorName, REPORT_REASON_LABELS[report.reason], report.description ?? '', report.admin_notes ?? '']
         .join(' ')
         .toLowerCase()
         .includes(query.toLowerCase())
 
     const matchesView = activeView === 'all' || report.status === activeView
+    const matchesAuthor = activeAuthorId.length === 0 || report.post?.author_id === activeAuthorId
 
-    return matchesQuery && matchesView
+    return matchesQuery && matchesView && matchesAuthor
   })
 
   const pageSize = 12
@@ -123,7 +135,7 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All reports'
   const showFilteredEmptyState = reports.length > 0 && matchingReports.length === 0
-  const currentPath = buildReportsHref(activeView, query, page)
+  const currentPath = buildReportsHref(activeView, query, page, activeAuthorId, activeAuthorLabel)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -200,6 +212,8 @@ export default async function ReportsPage({ searchParams }: Props) {
                     />
                   </label>
                   <input type="hidden" name="view" value={activeView} />
+                  <input type="hidden" name="author" value={activeAuthorId} />
+                  <input type="hidden" name="authorLabel" value={activeAuthorLabel} />
                   <div className="flex gap-3 sm:self-end">
                     <button
                       type="submit"
@@ -220,6 +234,12 @@ export default async function ReportsPage({ searchParams }: Props) {
               <div className="rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
                 <p>
                   Showing <span className="font-semibold text-[#7a331b]">{activeViewLabel}</span>
+                  {activeAuthorLabel ? (
+                    <>
+                      {' '}
+                      for stories by <span className="font-semibold text-[#7a331b]">{activeAuthorLabel}</span>
+                    </>
+                  ) : null}
                   {query ? (
                     <>
                       {' '}
@@ -238,7 +258,7 @@ export default async function ReportsPage({ searchParams }: Props) {
                 return (
                   <Link
                     key={option.value}
-                    href={buildReportsHref(option.value, query, 1)}
+                    href={buildReportsHref(option.value, query, 1, activeAuthorId, activeAuthorLabel)}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -251,6 +271,17 @@ export default async function ReportsPage({ searchParams }: Props) {
                 )
               })}
             </div>
+
+            {activeAuthorLabel ? (
+              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
+                <span>
+                  Member filter active: <span className="font-semibold text-[#7a331b]">{activeAuthorLabel}</span>
+                </span>
+                <Link href={buildReportsHref(activeView, query, 1)} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                  Clear member filter
+                </Link>
+              </div>
+            ) : null}
           </section>
 
           {showFilteredEmptyState ? (
@@ -269,6 +300,10 @@ export default async function ReportsPage({ searchParams }: Props) {
                 {filteredReports.map((report) => {
                 const postTitle = report.post?.title ?? 'Story no longer available'
                 const postHref = report.post?.id ? buildStoryDetailHref(report.post.id, currentPath) : null
+                const authorName = report.post?.author?.full_name?.trim() || report.post?.author?.username || 'Solo SHE member'
+                const authorFilterHref = report.post?.author_id
+                  ? buildReportsHref(activeView, query, 1, report.post.author_id, authorName)
+                  : null
 
                 return (
                   <article key={report.id} className="editorial-card p-5 sm:p-6">
@@ -295,6 +330,19 @@ export default async function ReportsPage({ searchParams }: Props) {
                             ? report.description
                             : 'You did not add extra notes for this report.'}
                         </p>
+
+                        {report.post ? (
+                          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-[#6d5849]">
+                            <span>
+                              Story by <span className="font-semibold text-[#7a331b]">{authorName}</span>
+                            </span>
+                            {authorFilterHref ? (
+                              <Link href={authorFilterHref} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                                Only this member&apos;s stories
+                              </Link>
+                            ) : null}
+                          </div>
+                        ) : null}
 
                         {report.admin_notes?.trim() ? (
                           <div className="mt-4 rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 text-sm text-[#6d5849]">
@@ -334,14 +382,14 @@ export default async function ReportsPage({ searchParams }: Props) {
                   <div className="flex flex-wrap items-center gap-3">
                     {page > 1 ? (
                       <Link
-                        href={buildReportsHref(activeView, query, page - 1)}
+                        href={buildReportsHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
                         className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
                       >
                         Show fewer
                       </Link>
                     ) : null}
                     <Link
-                      href={buildReportsHref(activeView, query, page + 1)}
+                      href={buildReportsHref(activeView, query, page + 1, activeAuthorId, activeAuthorLabel)}
                       className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
                     >
                       Load older reports
@@ -352,7 +400,7 @@ export default async function ReportsPage({ searchParams }: Props) {
                 <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                   <p className="text-sm text-[#6d5849]">You have reached the oldest report in this filtered history.</p>
                   <Link
-                    href={buildReportsHref(activeView, query, page - 1)}
+                    href={buildReportsHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
                     className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
                   >
                     Show fewer

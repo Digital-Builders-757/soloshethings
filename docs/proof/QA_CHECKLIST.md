@@ -110,7 +110,7 @@ curl -I https://app.com/blog
 - [ ] Report submission succeeds and blocks duplicate open reports
 - [ ] Successful report submission links members to `/reports`
 - [ ] Already-reported stories show the latest member-visible report status on `/places`, `/saved`, and `/places/[id]`
-- [ ] `/reports` lists the signed-in member's own post reports with status filters and story links
+- [ ] `/reports` lists the signed-in member's own post reports with status filters, story links, and an explicit member filter for narrowing to one storyteller
 - [ ] `/saved`, `/reports`, and `/submit` each offer load-more / show-fewer controls that preserve the current search and filter context
 
 **Verification:**

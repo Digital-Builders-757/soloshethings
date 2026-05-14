@@ -3,10 +3,13 @@ import type { Database, report_reason, report_status } from '@/types/database'
 import { createClient } from '@/lib/supabase/server'
 
 type ReportRow = Database['public']['Tables']['reports']['Row']
+type Profile = Pick<Database['public']['Tables']['profiles']['Row'], 'id' | 'username' | 'full_name'>
 type CommunityPost = Pick<
   Database['public']['Tables']['community_posts']['Row'],
   'id' | 'author_id' | 'title' | 'is_public' | 'is_featured' | 'status' | 'created_at'
->
+> & {
+  author: Profile | null
+}
 
 type ReportRowWithPost = Pick<ReportRow, 'id' | 'post_id' | 'reason' | 'description' | 'status' | 'admin_notes' | 'created_at' | 'updated_at'> & {
   community_posts: CommunityPost | CommunityPost[] | null
@@ -60,7 +63,12 @@ export async function getMemberPostReports(userId: string): Promise<MemberPostRe
           is_public,
           is_featured,
           status,
-          created_at
+          created_at,
+          author:profiles!community_posts_author_id_fkey (
+            id,
+            username,
+            full_name
+          )
         )
       `
     )

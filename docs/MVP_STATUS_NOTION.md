@@ -24,7 +24,7 @@
 - **Community feed discovery controls (2026-05)** - `/places` now supports honest first-pass discovery controls without changing auth scope: keyword search across title/story/member name plus quick views for all stories, featured stories, public stories, your stories, saved stories, reported stories, and stories with photos. Counts stay visible in the header, saved state is reflected on cards, members now see their latest report status across browse/saved/detail surfaces, featured stories are tagged across browse/saved/detail surfaces, empty states explain when filters simply returned no matches, and a lightweight load-more step lets members pull older stories without dropping their current search/filter context.
 - **Community history pagination polish (2026-05)** - `/saved`, `/reports`, and `/submit` now match the feed’s lightweight history controls with load-more / show-fewer steps that preserve the current search and filter context. This keeps longer saved lists, moderation history, and owner submission history usable without introducing fake infinite scroll or new auth scope.
 - **Story detail discovery follow-through (2026-05)** - `/places/[slug]` now uses existing story metadata to suggest grounded next reads instead of a dead-end detail page: members get quick jumps back into live feed filters (same-member author filters, featured stories, photo stories, or their own stories when applicable) plus a small related-story rail that prioritizes the same author, then featured stories, then photo-rich stories already visible to that member.
-- **Member-focused discovery filters (2026-05)** - `/places` and `/saved` now support a dedicated member filter on top of the existing search and quick views, so “More from this member” links from browse cards, saved cards, and story detail stay grounded on the actual author instead of fuzzy text matching. Filter state stays visible in the UI and carries through load-more / show-fewer pagination.
+- **Member-focused discovery filters (2026-05)** - `/places`, `/saved`, and `/reports` now support a dedicated member filter on top of the existing search and quick views, so member-focused discovery and moderation history can stay grounded on the actual storyteller instead of fuzzy text matching. Filter state stays visible in the UI and carries through load-more / show-fewer pagination.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
 ### 🚧 In Progress
@@ -777,6 +777,25 @@ Next Steps:
 - Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
 - Run `supabase db diff` where Docker / CLI is available
 
+#### 2026-05-14 - Report history member filters
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Extended the dedicated member filter pattern into `/reports` so members can narrow moderation history to stories from one storyteller without falling back to keyword search
+- Added honest author context on report cards plus a quick "Only this member's stories" jump to keep the new browse/saved discovery flow consistent inside report history
+- Preserved the report-page member filter through search, status chips, load-more, and show-fewer controls
+
+**Verification:**
+- ✅ `npm run typecheck`
+- ✅ `npm run lint`
+- ✅ `npm run build`
+- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
+
+**Next Steps:**
+- Add richer location/taxonomy discovery once real content fields are ready
+- Consider whether saved/report filters should eventually share a small reusable filter-summary component
+
 #### 2026-05-14 - Member discovery filters
 
 **Status:** ✅ VERIFIED
@@ -794,7 +813,7 @@ Next Steps:
 
 **Next Steps:**
 - Add richer location/taxonomy discovery once real content fields are ready
-- Consider author-aware report-history filtering if members need the same lens on `/reports`
+- Extend the same explicit-member pattern into any future admin moderation surfaces if those ship
 
 #### 2026-05-14 - Owner submission-history filters
 

@@ -158,6 +158,7 @@
 - [ ] Use a `More from {member}` link from `/places` or `/saved` and confirm the resulting list is filtered to that exact member while preserving any active quick view or keyword search
 - [ ] On that same detail page, confirm the related-story section only surfaces stories already visible to the signed-in member and does not include the current story itself
 - [ ] Open `/reports` and, if enough report entries exist, use `Load older reports` and `Show fewer` to confirm the current report-history context is preserved
+- [ ] From a report card, use `Only this member's stories` and confirm `/reports` narrows to that exact storyteller while preserving any active status view or keyword search
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
