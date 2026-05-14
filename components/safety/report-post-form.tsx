@@ -57,7 +57,10 @@ export function ReportPostForm({ postId, path, postTitle }: ReportPostFormProps)
 
       {state?.success ? (
         <div className="mt-4 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800" role="status">
-          {state.message}
+          <p>{state.message}</p>
+          <a href="/reports" className="mt-3 inline-flex font-semibold text-green-900 underline-offset-4 hover:underline">
+            Track your reports
+          </a>
         </div>
       ) : null}
 

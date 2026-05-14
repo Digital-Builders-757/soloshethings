@@ -96,6 +96,8 @@ curl -I https://app.com/blog
 - [ ] Community feed can load older stories while preserving the current search/filter state
 - [ ] Public post detail exposes a report form for non-authors
 - [ ] Report submission succeeds and blocks duplicate open reports
+- [ ] Successful report submission links members to `/reports`
+- [ ] `/reports` lists the signed-in member's own post reports with status filters and story links
 
 **Verification:**
 ```sql

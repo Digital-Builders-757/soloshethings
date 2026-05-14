@@ -193,6 +193,7 @@ export default async function PlaceDetailPage({ params }: Props) {
               <li>• Owners can archive a story to remove it from community surfaces without fake delete copy.</li>
               <li>• Owners can now remove old photos and add new ones from the story detail page.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
+              <li>• Members can now track their own report history and moderation status from a dedicated reports page.</li>
               <li>• Featured stories are now visibly tagged across browse, saved, and detail surfaces.</li>
             </ul>
           </div>

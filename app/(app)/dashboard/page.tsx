@@ -7,6 +7,7 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
+  Flag,
   Heart,
   MapPin,
   Sparkles,
@@ -437,6 +438,13 @@ export default async function DashboardPage() {
                 title="Saved stories"
                 description="Keep community stories you want to revisit in one private list."
                 cta="Open saved stories"
+              />
+              <ActionTile
+                href="/reports"
+                icon={Flag}
+                title="Your safety reports"
+                description="Track the moderation status of the public stories you have flagged."
+                cta="Open reports"
               />
               <ActionTile
                 href="/submit"

@@ -237,6 +237,7 @@ These are expected MVP limitations, not bugs:
 - No Stripe subscription yet (explicitly NOT MVP)
 - Community browsing is now live at `/places`, but richer filters, saves, and editing controls are still incomplete
 - Submit flow now creates community posts, links recent submissions into `/places/[slug]`, and public detail pages expose a lightweight report form backed by the `reports` table
+- Members can now open `/reports` to review their own report history, filter by status, and jump back to the associated story when it is still available
 - Avatar uploads are implemented, but richer avatar management is still incomplete
 
 ---
