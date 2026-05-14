@@ -127,7 +127,7 @@ export default async function DashboardPage() {
 
   const liveNowItems = [
     'Profile editing and visibility settings',
-    'Editorial stories, map browsing, and community-facing submission flow',
+    'An authenticated community feed with public member stories plus your own private posts',
     'A signed-in shell that keeps auth state and account recovery honest',
   ]
 
@@ -424,11 +424,11 @@ export default async function DashboardPage() {
                 cta="Read the blog"
               />
               <ActionTile
-                href="/map"
+                href="/places"
                 icon={MapPin}
-                title="Map & places"
-                description="Ideas for your next solo outing."
-                cta="Open map"
+                title="Browse member stories"
+                description="See public community posts and keep your own private stories in view."
+                cta="Open the feed"
               />
               <ActionTile
                 href="/submit"

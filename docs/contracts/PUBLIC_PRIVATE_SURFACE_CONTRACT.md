@@ -5,7 +5,7 @@
 ## Non-Negotiables
 
 1. **WordPress Content is Public** - All WordPress blog posts are accessible without authentication.
-2. **User Content Requires Auth** - All user-generated content requires authentication.
+2. **User Content Requires Auth** - All user-generated content requires authentication, including the member-only `/places` browsing surface.
 3. **Subscription Gates Premium** - Premium features require active subscription or valid trial.
 4. **RLS Enforces Access** - Database-level access control via RLS policies.
 5. **Privacy Toggles Work** - User privacy settings are enforced at database level.
@@ -96,7 +96,7 @@ if (!post) {
 **MUST Block:**
 - `/dashboard` - User dashboard
 - `/profile` - Profile pages
-- `/posts/*` - Community posts
+- `/places` and `/posts/*` - Community posts
 - `/saved` - Saved posts
 - `/settings` - Profile settings
 - `/messages` - Messaging
@@ -104,7 +104,7 @@ if (!post) {
 - `/community` - Community features
 - `/admin/*` - Admin features
 
-**Proxy:** `proxy.ts` requires a verified user (`supabase.auth.getUser()`) for these URL prefixes (and other app paths such as `/dashboard`, `/profile`, `/places`, `/submit`): `/posts`, `/saved`, `/settings`, `/messages`, `/upload`, `/community`, `/admin`. Unauthenticated requests are redirected to `/login` with `redirectTo` preserved.
+**Proxy:** `proxy.ts` requires a verified user (`supabase.auth.getUser()`) for these URL prefixes (and other app paths such as `/dashboard`, `/profile`, `/places`, `/submit`): `/posts`, `/saved`, `/settings`, `/messages`, `/upload`, `/community`, `/admin`. Unauthenticated requests are redirected to `/login` with `redirectTo` preserved. `/places` is now the authenticated community feed, showing public published posts plus the signed-in member's own posts.
 
 **Access Control:**
 ```typescript

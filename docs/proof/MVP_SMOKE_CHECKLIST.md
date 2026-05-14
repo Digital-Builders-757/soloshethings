@@ -10,7 +10,7 @@
 
 **Environment:** Test on **Vercel Production** (or preview) and once locally if possible.
 
-**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
+**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **Browse stories** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
 
 **Device matrix (manual):** Re-run sections **A–D** at **~375px wide** (mobile), **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible.
 
@@ -209,7 +209,7 @@ These are expected MVP limitations, not bugs:
 
 - WordPress preview mode may show published content only (Phase 1 limitation)
 - No Stripe subscription yet (explicitly NOT MVP)
-- Broader community browsing is still incomplete beyond submit-linked detail pages
+- Community browsing is now live at `/places`, but richer filters, saves, and editing controls are still incomplete
 - Submit flow now creates community posts, links recent submissions into `/places/[slug]`, and public detail pages expose a lightweight report form backed by the `reports` table
 - Avatar uploads are implemented, but richer avatar management is still incomplete
 

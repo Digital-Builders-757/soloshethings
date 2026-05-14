@@ -19,6 +19,7 @@ const publicNavLinks = [
 
 const authNavLinks = [
   { href: "/dashboard", label: "My dashboard" },
+  { href: "/places", label: "Browse stories" },
   { href: "/profile", label: "My profile" },
   { href: "/submit", label: "Submit story" },
 ];

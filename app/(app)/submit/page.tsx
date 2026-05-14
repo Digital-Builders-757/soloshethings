@@ -45,7 +45,7 @@ export default async function SubmitPage() {
           <div className="editorial-card p-5 sm:p-6">
             <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Recent submissions</h2>
             <p className="mt-2 text-sm leading-6 text-[#6d5849]">
-              A quick confirmation surface while the broader community feed is still being built.
+              A quick confirmation surface for your latest posts, even now that the broader member feed is live.
             </p>
 
             {recentPosts.length === 0 ? (
@@ -87,9 +87,14 @@ export default async function SubmitPage() {
 
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-xs text-muted-foreground">Saved {formatSubmittedAt(post.created_at)}</p>
-                        <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                          Open story detail →
-                        </Link>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Link href="/places" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                            Browse feed
+                          </Link>
+                          <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                            Open story detail →
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </article>

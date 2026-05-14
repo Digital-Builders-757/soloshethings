@@ -48,8 +48,8 @@ export default async function PlaceDetailPage({ params }: Props) {
         <span className="mx-2 text-[#d9c4a8]" aria-hidden>
           /
         </span>
-        <Link href="/submit" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-          My stories
+        <Link href="/places" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+          Browse stories
         </Link>
         <span className="mx-2 text-[#d9c4a8]" aria-hidden>
           /

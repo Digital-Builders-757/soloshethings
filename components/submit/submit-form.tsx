@@ -81,7 +81,7 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
       <h1 className="font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl">Submit a safe spot or story</h1>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
         This is now a real save flow. Posts publish into your community record right away, private posts stay
-        scoped to you, and broader community browsing surfaces are still catching up.
+        scoped to you, and the member feed now shows public stories plus your own submissions.
       </p>
 
       {state?.success ? (
@@ -182,11 +182,11 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
             defaultValue="public"
             className="editorial-input warm-focus-ring min-w-0 px-4 py-3"
           >
-            <option value="public">Public, visible to authenticated members when community surfaces expand</option>
+            <option value="public">Public, visible to authenticated members in the community feed</option>
             <option value="private">Private, visible only to you</option>
           </select>
           <p className="mt-1 text-xs text-muted-foreground">
-            Today, your latest posts are surfaced back here after save so you can confirm the upload worked.
+            Your latest posts stay visible here after save, and public stories now appear in the member feed.
           </p>
         </div>
 

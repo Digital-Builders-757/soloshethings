@@ -1,5 +1,6 @@
 import type { Database } from '@/types/database'
 
+import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getPostImageSignedUrl } from '@/lib/storage/post-images'
 import { createClient } from '@/lib/supabase/server'
 
@@ -15,8 +16,16 @@ export type RecentCommunityPost = CommunityPost & {
   images: ResolvedPostImage[]
 }
 
+type CommunityPostAuthor = Pick<Profile, 'id' | 'username' | 'full_name' | 'avatar_url'>
+
 export type CommunityPostDetail = CommunityPost & {
-  author: Pick<Profile, 'id' | 'username' | 'full_name' | 'avatar_url'> | null
+  author: CommunityPostAuthor | null
+  images: ResolvedPostImage[]
+}
+
+export type CommunityFeedPost = CommunityPost & {
+  author: CommunityPostAuthor | null
+  authorAvatarUrl: string | null
   images: ResolvedPostImage[]
 }
 
@@ -71,6 +80,59 @@ export async function getRecentPostsForAuthor(authorId: string, limit = 6): Prom
     ...post,
     images: imagesByPostId.get(post.id) ?? [],
   }))
+}
+
+export async function getCommunityFeedPosts(
+  userId: string,
+  limit = 24
+): Promise<CommunityFeedPost[]> {
+  const supabase = await createClient()
+
+  const { data: posts, error } = await supabase
+    .from('community_posts')
+    .select(
+      `
+        id,
+        author_id,
+        title,
+        content,
+        is_public,
+        is_featured,
+        status,
+        created_at,
+        updated_at,
+        profiles:profiles!community_posts_author_id_fkey (
+          id,
+          username,
+          full_name,
+          avatar_url
+        )
+      `
+    )
+    .eq('status', 'published')
+    .or(`is_public.eq.true,author_id.eq.${userId}`)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error || !posts) {
+    console.error('Failed to fetch community feed posts:', error)
+    return []
+  }
+
+  const imagesByPostId = await getResolvedImages(posts.map((post) => post.id))
+
+  return Promise.all(
+    posts.map(async (post) => {
+      const author = Array.isArray(post.profiles) ? (post.profiles[0] ?? null) : post.profiles
+
+      return {
+        ...post,
+        author,
+        authorAvatarUrl: await getAvatarSignedUrl(author?.avatar_url),
+        images: imagesByPostId.get(post.id) ?? [],
+      }
+    })
+  )
 }
 
 export async function getCommunityPostDetail(postId: string): Promise<CommunityPostDetail | null> {
