@@ -54,7 +54,7 @@
 
 **Authentication System:**
 - ✅ `app/actions/auth.ts` - Server actions (signup, login, logout)
-- ✅ `middleware.ts` - Route protection middleware
+- ✅ `proxy.ts` - Route protection proxy
 - ✅ `app/(auth)/login/page.tsx` - Functional login page
 - ✅ `app/(auth)/signup/page.tsx` - Functional signup page
 - ✅ `app/(app)/dashboard/page.tsx` - Basic authenticated dashboard

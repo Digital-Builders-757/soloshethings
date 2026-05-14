@@ -1,12 +1,12 @@
 /**
- * Supabase middleware helper for Next.js 15 App Router
+ * Supabase proxy/session helper for Next.js 16 App Router
  *
- * Usage: Import and use in middleware.ts for session management
+ * Usage: Import and use in `proxy.ts` for session management
  *
  * MUST:
  * - Refresh user session on every request
  * - Set updated session cookies
- * - Allow middleware to verify auth state
+ * - Allow the root proxy to verify auth state
  *
  * MUST NOT:
  * - Skip session refresh (causes auth state issues)
@@ -20,14 +20,14 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 /**
- * Update Supabase session in middleware
+ * Update Supabase session in the root proxy
  *
  * This function:
  * - Refreshes the user session
  * - Updates session cookies
  * - Returns the Supabase client and updated response
  *
- * Use in middleware.ts to keep sessions fresh
+ * Use in `proxy.ts` to keep sessions fresh
  *
  * @param request - Next.js request object
  * @returns Object with supabase client and updated response

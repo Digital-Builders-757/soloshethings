@@ -1,5 +1,5 @@
 /**
- * Next.js Middleware for Authentication and Route Protection
+ * Next.js Proxy for Authentication and Route Protection
  *
  * MUST follow: docs/contracts/AUTH_CONTRACT.md
  *
@@ -24,7 +24,7 @@ function redirectWithCookies(baseResponse: NextResponse, destination: URL) {
   return redirectResponse
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Update Supabase session
   const { supabase, response } = await updateSession(request)
 

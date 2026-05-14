@@ -6,13 +6,13 @@
 - ✅ Signup with profile bootstrap (`app/actions/auth.ts`)
 - ✅ Login with profile check (`app/actions/auth.ts`)
 - ✅ Logout (`app/actions/auth.ts`) — server `signOut()` clears session; client navigates to `/login` (`?signedOut=1` on success) for reliable shell refresh
-- ✅ Route protection middleware (`middleware.ts`)
+- ✅ Route protection proxy (`proxy.ts`)
 - ✅ Functional auth pages (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Profile query module (`lib/queries/profiles.ts`)
 - ✅ Profile update server action (`app/actions/profile.ts`): `getUser()` gate; explicit columns; `revalidatePath` for `/dashboard`, `/profile`, and `/` layout after save
 - ✅ Profile edit page (`app/(app)/profile/page.tsx`)
 - ✅ Dashboard with profile display (`app/(app)/dashboard/page.tsx`)
-- ✅ Submit + places detail: server `getUser()` + `/login?redirectTo=…` when unauthenticated (with `middleware.ts`)
+- ✅ Submit + places detail: server `getUser()` + `/login?redirectTo=…` when unauthenticated (with `proxy.ts`)
 - ✅ Header with auth state (`components/layout/SiteHeader.tsx`, `components/nav/NavClient.tsx`)
 - ✅ Missing-profile UX: `ProfileErrorFallback` when bounded repair cannot create/load a row (`app/(app)/dashboard`, `app/(app)/profile`); shows session email; **Refresh** (`router.refresh`) + **Hard reload** + **Sign out** + cross-links between dashboard/profile + support/home; **no** automatic redirect loop between app surfaces; `app/(app)/profile/loading.tsx` matches form layout
 - ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level**

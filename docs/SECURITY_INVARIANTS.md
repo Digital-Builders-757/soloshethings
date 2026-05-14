@@ -733,7 +733,7 @@ try {
 These files require extra security scrutiny:
 
 1. **`lib/supabase.ts`** - Client initialization
-2. **`middleware.ts`** - Route protection
+2. **`proxy.ts`** - Route protection
 3. **`app/api/webhooks/stripe/route.ts`** - Webhook handler
 4. **`lib/supabase-admin.ts`** - Service role client (if exists)
 5. **`lib/stripe.ts`** - Stripe client initialization

@@ -265,7 +265,7 @@ Copy this into your PR description:
 ## Red-Zone Files Changed
 <!-- List any red-zone files changed -->
 - [ ] `lib/supabase.ts`
-- [ ] `middleware.ts`
+- [ ] `proxy.ts`
 - [ ] `app/api/webhooks/stripe/route.ts`
 - [ ] `lib/wordpress.ts`
 - [ ] Other: ___________

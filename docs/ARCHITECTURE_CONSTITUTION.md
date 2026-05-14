@@ -97,7 +97,7 @@ supabase/
 These files MUST be reviewed by senior developers before merging:
 
 1. **`lib/supabase.ts`** - Supabase client initialization (server vs client boundaries)
-2. **`middleware.ts`** - Route protection and auth checks
+2. **`proxy.ts`** - Route protection and auth checks
 3. **`app/api/webhooks/stripe/route.ts`** - Stripe webhook handler (signature verification)
 4. **`lib/auth-provider.tsx`** - Auth context/provider (if using client-side auth)
 5. **`lib/wordpress.ts`** - WordPress content fetching and sanitization

@@ -29,7 +29,7 @@ Audit the real auth flow end to end.
 - `components/layout/SiteHeader.tsx`
 - `components/nav/NavClient.tsx`
 - `app/(app)/layout.tsx`
-- `middleware.ts`
+- `proxy.ts`
 - `lib/supabase/server.ts`
 - `lib/auth-redirects.ts`
 
@@ -70,7 +70,7 @@ Verify the route boundary matches the contract.
 - `/profile`
 - `/settings`
 - `/submit`
-- other protected app surfaces in the middleware matcher
+- other protected app surfaces in the proxy matcher
 
 **Focus areas:**
 - unauthenticated users are redirected to login with the original path preserved
@@ -162,7 +162,7 @@ Read first:
 
 Important repo context:
 - `getUser()` is the security-critical auth check.
-- `middleware.ts` protects app routes.
+- `proxy.ts` protects app routes.
 - `app/actions/auth.ts` owns signup, login, logout.
 - Profile repair must stay bounded.
 - The current dashboard is the app home base, so auth bugs show up there fast.

@@ -335,13 +335,13 @@ Next Steps:
 - ✅ Login flow authenticates and repairs missing profiles
 - ✅ Logout clears session
 - ✅ Route protection redirects unauthenticated users
-- ✅ Middleware refreshes session on every request
+- ✅ Proxy refreshes session on every request
 - ✅ Database schema ready (8 tables, RLS policies, storage bucket)
 
 **Verification:**
 - ✅ Migration file created and documented
 - ✅ Auth server actions implemented (`app/actions/auth.ts`)
-- ✅ Middleware configured (`middleware.ts`)
+- ✅ Proxy configured (`proxy.ts`)
 - ✅ Auth pages functional (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Dashboard page created (`app/(app)/dashboard`)
 - ✅ Documentation updated (AUTH_CONTRACT.md, MVP_STATUS_NOTION.md)
