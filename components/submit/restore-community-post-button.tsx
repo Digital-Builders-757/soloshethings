@@ -3,7 +3,8 @@
 import { restoreCommunityPost } from '@/app/actions/community-posts'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 type RestoreCommunityPostButtonProps = {
   postId: string
@@ -26,7 +27,7 @@ function RestoreButton() {
 
 export function RestoreCommunityPostButton({ postId, path }: RestoreCommunityPostButtonProps) {
   const router = useRouter()
-  const [state, action] = useFormState(restoreCommunityPost, null)
+  const [state, action] = useActionState(restoreCommunityPost, null)
 
   useEffect(() => {
     if (state?.success) {

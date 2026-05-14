@@ -11,7 +11,8 @@ import { signup } from "@/app/actions/auth"
 import { Mail, Lock, User } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useFormState, useFormStatus } from "react-dom"
+import { useActionState } from "react"
+import { useFormStatus } from "react-dom"
 
 function SignupSubmitButton() {
   const { pending } = useFormStatus()
@@ -28,7 +29,7 @@ function SignupSubmitButton() {
 }
 
 export default function SignupPage() {
-  const [state, formAction] = useFormState(signup, null)
+  const [state, formAction] = useActionState(signup, null)
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") ?? ""
   const loginHref = redirectTo ? `/login?redirectTo=${encodeURIComponent(redirectTo)}` : "/login"

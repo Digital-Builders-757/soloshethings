@@ -3,8 +3,8 @@
 import { archiveCommunityPost, updateCommunityPost } from '@/app/actions/community-posts'
 import { appendQueryParam } from '@/lib/community-navigation'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useEffect, useMemo, useState, useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 type OwnerCommunityPostManagerProps = {
   postId: string
@@ -45,8 +45,8 @@ function ArchiveButton() {
 
 export function OwnerCommunityPostManager({ postId, path, title, content, isPublic, submitReturnTo }: OwnerCommunityPostManagerProps) {
   const router = useRouter()
-  const [updateState, updateAction] = useFormState(updateCommunityPost, null)
-  const [archiveState, archiveAction] = useFormState(archiveCommunityPost, null)
+  const [updateState, updateAction] = useActionState(updateCommunityPost, null)
+  const [archiveState, archiveAction] = useActionState(archiveCommunityPost, null)
   const [draftTitle, setDraftTitle] = useState(title)
   const [draftContent, setDraftContent] = useState(content)
   const [draftIsPublic, setDraftIsPublic] = useState(isPublic)

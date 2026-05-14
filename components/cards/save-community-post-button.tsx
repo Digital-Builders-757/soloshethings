@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 import { toggleSavedCommunityPost } from '@/app/actions/saved-posts'
 import { cn } from '@/lib/utils'
@@ -35,7 +36,7 @@ export function SaveCommunityPostButton({
   variant = 'pill',
   className,
 }: SaveCommunityPostButtonProps) {
-  const [state, formAction] = useFormState(toggleSavedCommunityPost, null)
+  const [state, formAction] = useActionState(toggleSavedCommunityPost, null)
   const [saved, setSaved] = useState(initialSaved)
 
   useEffect(() => {

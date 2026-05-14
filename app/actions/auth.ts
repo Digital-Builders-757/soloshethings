@@ -53,7 +53,20 @@ export async function signup(
       .maybeSingle()
 
     if (usernameLookupError) {
-      console.error('Signup username lookup failed:', usernameLookupError)
+      if (usernameLookupError.code === 'PGRST205') {
+        console.error(
+          "[signup] public.profiles is missing on the Supabase project for NEXT_PUBLIC_SUPABASE_URL. " +
+            'Apply migrations (e.g. `supabase link` then `supabase db push`, or run `supabase/migrations/*.sql` in the SQL editor).'
+        )
+        if (process.env.NODE_ENV === 'development') {
+          return {
+            error:
+              'Database schema is not applied: the profiles table was not found. Run Supabase migrations for this project (see console).',
+          }
+        }
+      } else {
+        console.error('Signup username lookup failed:', usernameLookupError)
+      }
       return { error: 'We could not validate your username. Please try again.' }
     }
 

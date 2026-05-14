@@ -12,8 +12,8 @@ import type { Database } from '@/types/database'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { ChangeEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useEffect, useMemo, useState, useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -48,7 +48,7 @@ function SaveProfileButton() {
 
 export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
   const router = useRouter()
-  const [state, formAction] = useFormState(updateProfile, null)
+  const [state, formAction] = useActionState(updateProfile, null)
   const [bioLength, setBioLength] = useState(profile.bio?.length ?? 0)
   const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null)
   const [avatarName, setAvatarName] = useState<string | null>(null)

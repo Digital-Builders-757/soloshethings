@@ -1,7 +1,7 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 import { createPostReport } from '@/app/actions/reports'
 
@@ -26,7 +26,7 @@ function ReportSubmitButton() {
 }
 
 export function ReportPostForm({ postId, path, postTitle }: ReportPostFormProps) {
-  const [state, formAction] = useFormState(createPostReport, null)
+  const [state, formAction] = useActionState(createPostReport, null)
   const [isOpen, setIsOpen] = useState(false)
 
   return (

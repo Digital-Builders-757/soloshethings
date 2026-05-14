@@ -4,7 +4,8 @@ import { login } from "@/app/actions/auth"
 import { Mail, Lock } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useFormState, useFormStatus } from "react-dom"
+import { useActionState } from "react"
+import { useFormStatus } from "react-dom"
 
 const redirectLabels: Record<string, string> = {
   "/dashboard": "your dashboard",
@@ -28,7 +29,7 @@ function LoginSubmitButton() {
 }
 
 export function LoginForm() {
-  const [state, formAction] = useFormState(login, null)
+  const [state, formAction] = useActionState(login, null)
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") ?? ""
   const notice = searchParams.get("notice")

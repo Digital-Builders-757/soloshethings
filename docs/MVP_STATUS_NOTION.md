@@ -793,6 +793,22 @@ Next Steps:
 **Next Steps:**
 - If Turbopack parity improves in a future Next.js release, revisit default scripts or gate `--webpack` behind an env flag
 
+#### 2026-05-14 - Signup PGRST205 + useActionState forms
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- **Supabase `PGRST205` on signup:** PostgREST returns this when `public.profiles` is missing on the project linked by `NEXT_PUBLIC_SUPABASE_URL` (migrations not applied). Signup now logs an actionable hint and, in development, surfaces a clear UI error so the issue is obvious. Applied-schema fix is still **run migrations** against that project (`supabase link` / `supabase db push`, or execute `supabase/migrations/*.sql` in the Supabase SQL editor). Documented in `.env.example`.
+- **`useFormState` deprecation:** Replaced `react-dom`’s `useFormState` with `useActionState` from `react` across auth and form components; `docs/CODING_STANDARDS.md` example updated.
+
+**Verification:**
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+
+**Next Steps:**
+- Apply `supabase/migrations` to every Supabase environment used for local preview and Vercel (preview/production)
+
 #### 2026-05-14 - Report history member filters
 
 **Status:** ✅ VERIFIED

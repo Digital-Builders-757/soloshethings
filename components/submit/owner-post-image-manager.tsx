@@ -4,8 +4,8 @@ import Image from 'next/image'
 import { addImagesToCommunityPost, removeImageFromCommunityPost } from '@/app/actions/community-posts'
 import type { CommunityPostDetail } from '@/lib/queries/community-posts'
 import type { ChangeEvent } from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
 
 type OwnerPostImageManagerProps = {
@@ -55,8 +55,8 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
   const router = useRouter()
   const formRef = useRef<HTMLFormElement>(null)
   const previewsRef = useRef<LocalImagePreview[]>([])
-  const [addState, addAction] = useFormState(addImagesToCommunityPost, null)
-  const [removeState, removeAction] = useFormState(removeImageFromCommunityPost, null)
+  const [addState, addAction] = useActionState(addImagesToCommunityPost, null)
+  const [removeState, removeAction] = useActionState(removeImageFromCommunityPost, null)
   const [previews, setPreviews] = useState<LocalImagePreview[]>([])
 
   const remainingSlots = Math.max(0, MAX_POST_IMAGE_FILES - images.length)

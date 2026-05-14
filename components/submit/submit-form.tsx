@@ -7,7 +7,8 @@ import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { useRouter } from 'next/navigation'
 import type { ChangeEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 type SubmitFormProps = {
   recentPostCount: number
@@ -37,7 +38,7 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
   const router = useRouter()
   const formRef = useRef<HTMLFormElement>(null)
   const previewsRef = useRef<LocalImagePreview[]>([])
-  const [state, formAction] = useFormState(createCommunityPost, null)
+  const [state, formAction] = useActionState(createCommunityPost, null)
   const [contentLength, setContentLength] = useState(0)
   const [previews, setPreviews] = useState<LocalImagePreview[]>([])
 
