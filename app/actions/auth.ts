@@ -16,6 +16,7 @@ import { captureProductSignal } from '@/lib/analytics/product-signals'
 import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 import { isValidUsername, normalizeUsername } from '@/lib/auth-utils'
+import { getRequestOriginOrConfiguredAppOrigin } from '@/lib/app-url'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { logServerFailure } from '@/lib/server-log'
 import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
@@ -89,9 +90,20 @@ export async function signup(
       return { error: 'This username is already taken. Please choose another.' }
     }
 
+    const defaultPath = getPostAuthRedirectPath('talent')
+    const nextPath = getSafeInternalRedirectPath(redirectToRaw, defaultPath)
+    const confirmEmailUrl = new URL('/login', await getRequestOriginOrConfiguredAppOrigin())
+    confirmEmailUrl.searchParams.set('notice', 'confirmed_email')
+    if (nextPath !== defaultPath) {
+      confirmEmailUrl.searchParams.set('redirectTo', nextPath)
+    }
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: confirmEmailUrl.toString(),
+      },
     })
 
     if (authError) {
@@ -148,9 +160,6 @@ export async function signup(
     captureProductSignal('signup_completed', {
       confirm_email_pending: !authData.session,
     })
-
-    const defaultPath = getPostAuthRedirectPath('talent')
-    const nextPath = getSafeInternalRedirectPath(redirectToRaw, defaultPath)
 
     if (!authData.session) {
       const params = new URLSearchParams({ notice: 'confirm_email' })

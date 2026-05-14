@@ -1,9 +1,9 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import { captureProductSignal } from '@/lib/analytics/product-signals'
+import { getRequestOriginOrConfiguredAppOrigin } from '@/lib/app-url'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { logServerFailure } from '@/lib/server-log'
 import { getStripe } from '@/lib/stripe'
@@ -34,9 +34,7 @@ export async function startMembershipCheckout(): Promise<void> {
     redirect('/dashboard?notice=membership_active')
   }
 
-  const headerStore = await headers()
-  const origin =
-    headerStore.get('origin') ?? process.env.NEXT_PUBLIC_APP_URL?.trim() ?? 'http://localhost:3000'
+  const origin = await getRequestOriginOrConfiguredAppOrigin()
 
   try {
     const stripe = getStripe()
