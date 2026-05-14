@@ -10,7 +10,7 @@
 
 **Environment:** Test on **Vercel Production** (or preview) and once locally if possible.
 
-**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
+**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **Browse stories** / **Saved stories** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
 
 **Device matrix (manual):** Re-run sections **A–D** at **~375px wide** (mobile), **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible.
 
@@ -25,6 +25,8 @@
 - [ ] Navigation visible
 - [ ] At ~375px viewport width: **no horizontal scroll** on the main column (hero + first sections)
 - [ ] Optional: slow 3G — confirm a **loading skeleton** appears briefly (route `loading.tsx`) instead of a long blank paint
+
+- [ ] Optional: scroll to the homepage **Stay in the loop** panel, submit an address, and confirm the success messaging matches reality (persisted intent only—no promised inbox automation)
 
 ### ✅ Test 2: Blog List (No WP_URL)
 - [ ] Visit `/blog`
@@ -138,10 +140,59 @@
 ### ✅ Test 14: Concurrent Requests
 - [ ] While logged in, open dashboard in multiple tabs
 - [ ] Edit profile in one tab
+
+### ✅ Test 15: Save, Search, and Filter Community Stories
+- [ ] While logged in, open `/places`
+- [ ] Save a visible community story from a feed card
+- [ ] Open that story detail and confirm the save control renders the saved state
+- [ ] Return to `/places` and use keyword search to find a known story by title, story text, or member name
+- [ ] Toggle the quick views for `Public`, `My stories`, `Saved`, `Reported by you`, and `With photos` and confirm counts/results update honestly
+- [ ] Use `Load older stories` and confirm the next feed slice keeps the current search/filter context
+- [ ] Use `Show fewer` and confirm the feed steps back without dropping that context
+- [ ] Visit `/saved` and confirm the story appears there
+- [ ] Use saved-story search or quick filters (for example Public, Private, Your stories, Reported by you, or With photos) and confirm the list updates without leaking hidden stories
+- [ ] If enough saved stories exist, use `Load more saves` and `Show fewer` to confirm the current saved-list context is preserved
+- [ ] Remove the save from `/saved` and confirm the current saved-list search/filter context is preserved after refresh
+- [ ] Refresh `/saved` and confirm the story is gone
+- [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
+- [ ] If you reported the story, confirm `/places`, `/saved`, and `/places/[id]` show the latest report status and link back to `/reports`
+- [ ] Open any story detail and confirm the new explore shortcuts deep-link back into honest live feed filters (same-member author filter, featured stories, photo stories, or your own stories when relevant)
+- [ ] Use a `More from {member}` link from `/places` or `/saved` and confirm the resulting list is filtered to that exact member while preserving any active quick view or keyword search
+- [ ] On `/places` and `/saved`, confirm an active member-filter banner appears with the selected member name and that `Clear member filter` removes only the member filter while keeping the current quick view and keyword search
+- [ ] While a member filter is active on `/places` or `/saved`, use the shared community workspace nav and confirm `Browse stories`, `Saved stories`, and `Safety reports` keep that same member selected
+- [ ] On that same detail page, confirm the related-story section only surfaces stories already visible to the signed-in member and does not include the current story itself
+- [ ] Open `/reports` and, if enough report entries exist, use `Load older reports` and `Show fewer` to confirm the current report-history context is preserved
+- [ ] From a report card, use `Only this member's stories` and confirm `/reports` narrows to that exact storyteller while preserving any active status view or keyword search
+- [ ] On `/reports`, confirm the same active member-filter banner appears and that `Clear member filter` keeps the current status view and keyword search intact
+- [ ] While a member filter is active on `/reports`, use the shared community workspace nav and confirm the same member stays selected when you switch back to browse or saved surfaces
+- [ ] With a **pending** post report you filed, withdraw it from `/reports` (or equivalent control) and confirm the status badge updates to Withdrawn consistently on `/reports`, `/places`, and `/saved`
+- [ ] As a signed-in member **without** `profiles.role = 'admin'`, visit `/admin/moderation` and confirm you cannot reach or use the operator queue UI
+- [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
-### ✅ Test 15: Session Expiry
+### ✅ Test 16: Owner Edit, Photo Management, and Archive Controls
+- [ ] Save a new story from `/submit` and confirm the success banner offers a direct `Open story controls` link
+- [ ] Open one of your own published stories from `/submit` or `/places`
+- [ ] If you opened from a filtered `/submit` view, confirm story detail breadcrumbs point back to that same owner-history context
+- [ ] If you opened a story from a filtered `/saved` or `/reports` view, confirm the detail sidebar helper link returns you to that same workspace context instead of dropping filters
+- [ ] Update the title, story text, or visibility from the owner controls card
+- [ ] Confirm the detail page refreshes with the saved values
+- [ ] Remove one existing story photo from the owner photo manager and confirm it disappears after refresh
+- [ ] Add one or more new story photos from the owner photo manager without exceeding the 5-photo limit
+- [ ] Confirm the newly added photos render on the detail page and `/submit` recent submissions surface
+- [ ] Archive that story
+- [ ] Confirm `/submit` shows the archived confirmation and the story is labeled archived
+- [ ] Use `/submit` search or quick filters (for example Archived, Private, or With photos) to find the story without leaving owner history
+- [ ] If enough owner stories exist, use `Load older submissions` and `Show fewer` to confirm the current owner-history context is preserved
+- [ ] Confirm the archived story is no longer reachable from `/places`, `/places/[id]`, or `/saved`
+- [ ] Restore that story from `/submit`
+- [ ] Confirm `/submit` shows the restored confirmation and owner controls are available again
+- [ ] Confirm the current `/submit` filter/search context stays intact after the restore refresh
+- [ ] Archive from story detail after opening via `/submit` and confirm you land back in that same filtered `/submit` context with the archived confirmation visible
+- [ ] Confirm the restored story is reachable again from `/places`, `/places/[id]`, and `/saved`
+
+### ✅ Test 17: Session Expiry
 - [ ] Login
 - [ ] Wait for session to expire (or manually expire in Supabase)
 - [ ] Try to access `/dashboard`
@@ -209,8 +260,10 @@ These are expected MVP limitations, not bugs:
 
 - WordPress preview mode may show published content only (Phase 1 limitation)
 - No Stripe subscription yet (explicitly NOT MVP)
-- No community posting yet (explicitly NOT MVP)
-- No avatar uploads yet (explicitly NOT MVP)
+- Community browsing is now live at `/places`, and owner archive/restore plus first-pass `/submit` history filters now cover the basic self-service post lifecycle, but richer filters, saves, and editing controls are still incomplete
+- Submit flow now creates community posts, links recent submissions into `/places/[slug]`, and public detail pages expose a lightweight report form backed by the `reports` table
+- Members can now open `/reports` to review their own report history, filter by status, and jump back to the associated story when it is still available
+- Avatar uploads are implemented, but richer avatar management is still incomplete
 
 ---
 
@@ -222,6 +275,6 @@ These are expected MVP limitations, not bugs:
 
 ---
 
-**Last Updated:** 2026-05-05  
+**Last Updated:** 2026-05-14  
 **Maintainer:** Development Team
 

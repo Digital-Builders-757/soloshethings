@@ -6,19 +6,19 @@
 - ✅ Signup with profile bootstrap (`app/actions/auth.ts`)
 - ✅ Login with profile check (`app/actions/auth.ts`)
 - ✅ Logout (`app/actions/auth.ts`) — server `signOut()` clears session; client navigates to `/login` (`?signedOut=1` on success) for reliable shell refresh
-- ✅ Route protection middleware (`middleware.ts`)
+- ✅ Route protection proxy (`proxy.ts`)
 - ✅ Functional auth pages (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Profile query module (`lib/queries/profiles.ts`)
-- ✅ Profile update server action (`app/actions/profile.ts`): `getUser()` gate; explicit columns; `revalidatePath` for `/dashboard`, `/profile`, and `/` layout after save
+- ✅ Profile update server action (`app/actions/profile.ts`): `getUser()` gate; explicit columns; avatar upload validation/storage for profile photos; `revalidatePath` for `/dashboard`, `/profile`, and `/` layout after save
 - ✅ Profile edit page (`app/(app)/profile/page.tsx`)
 - ✅ Dashboard with profile display (`app/(app)/dashboard/page.tsx`)
-- ✅ Submit + places detail: server `getUser()` + `/login?redirectTo=…` when unauthenticated (with `middleware.ts`)
+- ✅ Submit + places detail: server `getUser()` + `/login?redirectTo=…` when unauthenticated (with `proxy.ts`)
 - ✅ Header with auth state (`components/layout/SiteHeader.tsx`, `components/nav/NavClient.tsx`)
 - ✅ Missing-profile UX: `ProfileErrorFallback` when bounded repair cannot create/load a row (`app/(app)/dashboard`, `app/(app)/profile`); shows session email; **Refresh** (`router.refresh`) + **Hard reload** + **Sign out** + cross-links between dashboard/profile + support/home; **no** automatic redirect loop between app surfaces; `app/(app)/profile/loading.tsx` matches form layout
-- ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level**
-- ✅ Signup: profile insert failure calls `signOut()` so users are not signed in without a `profiles` row (service-role user deletion is not used in app code)
+- ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level** and private avatar upload support
+- ✅ Signup: username is normalized + validated server-side, username availability is preflighted with the service-role client, profile bootstrap uses the service-role client so confirm-email mode does not depend on a user session, and bootstrap failure rolls back the just-created auth user via `auth.admin.deleteUser()`
 - ✅ Profile repair helper: one insert plus optional read-after-write race check in `getProfileWithBoundedRepair` (`lib/queries/profiles.ts`)
-- ⏳ Stripe subscription creation (TODO: Phase 4)
+- ✅ Stripe Checkout + webhook-driven `subscriptions` persistence (see `app/actions/billing.ts`, `app/api/webhooks/stripe/route.ts`, `BILLING_STRIPE_CONTRACT.md`)
 - ⏳ Welcome email (TODO: Phase 4)
 
 ## Non-Negotiables
@@ -35,42 +35,38 @@
 ### Flow Diagram (Text)
 
 ```
-1. User submits signup form (email, password)
+1. User submits signup form (email, password, username)
    ↓
 2. Client-side validation (UX only)
    ↓
 3. Server Action: signup()
+   ├── normalize + validate username
+   └── preflight username availability when possible
    ↓
 4. Supabase Auth creates user account
    ├── auth.users row created
    └── Returns user object with id
    ↓
 5. Profile bootstrap (atomic with signup)
-   ├── Check if profile exists (should not)
-   ├── Create profiles row:
+   ├── Service-role client creates `profiles` row
    │   ├── id = auth.users.id
-   │   ├── username = generated or provided
+   │   ├── username = provided username
    │   ├── role = 'talent' (default)
    │   └── privacy_level = 'public' (default)
-   └── If creation fails → rollback signup
+   ├── On duplicate race → delete the just-created auth user and return a retryable error
+   └── On other failure → delete the just-created auth user and return an error
    ↓
-6. Stripe subscription creation (with trial)
-   ├── Create Stripe customer
-   ├── Create subscription with 7-day trial
-   └── Save to subscriptions table
-   ↓
-7. Role-based redirect
-   ├── Fetch profile to get role
-   ├── 'talent' → /talent/dashboard
-   ├── 'client' → /client/dashboard
+6. Role-based redirect
+   ├── Safe `redirectTo` honored when present
+   ├── No session yet? → `/login?notice=confirm_email` (and preserve safe `redirectTo`)
+   ├── 'talent' → /dashboard
+   ├── 'client' → /dashboard
    └── default → /dashboard
    ↓
-8. Welcome email sent (non-blocking)
-   ↓
-9. User sees dashboard
+7. User sees dashboard or confirm-email notice
 ```
 
-**Implementation note:** When Supabase requires email confirmation, `signUp` may not return a session. After the profile row is created, the app redirects to `/login?notice=confirm_email` instead of `/dashboard` so users are not sent to a protected route without a session.
+**Implementation note:** When Supabase requires email confirmation, `signUp` may not return a session. After the profile row is created, the app redirects to `/login?notice=confirm_email` instead of `/dashboard` so users are not sent to a protected route without a session. **Stripe Checkout** starts from `/subscribe` after sign-in when billing env vars are set; subscription rows are populated from signed webhooks, not client code.
 
 ### Pseudo-Code
 
@@ -79,45 +75,52 @@
 'use server';
 
 export async function signup(formData: FormData) {
-  const email = formData.get('email');
-  const password = formData.get('password');
-  const username = formData.get('username');
-  
-  // 1. Create auth user
+  const email = `${formData.get('email') ?? ''}`.trim().toLowerCase();
+  const password = `${formData.get('password') ?? ''}`;
+  const username = normalizeUsername(`${formData.get('username') ?? ''}`);
+  const redirectToRaw = formData.get('redirectTo');
+
+  if (!isValidUsername(username)) {
+    return { error: 'Username can only contain letters, numbers, and underscores' };
+  }
+
+  const adminSupabase = createServiceRoleClient();
+  const { data: existingUsername } = await adminSupabase
+    .from('profiles')
+    .select('id')
+    .eq('username', username)
+    .maybeSingle();
+
+  if (existingUsername) {
+    return { error: 'This username is already taken. Please choose another.' };
+  }
+
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
   });
-  
+
   if (authError) throw authError;
   if (!authData.user) throw new Error('User creation failed');
-  
-  // 2. Bootstrap profile (atomic)
-  const { error: profileError } = await supabase
+
+  const { error: profileError } = await adminSupabase
     .from('profiles')
     .insert({
       id: authData.user.id,
-      username: username || generateUsername(email),
+      username,
       role: 'talent',
       privacy_level: 'public',
     })
     .select('id')
     .single();
-    
+
   if (profileError) {
-    // Rollback: Delete auth user if profile creation fails
-    await supabase.auth.admin.deleteUser(authData.user.id);
-    throw new Error('Profile creation failed');
+    await adminSupabase.auth.admin.deleteUser(authData.user.id);
+    throw new Error('Profile creation failed after auth signup');
   }
-  
-  // 3. Create Stripe subscription with trial
-  const subscription = await createSubscriptionWithTrial(authData.user.id, email);
-  
-  // 4. Send welcome email (non-blocking)
-  sendWelcomeEmail(email, username).catch(console.error);
-  
-  // 5. Return for redirect (client handles redirect based on role)
-  return { userId: authData.user.id, redirect: '/dashboard' };
+
+  const nextPath = getSafeInternalRedirectPath(redirectToRaw, '/dashboard');
+  return { userId: authData.user.id, redirect: nextPath };
 }
 ```
 

@@ -14,32 +14,37 @@
 - **UI Foundation (Phase 2 partial)** - Brand tokens, typography, core components ✅
 - **Visual Design Enhancement** - Gradient border system, enhanced brand color vibrancy ✅
 - **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
-- **Auth + public/private surfaces (2026-05)** - Middleware and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live middleware prefixes.
+- **Auth + public/private surfaces (2026-05)** - Proxy and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live protected prefixes.
 - **Site shell + perceived performance (2026-05)** - Shared safe-area gutters (`shell-inline`, `shell-pb-safe`), section vertical rhythm (`section-y`), route-level `loading.tsx` skeletons, hero `min-height` tied to `--shell-chrome-height`, nav overflow scroll on tight desktop widths.
-- **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
+- **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; private avatar uploads now store per-user paths in Supabase Storage and resolve back through signed URLs on dashboard/profile; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
+- **Submit flow + post image uploads (2026-05)** - `/submit` now saves real `community_posts` records, validates and uploads up to 5 JPG/PNG/WebP images server-side, stores per-user post image paths in Supabase Storage, and renders recent submissions back on the page with signed image URLs so members can verify the upload worked while broader community browsing catches up.
+- **Community feed + story detail + reporting (2026-05)** - `/places` now provides the first real authenticated browsing surface for `community_posts`, mixing public member stories with the signed-in member's own posts so private submissions remain scoped. `/places/[slug]` resolves real post content with signed images, recent submissions link into that detail page, and public stories can be reported through the existing `reports` table with duplicate-open-report protection and honest moderation copy. Members can also open `/reports` to review their own reporting history, status, and any moderation notes already written back onto those rows.
+- **Saved community stories (2026-05)** - Members can now save and unsave community posts from the feed and story detail using the existing `saved_posts` table, then revisit them on an authenticated `/saved` page. Save lookups stay user-scoped through RLS, story detail re-checks visibility so someone cannot deep-link into another member's private post, and the saved list now supports lightweight search plus quick filters for featured/public/private stories, your own stories, reported stories, and stories with photos.
+- **Owner story controls + photo management (2026-05)** - Story owners can now update title, story copy, and public/private visibility from `/places/[slug]`, archive a post to remove it from feed/detail/saved surfaces, and manage post photos in a minimal honest pass by removing old images or adding more until the 5-photo limit. `/submit` now reflects archived status, lets owners restore archived stories back into community surfaces, routes published stories into the owner-management surface, and adds first-pass search plus quick filters so members can find archived/private/photo-heavy stories inside their own submission history. Story links across `/places`, `/saved`, `/reports`, and `/submit` now carry their current list context into detail pages, owner archive flow can return members to the same filtered `/submit` history view instead of dropping that context, `/submit` success state now links straight into the new story’s owner controls, story-detail helper links now return members to their current saved/report workspace when relevant, and each authenticated community surface now exposes a shared workspace nav so members can jump between browse, saved, reports, and submit without hunting through the global header.
+- **Community feed discovery controls (2026-05)** - `/places` now supports honest first-pass discovery controls without changing auth scope: keyword search across title/story/member name plus quick views for all stories, featured stories, public stories, your stories, saved stories, reported stories, and stories with photos. Counts stay visible in the header, saved state is reflected on cards, members now see their latest report status across browse/saved/detail surfaces, featured stories are tagged across browse/saved/detail surfaces, empty states explain when filters simply returned no matches, and a lightweight load-more step lets members pull older stories without dropping their current search/filter context.
+- **Community history pagination polish (2026-05)** - `/saved`, `/reports`, and `/submit` now match the feed’s lightweight history controls with load-more / show-fewer steps that preserve the current search and filter context. This keeps longer saved lists, moderation history, and owner submission history usable without introducing fake infinite scroll or new auth scope.
+- **Story detail discovery follow-through (2026-05)** - `/places/[slug]` now uses existing story metadata to suggest grounded next reads instead of a dead-end detail page: members get quick jumps back into live feed filters (same-member author filters, featured stories, photo stories, or their own stories when applicable) plus a small related-story rail that prioritizes the same author, then featured stories, then photo-rich stories already visible to that member.
+- **Member-focused discovery filters (2026-05)** - `/places`, `/saved`, and `/reports` now support a dedicated member filter on top of the existing search and quick views, so member-focused discovery and moderation history can stay grounded on the actual storyteller instead of fuzzy text matching. Filter state stays visible in the UI, now uses a shared active-member banner with a one-click clear action across all three surfaces, and carries through load-more / show-fewer pagination.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
+- **Observability + error UX (2026-05-14)** - Structured server failures use `logServerFailure` (`lib/server-log.ts`); user-facing Supabase errors use `mapSupabaseErrorForUser` and deliberate server throws use `safeThrownErrorMessage` (`lib/supabase-errors.ts`); Sentry is bootstrapped via `instrumentation.ts` / `instrumentation-client.ts` / server+edge configs; `app/error.tsx` and `app/global-error.tsx` show on-brand recovery UI and report to Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set; WordPress preview/revalidate stay honest for callers; profile queries and `lib/wp-rest.ts` use the shared logger instead of stray `console.error`.
+- **Sentry posture hardening (2026-05)** - Server/edge `Sentry.init` only when a DSN is set from env (no hardcoded keys), sampled tracing and `sendDefaultPii: false`; client bundle without Session Replay; `next.config.ts` uses a single `withSentryConfig` when `SENTRY_ORG` and `SENTRY_PROJECT` are set, optional `SENTRY_AUTH_TOKEN` for source-map upload, `tunnelRoute` `/monitoring`; `.gitignore` includes `.env.sentry-build-plugin`; wizard throwaway example routes removed; **MONITORING_SENTRY_POSTURE.md** and **.env.example** updated.
+- **Stripe subscriptions + premium gates (2026-05-14)** - Public `/pricing`; signed-in `/subscribe` + `startMembershipCheckout` open Stripe Checkout (`STRIPE_PRICE_ID`, 7-day trial). Webhook `POST /api/webhooks/stripe` verifies signatures, ledger in `stripe_webhook_ledger`, upserts `subscriptions`. Entitlement is DB-only (`lib/billing/entitlements.ts`); `community_post_reads` enforces 3 third-party story views per UTC day when `limited`; community writes and new saves require `full`.
+- **Community discovery depth — second pass (2026-05-15)** - Optional `place_label` plus capped `story_tags` slugs stored on `community_posts` (`lib/community-story-taxonomy.ts`); `/places` exposes newest/oldest ordering, place/topic anchors, and facet chips sourced from posts the viewer can already access under RLS; `getCommunityRelatedPosts` ranks overlaps in place/tags alongside author/featured/photos/recency; owners edit alt text + swap gallery order (`post_images` UPDATE policy + server actions).
+- **Moderation queue + reporter withdraw + owner permanent remove (2026-05-16)** - Migration `20260516203000_moderation_admin_rls_reports.sql` adds `profiles.role = 'admin'`, `report_status.withdrawn`, audited `reports.reviewed_at` / `reports.reviewed_by`, SECURITY DEFINER RPCs `withdraw_post_report` and `moderator_update_report`, and admin `SELECT` RLS where the queue needs post/member context (writes stay on RPCs). App: authenticated `/admin/moderation` for platform admins; `/reports` supports withdrawing pending post reports + shows reviewed timestamps; browse/saved/detail surfaces recognize withdrawn status; dashboard links **Moderation** for admins; owners can permanently remove a community post behind an explicit typed confirmation (guarded against archive/restore once `removed`).
+- **Marketing interest capture — truthful homepage signup (2026-05)** - Public homepage panel stores emails in **`marketing_interest`** via **`submitMarketingInterest`** (service role insert/update). Copy and success/error states explicitly state that **automated outbound marketing/newsletter sends are not enabled** yet; operators export/import manually until an ESP pathway is prioritized.
+- **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel events documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set.
 
 ### 🚧 In Progress
 
-**Phase 2: Design System** (60% Complete)
-- ✅ Typography system (Inter font, design tokens)
-- ✅ Core UI components (Button, Input, Textarea, Badge, Avatar)
-- ✅ Brand color vibrancy enhancement (gradient borders, enhanced gradients)
-- ✅ Visual polish (African heritage-inspired color system)
-- 📋 Feedback components (Alert, Skeleton, Spinner, Modal, Toast)
-- 📋 Trust & safety components (Privacy Toggle, Privacy Badge, Report Button)
-- 📋 Empty State component
-
-**Remaining Phase 1 Features:**
-- Stripe subscription integration (7-day trial, billing webhook)
-- Admin post creation interface
-- Photo upload system (Supabase Storage)
-- Avatar uploads (profile editing complete ✅)
+- **Moderation/editorial depth (remaining)** - First-pass operator queue and safe report RPCs are shipped; broader editorial tooling, analytics-style oversight, and non-community report targets are still out of scope or not built yet.
+- **Marketing email automation** - Provider-connected newsletter sends / audience sync remains future work (`docs/contracts/EMAIL_NOTIFICATIONS_CONTRACT.md` documents the bounded capture layer).
 
 ### 📋 Next
 
-- **Phase 1 Completion** - Stripe billing, WordPress integration, admin features, photo uploads
-- **Phase 2** - Design system (typography, UI components, design tokens)
+- **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
+- **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
+- **Active backlog work order** - `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+- **Immediate focus** - Stretch-only: ESP audience automation **or** dashboards built on **`product_signal` tags**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
 
 ### ❌ Blocked
 
@@ -51,153 +56,61 @@ None currently.
 
 **Status:** ✅ Complete
 
-**Deliverables:**
-- Complete documentation set
-- Architecture constitution
-- Security invariants
-- Database schema design (v0)
-- Contract definitions
-- Procedure documentation
-- Proof documentation
-- Diagram documentation
+Foundational documentation, architecture, schema design, contracts, procedures, proof docs, and diagrams all exist and remain the base layer for the repo.
 
-**Verification:**
-- ✅ All documentation files created
-- ✅ Schema defined in `database_schema_audit.md`
-- ✅ Contracts defined for all integrations
-- ✅ Procedures defined for workflows
+### Phase 1: Core MVP Surface
 
-### Phase 1: Core MVP Features
+**Status:** 🚧 Mostly shipped, with billing/ops gaps still open
 
-**Status:** 🚧 In Progress (Backend Foundation Complete, WordPress Complete)
-**Completion Date:** January 27, 2025 (Backend Foundation)
+**Shipped in this phase:**
+- auth, profile bootstrap/repair, and protected-route handling
+- WordPress editorial read path with preview/revalidation support
+- dashboard/profile shell improvements
+- avatar uploads and profile continuity
+- real community submit/browse/save/report/owner-management surfaces
+- first-pass discovery/search/filter/load-more/member-filter polish
+- Stripe Checkout + webhook-backed `subscriptions` + DB-only premium gates (see `BILLING_STRIPE_CONTRACT.md`)
+- taxonomy/location **anchors** authored on publish/edit (`place_label` + capped `story_tags` slugs) with browse parity
 
-**Architecture Blueprint:**
-- **WordPress + Supabase Hybrid Stack** - See `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
-- WordPress = Editorial truth (public content)
-- Supabase = Identity + community truth (private surfaces)
-- Next.js = Delivery orchestration (ISR + server-only data access)
+**Still open in this phase:**
+- marketing email automation synced to an ESP provider (beyond DB capture listed in EMAIL_NOTIFICATIONS_CONTRACT)
+- moderation/editorial depth beyond the first operator queue (`/admin/moderation`) and RPC-backed report transitions
 
-**Features:**
-1. **Auth + Profiles**
-   - Supabase Auth integration
-   - Signup flow with profile creation
-   - Login/logout
-   - Password reset
-   - Profile editing
-   - Avatar uploads
-   - Privacy settings
+**Reference:** use `docs/procedures/IMPLEMENTATION_ROADMAP.md` for the exact active queue.
 
-2. **Subscription Gate**
-   - Stripe integration
-   - 1-week free trial management
-   - Subscription activation ($3.99/month)
-   - Webhook handling
-   - Access control based on subscription status
+### Phase 2: Community Depth
 
-3. **Blog Read (WordPress)**
-   - Headless WordPress setup
-   - Blog post fetching (REST API for lists, optional GraphQL for detail)
-   - ISR configuration with revalidation
-   - Webhook revalidation (`/api/revalidate`)
-   - Preview mode (`/api/preview`)
-   - Content sanitization (canonical `lib/sanitize.ts` + `components/prose.tsx`)
-   - **Reference:** `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
+**Status:** 🚧 Partially shipped (depth improves as members adopt new metadata fields)
 
-4. **Admin Bi-Weekly Posts**
-   - Admin post creation interface
-   - Community post creation
-   - Post publishing workflow
-   - Featured post capability
+**Already real:**
+- authenticated member browsing
+- saved stories
+- report history
+- owner story edit/archive/restore/photo management
+- discovery/search/filter load-more pipelines
+- deterministic related-story ladder using anchors, shared tags, author continuity, featured/photo boosts, recency—all within posts the viewer can already fetch under RLS
+- owner-managed alt text plus gallery reordering helpers on story detail (`post_images`)
 
-5. **Photo Uploads**
-   - Image upload to Supabase storage
-   - Multiple images per post
-   - Image ordering
-   - Privacy-aware image access
-   - Alt text support
+**Still planned in this phase:**
+- trust & safety tooling beyond the shipped reporter-first history + moderator queue increment (non-post report targets, analytics, richer escalation)
+- any future messaging/comments/realtime work if product priorities justify it
 
-**Success Criteria:**
-- Users can sign up and create profiles
-- Users can subscribe after 1-week trial
-- Users can read WordPress blog content
-- Users can create community posts with images
-- Admin can create bi-weekly posts
+### Phase 3: Admin, Marketing, and Analytics
 
-**Verification Requirements:**
-- All smoke test paths pass (see `docs/proof/E2E_SMOKE_PATHS.md`)
-- RLS policies tested and working
-- Stripe webhooks verified
-- WordPress content loads correctly
-- Image uploads work with privacy controls
+**Status:** 🚧 First-pass shipped; stretch backlog remains
 
-### Phase 2: Community Features
+**Already real:**
+- admin-only `/admin/moderation` queue, RPC-backed report transitions, reporter withdraw flow
+- honest `marketing_interest` capture on the homepage with service-role writes (`EMAIL_NOTIFICATIONS_CONTRACT`)
+- coarse `product_signal.*` Sentry funnel events (`MONITORING_SENTRY_POSTURE.md`, `DISABLE_PRODUCT_SIGNALS`)
 
-**Status:** 📋 Planned (Post-MVP)
+**Still planned / stretch-only:**
+- moderation/admin dashboard depth beyond the operator queue (rich editorial workflows, non-post report targets)
+- admin/editorial post workflows where needed
+- provider-backed mailing automation + broadcasts (captures persist to `marketing_interest` until then)
+- analytics dashboards or ESP sync beyond raw Sentry tags, when ops requests (`IMPLEMENTATION_ROADMAP.md`)
 
-**Features:**
-1. **Messaging**
-   - Direct messaging between users
-   - Message read receipts
-   - Real-time message delivery (Supabase Realtime)
-
-2. **Reactions/Comments**
-   - Post reactions (like, love, etc.)
-   - Comment system on posts
-   - Comment threading
-   - Comment moderation
-
-3. **Events RSVP**
-   - Event creation and management
-   - Event RSVP system
-   - Event attendee management
-   - Event notifications
-
-**Success Criteria:**
-- Users can message each other
-- Users can react to and comment on posts
-- Users can RSVP to events
-- Real-time updates work correctly
-
-**Verification Requirements:**
-- Messaging flow tested end-to-end
-- Reactions/comments work correctly
-- Event RSVP system functional
-- Real-time updates verified
-
-### Phase 3: Admin Dashboard + Marketing + Analytics
-
-**Status:** 📋 Planned (Post-MVP)
-
-**Features:**
-1. **Admin Dashboard**
-   - Content moderation interface
-   - User management
-   - Report resolution
-   - Analytics dashboard
-   - System health monitoring
-
-2. **Marketing**
-   - Landing page optimization
-   - SEO improvements
-   - Marketing automation
-   - Email campaigns
-
-3. **Analytics**
-   - User engagement tracking
-   - Content analytics
-   - Subscription analytics
-   - Performance metrics
-
-**Success Criteria:**
-- Admin can moderate content effectively
-- Marketing pages optimized
-- Analytics provide actionable insights
-
-**Verification Requirements:**
-- Admin dashboard functional
-- Marketing pages perform well
-- Analytics data accurate
+**Rule:** phase labels here are coarse product buckets. The canonical execution order lives in `docs/procedures/IMPLEMENTATION_ROADMAP.md`, not in these phase summaries.
 
 ## Definition of "VERIFIED"
 
@@ -288,6 +201,50 @@ Next Steps:
 
 ### Progress Entries
 
+#### 2026-05-15 — Community taxonomy + discovery depth
+
+**Status:** ✅ VERIFIED (typecheck/lint/build gate)
+
+**Description:**
+- Migration `supabase/migrations/20260515194500_community_place_label_story_tags.sql`: optional `place_label`, capped `story_tags[]`, supporting indexes, and `post_images` owner `UPDATE` RLS so alt/order edits stay DB-enforced.
+- Shared taxonomy helpers in `lib/community-story-taxonomy.ts`; submit + owner edits use `CommunityDiscoveryFields`.
+- `/places` exposes newest/oldest ordering plus `place`/`topic` query filters with honest facet chips from RLS-visible posts.
+- Related stories rank shared anchors/tags deterministically atop the legacy author/featured/photo heuristics.
+- Owners can revise photo descriptions and move photos earlier/later inside the carousel.
+
+**Verification:** `npm run typecheck`, `npm run lint`, `npm run build`.
+
+**Next steps:** moderation/admin surfaces (`docs/procedures/IMPLEMENTATION_ROADMAP.md` §2).
+
+#### 2026-05-14 — Stripe subscriptions + premium gates
+
+**Status:** ✅ VERIFIED (typecheck/lint/build gate)
+
+**Description:**
+- Stripe Checkout from `/subscribe`; webhook `POST /api/webhooks/stripe` with ledger idempotency.
+- New tables: `stripe_webhook_ledger`, `community_post_reads` (migration `20260514194500_...`).
+- `lib/billing/entitlements.ts` + gated community actions, saves, and detail read budget.
+
+**Verification:** `npm run typecheck`, `npm run lint`, `npm run build`.
+
+**Next steps:** completed in subsequent 2026-05-15 community depth batch; resume at moderation/admin tooling (`IMPLEMENTATION_ROADMAP` §2).
+
+#### 2026-05-14 - Observability + error UX batch
+
+**Status:** ✅ VERIFIED (build/lint/typecheck gate)
+
+**Description:**
+- Centralized safe user copy for server actions (`mapSupabaseErrorForUser`, `safeThrownErrorMessage`); eliminated raw `Error.message` passthrough in community post compound flows.
+- `unstable_rethrow` parity on `login` catch; profile + WordPress read paths migrated to `logServerFailure`.
+- Error boundaries gated on `NEXT_PUBLIC_SENTRY_DSN`; monitoring/roadmap/MVP docs aligned with implementation.
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build` (see CI/local run at ship time).
+- Documentation: `docs/proof/MONITORING_SENTRY_POSTURE.md`, `docs/procedures/IMPLEMENTATION_ROADMAP.md`, `docs/MVP_STATUS_NOTION.md`.
+
+**Next Steps:**
+- Stripe subscription integration + premium gating per implementation roadmap.
+
 #### 2025-12-22 - WordPress + Supabase Blueprint Documented
 
 **Status:** ✅ VERIFIED
@@ -335,13 +292,13 @@ Next Steps:
 - ✅ Login flow authenticates and repairs missing profiles
 - ✅ Logout clears session
 - ✅ Route protection redirects unauthenticated users
-- ✅ Middleware refreshes session on every request
+- ✅ Proxy refreshes session on every request
 - ✅ Database schema ready (8 tables, RLS policies, storage bucket)
 
 **Verification:**
 - ✅ Migration file created and documented
 - ✅ Auth server actions implemented (`app/actions/auth.ts`)
-- ✅ Middleware configured (`middleware.ts`)
+- ✅ Proxy configured (`proxy.ts`)
 - ✅ Auth pages functional (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Dashboard page created (`app/(app)/dashboard`)
 - ✅ Documentation updated (AUTH_CONTRACT.md, MVP_STATUS_NOTION.md)
@@ -752,6 +709,128 @@ Next Steps:
 - Consider adding WordPress domain to `next.config.ts` remotePatterns for full image optimization
 - Monitor build performance with Next.js 16
 
+#### 2026-05-06 - Catch-up §5 smoke/release docs + Next workspace root
+
+**Status:** ✅ VERIFIED (automated gates)
+
+**Description:**
+- Completed catch-up batch 5: MVP smoke verification (HTTP redirect + build sanity), documentation sync (MVP vs future E2E paths, `/api/revalidate`, contact route, queue references), and release-prep notes (`PRE_PUSH_CHECKLIST` Docker caveat for `supabase db diff`).
+- Pinned Next.js workspace root in `next.config.ts` (`outputFileTracingRoot`, `turbopack.root`) to silence wrong-root warnings when multiple lockfiles exist up-tree.
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build` pass locally
+- Unauthenticated `GET /dashboard` → redirect to `/login?redirectTo=/dashboard` (production server)
+
+**Next Steps:**
+- Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
+- Run `supabase db diff` where Docker / CLI is available
+
+#### 2026-05-14 - Hosted storage DDL: Dashboard script + migration strip
+
+**Status:** ✅ DOCUMENTED
+
+**Description:**
+- `supabase db push` failed with `must be owner of table objects (42501)` on `ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY` — the CLI migration role is not owner of `storage.objects` on hosted Supabase
+- Removed storage bucket/policy DDL from [`supabase/migrations/20250101000000_initial_schema.sql`](supabase/migrations/20250101000000_initial_schema.sql) (migration had never completed remotely); added pointer comment to one-time Dashboard SQL
+- Added canonical [`docs/supabase/storage_setup_dashboard.sql`](docs/supabase/storage_setup_dashboard.sql): run in **Supabase Dashboard → SQL Editor** after `db push` (idempotent-ish bucket insert + drop/recreate policies)
+- Updated [`docs/database_schema_audit.md`](docs/database_schema_audit.md) (storage truth + no `ALTER storage.objects` via CLI); [`docs/DOCUMENTATION_INDEX.md`](docs/DOCUMENTATION_INDEX.md) links the script
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build`
+- Re-run `supabase db push` against linked remote (should pass); then run `docs/supabase/storage_setup_dashboard.sql` in Dashboard for that project
+
+**Next Steps:**
+- Run Dashboard storage script on preview/production Supabase projects as needed
+
+#### 2026-05-14 - Webpack bundler for dev and build (Turbopack stability)
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- `package.json` scripts use `next dev --webpack` and `next build --webpack` to avoid intermittent Turbopack “unexpected error” in local dev and to align Vercel builds with the stable Webpack pipeline (`npm run build` is the default install/build path)
+- Local `.next` cache cleared during rollout; `next.config.ts` workspace root pin (`outputFileTracingRoot`, `turbopack.root`) unchanged for projects that opt back into Turbopack via CLI flags
+
+**Verification:**
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+
+**Next Steps:**
+- If Turbopack parity improves in a future Next.js release, revisit default scripts or gate `--webpack` behind an env flag
+
+#### 2026-05-14 - Signup PGRST205 + useActionState forms
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- **Supabase `PGRST205` on signup:** PostgREST returns this when `public.profiles` is missing on the project linked by `NEXT_PUBLIC_SUPABASE_URL` (migrations not applied). Signup now logs an actionable hint and, in development, surfaces a clear UI error so the issue is obvious. Applied-schema fix is still **run migrations** against that project (`supabase link` / `supabase db push`, or execute `supabase/migrations/*.sql` in the Supabase SQL editor). Documented in `.env.example`.
+- **`useFormState` deprecation:** Replaced `react-dom`’s `useFormState` with `useActionState` from `react` across auth and form components; `docs/CODING_STANDARDS.md` example updated.
+
+**Verification:**
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+
+**Next Steps:**
+- Apply `supabase/migrations` to every Supabase environment used for local preview and Vercel (preview/production)
+
+#### 2026-05-14 - Report history member filters
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Extended the dedicated member filter pattern into `/reports` so members can narrow moderation history to stories from one storyteller without falling back to keyword search
+- Added honest author context on report cards plus a quick "Only this member's stories" jump to keep the new browse/saved discovery flow consistent inside report history
+- Preserved the report-page member filter through search, status chips, load-more, and show-fewer controls
+
+**Verification:**
+- ✅ `npm run typecheck`
+- ✅ `npm run lint`
+- ✅ `npm run build`
+- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
+
+**Next Steps:**
+- Add richer location/taxonomy discovery once real content fields are ready
+- Consider whether saved/report filters should eventually share a small reusable filter-summary component
+
+#### 2026-05-14 - Member discovery filters
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Added a dedicated author filter to `/places` and `/saved` so members can reliably narrow discovery to one storyteller without relying on fuzzy keyword matches
+- Rewired “More from {member}” discovery links on browse cards, saved cards, and story detail to use that member filter and keep the filter label visible in the UI
+- Preserved the new member filter through existing load-more / show-fewer pagination so discovery context stays intact
+
+**Verification:**
+- ✅ `npm run typecheck`
+- ✅ `npm run lint`
+- ✅ `npm run build`
+- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
+
+**Next Steps:**
+- Add richer location/taxonomy discovery once real content fields are ready
+- Extend the same explicit-member pattern into any future admin moderation surfaces if those ship
+
+#### 2026-05-14 - Owner submission-history filters
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- Added first-pass search and quick filters to `/submit` recent submissions for all stories, published, archived, public, private, and stories with photos
+- Kept owner lifecycle counts visible so archived/private stories are easier to find without losing honest restore copy
+- Preserve the current `/submit` filter/search context when restoring an archived story back into owner surfaces
+
+**Verification:**
+- ✅ `npm run typecheck`
+- ✅ `npm run lint`
+- ✅ `npm run build`
+- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
+
+**Next Steps:**
+- Add richer restore/delete lifecycle options if owners need more than simple archive and restore
+- Consider pagination or stronger sorting if owner submission history grows beyond the current first-pass list
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS
@@ -775,76 +854,70 @@ Next Steps:
 
 ### Phase 0: System Kit ✅
 
-- ✅ Documentation set complete
-- ✅ Architecture defined
-- ✅ Schema designed
-- ✅ Contracts defined
-- ✅ Brand tokens system
-- ✅ Route shells (AWA-inspired IA)
-- ✅ Component scaffolding
+- ✅ Documentation and architecture layers are in place
+- ✅ Contracts, procedures, proof docs, and diagrams exist
+- ✅ Brand/design references and repo conventions are documented
 
-### Phase 1: Core MVP 🚧
+### Phase 1: Core MVP Surface 🚧
 
-- ✅ Authentication system (signup, login, logout, route protection)
-- ✅ User profiles (query module, update action, edit page)
-- ✅ Dashboard shell (profile display, quick actions, navigation)
-- 📋 Subscription management (Stripe integration pending)
-- ✅ WordPress integration (blog routes with graceful fallback)
-  - **Blueprint:** `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
-  - Blog list + detail pages (ISR + webhook revalidation)
-  - Preview mode + revalidate API
-  - Canonical sanitization + Prose renderer
-  - Graceful fallback when WP_URL missing
-- 📋 Community posts (route shells ready)
-- 📋 Photo uploads
-- 📋 Admin post creation
-- 📋 Content moderation
+- ✅ Authentication system, route protection, and profile continuity
+- ✅ WordPress public/editorial read path with preview + revalidation hooks
+- ✅ Dashboard/profile shell and avatar uploads
+- ✅ Real community posting, browsing, saving, reporting, and owner management
+- ✅ Observability + error UX baseline (structured logging + Sentry wiring)
+- ✅ Stripe subscription management and premium gates (Checkout + webhook ledger)
+- ✅ Honest homepage marketing-interest capture persists to **`marketing_interest`** with explicitly non-automated copy (see EMAIL_NOTIFICATIONS_CONTRACT)
+- 📋 ESP-backed broadcasts + audience tooling remain deliberate backlog work
 
-### Phase 2: Community Features 📋
+### Phase 2: Community Depth 🚧
 
-- 📋 Map explore functionality (route stub exists)
-- 📋 Direct messaging
-- 📋 Reactions/comments
-- 📋 Events RSVP
+- ✅ First-pass discovery/search/filter/load-more/member-filter support is real
+- ✅ Honest taxonomy surface: publisher `place_label` + capped `story_tags` slugs, browse/detail parity, deterministic related ranking
+- ✅ Richer photo follow-through on story detail: alt text edits + deterministic ordering (`post_images` UPDATE RLS)
+- 📋 Messaging/comments/realtime remain future scope, not current commitments
 
 ### Phase 3: Admin + Marketing + Analytics 📋
 
-- 📋 Admin dashboard
-- 📋 Marketing optimization
-- 📋 Analytics implementation
+- 📋 Moderation/admin dashboard depth still pending
+- 📋 Admin/editorial operations still pending
+- 📋 Analytics implementation still pending
+- 📋 Marketing automation beyond the **`marketing_interest`** capture/export path still backlog until ESP decisions land
 
 ## Release History
 
-### v0.0.0 - Pre-Release (Current)
+### Current working state
 
-**Date:** 2025-01-27  
-**Status:** Documentation only
+**Status:** Active development on `develop`
 
-**Features:**
-- Complete documentation set
-- Schema design
-- Architecture definition
+**Most recent shipped areas:**
+- profile/avatar continuity
+- authenticated member community surfaces
+- owner story controls and discovery polish
+- recent auth/tooling fixes
 
-**Deployment:**
-- Not yet deployed
+**Current unverified batch:**
+- observability + error UX hardening in the working tree
 
 ## Technical Debt
 
 ### Current
 
-None yet (pre-implementation).
+- Billing/premium gating is still absent
+- Community media management is still first-pass only
+- Moderation/admin tooling is still shallow
+- Observability hardening is in progress and not yet verified
 
 ### Future Considerations
 
 - Real-time features (chat, live updates)
-- Advanced search implementation
+- Advanced discovery/search depth
 - Analytics and tracking
-- Performance optimizations
-- Full-text search indexes
+- Performance optimization beyond the current polish passes
+- Full-text search indexes if content volume justifies them
 
 ## Known Issues
 
-None currently.
+- No single blocking product issue is currently documented here, but the repo does still have planned gaps around billing, moderation/admin depth, richer upload handling, and newsletter operations.
 
 ## Metrics & Goals
 

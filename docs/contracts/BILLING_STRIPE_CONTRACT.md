@@ -2,6 +2,12 @@
 
 **Purpose:** Subscription flow, trial management, webhook ledger approach, access control, and failure recovery for SoloSheThings Stripe integration.
 
+## Implementation (this repo)
+
+- **Checkout:** [`app/actions/billing.ts`](../../app/actions/billing.ts) — `startMembershipCheckout` creates a Stripe Checkout session in `subscription` mode with `subscription_data.trial_period_days: 7`, `STRIPE_PRICE_ID`, and `supabase_user_id` metadata.
+- **Webhook:** [`app/api/webhooks/stripe/route.ts`](../../app/api/webhooks/stripe/route.ts) — verifies `stripe-signature`, writes to `stripe_webhook_ledger`, upserts `subscriptions` from subscription + invoice events (Stripe API used **only inside** the webhook worker, not for per-request gating).
+- **Gates:** [`lib/billing/entitlements.ts`](../../lib/billing/entitlements.ts) + [`lib/billing/community-story-reads.ts`](../../lib/billing/community-story-reads.ts).
+
 ## Non-Negotiables
 
 1. **Webhook Signature Verification** - All Stripe webhooks MUST verify request signatures.

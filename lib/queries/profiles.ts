@@ -13,6 +13,7 @@
 
 import "server-only";
 import { generateUsername } from '@/lib/auth-utils';
+import { logServerFailure } from '@/lib/server-log';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/database';
 
@@ -37,7 +38,12 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     .maybeSingle();
     
   if (error) {
-    console.error('Error fetching profile:', error);
+    logServerFailure({
+      category: 'query',
+      operation: 'getProfile.maybeSingle',
+      cause: error,
+      context: { userId },
+    });
     return null;
   }
   
@@ -87,7 +93,12 @@ export async function getProfileWithBoundedRepair(
     .single();
 
   if (error || !data) {
-    console.error('Profile repair failed:', error);
+    logServerFailure({
+      category: 'mutation',
+      operation: 'getProfileWithBoundedRepair.insert',
+      cause: error ?? new Error('profile_repair_no_row'),
+      context: { userId },
+    });
     const { data: raced, error: refetchError } = await supabase
       .from('profiles')
       .select(profileSelect)
@@ -95,7 +106,12 @@ export async function getProfileWithBoundedRepair(
       .maybeSingle();
 
     if (refetchError) {
-      console.error('Profile refetch after repair failed:', refetchError);
+      logServerFailure({
+        category: 'query',
+        operation: 'getProfileWithBoundedRepair.refetchAfterRepair',
+        cause: refetchError,
+        context: { userId },
+      });
     }
     if (raced) return raced;
     return null;

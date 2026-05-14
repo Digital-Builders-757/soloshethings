@@ -17,6 +17,8 @@
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+
+import { logServerFailure } from '@/lib/server-log'
 import type { Database } from '@/types/database'
 
 /**
@@ -114,8 +116,11 @@ export async function getUser() {
     const isSessionMissing = error.message?.includes('session') || error.message?.includes('missing') || error.message?.includes('not authenticated')
     
     if (!isSessionMissing) {
-      // Only log actual errors, not expected "no session" cases
-      console.error('Error fetching user:', error)
+      logServerFailure({
+        category: 'auth',
+        operation: 'getUser',
+        cause: error,
+      })
     }
     return null
   }

@@ -5,12 +5,42 @@
 ## Non-Negotiables
 
 1. **WordPress Content is Public** - All WordPress blog posts are accessible without authentication.
-2. **User Content Requires Auth** - All user-generated content requires authentication.
+2. **User Content Requires Auth** - All user-generated content requires authentication, including the member-only `/places` browsing surface.
 3. **Subscription Gates Premium** - Premium features require active subscription or valid trial.
 4. **RLS Enforces Access** - Database-level access control via RLS policies.
 5. **Privacy Toggles Work** - User privacy settings are enforced at database level.
 6. **Non-Enumerating Behavior** - Error messages MUST NOT reveal existence of resources.
 7. **Safe Error Messages** - Error messages MUST NOT leak sensitive information.
+
+## Live implementation snapshot (2026-05)
+
+This section documents **what shipped in-repo** alongside the conceptual matrix further down.
+
+**Routes**
+- Anonymous pricing overview: **`/pricing`**
+- Authenticated Stripe Checkout: **`/subscribe`** (server action `startMembershipCheckout` in [`app/actions/billing.ts`](../../app/actions/billing.ts))
+- Post-checkout landing: **`/subscribe/success`**
+- Webhook: **`POST /api/webhooks/stripe`** (signature-verified; service role + ledger pattern per [`BILLING_STRIPE_CONTRACT.md`](./BILLING_STRIPE_CONTRACT.md))
+- **Homepage mailing interest (`/`):** Saves email to **`marketing_interest`** through `submitMarketingInterest` (`app/actions/marketing-interest.ts`) using **`SUPABASE_SERVICE_ROLE_KEY`**. Automated marketing broadcasts are intentionally **manual** until an ESP is configured (truth contract: [`EMAIL_NOTIFICATIONS_CONTRACT.md`](./EMAIL_NOTIFICATIONS_CONTRACT.md))
+
+**Entitlement rule**
+
+- Requests decide access only from Supabase **`subscriptions`** (`trial_end`, `current_period_end`, `status`) via [`lib/billing/entitlements.ts`](../../lib/billing/entitlements.ts)—never live Stripe APIs on gate paths.
+
+**`/places` discovery (2026-05 depth pass)**
+
+- Optional query params `place`, `topic` (fixed slug from [`lib/community-story-taxonomy.ts`](../../lib/community-story-taxonomy.ts)), and `sort=newest|oldest` further narrow the feed **without** changing RLS: filtering is client-side on the already-authorized post list, and related-story ranking still only considers posts the member could load.
+
+**Moderation queue (`/admin/moderation`, 2026-05)**
+
+- Requires `profiles.role = 'admin'` (see middleware + [`AUTH_CONTRACT.md`](./AUTH_CONTRACT.md)). Members use `/reports` for their **own** report history—including withdrawing pending post reports (`withdraw_post_report`) into `withdrawn`—while operator transitions use `moderator_update_report`.
+
+**Authenticated free tier (no qualifying subscription / trial)**
+
+- Story detail quota: **3 distinct other-authors’ stories per UTC calendar day** via **`community_post_reads`**; **viewing own stories does not increment the cap**.
+- Blocked mutations: publishing, post body/visibility edits, archive/restore, photo add/remove, **new** saved-post rows (**unsaving** allowed).
+
+Messaging UI is not shipped; future surfaces must inherit the same tier rules described in later sections.
 
 ## Anonymous User Access (Not Authenticated)
 
@@ -96,7 +126,7 @@ if (!post) {
 **MUST Block:**
 - `/dashboard` - User dashboard
 - `/profile` - Profile pages
-- `/posts/*` - Community posts
+- `/places` and `/posts/*` - Community posts
 - `/saved` - Saved posts
 - `/settings` - Profile settings
 - `/messages` - Messaging
@@ -104,7 +134,7 @@ if (!post) {
 - `/community` - Community features
 - `/admin/*` - Admin features
 
-**Middleware:** `middleware.ts` requires a verified user (`supabase.auth.getUser()`) for these URL prefixes (and other app paths such as `/dashboard`, `/profile`, `/places`, `/submit`): `/posts`, `/saved`, `/settings`, `/messages`, `/upload`, `/community`, `/admin`. Unauthenticated requests are redirected to `/login` with `redirectTo` preserved.
+**Proxy:** `proxy.ts` requires a verified user (`supabase.auth.getUser()`) for these URL prefixes (and other app paths such as `/dashboard`, `/profile`, `/places`, `/submit`): `/posts`, `/saved`, `/settings`, `/messages`, `/upload`, `/community`, `/admin`. Unauthenticated requests are redirected to `/login` with `redirectTo` preserved. `/places` is now the authenticated community feed, showing public published posts plus the signed-in member's own posts.
 
 **Access Control:**
 ```typescript

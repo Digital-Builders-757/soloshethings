@@ -6,7 +6,7 @@
 
 ### Frontend Layer
 
-**Next.js 15+ Application**
+**Next.js 16+ Application**
 - App Router with React Server Components
 - TypeScript (strict mode)
 - TailwindCSS + shadcn/ui

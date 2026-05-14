@@ -14,9 +14,26 @@
  * @param email - User's email address
  * @returns Generated username
  */
+export const USERNAME_PATTERN = /^[a-z0-9_]+$/
+
+export function normalizeUsername(raw: string): string {
+  return raw.trim().toLowerCase()
+}
+
+export function isValidUsername(username: string): boolean {
+  return USERNAME_PATTERN.test(username)
+}
+
 export function generateUsername(email: string): string {
-  const base = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+  const base =
+    normalizeUsername(email.split('@')[0] ?? '')
+      .replace(/[^a-z0-9_]/g, '')
+      .slice(0, 20) || 'traveler'
+
   const random = Math.floor(Math.random() * 10000)
-  return `${base}${random}`
+    .toString()
+    .padStart(4, '0')
+
+  return `${base}_${random}`
 }
 

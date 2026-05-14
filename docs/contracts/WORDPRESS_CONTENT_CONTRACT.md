@@ -690,21 +690,18 @@ function trigger_nextjs_revalidation($post_id, $post, $update) {
     return;
   }
 
-  $webhook_url = 'https://your-domain.com/api/revalidate/wordpress';
-  $secret = 'your-webhook-secret';
+  $webhook_url = 'https://your-domain.com/api/revalidate';
+  $secret = 'same-value-as-WORDPRESS_REVALIDATE_SECRET-or-REVALIDATE_SECRET'; // see lib/wp-env.ts
 
   wp_remote_post($webhook_url, [
     'headers' => [
       'Content-Type' => 'application/json',
-      'x-wordpress-secret' => $secret,
     ],
     'body' => json_encode([
-      'post_id' => $post_id,
-      'post_type' => $post->post_type,
-      'action' => $post->post_status === 'trash' ? 'delete' : ($update ? 'update' : 'publish'),
-      'post' => [
-        'slug' => $post->post_name,
-        'status' => $post->post_status,
+      'secret' => $secret,
+      'paths' => [
+        '/blog',
+        '/blog/' . $post->post_name,
       ],
     ]),
   ]);

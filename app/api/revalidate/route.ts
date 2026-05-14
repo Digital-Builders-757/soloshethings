@@ -14,6 +14,8 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+
+import { logServerFailure } from "@/lib/server-log";
 import { getRevalidateSecret } from "@/lib/wp-env";
 
 // Validation constants
@@ -195,15 +197,11 @@ export async function POST(request: NextRequest) {
       now: Date.now(),
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    logServerFailure({
+      category: "webhook",
+      operation: "wordpress.revalidate",
+      cause: error,
+    });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

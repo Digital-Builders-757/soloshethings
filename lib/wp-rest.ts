@@ -12,6 +12,8 @@
 
 import "server-only";
 
+import { logServerFailure } from '@/lib/server-log'
+
 import { WpPost, WpPostListParams, WpPostListResponse } from "./wp-types";
 import { getWordpressBaseUrl } from "./wp-env";
 
@@ -80,18 +82,24 @@ export async function getWpPosts(
     });
 
     if (!response.ok) {
-      // Log error server-side, return empty array (graceful degradation)
-      console.error(
-        `WordPress API error: ${response.status} ${response.statusText}`
-      );
+      logServerFailure({
+        category: 'wp_fetch',
+        operation: 'getWpPosts.fetch',
+        cause: new Error(`wordpress_http_${response.status}`),
+        context: { httpStatus: response.status, page },
+      })
       return [];
     }
 
     const posts = await response.json();
     return posts;
   } catch (error) {
-    // Log error server-side, return empty array (graceful degradation)
-    console.error("Failed to fetch WordPress posts:", error);
+    logServerFailure({
+      category: 'wp_fetch',
+      operation: 'getWpPosts.catch',
+      cause: error,
+      context: { page },
+    })
     return [];
   }
 }
@@ -129,10 +137,12 @@ export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
     });
 
     if (!response.ok) {
-      // Log error server-side, return null (graceful degradation)
-      console.error(
-        `WordPress API error: ${response.status} ${response.statusText}`
-      );
+      logServerFailure({
+        category: 'wp_fetch',
+        operation: 'getWpPostBySlug.fetch',
+        cause: new Error(`wordpress_http_${response.status}`),
+        context: { httpStatus: response.status, slug },
+      })
       return null;
     }
 
@@ -144,8 +154,12 @@ export async function getWpPostBySlug(slug: string): Promise<WpPost | null> {
 
     return posts[0];
   } catch (error) {
-    // Log error server-side, return null (graceful degradation)
-    console.error("Failed to fetch WordPress post by slug:", error);
+    logServerFailure({
+      category: 'wp_fetch',
+      operation: 'getWpPostBySlug.catch',
+      cause: error,
+      context: { slug },
+    })
     return null;
   }
 }

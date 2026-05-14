@@ -83,7 +83,7 @@ Foundational principles and architectural decisions.
 
 - **[ARCHITECTURE_CONSTITUTION.md](./ARCHITECTURE_CONSTITUTION.md)** - Foundational principles, tech stack, non-negotiables, and architectural rules
 - **[PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md)** - Read-first prompt for agents/devs before changing code
-- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Next.js 15 App Router + strict TypeScript conventions and patterns
+- **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Next.js 16 App Router + strict TypeScript conventions and patterns
 - **[SECURITY_INVARIANTS.md](./SECURITY_INVARIANTS.md)** - Security rules that must never be violated
 
 ### Truth Layer
@@ -91,6 +91,7 @@ Foundational principles and architectural decisions.
 Single source of truth documents.
 
 - **[database_schema_audit.md](./database_schema_audit.md)** - Single source of truth for Supabase database schema (v0)
+- **[supabase/storage_setup_dashboard.sql](./supabase/storage_setup_dashboard.sql)** - One-time per environment: `user-uploads` bucket + storage RLS (run in Dashboard after `db push`; CLI cannot manage some `storage` DDL on hosted)
 - **[DATABASE_REPORT.md](./DATABASE_REPORT.md)** - Schema evolution, product mapping, RLS design, access patterns, and storage strategy
 - **[WORDPRESS_SUPABASE_BLUEPRINT.md](./WORDPRESS_SUPABASE_BLUEPRINT.md)** - Hybrid stack architecture blueprint: WordPress (editorial) + Supabase (identity/community) + Next.js (delivery)
 
@@ -102,7 +103,7 @@ Behavioral contracts for integrations and services.
 - **[contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md](./contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md)** - What anonymous vs authenticated vs subscribed users can access
 - **[contracts/DATA_ACCESS_QUERY_CONTRACT.md](./contracts/DATA_ACCESS_QUERY_CONTRACT.md)** - Query patterns, RLS enforcement, and data access rules
 - **[contracts/UPLOADS_STORAGE_CONTRACT.md](./contracts/UPLOADS_STORAGE_CONTRACT.md)** - File upload rules, storage buckets, privacy toggles, and image handling
-- **[contracts/BILLING_STRIPE_CONTRACT.md](./contracts/BILLING_STRIPE_CONTRACT.md)** - Subscription flow, webhook handling, trial management, and access control
+- **[contracts/BILLING_STRIPE_CONTRACT.md](./contracts/BILLING_STRIPE_CONTRACT.md)** - Subscription flow, webhook handling, trial management, and access control (live app routes: `/pricing`, `/subscribe`, `POST /api/webhooks/stripe`)
 - **[contracts/EMAIL_NOTIFICATIONS_CONTRACT.md](./contracts/EMAIL_NOTIFICATIONS_CONTRACT.md)** - Email sending rules, templates, and Resend integration patterns
 - **[contracts/WORDPRESS_CONTENT_CONTRACT.md](./contracts/WORDPRESS_CONTENT_CONTRACT.md)** - Headless WordPress integration, ISR, revalidation, and content sanitization
 
@@ -115,13 +116,19 @@ Workflow documentation and step-by-step processes.
 - **[procedures/ENVIRONMENT_PROCEDURE.md](./procedures/ENVIRONMENT_PROCEDURE.md)** - Dev vs production setup, Supabase project separation, and secret management
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, and rollback steps
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
-- **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
-- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–4** shipped in app; **§5** = smoke, docs sync, release prep)
-- **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
-- **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
-- **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness
-- **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Final MVP smoke, docs sync, and release prep batch
-- **[procedures/README.md](./procedures/README.md)** - Queue entry point for Cursor and handoffs
+- **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
+- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)
+- **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Historical archive of the post-catch-up finishing checkpoint
+- **[procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md)** - Active work order for the next community discovery/media depth batch
+- **[procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md](./procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md)** - Active backlog work order for moderation/admin, newsletter, and analytics follow-through
+- **[procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md)** - Historical batch record for auth/session reliability
+- **[procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md](./procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md)** - Historical batch record for dashboard + public frontend system cleanup
+- **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Historical batch record for docs honesty and prompt-pipeline cleanup
+- **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Historical combined auth/dashboard batch record
+- **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Historical batch record for responsive polish and loading feel
+- **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Historical batch record for profile continuity, access-control QA, and release readiness
+- **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Historical batch record for MVP smoke, docs sync, and release prep
+- **[procedures/README.md](./procedures/README.md)** - Queue entry point and archive/canonical-plan guide
 - **[procedures/LOCAL_CURSOR_WORKFLOW.md](./procedures/LOCAL_CURSOR_WORKFLOW.md)** - Local Cursor slash-command workflow, headless CMS mental model, and how local `.cursor/` helpers relate to `docs/` truth
 
 ### Proof Layer
@@ -131,14 +138,14 @@ Testing requirements, quality gates, and monitoring.
 - **[proof/QA_CHECKLIST.md](./proof/QA_CHECKLIST.md)** - Testing requirements and quality gates
 - **[proof/E2E_SMOKE_PATHS.md](./proof/E2E_SMOKE_PATHS.md)** - Critical user journeys for smoke testing
 - **[proof/MVP_SMOKE_CHECKLIST.md](./proof/MVP_SMOKE_CHECKLIST.md)** - Definitive QA checklist to verify MVP is usable and stable
-- **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Error tracking, monitoring setup, and alerting rules
+- **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Monitoring policy plus the live observability/Sentry implementation notes
 
 ### UX Canon Layer
 
 User-facing documentation and feature status.
 
 - **[USER_GUIDE.md](./USER_GUIDE.md)** - User roles, capabilities, and UX expectations
-- **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - Project status dashboard, phase planning, and progress history
+- **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - **Canonical shipped status** and progress history
 - **[BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)** - Brand color palette, usage rules, and design tokens
 - **[UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md)** - Accidentally Wes Anderson inspiration (structure only, not styling)
 - **[design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md)** - Brand color vibrancy enhancement design plan and implementation
@@ -185,6 +192,7 @@ Architecture diagrams and flow documentation.
 
 ### Email Notifications
 - **Source of Truth:** [contracts/EMAIL_NOTIFICATIONS_CONTRACT.md](./contracts/EMAIL_NOTIFICATIONS_CONTRACT.md)
+- **Marketing / newsletter interest (DB capture, no ESP yet):** `marketing_interest` table — migration `supabase/migrations/20260517194500_marketing_interest_newsletter_capture.sql`, server action `app/actions/marketing-interest.ts`
 - **Related:** [procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)
 
 ### Migration Workflow
@@ -213,6 +221,7 @@ Architecture diagrams and flow documentation.
 
 ### Monitoring & Observability
 - **Source of Truth:** [proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)
+- **Product funnel signals (`product_signal`):** [`lib/analytics/product-signals.ts`](../lib/analytics/product-signals.ts) (`captureProductSignal`; Sentry Discover filter `product_signal`)
 - **Related:** [procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)
 
 ### User Experience
@@ -262,10 +271,10 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-05-05  
+**Last Updated:** 2026-05-14  
 **Maintainer:** Development Team
 
-**Recent sync:** Catch-up items **1–4** in `procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` are reflected in app code (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes). Next execution step on that roadmap is **§5** (smoke, docs sync, release prep).
+**Recent sync:** `procedures/IMPLEMENTATION_ROADMAP.md` is now the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue.
 
 ---
 

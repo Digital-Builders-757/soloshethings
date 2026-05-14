@@ -7,6 +7,7 @@
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
 import { ProfileForm } from '@/components/profile/profile-form'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
+import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -23,5 +24,7 @@ export default async function ProfilePage() {
     return <ProfileErrorFallback context="profile" userEmail={user.email} />
   }
 
-  return <ProfileForm key={profile.updated_at} profile={profile} />
+  const avatarUrl = await getAvatarSignedUrl(profile.avatar_url)
+
+  return <ProfileForm key={profile.updated_at} profile={profile} avatarUrl={avatarUrl} />
 }

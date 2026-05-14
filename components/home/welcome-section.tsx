@@ -8,7 +8,7 @@ const storyCards = [
     location: "Marrakech, Morocco",
     image: "/images/collection-adventure.jpg",
     href: "/collections",
-    accent: "xl:mt-10",
+    accent: "xl:mt-8",
   },
   {
     title: "What I learned slowing down in a spice market",
@@ -22,14 +22,14 @@ const storyCards = [
     location: "Lisbon, Portugal",
     image: "/images/collection-safety.jpg",
     href: "/collections",
-    accent: "xl:mt-16",
+    accent: "",
   },
   {
     title: "How women travelers are building community worldwide",
     location: "Community journal",
     image: "/client-travel/garden-tiled-staircase.JPG",
     href: "/blog",
-    accent: "xl:mt-6",
+    accent: "",
   },
 ]
 
@@ -38,7 +38,7 @@ export function WelcomeSection() {
     <PatternSection tone="cream" patternTop className="py-16 md:py-24" id="stories">
       <div className="container mx-auto shell-inline pt-8 md:pt-12 lg:pt-14">
         <div className="flex flex-col gap-5 md:max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a14b24]">
+          <p className="eyebrow text-xs tracking-[0.28em]">
             Real stories from solo SHEs
           </p>
           <h2 className="font-serif text-4xl font-bold leading-tight text-[#7a331b] md:text-5xl">
@@ -54,7 +54,7 @@ export function WelcomeSection() {
             <Link
               key={story.title}
               href={story.href}
-              className={`group relative isolate flex min-h-[24rem] overflow-hidden rounded-[2rem] border border-[#ebd7bf] bg-[#e5d8c6] shadow-[0_24px_50px_rgba(122,51,27,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(122,51,27,0.14)] ${story.accent}`}
+              className={`group relative isolate flex min-h-[24rem] overflow-hidden rounded-[2rem] border border-[#ebd7bf] bg-[#e5d8c6] shadow-[0_18px_42px_rgba(122,51,27,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_58px_rgba(122,51,27,0.12)] ${story.accent}`}
             >
               <Image
                 src={story.image}

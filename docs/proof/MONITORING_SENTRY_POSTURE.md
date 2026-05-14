@@ -2,6 +2,50 @@
 
 **Purpose:** Error tracking, logging rules, error taxonomy, alert thresholds, and "no silent failure" enforcement for SoloSheThings.
 
+## Implementation (this repository)
+
+Use these primitives for new server code instead of raw `console.error` or ad hoc `Sentry.captureException` calls:
+
+1. **`logServerFailure`** — [`lib/server-log.ts`](../../lib/server-log.ts). Server-only. Logs a structured `[server-failure]` JSON payload to stderr (includes the `Error` in development). If `SENTRY_DSN` or `NEXT_PUBLIC_SENTRY_DSN` is set, also sends `Sentry.captureException` with `tags.category`, `tags.operation`, and optional `extra` (UUIDs, counts, short path prefixes only — **never** secrets or raw session tokens). `LogCategory` is the string union defined in that file (`auth`, `rls`, `storage`, `mutation`, `query`, `webhook`, `wp_fetch`, `sanitize`, `unknown`); older examples elsewhere that use tags like `database` are illustrative only—map real code to the nearest `LogCategory`.
+2. **`mapSupabaseErrorForUser`** — [`lib/supabase-errors.ts`](../../lib/supabase-errors.ts). Returns `{ userMessage, devHint? }`. Show `userMessage` in UI; use `devHint` only inside `logServerFailure` context, not in HTML.
+3. **`safeThrownErrorMessage`** — same file. For `catch` blocks that rethrow deliberate `new Error('…')` with trusted user copy; pass a readonly allowlist and a fallback so unexpected errors never leak raw messages to HTML.
+4. **Sentry bootstrap** — [`instrumentation.ts`](../../instrumentation.ts) registers [`sentry.server.config.ts`](../../sentry.server.config.ts) (Node) and [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (Edge) when `SENTRY_DSN` or `NEXT_PUBLIC_SENTRY_DSN` is set (`Sentry.init` is skipped entirely when neither is present—no hardcoded DSN in repo). [`instrumentation-client.ts`](../../instrumentation-client.ts) initializes the browser SDK only when `NEXT_PUBLIC_SENTRY_DSN` is set. **Session Replay is not enabled** (lean bundle / privacy). Server/Edge use `enableLogs: true` and traced sampling (`development` 1.0, otherwise 0.1). `export const onRequestError = Sentry.captureRequestError` captures unhandled App Router request errors. Init uses `sendDefaultPii: false`; the long **`beforeSend` samples later in this document** are reference patterns—they are **not** automatically mirrored in those config files unless we add equivalent hooks in a dedicated hardening pass.
+5. **Next.js config** — [`next.config.ts`](../../next.config.ts) applies a **single** `withSentryConfig` wrapper when **`SENTRY_ORG`** and **`SENTRY_PROJECT`** are set (typical on Vercel and CI). **`SENTRY_AUTH_TOKEN`** is optional at build time but **required for source map uploads**; without it, the tunnel and other SDK wiring still apply when org/project exist. **Tunnel route** is `/monitoring` (browser events proxied through the app to reduce ad-blocker drops). Ensure the root [`proxy.ts`](../../proxy.ts) does **not** treat `/monitoring` as an authenticated route—it is not listed under `protectedRoutes`, so the tunnel should remain reachable anonymously. If you paste a build auth token into a terminal or chat, **revoke and rotate it in Sentry** immediately and store the replacement only in CI/hosting env vars—never commit it.
+6. **Route-level UI** — [`app/error.tsx`](../../app/error.tsx) and [`app/global-error.tsx`](../../app/global-error.tsx) provide user-facing recovery UI; they call `Sentry.captureException` on the client only when `NEXT_PUBLIC_SENTRY_DSN` is set (avoids useless dynamic imports when Sentry is off).
+7. **Product signals (learning, not errors)** — [`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts) emits **info-level** `Sentry.captureEvent` messages tagged `product_signal` when a DSN is configured. Used for coarse funnel/community signals (signup complete, checkout started/return, story created/saved, report filed). **Never** put email, titles, payment identifiers, or sensitive slugs in payloads; use small enums/counts only. Opt out with `DISABLE_PRODUCT_SIGNALS=1`.
+
+### Environment variables
+
+| Variable | Scope | Purpose |
+|----------|--------|---------|
+| `NEXT_PUBLIC_SENTRY_DSN` | Client + can mirror server | Browser events; required for client tracing when Sentry is on |
+| `SENTRY_DSN` | Server/Edge (optional) | Prefer for server-only events if you keep browser DSN separate |
+| `DISABLE_PRODUCT_SIGNALS` | Server (optional) | Set to `1` to silence info-level product funnel events while keeping error capture |
+| `SENTRY_AUTH_TOKEN` | Build/CI | Upload source maps |
+| `SENTRY_ORG` | Build/CI | Organization slug for the Sentry webpack plugin |
+| `SENTRY_PROJECT` | Build/CI | Project slug for the Sentry webpack plugin |
+
+### `product_signal` names (Discover filter `tags[product_signal]`)
+
+| Tag value | Rough meaning |
+|-----------|----------------|
+| `signup_completed` | Profile bootstrap succeeded (`confirm_email_pending` extras when Supabase confirms email-only hand-off) |
+| `membership_checkout_started` | Stripe Checkout Session created and user redirected host-side |
+| `membership_checkout_return` | User lands on `/subscribe/success` with Stripe `session_id` query param echo |
+| `community_post_created` | Published draft saved from `/submit` with coarse metadata counts |
+| `community_story_saved` | Net-new save inserted (bucketed via `path_group` only) |
+| `community_report_submitted` | New post report row inserted |
+
+### Current verification note (2026-05-14)
+
+- Re-run `npm run typecheck`, `npm run lint`, and `npm run build` after changes; they are the gate for this lane.
+- The webpack production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive instrumentation packages. Treat that as known upstream noise unless it turns into a failing build or runtime issue.
+- **Smoke:** With `NEXT_PUBLIC_SENTRY_DSN` (and on the server optionally `SENTRY_DSN`) set in `.env.local`, trigger a non-production error (e.g. temporary throw in a dev-only path) or use Sentry’s project health/issue verification so you see an event. Wizard sample routes (`/sentry-example-page`) are **not** shipped—avoid public throw endpoints in production.
+
+### Tunnel and local `.env.sentry-build-plugin`
+
+- The Sentry wizard may create **`.env.sentry-build-plugin`** (gitignored) for local source-map experiments. Prefer **`SENTRY_AUTH_TOKEN`** on Vercel/GitHub Actions for real uploads. Never commit auth tokens.
+
 ## Non-Negotiables
 
 1. **No Silent Failures** - All errors MUST be logged. Operations MUST throw or return explicit error states.

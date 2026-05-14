@@ -1,439 +1,162 @@
 # Implementation Roadmap
 
-**Purpose:** Complete implementation roadmap for SoloSheThings MVP. Resume from where you left off at any time.
+**Purpose:** canonical current execution plan and resume guide for SoloSHEThings.
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** May 5, 2026
+**Last Updated:** 2026-05-17
 
 ---
 
-## 📊 Overall Progress
+## What this document is for
 
-- ✅ **Phase 0:** Documentation & Architecture (100%)
-- ✅ **Phase 1:** Backend Foundation (100% - Auth + WordPress Complete)
-- 🚧 **Phase 2:** Design System (50% - IN PROGRESS)
-- 📋 **Phase 3:** Page Implementation (0%)
-- 📋 **Phase 4:** Advanced Features (0%)
-- 📋 **Phase 5:** Polish & Launch Prep (0%)
+Use this file for **what to build next** and **how to resume work quickly**.
 
-**Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
-
-**Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — steps **1–4** are implemented; **§5** is smoke, docs sync, and release prep.
-
----
-
-## ✅ PHASE 1: BACKEND FOUNDATION - COMPLETE
-
-**Status:** 100% Complete (Backend Foundation + WordPress Editorial Layer)
-**Completion Date:** January 27, 2025
-
-### What Was Built
-
-**Environment & Configuration:**
-- ✅ `.env.example` - Complete environment variable template
-- ✅ `.gitignore` - Properly configured to protect secrets
-- ✅ `package.json` - Supabase packages installed (@supabase/supabase-js, @supabase/ssr)
-
-**Supabase Integration:**
-- ✅ `lib/supabase/server.ts` - Server-side client for Server Components & Actions
-- ✅ `lib/supabase/client.ts` - Browser client for Client Components
-- ✅ `lib/supabase/middleware.ts` - Session refresh helper
-- ✅ `types/database.ts` - TypeScript types (placeholder until migration runs)
-
-**Database Schema:**
-- ✅ `supabase/migrations/20250101000000_initial_schema.sql` - Complete migration
-- ✅ 8 tables: profiles, subscriptions, community_posts, post_images, saved_posts, reports, events (stub), messages (stub)
-- ✅ 8 enums: user_role, privacy_level, subscription_status, post_status, report_reason, report_status, event_status, saved_post_type
-- ✅ Row Level Security (RLS) policies on all tables
-- ✅ Storage bucket: user-uploads with RLS policies
-- ✅ All indexes and triggers
-
-**Authentication System:**
-- ✅ `app/actions/auth.ts` - Server actions (signup, login, logout)
-- ✅ `middleware.ts` - Route protection middleware
-- ✅ `app/(auth)/login/page.tsx` - Functional login page
-- ✅ `app/(auth)/signup/page.tsx` - Functional signup page
-- ✅ `app/(app)/dashboard/page.tsx` - Basic authenticated dashboard
-
-**WordPress Editorial Layer:**
-- ✅ `lib/wp-rest.ts` - WordPress REST API client (server-only)
-- ✅ `lib/wp-types.ts` - WordPress TypeScript types
-- ✅ `lib/sanitize.ts` - HTML sanitization helper (sanitize-html)
-- ✅ `components/prose.tsx` - Canonical HTML renderer
-- ✅ `app/(public)/blog/page.tsx` - Blog list with ISR
-- ✅ `app/(public)/blog/[slug]/page.tsx` - Blog detail with ISR
-- ✅ `app/api/revalidate/route.ts` - Webhook revalidation endpoint
-- ✅ `app/api/preview/route.ts` - Preview mode endpoint
-- ✅ `app/(public)/preview/[...slug]/page.tsx` - Preview page
-
-**Documentation Updates:**
-- ✅ `docs/MVP_STATUS_NOTION.md` - Phase 1 marked complete
-- ✅ `docs/contracts/AUTH_CONTRACT.md` - Implementation status added
-- ✅ `docs/contracts/WORDPRESS_CONTENT_CONTRACT.md` - Tag standards documented
-- ✅ `docs/WORDPRESS_SUPABASE_BLUEPRINT.md` - Blueprint documented
-- ✅ `docs/database_schema_audit.md` - Migration file referenced
-
-### User Setup Required
-
-Before Phase 2 work can be tested, you need to:
-
-1. **Create Supabase Project:**
-   - Go to https://supabase.com/dashboard
-   - Create project: `soloshethings-dev`
-   - Save database password
-
-2. **Link Local Project:**
-   ```bash
-   supabase link --project-ref <your-project-ref>
-   ```
-
-3. **Create `.env.local`:**
-   ```bash
-   cp .env.example .env.local
-   # Fill in your Supabase credentials
-   ```
-
-4. **Run Migration:**
-   ```bash
-   supabase db push
-   ```
-
-5. **Generate Types:**
-   ```bash
-   supabase gen types typescript --local > types/database.ts
-   ```
-
-6. **Test:**
-   ```bash
-   npm run dev
-   # Visit http://localhost:3000 and test signup/login
-   ```
-
-**Reference:** See `docs/procedures/ENVIRONMENT_PROCEDURE.md` for detailed setup instructions.
-
-### Remaining Phase 1 Features
-
-- 📋 Stripe subscription integration (7-day trial, billing webhook)
-- 📋 Admin post creation interface
-- 📋 Photo upload system (Supabase Storage)
-- 📋 Profile editing and avatar uploads
+Use these companion docs for everything else:
+- `docs/MVP_STATUS_NOTION.md` — canonical shipped status + progress history
+- `docs/DOCUMENTATION_INDEX.md` — canonical doc map
+- `docs/contracts/` — live behavior rules
+- `docs/proof/` — QA, smoke, and monitoring expectations
+- `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — historical May 2026 catch-up archive
+- `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md` — historical post-catch-up checkpoint archive
 
 ---
 
-## 🚧 PHASE 2: DESIGN SYSTEM - 50% COMPLETE (CURRENT)
+## Current repo state
 
-**Status:** In Progress
-**Started:** January 27, 2025
+### Completed checkpoints
 
-### ✅ Completed (Part 1)
+- Catch-up batches **1–5** are complete for the May 2026 smoke + release milestone.
+- The follow-on finish-line batches for auth reliability, frontend/system cleanup, and docs/prompt cleanup are complete.
+- Since those checkpoints, the repo has also shipped:
+  - profile continuity improvements and private avatar uploads
+  - authenticated `/submit` with real community post image uploads
+  - authenticated `/places`, `/saved`, and `/reports` member surfaces
+  - owner story edit/archive/restore/photo-management controls
+  - discovery/search/filter/load-more/member-filter polish across member surfaces
+  - hosted Supabase storage setup documentation for Dashboard SQL
+  - webpack build/dev defaults and recent auth redirect/schema fixes
+  - **Observability + error UX (2026-05-14)** — structured server logging (`logServerFailure` in `lib/server-log.ts`), safe Supabase mapping plus `safeThrownErrorMessage` for deliberate throws (`lib/supabase-errors.ts`), Sentry bootstrap/wiring, on-brand `app/error.tsx` / `app/global-error.tsx` (Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set), honest machine-facing responses for WordPress revalidate/preview, and profile/WP read paths using the shared logger instead of ad hoc `console.error`.
+  - **Stripe subscription + premium gating (2026-05-14)** — `/pricing`, `/subscribe` Checkout, `POST /api/webhooks/stripe` + `stripe_webhook_ledger`, Supabase-only entitlements and `community_post_reads` free-tier read caps.
 
-**Typography System:**
-- ✅ `app/layout.tsx` - Inter font from Google Fonts integrated
-- ✅ `app/globals.css` - Typography CSS variables added
-- ✅ `tailwind.config.ts` - Typography scale configured
-  - Display sizes: XL (56px), LG (44px), MD (36px)
-  - Font family: Inter with system fallbacks
-  - Line heights and weights defined
+  - **Community second-pass depth (2026-05-15)** — optional `place_label` + capped `story_tags` on `community_posts` (migration `20260515194500_community_place_label_story_tags.sql`), honest `/places` facet chips + `place`/`topic`/`sort` query helpers, stronger `getCommunityRelatedPosts` ranking from shared anchors/tags (no ML), owner `post_images` alt + reorder via new `UPDATE` RLS policy (`app/actions/community-posts.ts`, `components/submit/owner-post-image-manager.tsx`).
+  - **Moderation operator increment (2026-05-16)** — migration `20260516203000_moderation_admin_rls_reports.sql`, `/admin/moderation`, reporter `withdraw_post_report`, admin-only `moderator_update_report`, `withdrawn` report status surfaced across member UIs, owner permanent-remove confirmation.
+  - **Honest homepage marketing-interest capture (2026-05-17)** — `marketing_interest` table + `/` newsletter panel (`submitMarketingInterest`, service role insert/update); no outbound marketing/automation bundled.
+  - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry info events tagged `product_signal` (signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
 
-**Design Tokens:**
-- ✅ `app/globals.css` - Complete token system:
-  - Spacing scale: 8pt grid (4px to 96px)
-  - Border radius: sm to 2xl + full
-  - Shadows: xs to xl (subtle, professional)
-  - Animation durations: fast (150ms), normal (250ms), slow (350ms)
-  - Easing functions: in-out, out, in
-- ✅ `tailwind.config.ts` - All tokens available as Tailwind utilities
+### Live in-progress work
 
-**Core UI Components (5/5 Complete):**
-- ✅ `components/ui/button.tsx` - Variants, sizes, states, accessibility
-- ✅ `components/ui/input.tsx` - Types, validation, error states
-- ✅ `components/ui/textarea.tsx` - Character count, auto-resize
-- ✅ `components/ui/badge.tsx` - Variants, sizes, removable
-- ✅ `components/ui/avatar.tsx` - Sizes, fallbacks, status indicators
+- **No mandatory queue item** until product prioritizes the stretch lane below.
 
-### 📋 Remaining (Part 2)
+### Resume pointer
 
-**Feedback Components (5 components):**
-1. Alert Component (`components/ui/alert.tsx`)
-2. Skeleton Loader (`components/ui/skeleton.tsx`)
-3. Spinner Component (`components/ui/spinner.tsx`)
-4. Modal/Dialog (`components/ui/modal.tsx`)
-5. Toast Notifications (`components/ui/toast.tsx`)
-
-**Trust & Safety Components (3 components):**
-1. Privacy Toggle (`components/privacy/privacy-toggle.tsx`)
-2. Privacy Badge (`components/privacy/privacy-badge.tsx`)
-3. Report Button (`components/safety/report-button.tsx`)
-
-**Empty State Component:**
-1. Empty State (`components/ui/empty-state.tsx`)
-
-**Documentation to Create/Update:**
-1. Create `docs/DESIGN_SYSTEM.md` (NEW - Truth Layer)
-2. Update `docs/CODING_STANDARDS.md`
-3. Update `docs/BRAND_STYLE_GUIDE.md`
-4. Update `docs/MVP_STATUS_NOTION.md`
-5. Update `docs/DOCUMENTATION_INDEX.md`
+- **Branch target:** `develop`
+- **Latest shipped batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs). Prior batch: moderation operator increment (2026-05-16).
+- **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
+- **Next focus:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
 
 ---
 
-## 📋 PHASE 3: PAGE IMPLEMENTATION (UPCOMING)
+## Canonical current plan
 
-**Status:** Not Started
-**Estimated Duration:** 2-3 weeks
+Work top to bottom unless a regression or blocker forces a reorder.
 
-### Overview
+### 1) Community second-pass depth — ✅ SHIPPED (2026-05-15)
 
-Use the Design System components to build all pages with real functionality.
+Honest taxonomy + place anchors tied to publisher input, deterministic related-story ranking within RLS-visible candidates, richer owner media controls (description + ordering), feed sort + anchored discovery UX on `/places`.
 
-### 3.1 Enhanced Home Page (Public)
-- Hero section with display-xl typography
-- Trust signals (3-column grid with icons)
-- Featured safe spots (6 cards, using PlaceCard component)
-- Community preview (auth-gated with Privacy Badge)
-- How it works (4-step process)
-- Transparent pricing ($3.99/month, 7-day trial)
-- Final CTA section
+**Implementation pointers:** [`lib/community-story-taxonomy.ts`](../../lib/community-story-taxonomy.ts), [`lib/queries/community-posts.ts`](../../lib/queries/community-posts.ts), migration `supabase/migrations/20260515194500_community_place_label_story_tags.sql`.
 
-### 3.2 Authentication Pages Enhancement
-- Replace inline form styles with Input component
-- Add proper error handling with Alert component
-- Add loading states with Button loading prop
-- Add form validation feedback
+**Historical work-order notes:** `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md` (execution checklist / context).
 
-### 3.3 Community Feed (Authenticated)
-- Sticky tag filter bar
-- Grid of post cards with Privacy badges
-- Pagination (20 posts per page)
-- Floating action button (mobile): "New Post"
-- Empty state when no posts match filters
+### 2) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
 
-### 3.4 Post Detail Page
-- Breadcrumb navigation
-- Full-width hero image gallery
-- Post metadata (author with Avatar, location, date, Privacy Badge)
-- Tags display (using Badge component)
-- Rich text content (Prose component)
-- Action buttons: Save, Report, Edit/Delete
+**Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
-### 3.5 Post Submission Flow
-- Multi-step form (4 steps): Basic Info, Your Story, Photos, Privacy & Tags
-- Image upload component (drag-drop, up to 10 images, 5MB each)
-- Privacy Toggle: Public/Private
-- Tag selector: Safety Level, Budget, Region
-- Success state with Toast notification
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
 
-### 3.6 User Profile Pages
-- Public profile view (`app/(app)/profile/[username]/page.tsx`)
-- Edit own profile (`app/(app)/profile/edit/page.tsx`)
-- Avatar upload with preview
-- Privacy Toggle: Profile visibility
+**Shipped in this increment:**
+- Platform role `profiles.role = 'admin'` plus `/admin/moderation` queue (App Router + RLS-backed reads)
+- Reporter-only `withdraw_post_report`, admin-only `moderator_update_report`, `report_status.withdrawn`, audited `reviewed_at` / `reviewed_by`
+- Owner **permanent remove** with destructive-action guardrails (complements archive/restore)
 
-### 3.7 Settings Page
-- Tab structure: Account, Privacy, Notifications, Subscription, Help & Support
-- Privacy Toggle: Profile visibility, Default post privacy
-- Subscription management (Stripe portal)
-- Delete Account (with confirmation modal)
+**Still open / intentionally out of scope for this increment:**
+- Rich editorial workflows, analytics dashboards, non-post report targets
+- Optional future admin post-creation tooling if product priorities change
+
+### 3) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
+
+**Goal:** Replace placeholder marketing CTAs with **honest, operations-friendly** tooling while larger ESP integrations stay optional.
+
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+
+**Shipped in this increment (2026-05-17):**
+- `marketing_interest` table migration (`supabase/migrations/20260517194500_marketing_interest_newsletter_capture.sql`)
+- Authentic public homepage form routed through **`submitMarketingInterest`** (`app/actions/marketing-interest.ts`) via **service-role** inserts/updates (`SUPABASE_SERVICE_ROLE_KEY`)
+- UI + success/error copy stating **explicitly** that automated marketing sends are **not wired** yet; operators manually export/import
+
+**Companion backlog deliverable (prompt pack Prompt 3, 2026-05-17):**
+
+- Coarse **`product_signal.*`** funnel events emitted via **`captureProductSignal`** ([`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts)); Discover filter `tags[product_signal]` — opt out globally with **`DISABLE_PRODUCT_SIGNALS=1`**.
+
+**Still deliberate follow-up (explicitly optional / backlog-driven):**
+- ESP audience sync & scheduled campaigns
+- Double opt-in or compliance tooling if/when broadcasts begin
+- Dedicated dashboards interpreting `product_signal` volume beyond raw Sentry search
+
+## Priority override rule
+
+If a regression appears in auth, access control, billing, or data safety, fix that first even if it interrupts the queue above.
 
 ---
 
-## 📋 PHASE 4: ADVANCED FEATURES (FUTURE)
+## Historical work-order map
 
-**Status:** Not Started
-**Dependencies:** Phase 1 & 3 complete
+These files remain useful as **completed batch records / implementation notes**, not as the active queue:
+- `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`
 
-### 4.1 Content Moderation System
-- Report button on posts and profiles
-- Admin moderation queue (`app/admin/moderation/page.tsx`)
-- Report resolution workflow
-
-### 4.2 Stripe Subscription Integration
-- Stripe customer creation on signup
-- Subscription with 7-day trial
-- Webhook handling (subscription events)
-- Subscription management UI
-
-### 4.3 Collections & Advanced Filtering
-- Filter sidebar (desktop) / drawer (mobile)
-- Multi-select filters: safety level, budget, wellness, region
-- Active filter chips (removable)
-
-### 4.4 Saved Posts Feature
-- Save button on post cards
-- Saved posts page (`app/(app)/saved/page.tsx`)
-- Unsave functionality
-
-### 4.5 Photo Upload System
-- Drag-drop interface
-- Multi-file selection (up to 10 images)
-- Image preview before upload
-- Upload progress indicator
-- 5MB file size limit
-- Prominent "No face recognition" messaging
+Only reopen one of those if a regression sends work back into that lane.
 
 ---
 
-## 📋 PHASE 5: POLISH & LAUNCH PREP (FUTURE)
+## Resume checklist
 
-**Status:** Not Started
-**Dependencies:** Phase 3 complete
+When resuming SoloSHEThings work, read in this order:
+1. `docs/procedures/IMPLEMENTATION_ROADMAP.md`
+2. `docs/MVP_STATUS_NOTION.md`
+3. the contract docs for the active lane
+4. the proof docs for the active lane
+5. the relevant historical work order only if you need prior batch notes
 
-### 5.1 Mobile Experience Optimization
-- Mobile menu (slide-out drawer)
-- Pull-to-refresh on feed pages
-- Optimize touch targets
-- Test forms on mobile keyboards
-
-### 5.2 Loading States & Transitions
-- Skeleton loaders to all data-fetching pages
-- Smooth page transitions
-- Toast notifications for all user actions
-- Optimistic UI updates
-
-### 5.3 Empty States
-- Empty state designs with illustrations/icons
-- Add empty states to all relevant pages
-
-### 5.4 Error Handling & Validation
-- Form validation (client-side + server-side)
-- Error toast notifications
-- Inline field validation
-- Graceful error pages (404, 500, 403)
-
-### 5.5 Accessibility Audit
-- Test with screen reader
-- Keyboard navigation on all pages
-- ARIA labels on all interactive elements
-- Color contrast verification (WCAG AA)
-- Focus states on all focusable elements
-
-### 5.6 Performance Optimization
-- Next.js Image component for all images
-- Code splitting (dynamic imports)
-- ISR for static content
-- Database query optimization
-- Bundle size analysis
-- Lighthouse audit (90+ scores)
-
----
-
-## 🎯 QUICK RESUME GUIDE
-
-### Where You Left Off
-
-**Last Completed:**
-- ✅ Phase 1: Backend Foundation (100%)
-- ✅ Phase 1: WordPress Editorial Layer (100%)
-- ✅ Catch-up **1–4** (`SOLOSHETHINGS_CATCHUP_ROADMAP.md`): auth + dashboard, shell polish, site polish/performance, launch hardening — **in code** (see each `SOLOSHETHINGS_*_WORK_ORDER.md` implementation notes)
-- 🚧 Phase 2: Design System - Core Components (50%)
-
-**Next Steps:**
-1. Run catch-up **§5**: `docs/proof/MVP_SMOKE_CHECKLIST.md`, keep `docs/proof/E2E_SMOKE_PATHS.md` honest vs the live app, `docs/procedures/PRE_PUSH_CHECKLIST.md`, then release per `RELEASE_PROCEDURE.md`
-2. Continue Phase 2 design system items (feedback, trust/safety, empty state)
-3. Resume Phase 3 page implementation when priorities allow
-
-### Quick Start Commands
-
-**To resume development:**
+Then check live repo state:
 ```bash
-cd "path-to/SoloSHEThings"   # Your clone, e.g. Desktop\Project Files\SoloSHEThings
-npm run dev
-# Visit http://localhost:3000
+git status --short --branch
+git log --oneline -20
+npm run typecheck
+npm run lint
+npm run build
 ```
 
-**To check current status:**
-```bash
-git status                    # See what files changed
-npm run typecheck             # Verify TypeScript is valid
-npm run build                 # Test if everything builds
-```
-
-**If Supabase not set up yet:**
-```bash
-# See docs/procedures/ENVIRONMENT_PROCEDURE.md for full setup instructions
-supabase link --project-ref <your-ref>
-supabase db push
-supabase gen types typescript --local > types/database.ts
-```
-
-### Files You Can Use Right Now
-
-**Working Components:**
-- `components/ui/button.tsx` - Ready to use!
-- `components/ui/input.tsx` - Ready to use!
-- `components/ui/textarea.tsx` - Ready to use!
-- `components/ui/badge.tsx` - Ready to use!
-- `components/ui/avatar.tsx` - Ready to use!
-
 ---
 
-## 📝 IMPORTANT NOTES
+## Documentation rules
 
-### Documentation Rules (CRITICAL)
-- ✅ **ONE source of truth per topic** - Never duplicate information
-- ✅ **Update docs when code changes** - Keep them in sync
-- ✅ **Cross-reference, don't duplicate** - Link to other docs
-- ✅ **Follow the 7-layer structure** - Constitution → Truth → Contracts → Procedures → Proof → UX → Diagrams
-
-### Code Quality Standards
-- ✅ **TypeScript strict mode** - No any types
-- ✅ **Server Components by default** - Use "use client" only when needed
-- ✅ **Explicit column selection** - Never SELECT * in queries
-- ✅ **RLS enforced** - All database access respects Row Level Security
-- ✅ **Accessibility** - WCAG AA minimum, screen reader tested
-- ✅ **Mobile-first** - Design for mobile, enhance for desktop
-
-### Security Invariants
-- ✅ **Never expose service role key** - Server-only
-- ✅ **Use getUser(), not getSession()** - For auth checks
-- ✅ **Validate all inputs** - Client AND server side
-- ✅ **Sanitize all HTML** - Use lib/sanitize.ts
-- ✅ **No face recognition** - Privacy promise
-
----
-
-## 🎉 SUCCESS METRICS
-
-### Phase 2 Complete When:
-- [ ] All 13 UI components built
-- [ ] DESIGN_SYSTEM.md created
-- [ ] All 4 docs updated
-- [ ] Component tests pass (visual review)
-- [ ] Accessibility verified (keyboard nav, screen reader)
-
-### Phase 3 Complete When:
-- [ ] All pages functional with real data
-- [ ] Navigation between pages works
-- [ ] Forms submit correctly
-- [ ] Error handling works
-- [ ] Loading states implemented
-
-### MVP Launch Ready When:
-- [ ] All smoke test paths pass (docs/proof/E2E_SMOKE_PATHS.md)
-- [ ] RLS policies tested and working
-- [ ] Accessibility audit complete (WCAG AA)
-- [ ] Performance audit (Lighthouse 90+)
-- [ ] Security audit (no exposed secrets, proper validation)
-- [ ] Documentation 100% in sync with code
-
----
-
-## 💡 PRO TIPS
-
-1. **Always read the contracts first** - They define expected behavior
-2. **Update docs as you code** - Don't let them drift
-3. **Test RLS policies** - Create test users with different roles
-4. **Use the design system** - Don't create one-off styles
-5. **Mobile-first** - Always check mobile layout
-6. **Accessibility matters** - Test with keyboard and screen reader
-7. **Keep it simple** - Don't over-engineer
+- Keep **this file** as the single source of truth for the active plan.
+- Keep `docs/MVP_STATUS_NOTION.md` as the single source of truth for shipped status/history.
+- Do not create a second “current plan” doc.
+- When a batch finishes, update status/history docs in the same pass.
+- When a batch becomes historical, leave the work order in place but label it through the index/README as archival context, not active queue.
 
 ---
 
 **Related Documents:**
-- `docs/MVP_STATUS_NOTION.md` - Detailed status and progress history
-- `docs/DOCUMENTATION_INDEX.md` - Find any doc
-- `docs/procedures/ENVIRONMENT_PROCEDURE.md` - Environment setup guide
-- `docs/contracts/` - Behavioral contracts for each feature
-
+- `docs/MVP_STATUS_NOTION.md`
+- `docs/DOCUMENTATION_INDEX.md`
+- `docs/contracts/`
+- `docs/proof/`

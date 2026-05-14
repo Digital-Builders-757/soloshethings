@@ -2,6 +2,8 @@
 
 **Purpose:** File upload rules, storage buckets, path conventions, privacy toggles, signed URLs, and moderation hooks for SoloSheThings.
 
+**Hosted Supabase:** After `supabase db push`, create the `user-uploads` bucket and storage policies using [../supabase/storage_setup_dashboard.sql](../supabase/storage_setup_dashboard.sql) in the Dashboard SQL Editor (CLI migrations cannot manage some `storage` DDL on hosted projects).
+
 ## Non-Negotiables
 
 1. **RLS on Storage** - All storage buckets MUST have RLS policies enabled.
@@ -24,6 +26,7 @@
 - **Allowed Types:** `image/jpeg`, `image/png`, `image/webp`
 - **Auto-optimize:** Yes (via Next.js Image component)
 - **RLS:** Enabled
+- **Current implementation:** `profiles.avatar_url` stores the avatar storage path; signed URLs are generated server-side for dashboard/profile rendering
 
 **Path Convention:**
 ```
@@ -47,29 +50,28 @@ avatars/
 - **Public:** No (access via signed URLs or RLS based on post privacy)
 - **File Size Limit:** 5MB per file
 - **Allowed Types:** `image/jpeg`, `image/png`, `image/webp`
-- **Max Files per Post:** 10
+- **Max Files per Post:** 5
 - **Auto-optimize:** Yes (via Next.js Image component)
 - **RLS:** Enabled
+- **Current implementation:** `/submit` uses a server action to create `community_posts`, upload validated files to `post-images`, insert `post_images` metadata rows, and then resolve recent-submit previews from `storage_path` via signed URLs on the server. Story owners manage photos from `/places/[id]`: remove, add (until the 5-image cap), edit `alt_text`, and reorder gallery order by updating the `order` column (RLS `UPDATE` policy on `post_images`); replacing an asset still means delete + upload—no hidden storage overwrite.
 
 **Path Convention:**
 ```
 post-images/
   {userId}/
-    {date}/
+    posts/
       {postId}/
-        {order}-{uuid}.{ext}
+        {timestamp}-{uuid}.{ext}
 ```
-
-**Date Format:** `YYYY-MM-DD` (e.g., `2024-01-27`)
 
 **Example:**
 ```
 post-images/
   550e8400-e29b-41d4-a716-446655440000/
-    2024-01-27/
+    posts/
       a1b2c3d4-e5f6-7890-abcd-ef1234567890/
-        0-a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg
-        1-b2c3d4e5-f6a7-8901-bcde-f23456789012.png
+        1706284800000-a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg
+        1706284805000-b2c3d4e5-f6a7-8901-bcde-f23456789012.png
 ```
 
 ### creator-media (Private)

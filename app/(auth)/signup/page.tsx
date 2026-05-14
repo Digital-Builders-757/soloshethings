@@ -8,16 +8,35 @@
 "use client"
 
 import { signup } from "@/app/actions/auth"
-import Link from "next/link"
-import { useFormState } from "react-dom"
 import { Mail, Lock, User } from "lucide-react"
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { useActionState } from "react"
+import { useFormStatus } from "react-dom"
+
+function SignupSubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
+    >
+      {pending ? "Creating account..." : "Sign up"}
+    </button>
+  )
+}
 
 export default function SignupPage() {
-  const [state, formAction] = useFormState(signup, null)
+  const [state, formAction] = useActionState(signup, null)
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirectTo") ?? ""
+  const loginHref = redirectTo ? `/login?redirectTo=${encodeURIComponent(redirectTo)}` : "/login"
 
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-16">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#efdac1] bg-white shadow-[0_30px_80px_rgba(122,51,27,0.12)] lg:grid-cols-[1.02fr_0.98fr]">
+      <div className="editorial-card-strong grid w-full max-w-5xl overflow-hidden lg:grid-cols-[1.02fr_0.98fr]">
         {/* Branded panel */}
         <div className="relative isolate hidden flex-col justify-center overflow-hidden bg-[#7a331b] px-8 py-12 text-[#fff5df] lg:flex lg:px-12 lg:py-16">
           <div
@@ -53,7 +72,7 @@ export default function SignupPage() {
               </li>
             </ul>
             <Link
-              href="/login"
+              href={loginHref}
               className="mt-8 inline-flex text-sm font-semibold uppercase tracking-[0.14em] text-[#fab642] transition-colors hover:text-[#f5b137]"
             >
               Already have an account? Sign in →
@@ -70,7 +89,7 @@ export default function SignupPage() {
         {/* Form */}
         <div className="flex flex-col justify-center bg-[#fffaf0] px-6 py-10 sm:px-10 sm:py-12">
           <div className="mx-auto w-full max-w-md">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#a14b24] lg:hidden">Account</p>
+            <p className="eyebrow lg:hidden">Account</p>
             <h2 className="mt-2 hidden font-serif text-3xl font-bold text-[#7a331b] lg:block">Create account</h2>
             <p className="mt-2 text-sm leading-6 text-[#6d5849] lg:mt-3">
               A few details and you are in—same warmth as the homepage, none of the cold SaaS vibes.
@@ -86,6 +105,7 @@ export default function SignupPage() {
             )}
 
             <form action={formAction} className="mt-8 space-y-5">
+              <input type="hidden" name="redirectTo" value={redirectTo} />
               <div>
                 <label htmlFor="email" className="mb-2 block text-sm font-semibold text-[#7a331b]">
                   Email
@@ -96,7 +116,7 @@ export default function SignupPage() {
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    className="editorial-input warm-focus-ring py-3.5 pl-11 pr-4 placeholder:text-[#b28b6f]"
                     placeholder="your@email.com"
                     required
                   />
@@ -113,7 +133,7 @@ export default function SignupPage() {
                     type="password"
                     id="password"
                     name="password"
-                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    className="editorial-input warm-focus-ring py-3.5 pl-11 pr-4 placeholder:text-[#b28b6f]"
                     placeholder="••••••••"
                     minLength={6}
                     required
@@ -131,32 +151,28 @@ export default function SignupPage() {
                     type="text"
                     id="username"
                     name="username"
-                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    className="editorial-input warm-focus-ring py-3.5 pl-11 pr-4 placeholder:text-[#b28b6f]"
                     placeholder="choose a username"
                     pattern="[a-zA-Z0-9_]+"
                     title="Username can only contain letters, numbers, and underscores"
                     required
                   />
                 </div>
+                <p className="mt-2 text-xs text-[#6d5849]">Letters, numbers, and underscores only.</p>
               </div>
 
               <div className="rounded-2xl border border-[#efd4b2] bg-[#f7e8be]/50 p-4 text-[#7a331b]">
                 <p className="text-sm font-semibold leading-6">
-                  Start with a 7-day free trial—full access to explore what we are building.
+                  Create your member profile now. Paid tiers and premium access are still being rolled out, so this screen only promises account creation and member updates.
                 </p>
               </div>
 
-              <button
-                type="submit"
-                className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98]"
-              >
-                Sign up
-              </button>
+              <SignupSubmitButton />
             </form>
 
             <div className="mt-8 text-center">
               <Link
-                href="/login"
+                href={loginHref}
                 className="text-sm font-semibold text-[#e34b16] underline-offset-4 transition-colors hover:text-[#c74010] hover:underline"
               >
                 Already have an account? Sign in

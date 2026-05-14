@@ -35,8 +35,8 @@
 
 **Causes:**
 - Profile bootstrap failed silently
-- Transaction rollback didn't happen
-- Race condition in signup flow
+- Username collision happened between preflight and insert (rare race)
+- Sign-up created the auth user but profile creation still failed
 - RLS policy blocking profile creation
 
 **Check:**
@@ -56,6 +56,9 @@ LIMIT 10;
 ```
 
 **Fix:**
+1. Have the user try signing in with the same email. The login path runs bounded profile repair again.
+2. If login still lands on `ProfileErrorFallback`, use the SQL below.
+
 ```sql
 -- Manual profile repair (admin only, use service role)
 INSERT INTO profiles (id, username, role, privacy_level)
@@ -78,6 +81,7 @@ RETURNING id, username;
 - Invalid token signature
 - Cookie not set correctly
 - Middleware not reading cookies
+- Redirect response dropped refreshed Supabase cookies
 
 **Check:**
 ```typescript
@@ -116,6 +120,7 @@ export async function getUser() {
 - Verify `NEXT_PUBLIC_SUPABASE_URL` matches Supabase project
 - Check token expiration settings
 - Verify middleware is not blocking cookies
+- When middleware redirects, preserve cookies from the refreshed `updateSession()` response onto the redirect response
 
 ### 3. Redirect Loops
 

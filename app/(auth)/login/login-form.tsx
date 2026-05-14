@@ -1,21 +1,46 @@
 "use client"
 
 import { login } from "@/app/actions/auth"
+import { Mail, Lock } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useFormState } from "react-dom"
-import { Mail, Lock } from "lucide-react"
+import { useActionState } from "react"
+import { useFormStatus } from "react-dom"
+
+const redirectLabels: Record<string, string> = {
+  "/dashboard": "your dashboard",
+  "/profile": "your profile",
+  "/submit": "the submission form",
+  "/settings": "settings",
+}
+
+function LoginSubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
+    >
+      {pending ? "Signing in..." : "Sign in"}
+    </button>
+  )
+}
 
 export function LoginForm() {
-  const [state, formAction] = useFormState(login, null)
+  const [state, formAction] = useActionState(login, null)
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") ?? ""
   const notice = searchParams.get("notice")
   const signedOut = searchParams.get("signedOut")
+  const redirectPath = redirectTo.split("?")[0] || redirectTo
+  const redirectLabel = redirectLabels[redirectPath]
+  const signupHref = redirectTo ? `/signup?redirectTo=${encodeURIComponent(redirectTo)}` : "/signup"
 
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-16">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#efdac1] bg-white shadow-[0_30px_80px_rgba(122,51,27,0.12)] lg:grid-cols-[1.02fr_0.98fr]">
+      <div className="editorial-card-strong grid w-full max-w-5xl overflow-hidden lg:grid-cols-[1.02fr_0.98fr]">
         <div className="relative isolate hidden flex-col justify-center overflow-hidden bg-[#d85a23] px-8 py-12 text-[#fff5df] lg:flex lg:px-12 lg:py-16">
           <div
             className="pointer-events-none absolute inset-x-0 bottom-0 h-20 opacity-85"
@@ -41,10 +66,10 @@ export function LoginForm() {
             <div className="mt-8 rounded-[1.5rem] border border-[#efd4b2]/70 bg-[#fff6e8]/10 p-5 backdrop-blur-sm">
               <p className="text-sm font-semibold text-[#fff4df]">New here?</p>
               <p className="mt-2 text-sm leading-6 text-[#fff6e8]/80">
-                Create an account to join the journey and unlock the full experience.
+                Create an account to save your profile and stay close as the platform grows.
               </p>
               <Link
-                href="/signup"
+                href={signupHref}
                 className="mt-4 inline-flex items-center text-sm font-semibold uppercase tracking-[0.14em] text-[#fab642] transition-colors hover:text-[#f5b137]"
               >
                 Start your journey →
@@ -60,7 +85,7 @@ export function LoginForm() {
 
         <div className="flex flex-col justify-center bg-[#fffaf0] px-6 py-10 sm:px-10 sm:py-12">
           <div className="mx-auto w-full max-w-md">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#a14b24] lg:hidden">Account</p>
+            <p className="eyebrow lg:hidden">Account</p>
             <h2 className="mt-2 hidden font-serif text-3xl font-bold text-[#7a331b] lg:block">Sign in</h2>
             <p className="mt-2 text-sm leading-6 text-[#6d5849] lg:mt-3">
               Enter your email and password to access your account.
@@ -81,6 +106,15 @@ export function LoginForm() {
                 role="status"
               >
                 You&apos;re signed out. Come back anytime.
+              </div>
+            )}
+
+            {redirectTo && redirectLabel && (
+              <div
+                className="mt-6 rounded-2xl border border-[#efd4b2] bg-[#fff5e8] p-4 text-sm text-[#7a331b]"
+                role="status"
+              >
+                Sign in to continue to {redirectLabel}.
               </div>
             )}
 
@@ -106,7 +140,7 @@ export function LoginForm() {
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    className="editorial-input warm-focus-ring py-3.5 pl-11 pr-4 placeholder:text-[#b28b6f]"
                     placeholder="your@email.com"
                     required
                   />
@@ -123,24 +157,19 @@ export function LoginForm() {
                     type="password"
                     id="password"
                     name="password"
-                    className="w-full rounded-2xl border border-[#efdac1] bg-white py-3.5 pl-11 pr-4 text-[#3a3a3a] shadow-sm placeholder:text-[#b28b6f] outline-none transition-shadow focus:ring-2 focus:ring-[#e34b16]/25"
+                    className="editorial-input warm-focus-ring py-3.5 pl-11 pr-4 placeholder:text-[#b28b6f]"
                     placeholder="••••••••"
                     required
                   />
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full rounded-full bg-[#e34b16] py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(227,75,22,0.35)] transition-all hover:bg-[#c74010] active:scale-[0.98]"
-              >
-                Sign in
-              </button>
+              <LoginSubmitButton />
             </form>
 
             <div className="mt-8 text-center">
               <Link
-                href="/signup"
+                href={signupHref}
                 className="text-sm font-semibold text-[#e34b16] underline-offset-4 transition-colors hover:text-[#c74010] hover:underline"
               >
                 Don&apos;t have an account? Sign up

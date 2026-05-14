@@ -9,6 +9,7 @@
 3. **Performance Checks Required** - ISR and revalidation must work correctly.
 4. **Upload Privacy Must Work** - Privacy toggles must be enforced.
 5. **Billing Flow Must Work** - Trial → Subscribe → Revoke must function correctly.
+6. **Product signals are optional noise control** — Sentry emits coarse `product_signal.*` funnel events only when DSN configured; mute with `DISABLE_PRODUCT_SIGNALS=1` (`docs/proof/MONITORING_SENTRY_POSTURE.md`).
 
 ## Phase 1 Core Flows
 
@@ -18,9 +19,9 @@
 - [ ] User can sign up with email/password
 - [ ] Profile is created automatically after signup
 - [ ] User is redirected to correct dashboard based on role
-- [ ] Trial subscription is created automatically
-- [ ] Trial countdown displays correctly
-- [ ] Welcome email is sent (check logs)
+- [ ] **Subscription is NOT auto-created on signup** — user starts Checkout from `/subscribe` when ready; row appears after Stripe webhooks process
+- [ ] After Checkout + webhooks, subscription status is `trialing` (7-day Stripe trial) until conversion
+- [ ] Welcome email is sent (future / check logs when email work ships)
 
 **Verification:**
 ```sql
@@ -31,7 +32,7 @@ SELECT id, username, role FROM profiles WHERE id = '<user-id>';
 SELECT id, user_id, status, trial_end FROM subscriptions WHERE user_id = '<user-id>';
 ```
 
-**Expected:** Profile exists, subscription status is 'trialing', trial_end is 7 days from now
+**Expected:** Profile exists immediately after signup. Subscription row exists **only after** Checkout + webhook processing; while `trialing`, `trial_end` reflects Stripe’s trial window.
 
 ### Flow 2: Login → Access Protected Routes
 
@@ -83,9 +84,40 @@ curl -I https://app.com/blog
 - [ ] User can upload images (multiple)
 - [ ] User can set privacy level (public/private)
 - [ ] Post submission succeeds
-- [ ] Post appears in community feed
+- [ ] Recent submissions link to the post detail page
 - [ ] Post detail page loads correctly
 - [ ] Images display correctly
+- [ ] Story owner can edit title, content, and visibility from the detail page
+- [ ] Story owner can remove an existing story image from the detail page
+- [ ] Story owner can add more story images from the detail page without exceeding the 5-photo limit
+- [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
+- [ ] Saving a new story from `/submit` shows a success action that links directly into story controls
+- [ ] Opening a story from `/places`, `/saved`, `/reports`, or `/submit` carries that source context into the detail breadcrumb
+- [ ] Story detail helper links return members to the current `/saved` or `/reports` workspace context when they entered from those filtered views
+- [ ] `/places`, `/saved`, `/reports`, `/submit`, and story detail all expose the shared community workspace nav
+- [ ] When a member filter is active, the shared community workspace nav preserves that same member across `/places`, `/saved`, and `/reports`
+- [ ] `/submit` exposes owner-only search and quick filters for all, published, archived, public, private, and photo stories
+- [ ] Story owner can restore an archived post from `/submit` and it returns to `/places`, `/places/[id]`, and `/saved`
+- [ ] Restoring from a filtered `/submit` view preserves the current owner history search/filter context
+- [ ] Archiving from story detail after entering from `/submit` returns to the same filtered owner-history view with confirmation state
+- [ ] Community feed featured filter only shows `is_featured = true` stories
+- [ ] Saved stories featured filter only shows saved posts with `is_featured = true`
+- [ ] Featured stories render a visible featured tag on `/places`, `/saved`, and `/places/[id]`
+- [ ] Story detail exposes discovery shortcuts that send members back into live `/places` filters without bypassing visibility rules
+- [ ] `/places` and `/saved` both support an explicit member filter so “More from this member” discovery follows the actual author instead of fuzzy text search
+- [ ] Story detail shows a small related-story set that excludes the current story and only includes stories already visible to the signed-in member
+- [ ] Community feed can load older stories while preserving the current search/filter state
+- [ ] Community feed and saved stories both expose a `Reported by you` filter for the signed-in reporter only
+- [ ] Public post detail exposes a report form for non-authors
+- [ ] Report submission succeeds and blocks duplicate open reports
+- [ ] Successful report submission links members to `/reports`
+- [ ] Already-reported stories show the latest member-visible report status on `/places`, `/saved`, and `/places/[id]`
+- [ ] Submit + owner edits capture optional place/location anchors plus up to five capped story-angle tags (persisted slug list in `lib/community-story-taxonomy.ts`)
+- [ ] `/places` supports sort + place + topic navigation (and honest facet chips) without bypassing privacy or RLS—narrowing applies atop the already-visible feed slice
+- [ ] Story detail links into those same feed filters for anchors/topics and explains related picks with deterministic metadata overlaps
+- [ ] Story owners can update each photo’s description (`alt_text`) and move photos earlier/later in gallery order backed by `post_images` UPDATE RLS
+- [ ] `/reports` lists the signed-in member's own post reports with status filters, story links, and an explicit member filter for narrowing to one storyteller
+- [ ] `/saved`, `/reports`, and `/submit` each offer load-more / show-fewer controls that preserve the current search and filter context
 
 **Verification:**
 ```sql
@@ -112,8 +144,9 @@ ORDER BY order_index;
 - [ ] Post is saved to `saved_posts` table
 - [ ] User can navigate to `/saved`
 - [ ] Saved posts list loads
+- [ ] Saved list search and quick filters update the visible list correctly without exposing hidden stories
 - [ ] User can click saved post to view
-- [ ] User can unsave post
+- [ ] User can unsave post and stay on the current saved-list filter/search state
 - [ ] Post is removed from saved list
 
 **Verification:**

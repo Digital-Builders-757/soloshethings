@@ -56,7 +56,7 @@ Reference:
 These files require senior review before merging:
 
 - `lib/supabase-client.ts` / `lib/supabase-server.ts` (if present) - Supabase client initialization patterns
-- `middleware.ts` - Route protection and auth checks
+- `proxy.ts` - Route protection and auth checks
 - `app/api/webhooks/stripe/route.ts` - Stripe webhook handler (if present)
 - `components/auth/auth-provider.tsx` (if present) - Auth context/provider
 - `lib/wp-rest.ts` - WordPress REST fetching (server-only)

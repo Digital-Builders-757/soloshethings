@@ -107,7 +107,7 @@
 
 These files MUST be reviewed carefully:
 - `lib/supabase.ts` - Supabase client initialization
-- `middleware.ts` - Route protection and auth checks
+- `proxy.ts` - Route protection and auth checks
 - `app/api/webhooks/stripe/route.ts` - Stripe webhook handler
 - `lib/auth-provider.tsx` - Auth context/provider (if exists)
 - `lib/wordpress.ts` - WordPress content fetching

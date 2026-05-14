@@ -7,7 +7,10 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
+  Flag,
+  Heart,
   MapPin,
+  ShieldCheck,
   Sparkles,
   UserRound,
 } from 'lucide-react'
@@ -15,8 +18,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
+import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
 
 function roleLabel(role: string) {
@@ -41,7 +47,7 @@ function ActionTile({
     <li>
       <Link
         href={href}
-        className="group flex min-h-[5.25rem] gap-4 rounded-2xl border border-[#ead8c2] bg-white p-4 shadow-sm transition hover:border-[#e34b16]/30 hover:shadow-[0_12px_36px_rgba(122,51,27,0.09)] sm:min-h-0 sm:flex-col sm:p-5"
+        className="editorial-card group flex min-h-[5.25rem] gap-4 p-4 transition hover:border-[#e34b16]/30 hover:shadow-[0_12px_36px_rgba(122,51,27,0.09)] sm:min-h-0 sm:flex-col sm:p-5"
       >
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#f7e8be]/90 text-[#7a331b] ring-1 ring-[#ead8c2]/80 sm:h-11 sm:w-11">
           <Icon className="h-5 w-5 text-[#e34b16]" aria-hidden />
@@ -78,12 +84,57 @@ export default async function DashboardPage() {
     return <ProfileErrorFallback context="dashboard" userEmail={user.email} />
   }
 
+  const avatarUrl = await getAvatarSignedUrl(profile.avatar_url)
   const displayName = profile.full_name?.trim() || profile.username
+  const membershipTier = await getMembershipTier(user.id)
   const memberSinceLabel = profile.created_at
     ? new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(
         new Date(profile.created_at)
       )
     : null
+
+  const profileChecklist = [
+    { label: 'Avatar added', done: Boolean(profile.avatar_url) },
+    { label: 'Display name added', done: Boolean(profile.full_name?.trim()) },
+    { label: 'Bio written', done: Boolean(profile.bio?.trim()) },
+    { label: 'Visibility reviewed', done: Boolean(profile.privacy_level) },
+  ]
+
+  const completedChecklistCount = profileChecklist.filter((item) => item.done).length
+
+  const nextStep = !profile.avatar_url
+    ? {
+        title: 'Add a profile photo',
+        description: 'A warm recognizable avatar helps your account feel finished right away.',
+        href: '/profile',
+        cta: 'Upload avatar',
+      }
+    : !profile.full_name?.trim()
+      ? {
+          title: 'Add your name',
+          description: 'Finish the basics so your member card feels like you right away.',
+          href: '/profile',
+          cta: 'Finish profile',
+        }
+      : !profile.bio?.trim()
+        ? {
+            title: 'Write a short bio',
+            description: 'A few lines gives your dashboard and public profile more shape.',
+            href: '/profile',
+            cta: 'Add a bio',
+          }
+        : {
+            title: 'Share your first story',
+            description: 'Your profile is in good shape. The next meaningful move is publishing something.',
+            href: '/submit',
+            cta: 'Start a submission',
+          }
+
+  const liveNowItems = [
+    'Profile editing and visibility settings',
+    'An authenticated community feed with public member stories plus your own private posts',
+    'A signed-in shell that keeps auth state and account recovery honest',
+  ]
 
   return (
     <div className="relative isolate">
@@ -93,7 +144,7 @@ export default async function DashboardPage() {
       />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-6 sm:px-6 sm:pb-16 sm:pt-9 lg:px-8 lg:pb-20 lg:pt-11">
-        <header className="overflow-hidden rounded-[1.75rem] border border-[#ead8c2] bg-gradient-to-br from-white via-[#fffdf8] to-[#f7e8be]/35 shadow-[0_20px_60px_rgba(122,51,27,0.08)]">
+        <header className="editorial-card-strong overflow-hidden">
           <div className="relative px-5 py-8 sm:p-8 md:p-10 lg:p-11">
             <div
               className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-[#fab642]/15 blur-3xl"
@@ -104,11 +155,29 @@ export default async function DashboardPage() {
               aria-hidden
             />
 
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#a14b24] sm:text-xs sm:tracking-[0.28em]">
+            <p className="eyebrow text-[0.65rem] sm:text-xs sm:tracking-[0.28em]">
               Your home base
             </p>
 
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-5 flex items-center gap-4 rounded-[1.25rem] border border-[#ead8c2]/80 bg-white/70 p-3 sm:inline-flex">
+              <Avatar
+                src={avatarUrl}
+                fallback={displayName.slice(0, 2).toUpperCase()}
+                size="xl"
+                alt={`${displayName} avatar`}
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
+                  Profile preview
+                </p>
+                <p className="truncate text-sm font-semibold text-[#7a331b]">{displayName}</p>
+                <p className="text-sm text-[#6d5849]">
+                  {profile.avatar_url ? 'Avatar live and ready across your signed-in spaces.' : 'Add an avatar to make your account feel more like yours.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <Badge
                 variant="neutral"
                 size="sm"
@@ -133,13 +202,27 @@ export default async function DashboardPage() {
               </span>
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#6d5849] sm:text-[1.05rem] sm:leading-7">
-              Everything signed-in lives here—tune how you show up, then pick up wherever you left
-              off across the site.
+              Everything signed-in lives here. Start by tightening your profile, then move into stories,
+              places, and whatever brave thing is next.
             </p>
             <p className="mt-2 max-w-2xl text-sm text-[#6d5849]/90">
               <span className="sr-only">Account email:</span>
               Signed in as <span className="font-medium text-[#7a331b]">{user.email}</span>
             </p>
+
+            <div className="mt-4 rounded-2xl border border-[#ead8c2] bg-[#fffaf4] px-4 py-3 text-sm text-[#7a331b]">
+              {membershipTier === 'full' ? (
+                <span>You have full community access (active trial or paid membership).</span>
+              ) : (
+                <span>
+                  Limited community access until you subscribe (7‑day trial, then US $3.99/mo via Stripe).{' '}
+                  <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
+                    Billing
+                  </Link>
+                  .
+                </span>
+              )}
+            </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
@@ -167,7 +250,7 @@ export default async function DashboardPage() {
               className="mt-8 border-t border-[#ead8c2]/70 pt-6 sm:mt-10"
               aria-label="Explore more of the site"
             >
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#a14b24]">
+              <p className="eyebrow text-[0.65rem] tracking-[0.26em]">
                 Browse next
               </p>
               <ul className="mt-3 flex list-none flex-wrap gap-x-1 gap-y-2 text-sm font-semibold text-[#7a331b]">
@@ -213,9 +296,66 @@ export default async function DashboardPage() {
           </div>
         </header>
 
+        <section
+          aria-labelledby="dash-start-here-heading"
+          className="mt-6 grid gap-4 sm:mt-7 lg:grid-cols-3"
+        >
+          <article className="editorial-card p-5 sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">
+              Profile readiness
+            </p>
+            <h2
+              id="dash-start-here-heading"
+              className="mt-3 font-serif text-xl font-bold text-[#7a331b]"
+            >
+              {completedChecklistCount} of {profileChecklist.length} basics done
+            </h2>
+            <ul className="mt-5 space-y-3 text-sm text-[#6d5849]">
+              {profileChecklist.map((item) => (
+                <li key={item.label} className="flex items-center gap-3 rounded-xl bg-[#fffdf8] px-3 py-3">
+                  <span
+                    className={item.done ? 'h-2.5 w-2.5 rounded-full bg-[#e34b16]' : 'h-2.5 w-2.5 rounded-full bg-[#d9c4a8]'}
+                    aria-hidden
+                  />
+                  <span className={item.done ? 'font-medium text-[#7a331b]' : undefined}>{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+
+          <article className="editorial-card-strong overflow-hidden p-5 sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">
+              Best next move
+            </p>
+            <h2 className="mt-3 font-serif text-xl font-bold text-[#7a331b]">{nextStep.title}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-[#6d5849]">{nextStep.description}</p>
+            <Link
+              href={nextStep.href}
+              className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#e34b16] px-5 text-sm font-semibold text-white transition hover:bg-[#c74010]"
+            >
+              {nextStep.cta}
+            </Link>
+          </article>
+
+          <article className="editorial-card p-5 sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">
+              Live right now
+            </p>
+            <h2 className="mt-3 font-serif text-xl font-bold text-[#7a331b]">What this member area already does well</h2>
+            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#6d5849]">
+              {liveNowItems.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#fab642]" aria-hidden />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </section>
+
         <div className="mt-10 grid gap-10 lg:mt-11 lg:grid-cols-[minmax(0,1fr)_min(100%,20rem)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <aside
-            className="surface-card order-1 rounded-[1.25rem] p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:order-2 lg:self-start"
+            className="editorial-card order-1 p-5 sm:p-6 lg:sticky lg:top-24 lg:order-2 lg:self-start"
             aria-labelledby="dash-snapshot-heading"
           >
             <h2 id="dash-snapshot-heading" className="font-serif text-lg font-bold text-[#7a331b]">
@@ -303,11 +443,25 @@ export default async function DashboardPage() {
                 cta="Read the blog"
               />
               <ActionTile
-                href="/map"
+                href="/places"
                 icon={MapPin}
-                title="Map & places"
-                description="Ideas for your next solo outing."
-                cta="Open map"
+                title="Browse member stories"
+                description="See public community posts and keep your own private stories in view."
+                cta="Open the feed"
+              />
+              <ActionTile
+                href="/saved"
+                icon={Heart}
+                title="Saved stories"
+                description="Keep community stories you want to revisit in one private list."
+                cta="Open saved stories"
+              />
+              <ActionTile
+                href="/reports"
+                icon={Flag}
+                title="Your safety reports"
+                description="Track the moderation status of the public stories you have flagged."
+                cta="Open reports"
               />
               <ActionTile
                 href="/submit"
@@ -316,6 +470,15 @@ export default async function DashboardPage() {
                 description="Share a lesson, ritual, or field note with the collective."
                 cta="Start a submission"
               />
+              {profile.role === 'admin' ? (
+                <ActionTile
+                  href="/admin/moderation"
+                  icon={ShieldCheck}
+                  title="Moderation queue"
+                  description="Review member reports and publish honest status updates."
+                  cta="Open moderation"
+                />
+              ) : null}
             </ul>
           </section>
         </div>

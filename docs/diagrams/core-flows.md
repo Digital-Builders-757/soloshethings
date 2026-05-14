@@ -115,11 +115,10 @@ VALUES (user_id, 'sub_...', 'trialing', NOW(), NOW() + INTERVAL '7 days');
 1. Admin publishes post in WordPress
    ↓
 2. WordPress webhook triggers
-   ├── POST /api/revalidate/wordpress
-   ├── Headers: x-wordpress-secret
-   └── Body: { post_id, post_type, action, post: { slug } }
+   ├── POST /api/revalidate
+   └── Body JSON: { secret, paths?: [...], tags?: [...] } (see WORDPRESS_CONTENT_CONTRACT)
    ↓
-3. Verify webhook secret
+3. Verify `secret` in JSON body matches server config
    ↓
 4. Revalidate ISR cache
    ├── revalidatePath('/blog')
@@ -133,7 +132,7 @@ VALUES (user_id, 'sub_...', 'trialing', NOW(), NOW() + INTERVAL '7 days');
 - `app/blog/page.tsx` - Blog listing
 - `app/blog/[slug]/page.tsx` - Single post
 - `lib/wordpress.ts` - WordPress client
-- `app/api/revalidate/wordpress/route.ts` - Revalidation webhook
+- `app/api/revalidate/route.ts` - Revalidation webhook
 
 ## Flow 3: Create Post with Images
 

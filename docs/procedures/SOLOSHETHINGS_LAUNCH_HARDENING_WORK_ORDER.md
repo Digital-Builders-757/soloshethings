@@ -241,4 +241,4 @@ Only fix what materially improves the launch readiness of the app. Keep the chan
 **Route boundaries**
 
 - `app/(app)/places/[slug]/page.tsx` and `app/(app)/submit/page.tsx`: server `getUser()` + `redirect('/login?redirectTo=…')` in addition to middleware (defense in depth, matches AUTH_CONTRACT).
-- `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`: middleware example query param corrected to **`redirectTo`** (matches `middleware.ts` and the login form).
+- `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`: proxy example query param corrected to **`redirectTo`** (matches `proxy.ts` and the login form).

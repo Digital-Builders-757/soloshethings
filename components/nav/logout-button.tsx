@@ -28,16 +28,21 @@ export function LogoutButton({
     try {
       const result = await logout()
       if ('error' in result) {
-        console.error('Logout error:', result.error)
-        router.push('/login')
+        const message = result.error
+        void import('@sentry/nextjs').then(({ captureMessage }) => {
+          captureMessage(`logout: ${message}`, 'warning')
+        })
+        router.replace('/login')
         router.refresh()
         return
       }
-      router.push('/login?signedOut=1')
+      router.replace('/login?signedOut=1')
       router.refresh()
     } catch (error) {
-      console.error('Logout error:', error)
-      router.push('/login')
+      void import('@sentry/nextjs').then(({ captureException }) => {
+        captureException(error)
+      })
+      router.replace('/login')
       router.refresh()
     } finally {
       setIsLoading(false)

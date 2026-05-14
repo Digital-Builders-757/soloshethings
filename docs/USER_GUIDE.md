@@ -2,6 +2,8 @@
 
 **Purpose:** Complete user role definitions, capabilities, restrictions, and UX expectations for SoloSheThings platform.
 
+> **Status note (2026-05):** This guide mixes current behavior with planned billing/subscription behavior. The currently shipped app primarily distinguishes **anonymous** vs **authenticated** users. Free-trial, paid subscription, and premium gating sections below should be treated as planned-state guidance until `docs/contracts/BILLING_STRIPE_CONTRACT.md` is implemented.
+
 ## User Roles Overview
 
 SoloSheThings has five distinct user roles, each with specific capabilities and access levels:
@@ -50,6 +52,7 @@ SoloSheThings has five distinct user roles, each with specific capabilities and 
 - ✅ Read all WordPress blog posts (unlimited)
 - ✅ Share blog posts (via URL)
 - ✅ Browse public content previews
+- ✅ Submit email on the **homepage mailing-interest panel** so operators can remember you—the form writes to **`marketing_interest`**; **automated outbound marketing/newsletter sends are not enabled** yet (see `docs/contracts/EMAIL_NOTIFICATIONS_CONTRACT.md`)
 
 ### What They Cannot Do
 
@@ -137,7 +140,7 @@ SoloSheThings has five distinct user roles, each with specific capabilities and 
 - ✅ Create community posts (unlimited)
 - ✅ Upload images to posts (multiple images)
 - ✅ Edit own posts
-- ✅ Delete own posts
+- ✅ Archive and restore own community posts
 - ✅ Set post privacy (public/private)
 - ✅ Save WordPress posts
 - ✅ Save community posts
@@ -487,8 +490,8 @@ Next billing: January 15, 2025
 
 **Content Deletion:**
 ```
-"Are you sure you want to delete this post? This action cannot be undone."
-[Delete Post] [Cancel]
+"Archive this story to remove it from community surfaces. You can restore it later from your recent submissions."
+[Archive Story] [Cancel]
 ```
 
 **Privacy Settings:**
@@ -535,6 +538,7 @@ Next billing: January 15, 2025
 3. Publishes post
 4. Post appears in community feed
 5. Other users can view (if public)
+6. Owner can archive from story detail and restore later from `/submit`
 
 ### Moderation Flow
 

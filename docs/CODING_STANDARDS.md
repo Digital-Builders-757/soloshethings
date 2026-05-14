@@ -1,6 +1,6 @@
 # Coding Standards
 
-**Purpose:** Next.js 15 App Router + strict TypeScript conventions for SoloSheThings codebase.
+**Purpose:** Next.js 16 App Router + strict TypeScript conventions for SoloSheThings codebase.
 
 ## Non-Negotiables
 
@@ -728,12 +728,12 @@ import type { Profile } from '@/types/profile'
 // ✅ CORRECT: Form with Server Action
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { updateProfile } from '@/app/actions/profile';
 import { Button } from '@/components/ui/button';
 
 export function ProfileForm({ initialData }: { initialData: Profile }) {
-  const [state, formAction] = useFormState(updateProfile, null);
+  const [state, formAction] = useActionState(updateProfile, null);
   
   return (
     <form action={formAction}>
@@ -783,7 +783,7 @@ export async function updateProfile(
 - **Validation:** Zod (required for Server Actions)
 - **Forms:** Native HTML forms + Server Actions (no form libraries needed)
 - **UI Components:** shadcn/ui (already in use)
-- **State:** React built-in hooks (useState, useFormState)
+- **State:** React built-in hooks (useState, useActionState for Server Action forms)
 
 ### React Performance Optimization
 

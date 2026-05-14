@@ -374,53 +374,13 @@ CREATE TABLE messages (
 -- Note: Indexes and RLS to be created when feature is implemented
 
 -- ============================================================================
--- STORAGE BUCKETS
+-- STORAGE (user-uploads bucket + storage.objects policies)
 -- ============================================================================
-
--- Create user-uploads bucket
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('user-uploads', 'user-uploads', false);
-
--- Enable RLS on storage.objects
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
--- Users can upload to own folder only
-CREATE POLICY "Users can upload own files"
-  ON storage.objects FOR INSERT
-  WITH CHECK (
-    bucket_id = 'user-uploads' AND
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
--- Users can view own files
-CREATE POLICY "Users can view own files"
-  ON storage.objects FOR SELECT
-  USING (
-    bucket_id = 'user-uploads' AND
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
--- Users can view public post images
-CREATE POLICY "Users can view public post images"
-  ON storage.objects FOR SELECT
-  USING (
-    bucket_id = 'user-uploads' AND
-    EXISTS (
-      SELECT 1 FROM post_images pi
-      JOIN community_posts cp ON pi.post_id = cp.id
-      WHERE pi.storage_path = storage.objects.name
-      AND cp.is_public = true
-      AND cp.status = 'published'
-    )
-  );
-
--- Users can delete own files
-CREATE POLICY "Users can delete own files"
-  ON storage.objects FOR DELETE
-  USING (
-    bucket_id = 'user-uploads' AND
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
+-- Not applied via CLI: the migration role on hosted Supabase is not owner of
+-- storage.objects (ALTER / some policy operations fail with SQLSTATE 42501).
+-- After this migration succeeds, run docs/supabase/storage_setup_dashboard.sql
+-- once per environment in the Supabase Dashboard → SQL Editor.
+-- ============================================================================
 
 -- ============================================================================
 -- MIGRATION COMPLETE

@@ -21,6 +21,11 @@ const sizeClasses = {
   full: "max-w-full",
 };
 
+/**
+ * Legacy helper retained for import compatibility.
+ * Prefer `container mx-auto shell-inline` directly on new surfaces.
+ */
+
 export function Container({
   children,
   className,
@@ -29,7 +34,7 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto px-4 sm:px-6 lg:px-8",
+        "mx-auto shell-inline",
         sizeClasses[size],
         className
       )}

@@ -1,10 +1,10 @@
 # SoloSHEThings Catch-up Roadmap
 
-**Last updated:** May 5, 2026
+**Last updated:** May 6, 2026
 
-**Execution status:** Steps **1–4** below are **implemented** in the repo (see each linked work order’s *Implementation notes*). **Active:** step **5** — smoke tests, docs sync, and release prep.
+**Execution status:** Steps **1–5** below are **implemented** and verified for the May 2026 smoke + release milestone (see `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`). The follow-on finish-line roadmap has also been executed as a completed checkpoint. **Next:** resume broader product work from `docs/procedures/IMPLEMENTATION_ROADMAP.md` and the live contract docs.
 
-This is the current execution order for the next SoloSHEThings improvement batches.
+The sections below record the **catch-up batches 1–5** (auth through smoke/release) in execution order. Use them as an audit trail; **what to build next** lives in `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md` and product priorities.
 Use it with `docs/procedures/IMPLEMENTATION_ROADMAP.md` and the contracts in `docs/contracts/`.
 
 ---
@@ -151,10 +151,10 @@ The site should be stronger at:
 - `docs/procedures/PRE_PUSH_CHECKLIST.md`
 - `docs/procedures/RELEASE_PROCEDURE.md`
 
-**Definition of done:**
-- auth and dashboard flows are smoke-tested
-- docs match the implementation
-- the repo is ready for a clean push
+**Definition of done (2026-05-06):**
+- Auth and dashboard flows smoke-tested; protected-route redirects verified
+- Docs and webhook/release notes aligned with the live app (`/api/revalidate`, MVP vs future Playwright paths)
+- `npm run typecheck`, `npm run lint`, and `npm run build` pass locally
 
 ---
 
