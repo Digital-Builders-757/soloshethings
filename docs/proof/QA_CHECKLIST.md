@@ -119,8 +119,9 @@ ORDER BY order_index;
 - [ ] Post is saved to `saved_posts` table
 - [ ] User can navigate to `/saved`
 - [ ] Saved posts list loads
+- [ ] Saved list search and quick filters update the visible list correctly without exposing hidden stories
 - [ ] User can click saved post to view
-- [ ] User can unsave post
+- [ ] User can unsave post and stay on the current saved-list filter/search state
 - [ ] Post is removed from saved list
 
 **Verification:**

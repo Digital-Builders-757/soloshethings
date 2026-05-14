@@ -148,7 +148,8 @@
 - [ ] Use `Load older stories` and confirm the next feed slice keeps the current search/filter context
 - [ ] Use `Show fewer` and confirm the feed steps back without dropping that context
 - [ ] Visit `/saved` and confirm the story appears there
-- [ ] Remove the save from `/saved`
+- [ ] Use saved-story search or quick filters (for example Public, Private, Your stories, or With photos) and confirm the list updates without leaking hidden stories
+- [ ] Remove the save from `/saved` and confirm the current saved-list search/filter context is preserved after refresh
 - [ ] Refresh `/saved` and confirm the story is gone
 - [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result

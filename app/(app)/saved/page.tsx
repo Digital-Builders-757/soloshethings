@@ -8,6 +8,23 @@ import { Badge } from '@/components/ui/badge'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
 
+const VIEW_OPTIONS = [
+  { value: 'all', label: 'All saves' },
+  { value: 'public', label: 'Public' },
+  { value: 'private', label: 'Private' },
+  { value: 'mine', label: 'Your stories' },
+  { value: 'photos', label: 'With photos' },
+] as const
+
+type ViewFilter = (typeof VIEW_OPTIONS)[number]['value']
+
+type Props = {
+  searchParams?: Promise<{
+    q?: string
+    view?: string
+  }>
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
@@ -15,7 +32,33 @@ function formatDate(value: string) {
   }).format(new Date(value))
 }
 
-export default async function SavedPostsPage() {
+function normalizeQuery(value?: string) {
+  return value?.trim() ?? ''
+}
+
+function normalizeView(value?: string): ViewFilter {
+  return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
+}
+
+function buildSavedHref(view: ViewFilter, query: string) {
+  const params = new URLSearchParams()
+
+  if (view !== 'all') {
+    params.set('view', view)
+  }
+
+  if (query) {
+    params.set('q', query)
+  }
+
+  const search = params.toString()
+  return search ? `/saved?${search}` : '/saved'
+}
+
+export default async function SavedPostsPage({ searchParams }: Props) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
+  const query = normalizeQuery(resolvedSearchParams?.q)
+  const activeView = normalizeView(resolvedSearchParams?.view)
   const user = await getUser()
 
   if (!user) {
@@ -23,6 +66,33 @@ export default async function SavedPostsPage() {
   }
 
   const savedPosts = await getSavedCommunityPosts(user.id)
+  const ownSavedPostsCount = savedPosts.filter((post) => post.author_id === user.id).length
+  const publicSavedPostsCount = savedPosts.filter((post) => post.is_public).length
+  const privateSavedPostsCount = savedPosts.filter((post) => !post.is_public).length
+  const postsWithPhotosCount = savedPosts.filter((post) => post.images.length > 0).length
+
+  const filteredPosts = savedPosts.filter((post) => {
+    const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
+    const matchesQuery =
+      query.length === 0 ||
+      [post.title, post.content, authorName]
+        .join(' ')
+        .toLowerCase()
+        .includes(query.toLowerCase())
+
+    const matchesView =
+      activeView === 'all' ||
+      (activeView === 'public' && post.is_public) ||
+      (activeView === 'private' && !post.is_public) ||
+      (activeView === 'mine' && post.author_id === user.id) ||
+      (activeView === 'photos' && post.images.length > 0)
+
+    return matchesQuery && matchesView
+  })
+
+  const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All saves'
+  const showFilteredEmptyState = savedPosts.length > 0 && filteredPosts.length === 0
+  const currentPath = buildSavedHref(activeView, query)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -32,12 +102,25 @@ export default async function SavedPostsPage() {
           Keep the stories you want to come back to close
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-[#6d5849] sm:text-base">
-          This first pass saves community stories into your own private list. It covers member posts today, with broader saved surfaces still to come.
+          This first pass saves community stories into your own private list. It now gives you a lightweight way to
+          search and narrow that list without changing who can see what.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#6d5849]">
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {savedPosts.length} saved stor{savedPosts.length === 1 ? 'y' : 'ies'}
+            {filteredPosts.length} of {savedPosts.length} saved stor{savedPosts.length === 1 ? 'y' : 'ies'} showing
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {publicSavedPostsCount} public
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {privateSavedPostsCount} private
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {ownSavedPostsCount} yours
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {postsWithPhotosCount} with photos
           </Badge>
         </div>
 
@@ -68,64 +151,164 @@ export default async function SavedPostsPage() {
           </Link>
         </section>
       ) : (
-        <section className="mt-6 grid gap-5 lg:grid-cols-2">
-          {savedPosts.map((post) => {
-            const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
-            const coverImage = post.images[0]?.signedUrl ?? null
-
-            return (
-              <article key={post.id} className="editorial-card overflow-hidden">
-                {coverImage ? (
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f6efe4]">
-                    <Image
-                      src={coverImage}
-                      alt={post.images[0]?.alt_text ?? post.title}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                      unoptimized
+        <>
+          <section className="editorial-card mt-6 p-5 sm:p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <form method="get" className="flex-1">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <label className="flex-1">
+                    <span className="mb-2 block text-sm font-semibold text-[#7a331b]">Search saved stories</span>
+                    <input
+                      type="search"
+                      name="q"
+                      defaultValue={query}
+                      placeholder="Search by title, story text, or member name"
+                      className="min-h-11 w-full rounded-[1rem] border border-[#d9c4a8] bg-white px-4 text-sm text-[#4f4034] outline-none transition placeholder:text-[#9b7455] focus:border-[#e34b16]/50 focus:ring-2 focus:ring-[#e34b16]/15"
                     />
-                  </div>
-                ) : null}
-
-                <div className="p-5 sm:p-6">
-                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                    <span>{post.is_public ? 'Public story' : 'Private to you'}</span>
-                    <span aria-hidden>•</span>
-                    <span>Saved {formatDate(post.saved_at)}</span>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-3">
-                    <Avatar
-                      src={post.authorAvatarUrl}
-                      fallback={authorName.slice(0, 2).toUpperCase()}
-                      alt={`${authorName} avatar`}
-                      size="md"
-                    />
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
-                      <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
-                    </div>
-                  </div>
-
-                  <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                    <Link href={`/places/${post.id}`} className="transition hover:text-[#e34b16]">
-                      {post.title}
-                    </Link>
-                  </h2>
-                  <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                  <div className="mt-6 space-y-3">
-                    <SaveCommunityPostButton postId={post.id} path="/saved" initialSaved variant="card" />
-                    <Link href={`/places/${post.id}`} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                      Open story →
+                  </label>
+                  <input type="hidden" name="view" value={activeView} />
+                  <div className="flex gap-3 sm:self-end">
+                    <button
+                      type="submit"
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                    >
+                      Apply
+                    </button>
+                    <Link
+                      href="/saved"
+                      className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                    >
+                      Clear
                     </Link>
                   </div>
                 </div>
-              </article>
-            )
-          })}
-        </section>
+              </form>
+
+              <div className="rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
+                <p>
+                  Showing <span className="font-semibold text-[#7a331b]">{activeViewLabel}</span>
+                  {query ? (
+                    <>
+                      {' '}
+                      for <span className="font-semibold text-[#7a331b]">“{query}”</span>
+                    </>
+                  ) : null}
+                  .
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              {VIEW_OPTIONS.map((option) => {
+                const isActive = option.value === activeView
+
+                return (
+                  <Link
+                    key={option.value}
+                    href={buildSavedHref(option.value, query)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={
+                      isActive
+                        ? 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-sm font-semibold text-[#7a331b]'
+                        : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]'
+                    }
+                  >
+                    {option.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+
+          {showFilteredEmptyState ? (
+            <section className="editorial-card mt-6 p-6 sm:p-8">
+              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No saved stories match this view yet</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
+                Try a different keyword, switch filters, or clear this view to return to your full saved list.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/saved" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                  Reset saved filters →
+                </Link>
+                <Link href="/places" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                  Browse stories
+                </Link>
+              </div>
+            </section>
+          ) : (
+            <section className="mt-6 grid gap-5 lg:grid-cols-2">
+              {filteredPosts.map((post) => {
+                const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
+                const coverImage = post.images[0]?.signedUrl ?? null
+                const isOwnPost = post.author_id === user.id
+
+                return (
+                  <article key={post.id} className="editorial-card overflow-hidden">
+                    {coverImage ? (
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f6efe4]">
+                        <Image
+                          src={coverImage}
+                          alt={post.images[0]?.alt_text ?? post.title}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                          unoptimized
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className="p-5 sm:p-6">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
+                        <span>{post.is_public ? 'Public story' : 'Private to you'}</span>
+                        <span aria-hidden>•</span>
+                        <span>Saved {formatDate(post.saved_at)}</span>
+                        {isOwnPost ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>Your post</span>
+                          </>
+                        ) : null}
+                        {post.images.length > 0 ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
+                          </>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-4 flex items-center gap-3">
+                        <Avatar
+                          src={post.authorAvatarUrl}
+                          fallback={authorName.slice(0, 2).toUpperCase()}
+                          alt={`${authorName} avatar`}
+                          size="md"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
+                          <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
+                        </div>
+                      </div>
+
+                      <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
+                        <Link href={`/places/${post.id}`} className="transition hover:text-[#e34b16]">
+                          {post.title}
+                        </Link>
+                      </h2>
+                      <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
+
+                      <div className="mt-6 space-y-3">
+                        <SaveCommunityPostButton postId={post.id} path={currentPath} initialSaved variant="card" />
+                        <Link href={`/places/${post.id}`} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                          Open story →
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </section>
+          )}
+        </>
       )}
     </main>
   )
