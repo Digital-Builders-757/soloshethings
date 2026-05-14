@@ -150,7 +150,15 @@
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
-### ✅ Test 15: Session Expiry
+### ✅ Test 16: Owner Edit and Archive Controls
+- [ ] Open one of your own published stories from `/submit` or `/places`
+- [ ] Update the title, story text, or visibility from the owner controls card
+- [ ] Confirm the detail page refreshes with the saved values
+- [ ] Archive that story
+- [ ] Confirm `/submit` shows the archived confirmation and the story is labeled archived
+- [ ] Confirm the archived story is no longer reachable from `/places`, `/places/[id]`, or `/saved`
+
+### ✅ Test 17: Session Expiry
 - [ ] Login
 - [ ] Wait for session to expire (or manually expire in Supabase)
 - [ ] Try to access `/dashboard`

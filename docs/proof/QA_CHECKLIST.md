@@ -86,6 +86,8 @@ curl -I https://app.com/blog
 - [ ] Recent submissions link to the post detail page
 - [ ] Post detail page loads correctly
 - [ ] Images display correctly
+- [ ] Story owner can edit title, content, and visibility from the detail page
+- [ ] Story owner can archive a published post and it disappears from `/places`, `/places/[id]`, and `/saved`
 - [ ] Public post detail exposes a report form for non-authors
 - [ ] Report submission succeeds and blocks duplicate open reports
 

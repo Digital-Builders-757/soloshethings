@@ -9,6 +9,7 @@ import { notFound, redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ReportPostForm } from '@/components/safety/report-post-form'
+import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { getCommunityPostDetail } from '@/lib/queries/community-posts'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -138,13 +139,14 @@ export default async function PlaceDetailPage({ params }: Props) {
           </div>
 
           {isOwnPost ? (
-            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
-              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your post</p>
-              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">You are viewing your own story</h2>
-              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
-                Reporting is meant for someone else&apos;s public post. You can keep editing and cleanup work in future community tools.
-              </p>
-            </div>
+            <OwnerCommunityPostManager
+              key={post.updated_at}
+              postId={post.id}
+              path={`/places/${post.id}`}
+              title={post.title}
+              content={post.content}
+              isPublic={post.is_public}
+            />
           ) : post.is_public ? (
             <ReportPostForm postId={post.id} path={`/places/${post.id}`} postTitle={post.title} />
           ) : (
@@ -161,9 +163,9 @@ export default async function PlaceDetailPage({ params }: Props) {
             <p className="eyebrow text-[0.65rem] tracking-[0.22em]">What changed</p>
             <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
               <li>• Story detail now renders saved community post content instead of a placeholder shell.</li>
+              <li>• Owners can now edit title, story copy, and visibility from their story detail page.</li>
+              <li>• Owners can archive a story to remove it from community surfaces without fake delete copy.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
-              <li>• Duplicate open reports from the same account are blocked.</li>
-              <li>• Members can now save and remove community stories from a private saved list.</li>
             </ul>
           </div>
         </aside>
