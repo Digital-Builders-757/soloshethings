@@ -154,7 +154,8 @@
 - [ ] Refresh `/saved` and confirm the story is gone
 - [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
 - [ ] If you reported the story, confirm `/places`, `/saved`, and `/places/[id]` show the latest report status and link back to `/reports`
-- [ ] Open any story detail and confirm the new explore shortcuts deep-link back into honest live feed filters (same member search, featured stories, photo stories, or your own stories when relevant)
+- [ ] Open any story detail and confirm the new explore shortcuts deep-link back into honest live feed filters (same-member author filter, featured stories, photo stories, or your own stories when relevant)
+- [ ] Use a `More from {member}` link from `/places` or `/saved` and confirm the resulting list is filtered to that exact member while preserving any active quick view or keyword search
 - [ ] On that same detail page, confirm the related-story section only surfaces stories already visible to the signed-in member and does not include the current story itself
 - [ ] Open `/reports` and, if enough report entries exist, use `Load older reports` and `Show fewer` to confirm the current report-history context is preserved
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result

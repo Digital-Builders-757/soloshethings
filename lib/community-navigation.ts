@@ -59,3 +59,13 @@ export function appendQueryParam(path: string, key: string, value: string) {
   const nextQuery = params.toString()
   return `${pathname}${nextQuery ? `?${nextQuery}` : ''}${hash ? `#${hash}` : ''}`
 }
+
+export function appendCommunityAuthorParams(params: URLSearchParams, authorId?: string, authorLabel?: string) {
+  if (authorId) {
+    params.set('author', authorId)
+  }
+
+  if (authorLabel?.trim()) {
+    params.set('authorLabel', authorLabel.trim())
+  }
+}

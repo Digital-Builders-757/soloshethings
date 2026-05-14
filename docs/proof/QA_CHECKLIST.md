@@ -102,6 +102,7 @@ curl -I https://app.com/blog
 - [ ] Saved stories featured filter only shows saved posts with `is_featured = true`
 - [ ] Featured stories render a visible featured tag on `/places`, `/saved`, and `/places/[id]`
 - [ ] Story detail exposes discovery shortcuts that send members back into live `/places` filters without bypassing visibility rules
+- [ ] `/places` and `/saved` both support an explicit member filter so “More from this member” discovery follows the actual author instead of fuzzy text search
 - [ ] Story detail shows a small related-story set that excludes the current story and only includes stories already visible to the signed-in member
 - [ ] Community feed can load older stories while preserving the current search/filter state
 - [ ] Community feed and saved stories both expose a `Reported by you` filter for the signed-in reporter only

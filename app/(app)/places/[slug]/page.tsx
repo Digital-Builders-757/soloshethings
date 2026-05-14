@@ -12,7 +12,7 @@ import { CommunitySurfaceNav } from '@/components/community/community-surface-na
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
-import { getCommunityReturnLink } from '@/lib/community-navigation'
+import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
 import { getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -43,16 +43,23 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
   }
 }
 
-function buildPlacesExploreHref(query?: string, view?: 'featured' | 'photos' | 'mine') {
+function buildPlacesExploreHref(options?: {
+  query?: string
+  view?: 'featured' | 'photos' | 'mine'
+  authorId?: string
+  authorLabel?: string
+}) {
   const params = new URLSearchParams()
 
-  if (query?.trim()) {
-    params.set('q', query.trim())
+  if (options?.query?.trim()) {
+    params.set('q', options.query.trim())
   }
 
-  if (view) {
-    params.set('view', view)
+  if (options?.view) {
+    params.set('view', options.view)
   }
+
+  appendCommunityAuthorParams(params, options?.authorId, options?.authorLabel)
 
   const search = params.toString()
   return search ? `/places?${search}` : '/places'
@@ -87,10 +94,10 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const savedStoriesLabel = returnLink.active === 'saved' ? 'Back to saved stories' : 'Open saved stories'
   const reportHistoryHref = returnLink.active === 'reports' ? returnLink.href : '/reports'
   const reportHistoryLabel = returnLink.active === 'reports' ? 'Back to report history' : 'Open report history'
-  const exploreAuthorHref = buildPlacesExploreHref(authorName)
-  const exploreFeaturedHref = buildPlacesExploreHref(undefined, 'featured')
-  const explorePhotosHref = buildPlacesExploreHref(undefined, 'photos')
-  const exploreMineHref = buildPlacesExploreHref(undefined, 'mine')
+  const exploreAuthorHref = buildPlacesExploreHref({ authorId: post.author_id, authorLabel: authorName })
+  const exploreFeaturedHref = buildPlacesExploreHref({ view: 'featured' })
+  const explorePhotosHref = buildPlacesExploreHref({ view: 'photos' })
+  const exploreMineHref = buildPlacesExploreHref({ view: 'mine' })
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -202,7 +209,7 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               <div className="mt-6 grid gap-4 lg:grid-cols-3">
                 {relatedPosts.map((relatedPost) => {
                   const relatedAuthorName = relatedPost.author?.full_name?.trim() || relatedPost.author?.username || 'Solo SHE member'
-                  const relatedHref = `/places/${relatedPost.id}?returnTo=${encodeURIComponent('/places')}`
+                  const relatedHref = buildStoryDetailHref(relatedPost.id, '/places')
                   const relatedReason =
                     relatedPost.author_id === post.author_id
                       ? `More from ${authorName}`

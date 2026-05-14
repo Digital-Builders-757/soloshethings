@@ -6,7 +6,7 @@ import { SaveCommunityPostButton } from '@/components/cards/save-community-post-
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { buildStoryDetailHref } from '@/lib/community-navigation'
+import { appendCommunityAuthorParams, buildStoryDetailHref } from '@/lib/community-navigation'
 import { getCommunityFeedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -29,6 +29,8 @@ type Props = {
     q?: string
     view?: string
     page?: string
+    author?: string
+    authorLabel?: string
   }>
 }
 
@@ -45,6 +47,10 @@ function normalizeQuery(value?: string) {
 
 function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
+}
+
+function normalizeAuthor(value?: string) {
+  return value?.trim() ?? ''
 }
 
 function normalizePage(value?: string) {
@@ -70,7 +76,7 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
   }
 }
 
-function buildPlacesHref(view: ViewFilter, query: string, page = 1) {
+function buildPlacesHref(view: ViewFilter, query: string, page = 1, authorId?: string, authorLabel?: string) {
   const params = new URLSearchParams()
 
   if (view !== 'all') {
@@ -80,6 +86,8 @@ function buildPlacesHref(view: ViewFilter, query: string, page = 1) {
   if (query) {
     params.set('q', query)
   }
+
+  appendCommunityAuthorParams(params, authorId, authorLabel)
 
   if (page > 1) {
     params.set('page', String(page))
@@ -93,6 +101,8 @@ export default async function PlacesPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
   const activeView = normalizeView(resolvedSearchParams?.view)
+  const activeAuthorId = normalizeAuthor(resolvedSearchParams?.author)
+  const activeAuthorLabel = normalizeAuthor(resolvedSearchParams?.authorLabel)
   const page = normalizePage(resolvedSearchParams?.page)
   const pageSize = 24
   const requestedPostCount = page * pageSize
@@ -139,12 +149,14 @@ export default async function PlacesPage({ searchParams }: Props) {
       (activeView === 'reported' && latestReportsByPostId.has(post.id)) ||
       (activeView === 'photos' && post.images.length > 0)
 
-    return matchesQuery && matchesView
+    const matchesAuthor = activeAuthorId.length === 0 || post.author_id === activeAuthorId
+
+    return matchesQuery && matchesView && matchesAuthor
   })
 
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All stories'
   const showFilteredEmptyState = posts.length > 0 && filteredPosts.length === 0
-  const currentPath = buildPlacesHref(activeView, query, page)
+  const currentPath = buildPlacesHref(activeView, query, page, activeAuthorId, activeAuthorLabel)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -228,6 +240,8 @@ export default async function PlacesPage({ searchParams }: Props) {
                     />
                   </label>
                   <input type="hidden" name="view" value={activeView} />
+                  <input type="hidden" name="author" value={activeAuthorId} />
+                  <input type="hidden" name="authorLabel" value={activeAuthorLabel} />
                   <div className="flex gap-3 sm:self-end">
                     <button
                       type="submit"
@@ -248,6 +262,12 @@ export default async function PlacesPage({ searchParams }: Props) {
               <div className="rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
                 <p>
                   Showing <span className="font-semibold text-[#7a331b]">{activeViewLabel}</span>
+                  {activeAuthorId ? (
+                    <>
+                      {' '}
+                      from <span className="font-semibold text-[#7a331b]">{activeAuthorLabel || 'this member'}</span>
+                    </>
+                  ) : null}
                   {query ? (
                     <>
                       {' '}
@@ -266,7 +286,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 return (
                   <Link
                     key={option.value}
-                    href={buildPlacesHref(option.value, query, 1)}
+                    href={buildPlacesHref(option.value, query, 1, activeAuthorId, activeAuthorLabel)}
                     aria-current={isActive ? 'page' : undefined}
                     className={
                       isActive
@@ -291,6 +311,14 @@ export default async function PlacesPage({ searchParams }: Props) {
                 <Link href="/places" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                   Reset filters →
                 </Link>
+                {activeAuthorId ? (
+                  <Link
+                    href={buildPlacesHref(activeView, query, 1)}
+                    className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
+                  >
+                    Show all members
+                  </Link>
+                ) : null}
                 <Link href="/saved" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
                   Open saved stories
                 </Link>
@@ -305,6 +333,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const coverImage = post.images[0]?.signedUrl ?? null
                 const latestReport = latestReportsByPostId.get(post.id)
                 const detailHref = buildStoryDetailHref(post.id, currentPath)
+                const moreFromAuthorHref = buildPlacesHref(activeView, query, 1, post.author_id, authorName)
 
                 return (
                   <article key={post.id} className="editorial-card overflow-hidden">
@@ -396,6 +425,11 @@ export default async function PlacesPage({ searchParams }: Props) {
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
+                          {!isOwnPost ? (
+                            <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                              More from {authorName}
+                            </Link>
+                          ) : null}
                           <Link href={latestReport ? '/reports' : '/saved'} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
                             {latestReport ? 'Track report' : 'Saved list'}
                           </Link>
@@ -421,14 +455,14 @@ export default async function PlacesPage({ searchParams }: Props) {
                   <div className="flex flex-wrap items-center gap-3">
                     {page > 1 ? (
                       <Link
-                        href={buildPlacesHref(activeView, query, page - 1)}
+                        href={buildPlacesHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
                         className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
                       >
                         Show fewer
                       </Link>
                     ) : null}
                     <Link
-                      href={buildPlacesHref(activeView, query, page + 1)}
+                      href={buildPlacesHref(activeView, query, page + 1, activeAuthorId, activeAuthorLabel)}
                       className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
                     >
                       Load older stories
@@ -439,7 +473,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                   <p className="text-sm text-[#6d5849]">You have reached the oldest story in this feed slice.</p>
                   <Link
-                    href={buildPlacesHref(activeView, query, page - 1)}
+                    href={buildPlacesHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
                     className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
                   >
                     Show fewer
