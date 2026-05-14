@@ -26,9 +26,10 @@
 - **Story detail discovery follow-through (2026-05)** - `/places/[slug]` now uses existing story metadata to suggest grounded next reads instead of a dead-end detail page: members get quick jumps back into live feed filters (same-member author filters, featured stories, photo stories, or their own stories when applicable) plus a small related-story rail that prioritizes the same author, then featured stories, then photo-rich stories already visible to that member.
 - **Member-focused discovery filters (2026-05)** - `/places`, `/saved`, and `/reports` now support a dedicated member filter on top of the existing search and quick views, so member-focused discovery and moderation history can stay grounded on the actual storyteller instead of fuzzy text matching. Filter state stays visible in the UI, now uses a shared active-member banner with a one-click clear action across all three surfaces, and carries through load-more / show-fewer pagination.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
+- **Observability + error UX (2026-05-14)** - Structured server failures use `logServerFailure` (`lib/server-log.ts`); user-facing Supabase errors use `mapSupabaseErrorForUser` and deliberate server throws use `safeThrownErrorMessage` (`lib/supabase-errors.ts`); Sentry is bootstrapped via `instrumentation.ts` / `instrumentation-client.ts` / server+edge configs with conditional `withSentryConfig` when upload env vars are present; `app/error.tsx` and `app/global-error.tsx` show on-brand recovery UI and report to Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set; WordPress preview/revalidate stay honest for callers; profile queries and `lib/wp-rest.ts` use the shared logger instead of stray `console.error`.
+
 ### 🚧 In Progress
 
-- **Observability + error UX hardening (working tree, 2026-05)** - The repo currently has unverified work in progress for structured server failure logging (`logServerFailure`), safe Supabase error mapping (`mapSupabaseErrorForUser`), Sentry bootstrap/config wiring, route/global error boundaries, and safer opaque error handling around the WordPress revalidate webhook. Treat this as the active batch until it is verified and fully landed.
 - **Stripe and premium gating** - Billing still needs its first real implementation batch.
 - **Community second-pass depth** - The member surfaces are real now, but they still need stronger taxonomy/location discovery, richer recommendation logic, and richer image-management follow-through.
 - **Moderation/admin follow-through** - Broader trust & safety surfaces, admin post tooling, and deeper owner lifecycle controls are still pending.
@@ -38,7 +39,7 @@
 
 - **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
-- **Immediate focus** - finish and verify the observability + error UX batch already in the working tree, then move to Stripe/premium gating, then the deeper community/moderation backlog
+- **Immediate focus** - Stripe/premium gating, then deeper community/moderation backlog (see `docs/procedures/IMPLEMENTATION_ROADMAP.md`)
 
 ### ❌ Blocked
 
@@ -69,7 +70,6 @@ Foundational documentation, architecture, schema design, contracts, procedures, 
 - dedicated newsletter pipeline
 - broader moderation/admin tooling
 - richer upload management (reordering, replace flows, alt text, broader surfaces)
-- observability + error UX batch currently in progress in the working tree
 
 **Reference:** use `docs/procedures/IMPLEMENTATION_ROADMAP.md` for the exact active queue.
 
@@ -191,6 +191,22 @@ Next Steps:
 ```
 
 ### Progress Entries
+
+#### 2026-05-14 - Observability + error UX batch
+
+**Status:** ✅ VERIFIED (build/lint/typecheck gate)
+
+**Description:**
+- Centralized safe user copy for server actions (`mapSupabaseErrorForUser`, `safeThrownErrorMessage`); eliminated raw `Error.message` passthrough in community post compound flows.
+- `unstable_rethrow` parity on `login` catch; profile + WordPress read paths migrated to `logServerFailure`.
+- Error boundaries gated on `NEXT_PUBLIC_SENTRY_DSN`; monitoring/roadmap/MVP docs aligned with implementation.
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build` (see CI/local run at ship time).
+- Documentation: `docs/proof/MONITORING_SENTRY_POSTURE.md`, `docs/procedures/IMPLEMENTATION_ROADMAP.md`, `docs/MVP_STATUS_NOTION.md`.
+
+**Next Steps:**
+- Stripe subscription integration + premium gating per implementation roadmap.
 
 #### 2025-12-22 - WordPress + Supabase Blueprint Documented
 

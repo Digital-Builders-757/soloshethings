@@ -36,29 +36,18 @@ Use these companion docs for everything else:
   - discovery/search/filter/load-more/member-filter polish across member surfaces
   - hosted Supabase storage setup documentation for Dashboard SQL
   - webpack build/dev defaults and recent auth redirect/schema fixes
+  - **Observability + error UX (2026-05-14)** — structured server logging (`logServerFailure` in `lib/server-log.ts`), safe Supabase mapping plus `safeThrownErrorMessage` for deliberate throws (`lib/supabase-errors.ts`), Sentry bootstrap/wiring, on-brand `app/error.tsx` / `app/global-error.tsx` (Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set), honest machine-facing responses for WordPress revalidate/preview, and profile/WP read paths using the shared logger instead of ad hoc `console.error`.
 
 ### Live in-progress work
 
-- **Observability + error UX hardening is currently in the working tree and should be treated as in progress until verified.**
-  - Structured server failure logging (`lib/server-log.ts`)
-  - Safe Supabase error mapping (`lib/supabase-errors.ts`)
-  - Sentry bootstrap / config wiring
-  - Route/global error boundaries
-  - Safer opaque 500 handling for the WordPress revalidate webhook
+- None queued ahead of the canonical plan below; the next execution batch is Stripe subscription integration + premium gating.
 
-### Pause / Cursor handoff snapshot (2026-05-14)
-
-If work is being paused and later resumed in Cursor, start from this exact stopping point:
+### Resume pointer
 
 - **Branch target:** `develop`
-- **Paused batch:** observability + error UX hardening
-- **What is already changed:** shared server logging, shared Supabase error mapping, Sentry package/config wiring, route/global error boundaries, related docs consolidation, and roadmap cleanup
-- **Verification snapshot (2026-05-14):** `npm run typecheck`, `npm run lint`, and `npm run build` pass on the current tree
-- **Known verification note:** the production build currently emits non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack build
-- **What still must happen before moving on:** ship this batch cleanly, then move to Stripe work
-- **After this batch ships:** move directly to Stripe subscription integration + premium gating
-
-This is the handoff point Cursor should resume from unless a regression forces a higher-priority detour.
+- **Latest shipped batch (2026-05-14):** observability + error UX hardening (see `docs/proof/MONITORING_SENTRY_POSTURE.md` and `docs/MVP_STATUS_NOTION.md`).
+- **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
+- **Next focus:** Stripe subscription integration + premium gating (see §1 below).
 
 ---
 
@@ -66,24 +55,7 @@ This is the handoff point Cursor should resume from unless a regression forces a
 
 Work top to bottom unless a regression or blocker forces a reorder.
 
-### 1) Finish the observability + error UX batch
-
-**Goal:** make failures easier to diagnose without leaking secrets or showing brittle raw errors to users.
-
-**Scope:**
-- verify the current Sentry/bootstrap/error-boundary changes
-- keep `docs/proof/MONITORING_SENTRY_POSTURE.md` aligned with the actual implementation
-- update any touched contracts/proof docs if behavior changed
-- land the batch only after `npm run typecheck`, `npm run lint`, and `npm run build` pass
-
-**Done when:**
-- server-side errors use the shared logging path where appropriate
-- user-facing failures show calm safe copy
-- route/global error boundaries exist and are documented
-- monitoring docs match the code
-- verification passes cleanly
-
-### 2) Stripe subscription integration + premium gating
+### 1) Stripe subscription integration + premium gating
 
 **Goal:** ship the first real billing gate for paid member access.
 
@@ -98,7 +70,7 @@ Work top to bottom unless a regression or blocker forces a reorder.
 - `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`
 - `docs/proof/QA_CHECKLIST.md`
 
-### 3) Community second-pass depth
+### 2) Community second-pass depth
 
 **Goal:** make the shipped member/community surfaces feel deeper and more useful without inventing fake scope.
 
@@ -113,7 +85,7 @@ Work top to bottom unless a regression or blocker forces a reorder.
 - `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md`
 - `docs/contracts/UPLOADS_STORAGE_CONTRACT.md`
 
-### 4) Moderation/admin surfaces + owner lifecycle depth
+### 3) Moderation/admin surfaces + owner lifecycle depth
 
 **Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
@@ -123,7 +95,7 @@ Work top to bottom unless a regression or blocker forces a reorder.
 - admin post creation / editorial support where appropriate
 - deeper owner lifecycle actions beyond the current archive/restore pass
 
-### 5) Newsletter + marketing operations follow-through
+### 4) Newsletter + marketing operations follow-through
 
 **Goal:** replace placeholder interest capture with a real pipeline when product priorities justify it.
 

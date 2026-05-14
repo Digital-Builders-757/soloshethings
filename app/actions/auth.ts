@@ -210,6 +210,7 @@ export async function login(
     role = profile.role
     revalidatePath('/', 'layout')
   } catch (error) {
+    unstable_rethrow(error)
     logServerFailure({ category: 'auth', operation: 'login', cause: error })
     return { error: 'Something went wrong during sign in. Please try again.' }
   }

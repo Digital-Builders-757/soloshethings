@@ -101,3 +101,13 @@ export function mapSupabaseErrorForUser(error: unknown, fallbackUserMessage: str
 
   return { userMessage: fallbackUserMessage, devHint: 'unmapped' }
 }
+
+/** Only allowlisted messages from deliberate throws may reach users; everything else uses fallback. */
+export function safeThrownErrorMessage(
+  error: unknown,
+  fallback: string,
+  allowedUserMessages: readonly string[],
+): string {
+  if (!(error instanceof Error)) return fallback
+  return allowedUserMessages.includes(error.message) ? error.message : fallback
+}

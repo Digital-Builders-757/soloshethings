@@ -11,6 +11,7 @@ export default function Error({
   reset: () => void
 }) {
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SENTRY_DSN) return
     void import('@sentry/nextjs').then(({ captureException }) => {
       captureException(error)
     })

@@ -9,7 +9,7 @@ import {
   POST_IMAGE_MAX_FILES,
   validatePostImageFile,
 } from '@/lib/storage/post-images'
-import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
+import { mapSupabaseErrorForUser, safeThrownErrorMessage } from '@/lib/supabase-errors'
 import { createClient, getUser } from '@/lib/supabase/server'
 
 type CreateCommunityPostState = {
@@ -303,7 +303,12 @@ export async function createCommunityPost(
       cause: error,
       context: { userId: user.id },
     })
-    return { error: error instanceof Error ? error.message : 'Could not publish your post. Please try again.' }
+    return {
+      error: safeThrownErrorMessage(error, 'Could not publish your post. Please try again.', [
+        'Could not upload one of your images.',
+        'Could not save your image details.',
+      ]),
+    }
   }
 }
 
@@ -501,7 +506,12 @@ export async function addImagesToCommunityPost(
       cause: error,
       context: { userId: user.id, postId },
     })
-    return { error: error instanceof Error ? error.message : 'Could not update this story\'s photos right now.' }
+    return {
+      error: safeThrownErrorMessage(error, 'Could not update this story\'s photos right now.', [
+        'Could not upload one of your images.',
+        'Could not save your new image details.',
+      ]),
+    }
   }
 }
 
