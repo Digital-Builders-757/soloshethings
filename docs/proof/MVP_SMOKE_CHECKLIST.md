@@ -160,8 +160,10 @@
 - [ ] Changes should propagate (or at least not break)
 
 ### ✅ Test 16: Owner Edit, Photo Management, and Archive Controls
+- [ ] Save a new story from `/submit` and confirm the success banner offers a direct `Open story controls` link
 - [ ] Open one of your own published stories from `/submit` or `/places`
 - [ ] If you opened from a filtered `/submit` view, confirm story detail breadcrumbs point back to that same owner-history context
+- [ ] If you opened a story from a filtered `/saved` or `/reports` view, confirm the detail sidebar helper link returns you to that same workspace context instead of dropping filters
 - [ ] Update the title, story text, or visibility from the owner controls card
 - [ ] Confirm the detail page refreshes with the saved values
 - [ ] Remove one existing story photo from the owner photo manager and confirm it disappears after refresh

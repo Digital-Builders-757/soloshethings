@@ -1,6 +1,9 @@
 'use client'
 
+import Link from 'next/link'
+
 import { createCommunityPost } from '@/app/actions/community-posts'
+import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { useRouter } from 'next/navigation'
 import type { ChangeEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -90,8 +93,27 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
           role="status"
           aria-live="polite"
         >
-          Post saved. {state.uploadedCount ?? 0} image{state.uploadedCount === 1 ? '' : 's'} uploaded.
-          {recentPostCount === 0 ? ' Your first submission is now on file.' : ' Your latest submission appears below.'}
+          <p>
+            Post saved. {state.uploadedCount ?? 0} image{state.uploadedCount === 1 ? '' : 's'} uploaded.
+            {recentPostCount === 0 ? ' Your first submission is now on file.' : ' Your latest submission appears below.'}
+          </p>
+
+          <div className="mt-3 flex flex-wrap gap-3">
+            {state.postId ? (
+              <Link
+                href={buildStoryDetailHref(state.postId, '/submit')}
+                className="inline-flex min-h-10 items-center justify-center rounded-full bg-green-900 px-4 text-sm font-semibold text-white transition hover:bg-green-950"
+              >
+                Open story controls
+              </Link>
+            ) : null}
+            <Link
+              href="/places"
+              className="inline-flex min-h-10 items-center justify-center rounded-full border border-green-300 bg-white px-4 text-sm font-semibold text-green-900 transition hover:border-green-400 hover:text-green-950"
+            >
+              Browse community feed
+            </Link>
+          </div>
         </div>
       ) : null}
 

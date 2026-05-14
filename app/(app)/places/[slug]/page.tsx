@@ -67,6 +67,10 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const latestReport = latestReportsByPostId.get(post.id)
   const isSaved = savedPostIds.has(post.id)
   const hasOpenReport = latestReport?.status === 'pending' || latestReport?.status === 'reviewed'
+  const savedStoriesHref = returnLink.active === 'saved' ? returnLink.href : '/saved'
+  const savedStoriesLabel = returnLink.active === 'saved' ? 'Back to saved stories' : 'Open saved stories'
+  const reportHistoryHref = returnLink.active === 'reports' ? returnLink.href : '/reports'
+  const reportHistoryLabel = returnLink.active === 'reports' ? 'Back to report history' : 'Open report history'
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -171,8 +175,8 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
             <div className="mt-4">
               <SaveCommunityPostButton postId={post.id} path={`/places/${post.id}`} initialSaved={isSaved} variant="card" />
             </div>
-            <Link href="/saved" className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-              Open saved stories →
+            <Link href={savedStoriesHref} className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+              {savedStoriesLabel} →
             </Link>
           </div>
 
@@ -189,8 +193,8 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               <p className="mt-2 text-sm leading-6 text-[#6d5849]">
                 Sent {formatPublishedAt(latestReport.created_at)}. You can track the full moderation timeline from your private reports page.
               </p>
-              <Link href="/reports" className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                Open report history →
+              <Link href={reportHistoryHref} className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                {reportHistoryLabel} →
               </Link>
             </div>
           ) : null}
