@@ -159,6 +159,73 @@
   text-transform: uppercase;
 }
 
+.eyebrow-light {
+  color: #f7e8be;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.wordmark {
+  display: block;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f0dec2;
+  text-shadow: 0 2px 0 #7a331b;
+}
+
+.wordmark-accent {
+  color: #fab642;
+  font-style: italic;
+}
+
+.wordmark-sticky {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7a331b;
+}
+
+.wordmark-sticky .wordmark-accent {
+  color: #e34b16;
+}
+
+.nav-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7a331b;
+  transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.nav-chip:hover {
+  color: #e34b16;
+}
+
+.nav-chip-active {
+  background: #fff4e7;
+  color: #e34b16;
+  box-shadow: inset 0 0 0 1px rgba(var(--brand-brown-rgb), 0.14);
+}
+
+.editorial-card-dark {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 2rem;
+  background: rgba(var(--brand-brown-rgb), 0.9);
+  color: #fff5df;
+  box-shadow: 0 20px 45px rgba(74, 28, 14, 0.25);
+}
+
 .cta-primary {
   display: inline-flex;
   min-height: 3rem;
@@ -195,6 +262,26 @@
 
 .cta-secondary:hover {
   border-color: rgba(var(--brand-orange-rgb), 0.4);
+  color: #e34b16;
+}
+
+.cta-secondary-inverse {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: transparent;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.cta-secondary-inverse:hover {
+  background: white;
   color: #e34b16;
 }
 

@@ -120,16 +120,20 @@ If a new token is added, mirror the CSS vars in the shared token layer instead o
 
 **✅ CORRECT:**
 ```tsx
-<button className="bg-primary text-primary-foreground hover:bg-primary/90">
+<button className="cta-primary">
   Primary Action
 </button>
 
-<div className="surface-card">
+<div className="editorial-card">
   Highlight Content
 </div>
 
+<section className="page-warm">
+  <p className="eyebrow">Section label</p>
+</section>
+
 {/* Shared surface treatment */}
-<article className="surface-card lift-hover">
+<article className="editorial-card-strong lift-hover">
   <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
     {/* Card content */}
   </div>

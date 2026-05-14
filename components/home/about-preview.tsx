@@ -7,7 +7,7 @@ export function AboutPreview() {
     <PatternSection tone="white" patternTop className="py-16 md:py-24">
       <div className="container mx-auto shell-inline pt-10 md:pt-16">
         <div className="grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
-          <div className="relative overflow-hidden rounded-[2rem] border border-[#efdac1] bg-[#f2dfc3] shadow-[0_30px_70px_rgba(122,51,27,0.1)]">
+          <div className="editorial-card overflow-hidden rounded-[2rem] bg-[#f2dfc3] shadow-[0_24px_56px_rgba(122,51,27,0.09)]">
             <div className="relative aspect-[4/5]">
               <Image
                 src="/images/about-hero.jpg"
@@ -18,7 +18,7 @@ export function AboutPreview() {
               />
             </div>
             <div className="border-t border-[#efdac1] bg-[#fffaf0] px-6 py-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a14b24]">
+              <p className="eyebrow text-xs tracking-[0.24em]">
                 Founder note
               </p>
               <p className="mt-2 text-base leading-7 text-[#6d5849]">
@@ -28,7 +28,7 @@ export function AboutPreview() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#a14b24]">
+            <p className="eyebrow text-xs tracking-[0.28em]">
               Our story
             </p>
             <h2 className="mt-4 font-serif text-4xl font-bold leading-tight text-[#7a331b] md:text-5xl">
@@ -41,8 +41,8 @@ export function AboutPreview() {
               Our journal blends practical insight with emotional honesty, so every story leaves you feeling a little more resourced and a little more ready.
             </p>
 
-            <div className="mt-8 rounded-[2rem] border border-[#efdac1] bg-[#fffaf0] p-6 shadow-[0_20px_50px_rgba(122,51,27,0.08)]">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
+            <div className="editorial-card mt-8 rounded-[2rem] p-6">
+              <p className="eyebrow text-sm tracking-[0.18em]">
                 What you will find here
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -63,7 +63,7 @@ export function AboutPreview() {
 
             <Link
               href="/about"
-              className="mt-8 inline-flex h-14 items-center justify-center rounded-full bg-[#fab642] px-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#7a331b] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#f5b137]"
+              className="cta-secondary mt-8 h-14 bg-[#fab642] px-8 text-sm uppercase tracking-[0.16em] text-[#7a331b] hover:-translate-y-0.5 hover:bg-[#f5b137] hover:text-[#7a331b]"
             >
               Read the Founder Journal
             </Link>

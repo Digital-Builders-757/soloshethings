@@ -16,12 +16,12 @@ export function HeroSection() {
           <div className="pointer-events-none absolute -left-20 top-1/3 h-56 w-56 rounded-full bg-[#f7e8be]/10 blur-3xl" aria-hidden="true" />
 
           <div className="relative z-10 flex h-full max-w-xl flex-col justify-center pb-10 lg:pb-14">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff0d2]">
+            <p className="eyebrow-light text-sm tracking-[0.22em]">
               Stories, safety, and sisterhood
             </p>
 
-            <h1 className="mt-4 break-words font-serif text-[clamp(1.95rem,6vw,4.65rem)] font-bold uppercase leading-[0.95] tracking-[0.03em] text-[#fff4df] sm:mt-5 lg:mt-5">
-              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            <h1 className="wordmark mt-4 break-words text-[clamp(1.95rem,6vw,4.65rem)] leading-[0.95] tracking-[0.03em] sm:mt-5 lg:mt-5">
+              SOLO <span className="wordmark-accent">SHE</span> THINGS
             </h1>
 
             <p className="mt-5 max-w-lg text-base leading-relaxed text-[#fff6e8] sm:mt-6 sm:text-lg sm:leading-8">
@@ -32,19 +32,19 @@ export function HeroSection() {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
               <Link
                 href="/signup"
-                className="inline-flex h-14 items-center justify-center rounded-full bg-[#fab642] px-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#7a331b] shadow-[0_12px_30px_rgba(122,51,27,0.18)] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#f5b137]"
+                className="cta-secondary h-14 border-[#f7e8be]/70 bg-[#fab642] px-8 text-sm uppercase tracking-[0.16em] text-[#7a331b] shadow-[0_12px_30px_rgba(122,51,27,0.18)] hover:-translate-y-0.5 hover:bg-[#f5b137] hover:text-[#7a331b]"
               >
                 Start Your Journey
               </Link>
               <Link
                 href="/collections"
-                className="inline-flex h-14 items-center justify-center rounded-full border border-[#f7e8be]/70 bg-white/6 px-8 text-sm font-semibold uppercase tracking-[0.16em] text-[#fff6e8] transition-colors hover:border-[#f7e8be] hover:bg-white/10"
+                className="cta-secondary-inverse h-14 px-8 text-sm uppercase tracking-[0.16em]"
               >
                 Explore Stories
               </Link>
             </div>
 
-            <div className="mt-12 rounded-[1.75rem] border border-[#efd4b2] bg-[#fff6e8] p-5 text-[#7a331b] shadow-[0_22px_50px_rgba(122,51,27,0.16)] sm:p-6">
+            <div className="editorial-card-strong mt-12 p-5 text-[#7a331b] sm:p-6">
               <div className="grid gap-4 sm:grid-cols-3">
                 {heroHighlights.map((item) => (
                   <div key={item.label} className="rounded-[1.25rem] bg-[#f7e8be]/65 px-4 py-4">

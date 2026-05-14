@@ -15,18 +15,22 @@ type SectionProps = {
 };
 
 const variantClasses = {
-  default: "bg-white",
-  accent: "bg-neutral-50",
-  dark: "bg-brand-blue1 text-white",
+  default: "page-warm",
+  accent: "bg-[#f7e8be]/35",
+  dark: "bg-[#7a331b] text-white",
 };
 
 const paddingClasses = {
   sm: "py-8",
   md: "py-12",
-  lg: "py-16",
+  lg: "section-y",
   xl: "py-24",
 };
 
+/**
+ * Legacy helper retained for import compatibility.
+ * Prefer explicit section wrappers plus shared editorial utility classes on new surfaces.
+ */
 export function Section({
   children,
   className,

@@ -107,7 +107,7 @@ export function NavClient({
     if (!isAuthenticated) return null
     return (
       <div className="border-t border-[#ead8c2] pt-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a14b24]">Your account</p>
+        <p className="eyebrow text-xs tracking-[0.22em]">Your account</p>
         {accountHint ? (
           <p className="mt-2 truncate text-xs font-medium text-[#6d5849]" title={accountHint}>
             {accountHint}
@@ -141,13 +141,10 @@ export function NavClient({
 
   const guestActionsDesktop = !isAuthenticated && (
     <div className="flex items-center gap-3">
-      <Link
-        href="/login"
-        className="text-sm font-semibold text-[#3a3a3a] transition-colors hover:text-[#e34b16]"
-      >
+      <Link href="/login" className="cta-ghost min-h-11 px-0 text-[#3a3a3a] hover:text-[#e34b16]">
         Sign In
       </Link>
-      <Button asChild className="h-11 rounded-full bg-[#e34b16] px-6 text-sm font-semibold text-white hover:bg-[#c74010]">
+      <Button asChild className="cta-primary h-11 px-6 py-0 text-sm hover:bg-[#c74010]">
         <Link href="/signup">Get Started</Link>
       </Button>
     </div>
@@ -158,8 +155,8 @@ export function NavClient({
       <header className="relative z-40 border-b border-[#ead8c2] bg-white/95 backdrop-blur">
         <div className="container mx-auto hidden grid-cols-[auto_1fr_auto] items-center gap-3 py-3 shell-inline lg:grid lg:gap-5 xl:gap-6">
           <Link href="/" className="min-w-0 shrink-0 leading-none text-[#e34b16]">
-            <span className="block font-serif text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_2px_0_#7a331b]">
-              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            <span className="wordmark text-[clamp(1.35rem,2.2vw,1.9rem)]">
+              SOLO <span className="wordmark-accent">SHE</span> THINGS
             </span>
           </Link>
 
@@ -174,10 +171,8 @@ export function NavClient({
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "shrink-0 rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] transition-colors sm:text-sm sm:tracking-[0.14em]",
-                    isActive
-                      ? "bg-[#fff4e7] text-[#e34b16] ring-1 ring-[#ead8c2]"
-                      : "text-[#7a331b] hover:text-[#e34b16]"
+                    "nav-chip shrink-0 sm:text-sm sm:tracking-[0.14em]",
+                    isActive && "nav-chip-active"
                   )}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -194,8 +189,8 @@ export function NavClient({
 
         <div className="container mx-auto flex min-h-12 items-center justify-between py-2.5 shell-inline lg:hidden">
           <Link href="/" className="leading-none text-[#e34b16]">
-            <span className="block font-serif text-xl font-bold uppercase tracking-[0.08em] text-[#f0dec2] [text-shadow:0_1px_0_#7a331b]">
-              SOLO <span className="italic text-[#fab642]">SHE</span> THINGS
+            <span className="wordmark block text-xl [text-shadow:0_1px_0_#7a331b]">
+              SOLO <span className="wordmark-accent">SHE</span> THINGS
             </span>
           </Link>
           <button
@@ -239,13 +234,13 @@ export function NavClient({
                   <Button
                     asChild
                     variant="outline"
-                    className="h-11 rounded-full border-[#e34b16] text-[#e34b16] hover:bg-[#e34b16]/5 hover:text-[#e34b16]"
+                    className="cta-secondary h-11 border-[#e34b16] bg-white/95 py-0 text-[#e34b16] hover:bg-[#e34b16]/5 hover:text-[#e34b16]"
                   >
                     <Link href="/login" onClick={closeMobileMenu}>
                       Sign In
                     </Link>
                   </Button>
-                  <Button asChild className="h-11 rounded-full bg-[#e34b16] text-white hover:bg-[#c74010]">
+                  <Button asChild className="cta-primary h-11 py-0 text-white hover:bg-[#c74010]">
                     <Link href="/signup" onClick={closeMobileMenu}>
                       Get Started
                     </Link>
@@ -266,8 +261,8 @@ export function NavClient({
           aria-label="Sticky navigation"
         >
           <div className="container mx-auto flex items-center justify-between gap-3 py-2.5 shell-inline lg:gap-5">
-            <Link href="/" className="min-w-0 shrink-0 font-serif text-base font-bold uppercase tracking-[0.08em] text-[#7a331b] lg:text-lg">
-              SOLO <span className="italic text-[#e34b16]">SHE</span> THINGS
+            <Link href="/" className="wordmark-sticky min-w-0 shrink-0 text-base lg:text-lg">
+              SOLO <span className="wordmark-accent">SHE</span> THINGS
             </Link>
 
             <div className="flex min-w-0 flex-1 items-center justify-center gap-3 overflow-x-auto [scrollbar-width:none] md:gap-5 [&::-webkit-scrollbar]:hidden">
@@ -278,10 +273,8 @@ export function NavClient({
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "shrink-0 rounded-full px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors xl:text-xs xl:tracking-[0.14em]",
-                      isActive
-                        ? "bg-[#fff4e7] text-[#e34b16] ring-1 ring-[#ead8c2]"
-                        : "text-[#7a331b] hover:text-[#e34b16]"
+                      "nav-chip shrink-0 text-[0.65rem] xl:text-xs xl:tracking-[0.14em]",
+                      isActive && "nav-chip-active"
                     )}
                     aria-current={isActive ? "page" : undefined}
                   >
