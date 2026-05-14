@@ -6,6 +6,7 @@ import { SaveCommunityPostButton } from '@/components/cards/save-community-post-
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { getCommunityFeedPosts } from '@/lib/queries/community-posts'
+import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
 
@@ -15,6 +16,7 @@ const VIEW_OPTIONS = [
   { value: 'public', label: 'Public' },
   { value: 'mine', label: 'My stories' },
   { value: 'saved', label: 'Saved' },
+  { value: 'reported', label: 'Reported by you' },
   { value: 'photos', label: 'With photos' },
 ] as const
 
@@ -51,6 +53,19 @@ function normalizePage(value?: string) {
   }
 
   return Math.min(parsed, 5)
+}
+
+function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
+  switch (status) {
+    case 'resolved':
+      return 'border-green-200 bg-green-50 text-green-800'
+    case 'dismissed':
+      return 'border-slate-200 bg-slate-50 text-slate-700'
+    case 'reviewed':
+      return 'border-amber-200 bg-amber-50 text-amber-800'
+    default:
+      return 'border-[#ead8c2] bg-white text-[#7a331b]'
+  }
 }
 
 function buildPlacesHref(view: ViewFilter, query: string, page = 1) {
@@ -93,10 +108,15 @@ export default async function PlacesPage({ searchParams }: Props) {
     user.id,
     posts.map((post) => post.id)
   )
+  const latestReportsByPostId = await getLatestMemberPostReportsForPosts(
+    user.id,
+    posts.map((post) => post.id)
+  )
   const ownPostsCount = posts.filter((post) => post.author_id === user.id).length
   const publicPostsCount = posts.filter((post) => post.is_public).length
   const featuredPostsCount = posts.filter((post) => post.is_featured).length
   const savedPostsCount = posts.filter((post) => savedPostIds.has(post.id)).length
+  const reportedPostsCount = posts.filter((post) => latestReportsByPostId.has(post.id)).length
   const postsWithPhotosCount = posts.filter((post) => post.images.length > 0).length
 
   const filteredPosts = posts.filter((post) => {
@@ -114,6 +134,7 @@ export default async function PlacesPage({ searchParams }: Props) {
       (activeView === 'public' && post.is_public) ||
       (activeView === 'mine' && post.author_id === user.id) ||
       (activeView === 'saved' && savedPostIds.has(post.id)) ||
+      (activeView === 'reported' && latestReportsByPostId.has(post.id)) ||
       (activeView === 'photos' && post.images.length > 0)
 
     return matchesQuery && matchesView
@@ -149,6 +170,9 @@ export default async function PlacesPage({ searchParams }: Props) {
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {savedPostsCount} saved in this set
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {reportedPostsCount} reported by you
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {postsWithPhotosCount} with photos
@@ -274,6 +298,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
                 const isOwnPost = post.author_id === user.id
                 const coverImage = post.images[0]?.signedUrl ?? null
+                const latestReport = latestReportsByPostId.get(post.id)
 
                 return (
                   <article key={post.id} className="editorial-card overflow-hidden">
@@ -317,6 +342,12 @@ export default async function PlacesPage({ searchParams }: Props) {
                             <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
                           </>
                         ) : null}
+                        {latestReport ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>Reported by you</span>
+                          </>
+                        ) : null}
                       </div>
 
                       <div className="mt-4 flex items-center gap-3">
@@ -339,6 +370,12 @@ export default async function PlacesPage({ searchParams }: Props) {
                       </h2>
                       <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
 
+                      {latestReport ? (
+                        <div className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
+                          {REPORT_STATUS_LABELS[latestReport.status]}
+                        </div>
+                      ) : null}
+
                       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                         <div className="space-y-2">
                           <SaveCommunityPostButton
@@ -353,8 +390,8 @@ export default async function PlacesPage({ searchParams }: Props) {
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
-                          <Link href="/saved" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                            Saved list
+                          <Link href={latestReport ? '/reports' : '/saved'} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                            {latestReport ? 'Track report' : 'Saved list'}
                           </Link>
                           <Link href={`/places/${post.id}`} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                             Open story →

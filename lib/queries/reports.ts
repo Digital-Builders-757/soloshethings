@@ -19,6 +19,11 @@ export type MemberPostReport = Pick<
   post: CommunityPost | null
 }
 
+export type MemberPostReportSummary = Pick<
+  ReportRow,
+  'id' | 'post_id' | 'reason' | 'status' | 'created_at' | 'updated_at'
+>
+
 export const REPORT_REASON_LABELS: Record<report_reason, string> = {
   spam: 'Spam or scammy promotion',
   harassment: 'Harassment or bullying',
@@ -79,4 +84,39 @@ export async function getMemberPostReports(userId: string): Promise<MemberPostRe
     updated_at: report.updated_at,
     post: Array.isArray(report.community_posts) ? (report.community_posts[0] ?? null) : report.community_posts,
   }))
+}
+
+export async function getLatestMemberPostReportsForPosts(
+  userId: string,
+  postIds: string[]
+): Promise<Map<string, MemberPostReportSummary>> {
+  if (postIds.length === 0) {
+    return new Map()
+  }
+
+  const uniquePostIds = Array.from(new Set(postIds))
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('reports')
+    .select('id, post_id, reason, status, created_at, updated_at')
+    .eq('reporter_id', userId)
+    .in('post_id', uniquePostIds)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Failed to fetch latest member post reports for posts:', error)
+    return new Map()
+  }
+
+  const latestByPostId = new Map<string, MemberPostReportSummary>()
+
+  for (const report of (data ?? []) as MemberPostReportSummary[]) {
+    if (!report.post_id || latestByPostId.has(report.post_id)) {
+      continue
+    }
+
+    latestByPostId.set(report.post_id, report)
+  }
+
+  return latestByPostId
 }

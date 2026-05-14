@@ -94,9 +94,11 @@ curl -I https://app.com/blog
 - [ ] Saved stories featured filter only shows saved posts with `is_featured = true`
 - [ ] Featured stories render a visible featured tag on `/places`, `/saved`, and `/places/[id]`
 - [ ] Community feed can load older stories while preserving the current search/filter state
+- [ ] Community feed and saved stories both expose a `Reported by you` filter for the signed-in reporter only
 - [ ] Public post detail exposes a report form for non-authors
 - [ ] Report submission succeeds and blocks duplicate open reports
 - [ ] Successful report submission links members to `/reports`
+- [ ] Already-reported stories show the latest member-visible report status on `/places`, `/saved`, and `/places/[id]`
 - [ ] `/reports` lists the signed-in member's own post reports with status filters and story links
 
 **Verification:**

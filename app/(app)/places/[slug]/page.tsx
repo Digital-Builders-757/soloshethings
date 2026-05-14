@@ -12,6 +12,7 @@ import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
 import { getCommunityPostDetail } from '@/lib/queries/community-posts'
+import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
 
@@ -24,6 +25,19 @@ function formatPublishedAt(value: string) {
     dateStyle: 'long',
     timeStyle: 'short',
   }).format(new Date(value))
+}
+
+function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
+  switch (status) {
+    case 'resolved':
+      return 'border-green-200 bg-green-50 text-green-800'
+    case 'dismissed':
+      return 'border-slate-200 bg-slate-50 text-slate-700'
+    case 'reviewed':
+      return 'border-amber-200 bg-amber-50 text-amber-800'
+    default:
+      return 'border-[#ead8c2] bg-white text-[#7a331b]'
+  }
 }
 
 export default async function PlaceDetailPage({ params }: Props) {
@@ -43,7 +57,10 @@ export default async function PlaceDetailPage({ params }: Props) {
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
   const isOwnPost = post.author_id === user.id
   const savedPostIds = await getSavedCommunityPostIds(user.id, [post.id])
+  const latestReportsByPostId = await getLatestMemberPostReportsForPosts(user.id, [post.id])
+  const latestReport = latestReportsByPostId.get(post.id)
   const isSaved = savedPostIds.has(post.id)
+  const hasOpenReport = latestReport?.status === 'pending' || latestReport?.status === 'reviewed'
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -92,6 +109,12 @@ export default async function PlaceDetailPage({ params }: Props) {
                 <>
                   <span aria-hidden>•</span>
                   <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
+                </>
+              ) : null}
+              {latestReport ? (
+                <>
+                  <span aria-hidden>•</span>
+                  <span>Reported by you</span>
                 </>
               ) : null}
             </div>
@@ -145,6 +168,25 @@ export default async function PlaceDetailPage({ params }: Props) {
             </Link>
           </div>
 
+          {!isOwnPost && latestReport ? (
+            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your report status</p>
+              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">You already flagged this story</h2>
+              <div className={`mt-4 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
+                {REPORT_STATUS_LABELS[latestReport.status]}
+              </div>
+              <p className="mt-4 text-sm leading-6 text-[#6d5849]">
+                Latest reason: <span className="font-semibold text-[#7a331b]">{REPORT_REASON_LABELS[latestReport.reason]}</span>
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#6d5849]">
+                Sent {formatPublishedAt(latestReport.created_at)}. You can track the full moderation timeline from your private reports page.
+              </p>
+              <Link href="/reports" className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                Open report history →
+              </Link>
+            </div>
+          ) : null}
+
           {isOwnPost ? (
             <>
               <OwnerCommunityPostManager
@@ -163,9 +205,9 @@ export default async function PlaceDetailPage({ params }: Props) {
                 images={post.images}
               />
             </>
-          ) : post.is_public ? (
+          ) : post.is_public && !hasOpenReport ? (
             <ReportPostForm postId={post.id} path={`/places/${post.id}`} postTitle={post.title} />
-          ) : (
+          ) : !post.is_public ? (
             <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Privacy</p>
               <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Private stories stay scoped</h2>
@@ -173,7 +215,7 @@ export default async function PlaceDetailPage({ params }: Props) {
                 This post is private, so reporting from the shared story detail surface is not enabled.
               </p>
             </div>
-          )}
+          ) : null}
 
           {post.is_featured ? (
             <div className="rounded-[1.75rem] border border-[#f4c7a8] bg-[#fff7f0] p-5 shadow-sm sm:p-6">
@@ -194,6 +236,7 @@ export default async function PlaceDetailPage({ params }: Props) {
               <li>• Owners can now remove old photos and add new ones from the story detail page.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
               <li>• Members can now track their own report history and moderation status from a dedicated reports page.</li>
+              <li>• Stories you already flagged now show your latest report status across browse, saved, and detail surfaces.</li>
               <li>• Featured stories are now visibly tagged across browse, saved, and detail surfaces.</li>
             </ul>
           </div>

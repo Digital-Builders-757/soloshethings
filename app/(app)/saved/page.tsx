@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
 
@@ -14,6 +15,7 @@ const VIEW_OPTIONS = [
   { value: 'public', label: 'Public' },
   { value: 'private', label: 'Private' },
   { value: 'mine', label: 'Your stories' },
+  { value: 'reported', label: 'Reported by you' },
   { value: 'photos', label: 'With photos' },
 ] as const
 
@@ -39,6 +41,19 @@ function normalizeQuery(value?: string) {
 
 function normalizeView(value?: string): ViewFilter {
   return VIEW_OPTIONS.some((option) => option.value === value) ? (value as ViewFilter) : 'all'
+}
+
+function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
+  switch (status) {
+    case 'resolved':
+      return 'border-green-200 bg-green-50 text-green-800'
+    case 'dismissed':
+      return 'border-slate-200 bg-slate-50 text-slate-700'
+    case 'reviewed':
+      return 'border-amber-200 bg-amber-50 text-amber-800'
+    default:
+      return 'border-[#ead8c2] bg-white text-[#7a331b]'
+  }
 }
 
 function buildSavedHref(view: ViewFilter, query: string) {
@@ -67,10 +82,15 @@ export default async function SavedPostsPage({ searchParams }: Props) {
   }
 
   const savedPosts = await getSavedCommunityPosts(user.id)
+  const latestReportsByPostId = await getLatestMemberPostReportsForPosts(
+    user.id,
+    savedPosts.map((post) => post.id)
+  )
   const ownSavedPostsCount = savedPosts.filter((post) => post.author_id === user.id).length
   const publicSavedPostsCount = savedPosts.filter((post) => post.is_public).length
   const privateSavedPostsCount = savedPosts.filter((post) => !post.is_public).length
   const featuredSavedPostsCount = savedPosts.filter((post) => post.is_featured).length
+  const reportedSavedPostsCount = savedPosts.filter((post) => latestReportsByPostId.has(post.id)).length
   const postsWithPhotosCount = savedPosts.filter((post) => post.images.length > 0).length
 
   const filteredPosts = savedPosts.filter((post) => {
@@ -88,6 +108,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
       (activeView === 'public' && post.is_public) ||
       (activeView === 'private' && !post.is_public) ||
       (activeView === 'mine' && post.author_id === user.id) ||
+      (activeView === 'reported' && latestReportsByPostId.has(post.id)) ||
       (activeView === 'photos' && post.images.length > 0)
 
     return matchesQuery && matchesView
@@ -124,6 +145,9 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {ownSavedPostsCount} yours
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {reportedSavedPostsCount} reported by you
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {postsWithPhotosCount} with photos
@@ -247,6 +271,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                 const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
                 const coverImage = post.images[0]?.signedUrl ?? null
                 const isOwnPost = post.author_id === user.id
+                const latestReport = latestReportsByPostId.get(post.id)
 
                 return (
                   <article key={post.id} className="editorial-card overflow-hidden">
@@ -286,6 +311,12 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                             <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
                           </>
                         ) : null}
+                        {latestReport ? (
+                          <>
+                            <span aria-hidden>•</span>
+                            <span>Reported by you</span>
+                          </>
+                        ) : null}
                       </div>
 
                       <div className="mt-4 flex items-center gap-3">
@@ -308,11 +339,24 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                       </h2>
                       <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
 
+                      {latestReport ? (
+                        <div className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
+                          {REPORT_STATUS_LABELS[latestReport.status]}
+                        </div>
+                      ) : null}
+
                       <div className="mt-6 space-y-3">
                         <SaveCommunityPostButton postId={post.id} path={currentPath} initialSaved variant="card" />
-                        <Link href={`/places/${post.id}`} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                          Open story →
-                        </Link>
+                        <div className="flex flex-wrap items-center gap-4">
+                          <Link href={`/places/${post.id}`} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                            Open story →
+                          </Link>
+                          {latestReport ? (
+                            <Link href="/reports" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                              Track report
+                            </Link>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   </article>
