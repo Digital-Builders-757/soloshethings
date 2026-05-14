@@ -27,19 +27,23 @@ const NEXT_STATUS: Partial<Record<report_status, { value: report_status; label: 
     { value: 'reviewed', label: 'Mark under review' },
     { value: 'resolved', label: 'Resolve' },
     { value: 'dismissed', label: 'Dismiss' },
+    { value: 'withdrawn', label: 'Mark withdrawn' },
   ],
   reviewed: [
     { value: 'resolved', label: 'Resolve' },
     { value: 'dismissed', label: 'Dismiss' },
     { value: 'pending', label: 'Back to pending' },
+    { value: 'withdrawn', label: 'Mark withdrawn' },
   ],
   resolved: [
     { value: 'reviewed', label: 'Reopen review' },
     { value: 'dismissed', label: 'Dismiss instead' },
+    { value: 'withdrawn', label: 'Mark withdrawn' },
   ],
   dismissed: [
     { value: 'pending', label: 'Reopen as pending' },
     { value: 'reviewed', label: 'Reopen review' },
+    { value: 'withdrawn', label: 'Mark withdrawn' },
   ],
   withdrawn: [{ value: 'pending', label: 'Reopen as pending' }],
 }

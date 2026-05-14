@@ -539,7 +539,7 @@ CREATE POLICY "Admins select all reports"
 
 **RPCs (writes that bypass permissive UPDATE policies):**
 - `withdraw_post_report(uuid)` — SECURITY DEFINER; reporter-only; pending → withdrawn.
-- `moderator_update_report(uuid, report_status, text)` — SECURITY DEFINER; requires `profiles.role = 'admin'`; sets status, optional member-visible notes, `reviewed_at` / `reviewed_by`; cannot set `withdrawn`.
+- `moderator_update_report(uuid, report_status, text)` — SECURITY DEFINER; requires `profiles.role = 'admin'`; sets status (including `withdrawn` when chosen in the moderation UI), optional member-visible notes, `reviewed_at` / `reviewed_by`.
 
 **Related RLS (same migration):** admins receive additional `SELECT` policies on `community_posts`, `post_images`, and `profiles` so the moderator queue can load post and member context without broad `UPDATE` grants on `reports`.
 
