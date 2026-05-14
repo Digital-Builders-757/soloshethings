@@ -38,8 +38,8 @@
 
 ### 📋 Next
 
-- **Phase 1 Completion** - Stripe billing, WordPress integration, admin features, photo uploads
-- **Phase 2** - Design system (typography, UI components, design tokens)
+- **Current queue** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
+- **Focus** - auth reliability, dashboard / frontend visual system, and docs / prompt cleanup
 
 ### ❌ Blocked
 

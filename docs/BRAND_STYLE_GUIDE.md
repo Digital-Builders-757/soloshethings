@@ -11,100 +11,89 @@
 
 ## Brand Color Palette
 
-### Primary Colors
+**Source of truth:** `app/globals.css`
 
-**Blue 1 (Primary Blue)**
-- Hex: `#0439D9`
-- CSS Variable: `--brand-blue-1`
-- Usage: Primary actions, links, headers, key UI elements
-- Tailwind Token: `brand-blue1`
+The live implementation uses a warm editorial palette, not the older blue/yellow system from earlier drafts.
 
-**Blue 2 (Secondary Blue)**
-- Hex: `#034AA6`
-- CSS Variable: `--brand-blue-2`
-- Usage: Secondary actions, hover states, accents
-- Tailwind Token: `brand-blue2`
+### Core Colors
 
-### Accent Colors
-
-**Yellow 1 (Primary Accent)**
-- Hex: `#F2E205`
-- CSS Variable: `--brand-yellow-1`
-- Usage: Highlights, CTAs, important notices
-- Tailwind Token: `brand-yellow1`
-
-**Yellow 2 (Secondary Accent)**
-- Hex: `#F2CB05`
-- CSS Variable: `--brand-yellow-2`
-- Usage: Secondary highlights, hover states
-- Tailwind Token: `brand-yellow2`
-
-**Orange (Tertiary Accent)**
-- Hex: `#F28705`
+**Orange (Primary Action)**
+- Hex: `#e34b16`
 - CSS Variable: `--brand-orange`
-- Usage: Warnings, special CTAs, emphasis
-- Tailwind Token: `brand-orange`
+- Usage: primary CTAs, active states, key accents
+
+**Brown (Headline / Ink)**
+- Hex: `#7a331b`
+- CSS Variable: `--brand-brown`
+- Usage: headings, strong labels, grounded brand text
+
+**Cream (Surface / Warm Background)**
+- Hex: `#f7e8be`
+- CSS Variable: `--brand-cream`
+- Usage: soft panels, hero glows, highlights, supportive backgrounds
+
+**Gold (Accent / Highlight)**
+- Hex: `#fab642`
+- CSS Variable: `--brand-gold`
+- Usage: highlight chips, supportive accents, subtle emphasis
+
+**Gray (Neutral)**
+- Hex: `#d9d9d9`
+- CSS Variable: `--brand-gray`
+- Usage: borders, separators, low-emphasis UI
+
+**Dark (Body / Utility Text)**
+- Hex: `#3a3a3a`
+- CSS Variable: `--brand-dark`
+- Usage: body copy, utility text, neutral UI chrome
 
 ## Usage Rules
 
 ### Primary Actions
-- Use **Blue 1** (`#0439D9`) for primary buttons, links, and key CTAs
-- Use **Blue 2** (`#034AA6`) for hover states on primary elements
-
-### Accent Usage
-- Use **Yellow 1** (`#F2E205`) for highlights and important notices
-- Use **Yellow 2** (`#F2CB05`) for secondary highlights
-- Use **Orange** (`#F28705`) sparingly for warnings or special emphasis
+- Use **Orange** for primary buttons, links, and the main CTA hierarchy
+- Use **Brown** for strong labels and title text when the surface is light
+- Use **Gold** as the secondary warm accent, not as the main action color
 
 ### Backgrounds
-- Use brand colors for backgrounds sparingly
-- Prefer neutral backgrounds (white, gray) with brand color accents
-- When using brand colors as backgrounds, ensure sufficient text contrast
-- **Body Background:** Multi-color gradient at 8% opacity using all 5 brand colors
-- **Hero Sections:** Enhanced gradients at 10-12% opacity for vibrancy
+- Prefer neutral or cream-tinted backgrounds for reading surfaces
+- Use orange or brown backgrounds only where the contrast is deliberate and strong
+- Keep hero sections warm and editorial, not flat or generic
+- Use soft glows, layered gradients, and gentle contrast instead of hard neon treatment
 
 ### Text Colors
-- Use brand colors for text only when contrast requirements are met
-- Prefer dark text (`#000000` or `#1a1a1a`) on light backgrounds
-- Prefer light text (`#ffffff`) on dark brand color backgrounds
+- Prefer **Brown** for large headings on light surfaces
+- Prefer **Dark** for body copy and utility text
+- Use white text on Orange or Brown backgrounds only when the contrast is strong enough
 
-### Gradient Borders
-- Use `.surface-card-gradient` utility class for cards that need vibrant brand color borders
-- Gradient borders use all 5 brand colors in sequence: Blue 1 → Yellow 1 → Orange → Yellow 2 → Blue 2
-- Border width: 3px on desktop, 2px on mobile
-- Hover state: Border expands to 4px (desktop) or 3px (mobile)
-- Applied to: Blog cards, place cards, story cards, featured content cards
+### Card and Border Treatment
+- Use the existing shared surface classes and border tokens first
+- Keep card radius, border weight, and shadow treatment consistent across the site
+- Avoid introducing a new ad hoc palette inside one-off components
+
+### Motion
+- Motion should communicate state, not decorate every surface
+- Keep hover and focus feedback calm, short, and repeatable
+- Respect reduced-motion settings
 
 ## Contrast Requirements
 
-### WCAG AA Compliance
+### WCAG AA Rules
 
-**Text on Brand Colors:**
-- Blue 1 (`#0439D9`) + White text: ✅ AA compliant (21:1)
-- Blue 2 (`#034AA6`) + White text: ✅ AA compliant (12.6:1)
-- Yellow 1 (`#F2E205`) + Black text: ✅ AA compliant (19.5:1)
-- Yellow 2 (`#F2CB05`) + Black text: ✅ AA compliant (17.4:1)
-- Orange (`#F28705`) + White text: ✅ AA compliant (3.5:1)
+**Must:**
+- Test contrast before shipping new combinations
+- Favor readable text over decorative color
+- Keep support text and labels legible on mobile
 
-**Brand Colors on White:**
-- Blue 1 on white: ✅ AA compliant
-- Blue 2 on white: ✅ AA compliant
-- Yellow 1 on white: ⚠️ Use black text
-- Yellow 2 on white: ⚠️ Use black text
-- Orange on white: ✅ AA compliant
+**Must not:**
+- Use low-contrast brand-on-brand combinations for primary content
+- Mix random new hues into the palette
+- Let one-off page styling override the shared visual system
 
-### Contrast Rules
+## Gradient Borders
 
-**MUST:**
-- Use white text on Blue 1 and Blue 2 backgrounds
-- Use black text on Yellow 1 and Yellow 2 backgrounds
-- Use white text on Orange backgrounds
-- Test contrast ratios before deploying
-
-**MUST NOT:**
-- Use yellow text on white backgrounds (insufficient contrast)
-- Use light text on light backgrounds
-- Use dark text on dark backgrounds
+- Prefer the existing shared surface and gradient utilities already in the repo
+- If you add a new gradient treatment, document it here and keep it reusable
+- Do not invent page-specific border treatments that only work once
 
 ## Implementation
 
@@ -114,48 +103,33 @@ Defined in `app/globals.css`:
 
 ```css
 :root {
-  --brand-blue-1: #0439D9;
-  --brand-blue-2: #034AA6;
-  --brand-yellow-1: #F2E205;
-  --brand-yellow-2: #F2CB05;
-  --brand-orange: #F28705;
+  --brand-orange: #e34b16;
+  --brand-brown: #7a331b;
+  --brand-cream: #f7e8be;
+  --brand-gold: #fab642;
+  --brand-gray: #d9d9d9;
+  --brand-dark: #3a3a3a;
 }
 ```
 
-### Tailwind Theme Configuration
+### Tailwind / Utility Mapping
 
-Defined in `tailwind.config.ts`:
-
-```typescript
-theme: {
-  extend: {
-    colors: {
-      brand: {
-        blue1: 'var(--brand-blue-1)',
-        blue2: 'var(--brand-blue-2)',
-        yellow1: 'var(--brand-yellow-1)',
-        yellow2: 'var(--brand-yellow-2)',
-        orange: 'var(--brand-orange)',
-      },
-    },
-  },
-}
-```
+If a new token is added, mirror the CSS vars in the shared token layer instead of inventing a page-only palette. Keep the existing shell and surface utilities as the first choice.
 
 ### Usage in Components
 
 **✅ CORRECT:**
 ```tsx
-<button className="bg-brand-blue1 text-white hover:bg-brand-blue2">
+<button className="bg-primary text-primary-foreground hover:bg-primary/90">
   Primary Action
 </button>
 
-<div className="bg-brand-yellow1 text-black">
+<div className="surface-card">
   Highlight Content
 </div>
 
-{/* Gradient border card */}
-<article className="surface-card-gradient lift-hover">
+{/* Shared surface treatment */}
+<article className="surface-card lift-hover">
   <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
     {/* Card content */}
   </div>
@@ -164,9 +138,8 @@ theme: {
 
 **❌ WRONG:**
 ```tsx
-<button className="bg-[#0439D9]"> {/* Never use raw hex */}
-<button style={{ backgroundColor: '#0439D9' }}> {/* Never inline styles */}
-<div className="border-gradient-brand"> {/* Use surface-card-gradient instead */}
+<button style={{ backgroundColor: 'var(--brand-orange)' }}> {/* Never inline styles */}
+<div className="border-gradient-brand"> {/* Use shared surface utilities instead */}
 ```
 
 ## What We Do NOT Copy
@@ -207,18 +180,18 @@ When implementing dark mode:
 
 ### Overview
 
-The gradient border system uses all 5 brand colors to create vibrant, eye-catching borders on cards and content blocks. This reflects African heritage through bold, celebratory color combinations while maintaining the existing aesthetic quality.
+The gradient border system uses the warm editorial palette to create vibrant, eye-catching borders on cards and content blocks. Keep the treatment bold but still readable.
 
 ### Implementation
 
 **CSS Utility Class:** `.surface-card-gradient`
 
 **Gradient Colors (in order):**
-1. Blue 1 (`#0439D9`)
-2. Yellow 1 (`#F2E205`)
-3. Orange (`#F28705`)
-4. Yellow 2 (`#F2CB05`)
-5. Blue 2 (`#034AA6`)
+1. Orange (`#e34b16`)
+2. Gold (`#fab642`)
+3. Cream (`#f7e8be`)
+4. Brown (`#7a331b`)
+5. Dark (`#3a3a3a`)
 
 **Gradient Direction:** 135deg (diagonal)
 

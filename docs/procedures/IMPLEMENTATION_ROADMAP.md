@@ -20,6 +20,7 @@
 **Reference:** See `docs/MVP_STATUS_NOTION.md` for detailed status and progress history.
 
 **Current catch-up queue:** `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` — items **1–5** completed for the May 2026 smoke + release milestone.
+**Next build order:** `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`.
 
 **Execution queue vs phase roadmap:** The catch-up roadmap is the **current shipping order**. The phase percentages below (design system %, page implementation, etc.) are the **longer product roadmap**; they can lag behind or diverge from catch-up work without contradiction—use catch-up for “what we do next,” phases for “what the full product blueprint still contains.”
 

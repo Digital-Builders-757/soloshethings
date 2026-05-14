@@ -3,6 +3,10 @@
 Use this folder as the current execution queue.
 
 Start here:
+- `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
+- `docs/procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md`
@@ -12,14 +16,13 @@ Start here:
 - `docs/contracts/AUTH_CONTRACT.md`
 - `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`
 
-Queue order (see `SOLOSHETHINGS_CATCHUP_ROADMAP.md`):
-1. Auth reliability
-2. Dashboard shell and visual polish
-3. Site polish, performance, and docs hardening
-4. Launch hardening, profile/account continuity, and access-control QA
-5. Smoke tests, docs sync, and release prep
+Current queue (see `SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`):
+1. Auth reliability and session sanity
+2. Dashboard and frontend visual system
+3. Docs honesty, prompt pipeline, and queue cleanup
+4. Broader backlog after the finish line roadmap batches are complete
 
-**Status (2026-05-06):** Items **1–5** are complete (including smoke, docs sync, and release prep). **Next:** pick work from `IMPLEMENTATION_ROADMAP.md` / product priorities.
+**Status (2026-05-13):** The May 2026 catch-up / smoke / release milestone is treated as complete. **Next:** work top-to-bottom through `SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`.
 
 Rules:
 - Work top to bottom.

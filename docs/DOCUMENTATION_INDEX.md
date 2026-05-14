@@ -117,6 +117,10 @@ Workflow documentation and step-by-step processes.
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–5** complete for May 2026 smoke + release milestone)
+- **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Current next-build roadmap after the catch-up milestone
+- **[procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md)** - Auth/session reliability batch and prompt pack
+- **[procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md](./procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md)** - Dashboard + public frontend visual system batch and prompt pack
+- **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Docs honesty, prompt pipeline, and queue cleanup batch
 - **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
 - **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
 - **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness

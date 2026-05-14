@@ -2,9 +2,9 @@
 
 **Last updated:** May 6, 2026
 
-**Execution status:** Steps **1–5** below are **implemented** and verified for the May 2026 smoke + release milestone (see `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`). **Next:** resume work from `docs/procedures/IMPLEMENTATION_ROADMAP.md` / product backlog as priorities dictate.
+**Execution status:** Steps **1–5** below are **implemented** and verified for the May 2026 smoke + release milestone (see `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`). **Next:** resume work from `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`.
 
-The sections below record the **catch-up batches 1–5** (auth through smoke/release) in execution order. Use them as an audit trail; **what to build next** lives in `docs/procedures/IMPLEMENTATION_ROADMAP.md` and product priorities.
+The sections below record the **catch-up batches 1–5** (auth through smoke/release) in execution order. Use them as an audit trail; **what to build next** lives in `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md` and product priorities.
 Use it with `docs/procedures/IMPLEMENTATION_ROADMAP.md` and the contracts in `docs/contracts/`.
 
 ---
