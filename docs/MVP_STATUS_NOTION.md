@@ -20,7 +20,7 @@
 - **Submit flow + post image uploads (2026-05)** - `/submit` now saves real `community_posts` records, validates and uploads up to 5 JPG/PNG/WebP images server-side, stores per-user post image paths in Supabase Storage, and renders recent submissions back on the page with signed image URLs so members can verify the upload worked while broader community browsing catches up.
 - **Community feed + story detail + reporting (2026-05)** - `/places` now provides the first real authenticated browsing surface for `community_posts`, mixing public member stories with the signed-in member's own posts so private submissions remain scoped. `/places/[slug]` resolves real post content with signed images, recent submissions link into that detail page, and public stories can be reported through the existing `reports` table with duplicate-open-report protection and honest moderation copy. Members can also open `/reports` to review their own reporting history, status, and any moderation notes already written back onto those rows.
 - **Saved community stories (2026-05)** - Members can now save and unsave community posts from the feed and story detail using the existing `saved_posts` table, then revisit them on an authenticated `/saved` page. Save lookups stay user-scoped through RLS, story detail re-checks visibility so someone cannot deep-link into another member's private post, and the saved list now supports lightweight search plus quick filters for featured/public/private stories, your own stories, reported stories, and stories with photos.
-- **Owner story controls + photo management (2026-05)** - Story owners can now update title, story copy, and public/private visibility from `/places/[slug]`, archive a post to remove it from feed/detail/saved surfaces, and manage post photos in a minimal honest pass by removing old images or adding more until the 5-photo limit. `/submit` now reflects archived status, lets owners restore archived stories back into community surfaces, and routes published stories into the owner-management surface.
+- **Owner story controls + photo management (2026-05)** - Story owners can now update title, story copy, and public/private visibility from `/places/[slug]`, archive a post to remove it from feed/detail/saved surfaces, and manage post photos in a minimal honest pass by removing old images or adding more until the 5-photo limit. `/submit` now reflects archived status, lets owners restore archived stories back into community surfaces, routes published stories into the owner-management surface, and adds first-pass search plus quick filters so members can find archived/private/photo-heavy stories inside their own submission history.
 - **Community feed discovery controls (2026-05)** - `/places` now supports honest first-pass discovery controls without changing auth scope: keyword search across title/story/member name plus quick views for all stories, featured stories, public stories, your stories, saved stories, reported stories, and stories with photos. Counts stay visible in the header, saved state is reflected on cards, members now see their latest report status across browse/saved/detail surfaces, featured stories are tagged across browse/saved/detail surfaces, empty states explain when filters simply returned no matches, and a lightweight load-more step lets members pull older stories without dropping their current search/filter context.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
@@ -774,24 +774,24 @@ Next Steps:
 - Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
 - Run `supabase db diff` where Docker / CLI is available
 
-#### 2026-05-14 - Owner archived story restore controls
+#### 2026-05-14 - Owner submission-history filters
 
 **Status:** ✅ VERIFIED
 
 **Description:**
-- Added a minimal self-service restore path for archived community stories from `/submit`
-- Archived recent submissions now explain that restore returns the story to feed, detail, and saved surfaces
-- Owner detail copy now points members back to `/submit` for restore instead of leaving archive as a dead end
+- Added first-pass search and quick filters to `/submit` recent submissions for all stories, published, archived, public, private, and stories with photos
+- Kept owner lifecycle counts visible so archived/private stories are easier to find without losing honest restore copy
+- Preserve the current `/submit` filter/search context when restoring an archived story back into owner surfaces
 
 **Verification:**
 - ✅ `npm run typecheck`
 - ✅ `npm run lint`
 - ✅ `npm run build`
-- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/USER_GUIDE.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
+- ✅ Documentation updated (`docs/MVP_STATUS_NOTION.md`, `docs/proof/QA_CHECKLIST.md`, `docs/proof/MVP_SMOKE_CHECKLIST.md`)
 
 **Next Steps:**
 - Add richer restore/delete lifecycle options if owners need more than simple archive and restore
-- Consider admin visibility into restore history when moderation surfaces land
+- Consider pagination or stronger sorting if owner submission history grows beyond the current first-pass list
 
 #### [Future Entry Template]
 

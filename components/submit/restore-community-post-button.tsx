@@ -30,10 +30,11 @@ export function RestoreCommunityPostButton({ postId, path }: RestoreCommunityPos
 
   useEffect(() => {
     if (state?.success) {
-      router.push('/submit?storyRestored=1')
+      const separator = path.includes('?') ? '&' : '?'
+      router.push(`${path}${separator}storyRestored=1`)
       router.refresh()
     }
-  }, [router, state?.success])
+  }, [path, router, state?.success])
 
   return (
     <form action={action} className="space-y-3">
