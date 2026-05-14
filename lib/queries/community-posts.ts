@@ -18,6 +18,24 @@ export type RecentCommunityPost = CommunityPost & {
 
 type CommunityPostAuthor = Pick<Profile, 'id' | 'username' | 'full_name' | 'avatar_url'>
 
+const COMMUNITY_FEED_SELECT = `
+  id,
+  author_id,
+  title,
+  content,
+  is_public,
+  is_featured,
+  status,
+  created_at,
+  updated_at,
+  profiles:profiles!community_posts_author_id_fkey (
+    id,
+    username,
+    full_name,
+    avatar_url
+  )
+`
+
 export type CommunityPostDetail = CommunityPost & {
   author: CommunityPostAuthor | null
   images: ResolvedPostImage[]
@@ -113,25 +131,7 @@ export async function getCommunityFeedPosts(
 
   const { data: posts, error } = await supabase
     .from('community_posts')
-    .select(
-      `
-        id,
-        author_id,
-        title,
-        content,
-        is_public,
-        is_featured,
-        status,
-        created_at,
-        updated_at,
-        profiles:profiles!community_posts_author_id_fkey (
-          id,
-          username,
-          full_name,
-          avatar_url
-        )
-      `
-    )
+    .select(COMMUNITY_FEED_SELECT)
     .eq('status', 'published')
     .or(`is_public.eq.true,author_id.eq.${userId}`)
     .order('created_at', { ascending: false })
@@ -157,25 +157,7 @@ export async function getCommunityPostsByIds(
 
   const { data: posts, error } = await supabase
     .from('community_posts')
-    .select(
-      `
-        id,
-        author_id,
-        title,
-        content,
-        is_public,
-        is_featured,
-        status,
-        created_at,
-        updated_at,
-        profiles:profiles!community_posts_author_id_fkey (
-          id,
-          username,
-          full_name,
-          avatar_url
-        )
-      `
-    )
+    .select(COMMUNITY_FEED_SELECT)
     .eq('status', 'published')
     .in('id', postIds)
     .or(`is_public.eq.true,author_id.eq.${userId}`)
@@ -233,4 +215,39 @@ export async function getCommunityPostDetail(postId: string, userId: string): Pr
     author: Array.isArray(post.profiles) ? (post.profiles[0] ?? null) : post.profiles,
     images: imagesByPostId.get(post.id) ?? [],
   }
+}
+
+export async function getCommunityRelatedPosts(
+  userId: string,
+  currentPostId: string,
+  authorId: string,
+  limit = 3
+): Promise<CommunityFeedPost[]> {
+  const supabase = await createClient()
+
+  const { data: posts, error } = await supabase
+    .from('community_posts')
+    .select(COMMUNITY_FEED_SELECT)
+    .eq('status', 'published')
+    .neq('id', currentPostId)
+    .or(`is_public.eq.true,author_id.eq.${userId}`)
+    .order('created_at', { ascending: false })
+    .limit(18)
+
+  if (error || !posts) {
+    console.error('Failed to fetch related community posts:', error)
+    return []
+  }
+
+  const resolvedPosts = await resolveFeedPostsWithAuthors(posts)
+  const sameAuthorPosts = resolvedPosts.filter((post) => post.author_id === authorId)
+  const featuredPosts = resolvedPosts.filter((post) => post.author_id !== authorId && post.is_featured)
+  const photoPosts = resolvedPosts.filter(
+    (post) => post.author_id !== authorId && !post.is_featured && post.images.length > 0
+  )
+  const otherPosts = resolvedPosts.filter(
+    (post) => post.author_id !== authorId && !post.is_featured && post.images.length === 0
+  )
+
+  return [...sameAuthorPosts, ...featuredPosts, ...photoPosts, ...otherPosts].slice(0, limit)
 }

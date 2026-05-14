@@ -13,7 +13,7 @@ import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
 import { getCommunityReturnLink } from '@/lib/community-navigation'
-import { getCommunityPostDetail } from '@/lib/queries/community-posts'
+import { getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -43,6 +43,21 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
   }
 }
 
+function buildPlacesExploreHref(query?: string, view?: 'featured' | 'photos' | 'mine') {
+  const params = new URLSearchParams()
+
+  if (query?.trim()) {
+    params.set('q', query.trim())
+  }
+
+  if (view) {
+    params.set('view', view)
+  }
+
+  const search = params.toString()
+  return search ? `/places?${search}` : '/places'
+}
+
 export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const { slug } = await params
   const resolvedSearchParams = searchParams ? await searchParams : undefined
@@ -58,6 +73,7 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
     notFound()
   }
 
+  const relatedPosts = await getCommunityRelatedPosts(user.id, post.id, post.author_id)
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
   const isOwnPost = post.author_id === user.id
   const returnLink = getCommunityReturnLink(resolvedSearchParams?.returnTo)
@@ -71,6 +87,10 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const savedStoriesLabel = returnLink.active === 'saved' ? 'Back to saved stories' : 'Open saved stories'
   const reportHistoryHref = returnLink.active === 'reports' ? returnLink.href : '/reports'
   const reportHistoryLabel = returnLink.active === 'reports' ? 'Back to report history' : 'Open report history'
+  const exploreAuthorHref = buildPlacesExploreHref(authorName)
+  const exploreFeaturedHref = buildPlacesExploreHref(undefined, 'featured')
+  const explorePhotosHref = buildPlacesExploreHref(undefined, 'photos')
+  const exploreMineHref = buildPlacesExploreHref(undefined, 'mine')
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -166,6 +186,56 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               {post.content}
             </div>
           </section>
+
+          {relatedPosts.length > 0 ? (
+            <section className="editorial-card mt-6 p-6 sm:p-8">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Keep exploring</p>
+                  <h2 className="mt-2 font-serif text-2xl font-semibold text-[#7a331b]">More stories worth opening next</h2>
+                </div>
+                <Link href="/places" className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                  Browse the full feed →
+                </Link>
+              </div>
+
+              <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                {relatedPosts.map((relatedPost) => {
+                  const relatedAuthorName = relatedPost.author?.full_name?.trim() || relatedPost.author?.username || 'Solo SHE member'
+                  const relatedHref = `/places/${relatedPost.id}?returnTo=${encodeURIComponent('/places')}`
+                  const relatedReason =
+                    relatedPost.author_id === post.author_id
+                      ? `More from ${authorName}`
+                      : relatedPost.is_featured
+                        ? 'Featured story'
+                        : relatedPost.images.length > 0
+                          ? 'Story with photos'
+                          : 'Fresh from the community'
+
+                  return (
+                    <article key={relatedPost.id} className="rounded-[1.5rem] border border-[#ead8c2] bg-[#fffaf5] p-4">
+                      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-[#9b7455]">{relatedReason}</p>
+                      <h3 className="mt-3 font-serif text-xl font-semibold text-[#7a331b]">
+                        <Link href={relatedHref} className="transition hover:text-[#e34b16]">
+                          {relatedPost.title}
+                        </Link>
+                      </h3>
+                      <p className="mt-2 text-sm font-medium text-[#7a331b]">{relatedAuthorName}</p>
+                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#6d5849]">{relatedPost.content}</p>
+                      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#9b7455]">
+                        <span>{relatedPost.is_public ? 'Public' : 'Private to owner'}</span>
+                        {relatedPost.is_featured ? <span>Featured</span> : null}
+                        {relatedPost.images.length > 0 ? <span>{relatedPost.images.length} photo{relatedPost.images.length === 1 ? '' : 's'}</span> : null}
+                      </div>
+                      <Link href={relatedHref} className="mt-5 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                        Open story →
+                      </Link>
+                    </article>
+                  )
+                })}
+              </div>
+            </section>
+          ) : null}
         </article>
 
         <aside className="space-y-5 lg:sticky lg:top-24">
@@ -230,6 +300,46 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
             </div>
           ) : null}
 
+          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Explore from here</p>
+            <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Use this story as a jumping-off point</h2>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href={exploreAuthorHref}
+                className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+              >
+                More from {authorName}
+              </Link>
+              {post.is_featured ? (
+                <Link
+                  href={exploreFeaturedHref}
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                >
+                  Browse featured stories
+                </Link>
+              ) : null}
+              {post.images.length > 0 ? (
+                <Link
+                  href={explorePhotosHref}
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                >
+                  Explore stories with photos
+                </Link>
+              ) : null}
+              {isOwnPost ? (
+                <Link
+                  href={exploreMineHref}
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                >
+                  Reopen your story list
+                </Link>
+              ) : null}
+            </div>
+            <p className="mt-4 text-sm leading-6 text-[#6d5849]">
+              These shortcuts reuse the live feed filters instead of inventing a second browsing system, so visibility stays honest.
+            </p>
+          </div>
+
           {post.is_featured ? (
             <div className="rounded-[1.75rem] border border-[#f4c7a8] bg-[#fff7f0] p-5 shadow-sm sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Featured story</p>
@@ -251,6 +361,7 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               <li>• Members can now track their own report history and moderation status from a dedicated reports page.</li>
               <li>• Stories you already flagged now show your latest report status across browse, saved, and detail surfaces.</li>
               <li>• Featured stories are now visibly tagged across browse, saved, and detail surfaces.</li>
+              <li>• Story detail now suggests a few grounded next stories and deep-links back into live feed filters.</li>
             </ul>
           </div>
         </aside>

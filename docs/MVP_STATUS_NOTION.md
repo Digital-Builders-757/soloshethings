@@ -23,13 +23,14 @@
 - **Owner story controls + photo management (2026-05)** - Story owners can now update title, story copy, and public/private visibility from `/places/[slug]`, archive a post to remove it from feed/detail/saved surfaces, and manage post photos in a minimal honest pass by removing old images or adding more until the 5-photo limit. `/submit` now reflects archived status, lets owners restore archived stories back into community surfaces, routes published stories into the owner-management surface, and adds first-pass search plus quick filters so members can find archived/private/photo-heavy stories inside their own submission history. Story links across `/places`, `/saved`, `/reports`, and `/submit` now carry their current list context into detail pages, owner archive flow can return members to the same filtered `/submit` history view instead of dropping that context, `/submit` success state now links straight into the new story’s owner controls, story-detail helper links now return members to their current saved/report workspace when relevant, and each authenticated community surface now exposes a shared workspace nav so members can jump between browse, saved, reports, and submit without hunting through the global header.
 - **Community feed discovery controls (2026-05)** - `/places` now supports honest first-pass discovery controls without changing auth scope: keyword search across title/story/member name plus quick views for all stories, featured stories, public stories, your stories, saved stories, reported stories, and stories with photos. Counts stay visible in the header, saved state is reflected on cards, members now see their latest report status across browse/saved/detail surfaces, featured stories are tagged across browse/saved/detail surfaces, empty states explain when filters simply returned no matches, and a lightweight load-more step lets members pull older stories without dropping their current search/filter context.
 - **Community history pagination polish (2026-05)** - `/saved`, `/reports`, and `/submit` now match the feed’s lightweight history controls with load-more / show-fewer steps that preserve the current search and filter context. This keeps longer saved lists, moderation history, and owner submission history usable without introducing fake infinite scroll or new auth scope.
+- **Story detail discovery follow-through (2026-05)** - `/places/[slug]` now uses existing story metadata to suggest grounded next reads instead of a dead-end detail page: members get quick jumps back into live feed filters (same member name search, featured stories, photo stories, or their own stories when applicable) plus a small related-story rail that prioritizes the same author, then featured stories, then photo-rich stories already visible to that member.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
 ### 🚧 In Progress
 
 **Broader product build-out**
 - Billing and premium gating still need their first real implementation batch
-- Community/member browsing controls still need deeper follow-on work beyond first-pass search, featured/state filters, lightweight load-more across browse/history surfaces, saved-list filters, report/status visibility, and preserved list context (for example stronger taxonomy/location affordances and broader recommendation logic)
+- Community/member browsing controls still need deeper follow-on work beyond first-pass search, featured/state filters, lightweight load-more across browse/history surfaces, saved-list filters, report/status visibility, preserved list context, and the new detail-page discovery shortcuts (for example stronger taxonomy/location affordances and broader recommendation logic)
 - Upload system still needs follow-on work for richer image management (reordering, alt text, replace flows, non-submit surfaces)
 - Owner post lifecycle still needs deeper follow-on work beyond archive/restore, such as richer restore history, hard delete, and admin-assisted recovery
 
@@ -46,7 +47,7 @@
 
 - **Current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Recent completed checkpoint** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
-- **Focus** - follow the new `/places`, `/saved`, and `/reports` member surfaces with stronger discovery depth (taxonomy/location filters and recommendation affordances), then Stripe/premium gating, then broader moderation/admin surfaces
+- **Focus** - follow the new `/places`, `/saved`, and `/reports` member surfaces with stronger discovery depth beyond the new detail-page recommendation affordances (next likely taxonomy/location filters), then Stripe/premium gating, then broader moderation/admin surfaces
 
 ### ❌ Blocked
 
