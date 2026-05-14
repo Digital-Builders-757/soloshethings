@@ -2,6 +2,8 @@
 
 **Purpose:** File upload rules, storage buckets, path conventions, privacy toggles, signed URLs, and moderation hooks for SoloSheThings.
 
+**Hosted Supabase:** After `supabase db push`, create the `user-uploads` bucket and storage policies using [../supabase/storage_setup_dashboard.sql](../supabase/storage_setup_dashboard.sql) in the Dashboard SQL Editor (CLI migrations cannot manage some `storage` DDL on hosted projects).
+
 ## Non-Negotiables
 
 1. **RLS on Storage** - All storage buckets MUST have RLS policies enabled.

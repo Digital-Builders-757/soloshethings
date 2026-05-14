@@ -537,11 +537,13 @@ user-uploads/
         {filename}
 ```
 
-**RLS Policies:**
-```sql
--- Enable RLS on storage
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+**RLS Policies (canonical runnable script):**
 
+Apply bucket + policies with [supabase/storage_setup_dashboard.sql](./supabase/storage_setup_dashboard.sql) in the **Supabase Dashboard → SQL Editor** after `supabase db push`. Hosted Supabase does not allow the CLI migration role to `ALTER TABLE storage.objects`; RLS on `storage.objects` is already enabled by default—omit any `ALTER` when documenting or running SQL manually.
+
+Policy definitions (same as script):
+
+```sql
 -- Users can upload to own folder only
 CREATE POLICY "Users can upload own files"
   ON storage.objects FOR INSERT

@@ -777,6 +777,23 @@ Next Steps:
 - Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
 - Run `supabase db diff` where Docker / CLI is available
 
+#### 2026-05-14 - Hosted storage DDL: Dashboard script + migration strip
+
+**Status:** ✅ DOCUMENTED
+
+**Description:**
+- `supabase db push` failed with `must be owner of table objects (42501)` on `ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY` — the CLI migration role is not owner of `storage.objects` on hosted Supabase
+- Removed storage bucket/policy DDL from [`supabase/migrations/20250101000000_initial_schema.sql`](supabase/migrations/20250101000000_initial_schema.sql) (migration had never completed remotely); added pointer comment to one-time Dashboard SQL
+- Added canonical [`docs/supabase/storage_setup_dashboard.sql`](docs/supabase/storage_setup_dashboard.sql): run in **Supabase Dashboard → SQL Editor** after `db push` (idempotent-ish bucket insert + drop/recreate policies)
+- Updated [`docs/database_schema_audit.md`](docs/database_schema_audit.md) (storage truth + no `ALTER storage.objects` via CLI); [`docs/DOCUMENTATION_INDEX.md`](docs/DOCUMENTATION_INDEX.md) links the script
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build`
+- Re-run `supabase db push` against linked remote (should pass); then run `docs/supabase/storage_setup_dashboard.sql` in Dashboard for that project
+
+**Next Steps:**
+- Run Dashboard storage script on preview/production Supabase projects as needed
+
 #### 2026-05-14 - Webpack bundler for dev and build (Turbopack stability)
 
 **Status:** ✅ VERIFIED

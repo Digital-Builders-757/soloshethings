@@ -91,6 +91,7 @@ Foundational principles and architectural decisions.
 Single source of truth documents.
 
 - **[database_schema_audit.md](./database_schema_audit.md)** - Single source of truth for Supabase database schema (v0)
+- **[supabase/storage_setup_dashboard.sql](./supabase/storage_setup_dashboard.sql)** - One-time per environment: `user-uploads` bucket + storage RLS (run in Dashboard after `db push`; CLI cannot manage some `storage` DDL on hosted)
 - **[DATABASE_REPORT.md](./DATABASE_REPORT.md)** - Schema evolution, product mapping, RLS design, access patterns, and storage strategy
 - **[WORDPRESS_SUPABASE_BLUEPRINT.md](./WORDPRESS_SUPABASE_BLUEPRINT.md)** - Hybrid stack architecture blueprint: WordPress (editorial) + Supabase (identity/community) + Next.js (delivery)
 
