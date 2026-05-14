@@ -777,6 +777,22 @@ Next Steps:
 - Full manual pass of `docs/proof/MVP_SMOKE_CHECKLIST.md` on preview/production as needed
 - Run `supabase db diff` where Docker / CLI is available
 
+#### 2026-05-14 - Webpack bundler for dev and build (Turbopack stability)
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- `package.json` scripts use `next dev --webpack` and `next build --webpack` to avoid intermittent Turbopack “unexpected error” in local dev and to align Vercel builds with the stable Webpack pipeline (`npm run build` is the default install/build path)
+- Local `.next` cache cleared during rollout; `next.config.ts` workspace root pin (`outputFileTracingRoot`, `turbopack.root`) unchanged for projects that opt back into Turbopack via CLI flags
+
+**Verification:**
+- `npm run typecheck`
+- `npm run lint`
+- `npm run build`
+
+**Next Steps:**
+- If Turbopack parity improves in a future Next.js release, revisit default scripts or gate `--webpack` behind an env flag
+
 #### 2026-05-14 - Report history member filters
 
 **Status:** ✅ VERIFIED
