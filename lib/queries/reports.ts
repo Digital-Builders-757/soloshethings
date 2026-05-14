@@ -1,5 +1,8 @@
+import 'server-only'
+
 import type { Database, report_reason, report_status } from '@/types/database'
 
+import { logServerFailure } from '@/lib/server-log'
 import { createClient } from '@/lib/supabase/server'
 
 type ReportRow = Database['public']['Tables']['reports']['Row']
@@ -77,7 +80,12 @@ export async function getMemberPostReports(userId: string): Promise<MemberPostRe
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Failed to fetch member post reports:', error)
+    logServerFailure({
+      category: 'query',
+      operation: 'getMemberPostReports',
+      cause: error,
+      context: { userId },
+    })
     return []
   }
 
@@ -112,7 +120,12 @@ export async function getLatestMemberPostReportsForPosts(
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Failed to fetch latest member post reports for posts:', error)
+    logServerFailure({
+      category: 'query',
+      operation: 'getLatestMemberPostReportsForPosts',
+      cause: error,
+      context: { userId, postIdCount: uniquePostIds.length },
+    })
     return new Map()
   }
 

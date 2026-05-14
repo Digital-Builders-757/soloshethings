@@ -26,29 +26,19 @@
 - **Story detail discovery follow-through (2026-05)** - `/places/[slug]` now uses existing story metadata to suggest grounded next reads instead of a dead-end detail page: members get quick jumps back into live feed filters (same-member author filters, featured stories, photo stories, or their own stories when applicable) plus a small related-story rail that prioritizes the same author, then featured stories, then photo-rich stories already visible to that member.
 - **Member-focused discovery filters (2026-05)** - `/places`, `/saved`, and `/reports` now support a dedicated member filter on top of the existing search and quick views, so member-focused discovery and moderation history can stay grounded on the actual storyteller instead of fuzzy text matching. Filter state stays visible in the UI, now uses a shared active-member banner with a one-click clear action across all three surfaces, and carries through load-more / show-fewer pagination.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
-
 ### 🚧 In Progress
 
-**Broader product build-out**
-- Billing and premium gating still need their first real implementation batch
-- Community/member browsing controls still need deeper follow-on work beyond first-pass search, shared member-filter visibility/clearing UX, featured/state filters, lightweight load-more across browse/history surfaces, saved-list filters, report/status visibility, preserved list context, and the new detail-page discovery shortcuts (for example stronger taxonomy/location affordances and broader recommendation logic)
-- Upload system still needs follow-on work for richer image management (reordering, alt text, replace flows, non-submit surfaces)
-- Owner post lifecycle still needs deeper follow-on work beyond archive/restore, such as richer restore history, hard delete, and admin-assisted recovery
-
-**Still intentionally not done:**
-- Stripe subscription integration and premium gating
-- Dedicated newsletter delivery pipeline
-- Admin post creation interface
-- Richer second-pass discovery for community stories and saved lists (taxonomy/location filters, stronger pagination patterns, recommendation logic)
-- Hard delete and richer restore flows for community posts (current self-service restore is a simple `/submit` action)
-- Richer photo management for posts (reordering, alt text, broader viewing surfaces) and richer avatar management
-- Broader trust & safety and moderation surfaces
+- **Observability + error UX hardening (working tree, 2026-05)** - The repo currently has unverified work in progress for structured server failure logging (`logServerFailure`), safe Supabase error mapping (`mapSupabaseErrorForUser`), Sentry bootstrap/config wiring, route/global error boundaries, and safer opaque error handling around the WordPress revalidate webhook. Treat this as the active batch until it is verified and fully landed.
+- **Stripe and premium gating** - Billing still needs its first real implementation batch.
+- **Community second-pass depth** - The member surfaces are real now, but they still need stronger taxonomy/location discovery, richer recommendation logic, and richer image-management follow-through.
+- **Moderation/admin follow-through** - Broader trust & safety surfaces, admin post tooling, and deeper owner lifecycle controls are still pending.
+- **Newsletter pipeline** - The dedicated newsletter delivery path is still intentionally not shipped.
 
 ### 📋 Next
 
-- **Current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
-- **Recent completed checkpoint** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
-- **Focus** - follow the new `/places`, `/saved`, and `/reports` member surfaces with stronger discovery depth beyond the new detail-page recommendation affordances (next likely taxonomy/location filters), then Stripe/premium gating, then broader moderation/admin surfaces
+- **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
+- **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
+- **Immediate focus** - finish and verify the observability + error UX batch already in the working tree, then move to Stripe/premium gating, then the deeper community/moderation backlog
 
 ### ❌ Blocked
 
@@ -60,153 +50,58 @@ None currently.
 
 **Status:** ✅ Complete
 
-**Deliverables:**
-- Complete documentation set
-- Architecture constitution
-- Security invariants
-- Database schema design (v0)
-- Contract definitions
-- Procedure documentation
-- Proof documentation
-- Diagram documentation
+Foundational documentation, architecture, schema design, contracts, procedures, proof docs, and diagrams all exist and remain the base layer for the repo.
 
-**Verification:**
-- ✅ All documentation files created
-- ✅ Schema defined in `database_schema_audit.md`
-- ✅ Contracts defined for all integrations
-- ✅ Procedures defined for workflows
+### Phase 1: Core MVP Surface
 
-### Phase 1: Core MVP Features
+**Status:** 🚧 Mostly shipped, with billing/ops gaps still open
 
-**Status:** 🚧 In Progress (Backend Foundation Complete, WordPress Complete)
-**Completion Date:** January 27, 2025 (Backend Foundation)
+**Shipped in this phase:**
+- auth, profile bootstrap/repair, and protected-route handling
+- WordPress editorial read path with preview/revalidation support
+- dashboard/profile shell improvements
+- avatar uploads and profile continuity
+- real community submit/browse/save/report/owner-management surfaces
+- first-pass discovery/search/filter/load-more/member-filter polish
 
-**Architecture Blueprint:**
-- **WordPress + Supabase Hybrid Stack** - See `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
-- WordPress = Editorial truth (public content)
-- Supabase = Identity + community truth (private surfaces)
-- Next.js = Delivery orchestration (ISR + server-only data access)
+**Still open in this phase:**
+- Stripe subscription integration and premium gating
+- dedicated newsletter pipeline
+- broader moderation/admin tooling
+- richer upload management (reordering, replace flows, alt text, broader surfaces)
+- observability + error UX batch currently in progress in the working tree
 
-**Features:**
-1. **Auth + Profiles**
-   - Supabase Auth integration
-   - Signup flow with profile creation
-   - Login/logout
-   - Password reset
-   - Profile editing
-   - Avatar uploads
-   - Privacy settings
+**Reference:** use `docs/procedures/IMPLEMENTATION_ROADMAP.md` for the exact active queue.
 
-2. **Subscription Gate**
-   - Stripe integration
-   - 1-week free trial management
-   - Subscription activation ($3.99/month)
-   - Webhook handling
-   - Access control based on subscription status
+### Phase 2: Community Depth
 
-3. **Blog Read (WordPress)**
-   - Headless WordPress setup
-   - Blog post fetching (REST API for lists, optional GraphQL for detail)
-   - ISR configuration with revalidation
-   - Webhook revalidation (`/api/revalidate`)
-   - Preview mode (`/api/preview`)
-   - Content sanitization (canonical `lib/sanitize.ts` + `components/prose.tsx`)
-   - **Reference:** `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
+**Status:** 🚧 Partially shipped
 
-4. **Admin Bi-Weekly Posts**
-   - Admin post creation interface
-   - Community post creation
-   - Post publishing workflow
-   - Featured post capability
+**Already real:**
+- authenticated member browsing
+- saved stories
+- report history
+- owner story edit/archive/restore/photo management
+- first-pass member-focused discovery
 
-5. **Photo Uploads**
-   - Image upload to Supabase storage
-   - Multiple images per post
-   - Image ordering
-   - Privacy-aware image access
-   - Alt text support
+**Still planned in this phase:**
+- taxonomy/location-aware discovery
+- stronger recommendation logic
+- richer media handling and presentation
+- broader trust/safety depth beyond current first pass
+- any future messaging/comments/realtime work if product priorities justify it
 
-**Success Criteria:**
-- Users can sign up and create profiles
-- Users can subscribe after 1-week trial
-- Users can read WordPress blog content
-- Users can create community posts with images
-- Admin can create bi-weekly posts
+### Phase 3: Admin, Marketing, and Analytics
 
-**Verification Requirements:**
-- All smoke test paths pass (see `docs/proof/E2E_SMOKE_PATHS.md`)
-- RLS policies tested and working
-- Stripe webhooks verified
-- WordPress content loads correctly
-- Image uploads work with privacy controls
+**Status:** 📋 Planned / lightly scaffolded only
 
-### Phase 2: Community Features
+**Still planned:**
+- moderation/admin dashboard depth
+- admin/editorial post workflows where needed
+- newsletter/marketing operations beyond placeholder capture
+- analytics and performance/engagement reporting
 
-**Status:** 📋 Planned (Post-MVP)
-
-**Features:**
-1. **Messaging**
-   - Direct messaging between users
-   - Message read receipts
-   - Real-time message delivery (Supabase Realtime)
-
-2. **Reactions/Comments**
-   - Post reactions (like, love, etc.)
-   - Comment system on posts
-   - Comment threading
-   - Comment moderation
-
-3. **Events RSVP**
-   - Event creation and management
-   - Event RSVP system
-   - Event attendee management
-   - Event notifications
-
-**Success Criteria:**
-- Users can message each other
-- Users can react to and comment on posts
-- Users can RSVP to events
-- Real-time updates work correctly
-
-**Verification Requirements:**
-- Messaging flow tested end-to-end
-- Reactions/comments work correctly
-- Event RSVP system functional
-- Real-time updates verified
-
-### Phase 3: Admin Dashboard + Marketing + Analytics
-
-**Status:** 📋 Planned (Post-MVP)
-
-**Features:**
-1. **Admin Dashboard**
-   - Content moderation interface
-   - User management
-   - Report resolution
-   - Analytics dashboard
-   - System health monitoring
-
-2. **Marketing**
-   - Landing page optimization
-   - SEO improvements
-   - Marketing automation
-   - Email campaigns
-
-3. **Analytics**
-   - User engagement tracking
-   - Content analytics
-   - Subscription analytics
-   - Performance metrics
-
-**Success Criteria:**
-- Admin can moderate content effectively
-- Marketing pages optimized
-- Analytics provide actionable insights
-
-**Verification Requirements:**
-- Admin dashboard functional
-- Marketing pages perform well
-- Analytics data accurate
+**Rule:** phase labels here are coarse product buckets. The canonical execution order lives in `docs/procedures/IMPLEMENTATION_ROADMAP.md`, not in these phase summaries.
 
 ## Definition of "VERIFIED"
 
@@ -906,76 +801,69 @@ Next Steps:
 
 ### Phase 0: System Kit ✅
 
-- ✅ Documentation set complete
-- ✅ Architecture defined
-- ✅ Schema designed
-- ✅ Contracts defined
-- ✅ Brand tokens system
-- ✅ Route shells (AWA-inspired IA)
-- ✅ Component scaffolding
+- ✅ Documentation and architecture layers are in place
+- ✅ Contracts, procedures, proof docs, and diagrams exist
+- ✅ Brand/design references and repo conventions are documented
 
-### Phase 1: Core MVP 🚧
+### Phase 1: Core MVP Surface 🚧
 
-- ✅ Authentication system (signup, login, logout, route protection)
-- ✅ User profiles (query module, update action, edit page)
-- ✅ Dashboard shell (profile display, quick actions, navigation)
-- 📋 Subscription management (Stripe integration pending)
-- ✅ WordPress integration (blog routes with graceful fallback)
-  - **Blueprint:** `docs/WORDPRESS_SUPABASE_BLUEPRINT.md`
-  - Blog list + detail pages (ISR + webhook revalidation)
-  - Preview mode + revalidate API
-  - Canonical sanitization + Prose renderer
-  - Graceful fallback when WP_URL missing
-- 📋 Community posts (route shells ready)
-- 📋 Photo uploads
-- 📋 Admin post creation
-- 📋 Content moderation
+- ✅ Authentication system, route protection, and profile continuity
+- ✅ WordPress public/editorial read path with preview + revalidation hooks
+- ✅ Dashboard/profile shell and avatar uploads
+- ✅ Real community posting, browsing, saving, reporting, and owner management
+- 🚧 Observability + error UX hardening currently in progress in the working tree
+- 📋 Stripe subscription management and premium gating still pending
+- 📋 Newsletter pipeline still pending
 
-### Phase 2: Community Features 📋
+### Phase 2: Community Depth 🚧
 
-- 📋 Map explore functionality (route stub exists)
-- 📋 Direct messaging
-- 📋 Reactions/comments
-- 📋 Events RSVP
+- ✅ First-pass discovery/search/filter/load-more/member-filter support is real
+- 📋 Taxonomy/location-aware discovery still pending
+- 📋 Richer media handling/presentation still pending
+- 📋 Messaging/comments/realtime remain future scope, not current commitments
 
 ### Phase 3: Admin + Marketing + Analytics 📋
 
-- 📋 Admin dashboard
-- 📋 Marketing optimization
-- 📋 Analytics implementation
+- 📋 Moderation/admin dashboard depth still pending
+- 📋 Admin/editorial operations still pending
+- 📋 Analytics implementation still pending
+- 📋 Marketing/newsletter operations beyond placeholder capture still pending
 
 ## Release History
 
-### v0.0.0 - Pre-Release (Current)
+### Current working state
 
-**Date:** 2025-01-27  
-**Status:** Documentation only
+**Status:** Active development on `develop`
 
-**Features:**
-- Complete documentation set
-- Schema design
-- Architecture definition
+**Most recent shipped areas:**
+- profile/avatar continuity
+- authenticated member community surfaces
+- owner story controls and discovery polish
+- recent auth/tooling fixes
 
-**Deployment:**
-- Not yet deployed
+**Current unverified batch:**
+- observability + error UX hardening in the working tree
 
 ## Technical Debt
 
 ### Current
 
-None yet (pre-implementation).
+- Billing/premium gating is still absent
+- Community media management is still first-pass only
+- Moderation/admin tooling is still shallow
+- Observability hardening is in progress and not yet verified
 
 ### Future Considerations
 
 - Real-time features (chat, live updates)
-- Advanced search implementation
+- Advanced discovery/search depth
 - Analytics and tracking
-- Performance optimizations
-- Full-text search indexes
+- Performance optimization beyond the current polish passes
+- Full-text search indexes if content volume justifies them
 
 ## Known Issues
 
-None currently.
+- No single blocking product issue is currently documented here, but the repo does still have planned gaps around billing, moderation/admin depth, richer upload handling, and newsletter operations.
 
 ## Metrics & Goals
 

@@ -1,4 +1,8 @@
+import 'server-only'
+
 import type { Database } from '@/types/database'
+
+import { logServerFailure } from '@/lib/server-log'
 
 import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getPostImageSignedUrl } from '@/lib/storage/post-images'
@@ -83,7 +87,12 @@ async function getResolvedImages(postIds: string[]) {
     .order('order', { ascending: true })
 
   if (imagesError) {
-    console.error('Failed to fetch post images:', imagesError)
+    logServerFailure({
+      category: 'query',
+      operation: 'getResolvedImages',
+      cause: imagesError,
+      context: { postIdCount: postIds.length },
+    })
   }
 
   const imagesByPostId = new Map<string, ResolvedPostImage[]>()
@@ -111,7 +120,14 @@ export async function getRecentPostsForAuthor(authorId: string, limit = 6): Prom
     .limit(limit)
 
   if (postsError || !posts) {
-    console.error('Failed to fetch author community posts:', postsError)
+    if (postsError) {
+      logServerFailure({
+        category: 'query',
+        operation: 'getRecentPostsForAuthor',
+        cause: postsError,
+        context: { authorId },
+      })
+    }
     return []
   }
 
@@ -138,7 +154,14 @@ export async function getCommunityFeedPosts(
     .limit(limit)
 
   if (error || !posts) {
-    console.error('Failed to fetch community feed posts:', error)
+    if (error) {
+      logServerFailure({
+        category: 'query',
+        operation: 'getCommunityFeedPosts',
+        cause: error,
+        context: { userId },
+      })
+    }
     return []
   }
 
@@ -163,7 +186,14 @@ export async function getCommunityPostsByIds(
     .or(`is_public.eq.true,author_id.eq.${userId}`)
 
   if (error || !posts) {
-    console.error('Failed to fetch community posts by id:', error)
+    if (error) {
+      logServerFailure({
+        category: 'query',
+        operation: 'getCommunityPostsByIds',
+        cause: error,
+        context: { userId, postIdCount: postIds.length },
+      })
+    }
     return []
   }
 
@@ -200,7 +230,12 @@ export async function getCommunityPostDetail(postId: string, userId: string): Pr
     .maybeSingle()
 
   if (error) {
-    console.error('Failed to fetch community post detail:', error)
+    logServerFailure({
+      category: 'query',
+      operation: 'getCommunityPostDetail',
+      cause: error,
+      context: { userId, postId },
+    })
     return null
   }
 
@@ -235,7 +270,14 @@ export async function getCommunityRelatedPosts(
     .limit(18)
 
   if (error || !posts) {
-    console.error('Failed to fetch related community posts:', error)
+    if (error) {
+      logServerFailure({
+        category: 'query',
+        operation: 'getCommunityRelatedPosts',
+        cause: error,
+        context: { userId, currentPostId, authorId },
+      })
+    }
     return []
   }
 

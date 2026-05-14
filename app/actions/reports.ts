@@ -2,8 +2,10 @@
 
 import { revalidatePath } from 'next/cache'
 
-import type { report_reason } from '@/types/database'
+import { logServerFailure } from '@/lib/server-log'
+import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, getUser } from '@/lib/supabase/server'
+import type { report_reason } from '@/types/database'
 
 const REPORT_REASONS: report_reason[] = ['spam', 'harassment', 'inappropriate', 'copyright', 'other']
 
@@ -53,8 +55,14 @@ export async function createPostReport(
     .maybeSingle()
 
   if (postError) {
-    console.error('Create report post lookup error:', postError)
-    return { error: 'Could not check that story right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(postError, 'Could not check that story right now. Please try again.')
+    logServerFailure({
+      category: 'query',
+      operation: 'createPostReport.postLookup',
+      cause: postError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   if (!post || post.status !== 'published' || !post.is_public) {
@@ -74,8 +82,17 @@ export async function createPostReport(
     .limit(1)
 
   if (existingReportsError) {
-    console.error('Create report duplicate check error:', existingReportsError)
-    return { error: 'Could not check your prior reports right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(
+      existingReportsError,
+      'Could not check your prior reports right now. Please try again.'
+    )
+    logServerFailure({
+      category: 'query',
+      operation: 'createPostReport.duplicateCheck',
+      cause: existingReportsError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   if ((existingReports?.length ?? 0) > 0) {
@@ -90,8 +107,14 @@ export async function createPostReport(
   })
 
   if (insertError) {
-    console.error('Create report insert error:', insertError)
-    return { error: 'Could not send your report right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(insertError, 'Could not send your report right now. Please try again.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'createPostReport.insert',
+      cause: insertError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   revalidatePath(path)

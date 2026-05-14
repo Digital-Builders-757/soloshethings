@@ -14,6 +14,8 @@
 import { revalidatePath } from 'next/cache'
 
 import { getProfile } from '@/lib/queries/profiles'
+import { logServerFailure } from '@/lib/server-log'
+import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import {
   AVATAR_BUCKET,
   buildAvatarStoragePath,
@@ -95,8 +97,17 @@ export async function updateProfile(
       })
 
       if (uploadError) {
-        console.error('Avatar upload error:', uploadError)
-        return { error: 'Could not upload your avatar. Please try again.' }
+        logServerFailure({
+          category: 'storage',
+          operation: 'updateProfile.avatarUpload',
+          cause: uploadError,
+          context: { userId: user.id },
+        })
+        const mapped = mapSupabaseErrorForUser(
+          uploadError,
+          'Could not upload your avatar. Please try again.'
+        )
+        return { error: mapped.userMessage }
       }
     }
 
@@ -140,17 +151,29 @@ export async function updateProfile(
         return { error: 'This username is already taken. Please choose another.' }
       }
       if (error.code === 'PGRST116') {
-        console.error('Profile update: no row matched', user.id)
+        logServerFailure({
+          category: 'mutation',
+          operation: 'updateProfile.persist',
+          cause: error,
+          context: { userId: user.id, note: 'no_row_matched' },
+        })
         return {
           error:
             'Your profile was not found. Reload the page or sign out and sign in again to retry.',
         }
       }
 
-      console.error(existing ? 'Profile update error:' : 'Profile create (first save) error:', error)
-      return existing
-        ? { error: 'Failed to update profile. Please try again.' }
-        : { error: 'Could not create your profile. Please try again or sign out and back in.' }
+      logServerFailure({
+        category: 'mutation',
+        operation: existing ? 'updateProfile.update' : 'updateProfile.insert',
+        cause: error,
+        context: { userId: user.id },
+      })
+      const mapped = mapSupabaseErrorForUser(
+        error,
+        existing ? 'Failed to update profile. Please try again.' : 'Could not create your profile. Please try again or sign out and back in.'
+      )
+      return { error: mapped.userMessage }
     }
 
     if (
@@ -164,7 +187,12 @@ export async function updateProfile(
         .remove([existing.avatar_url])
 
       if (removeError) {
-        console.error('Old avatar cleanup error:', removeError)
+        logServerFailure({
+          category: 'storage',
+          operation: 'updateProfile.oldAvatarCleanup',
+          cause: removeError,
+          context: { userId: user.id },
+        })
       }
     }
 
@@ -173,7 +201,7 @@ export async function updateProfile(
     revalidatePath('/', 'layout')
     return { success: true }
   } catch (error) {
-    console.error('Profile update exception:', error)
+    logServerFailure({ category: 'mutation', operation: 'updateProfile', cause: error })
     return { error: 'An unexpected error occurred. Please try again.' }
   }
 }

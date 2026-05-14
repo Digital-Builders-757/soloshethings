@@ -116,17 +116,17 @@ Workflow documentation and step-by-step processes.
 - **[procedures/ENVIRONMENT_PROCEDURE.md](./procedures/ENVIRONMENT_PROCEDURE.md)** - Dev vs production setup, Supabase project separation, and secret management
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, and rollback steps
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
-- **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - Complete implementation roadmap, phase planning, and quick resume guide
-- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Catch-up execution order (items **1–5** complete for May 2026 smoke + release milestone)
-- **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Completed post-catch-up finishing pass and backlog handoff checkpoint
-- **[procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md)** - Auth/session reliability batch and prompt pack
-- **[procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md](./procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md)** - Dashboard + public frontend visual system batch and prompt pack
-- **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Docs honesty, prompt pipeline, and queue cleanup batch
-- **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Combined batch doc for auth reliability, dashboard polish, and verification
-- **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Follow-up batch for responsive polish, loading feel, and docs hardening
-- **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Last-mile batch for profile continuity, access-control QA, and release readiness
-- **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Final MVP smoke, docs sync, and release prep batch
-- **[procedures/README.md](./procedures/README.md)** - Queue entry point for Cursor and handoffs
+- **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
+- **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)
+- **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Historical archive of the post-catch-up finishing checkpoint
+- **[procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md)** - Historical batch record for auth/session reliability
+- **[procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md](./procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md)** - Historical batch record for dashboard + public frontend system cleanup
+- **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Historical batch record for docs honesty and prompt-pipeline cleanup
+- **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Historical combined auth/dashboard batch record
+- **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Historical batch record for responsive polish and loading feel
+- **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Historical batch record for profile continuity, access-control QA, and release readiness
+- **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Historical batch record for MVP smoke, docs sync, and release prep
+- **[procedures/README.md](./procedures/README.md)** - Queue entry point and archive/canonical-plan guide
 - **[procedures/LOCAL_CURSOR_WORKFLOW.md](./procedures/LOCAL_CURSOR_WORKFLOW.md)** - Local Cursor slash-command workflow, headless CMS mental model, and how local `.cursor/` helpers relate to `docs/` truth
 
 ### Proof Layer
@@ -136,14 +136,14 @@ Testing requirements, quality gates, and monitoring.
 - **[proof/QA_CHECKLIST.md](./proof/QA_CHECKLIST.md)** - Testing requirements and quality gates
 - **[proof/E2E_SMOKE_PATHS.md](./proof/E2E_SMOKE_PATHS.md)** - Critical user journeys for smoke testing
 - **[proof/MVP_SMOKE_CHECKLIST.md](./proof/MVP_SMOKE_CHECKLIST.md)** - Definitive QA checklist to verify MVP is usable and stable
-- **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Error tracking, monitoring setup, and alerting rules
+- **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Monitoring policy plus the live observability/Sentry implementation notes
 
 ### UX Canon Layer
 
 User-facing documentation and feature status.
 
 - **[USER_GUIDE.md](./USER_GUIDE.md)** - User roles, capabilities, and UX expectations
-- **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - Project status dashboard, phase planning, and progress history
+- **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - **Canonical shipped status** and progress history
 - **[BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)** - Brand color palette, usage rules, and design tokens
 - **[UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md)** - Accidentally Wes Anderson inspiration (structure only, not styling)
 - **[design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md)** - Brand color vibrancy enhancement design plan and implementation
@@ -267,10 +267,10 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-05-06  
+**Last Updated:** 2026-05-14  
 **Maintainer:** Development Team
 
-**Recent sync:** Catch-up item **§5** (smoke verification, docs sync, release prep) completed per `procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`. Items **1–5** in `procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md` are done for this release milestone.
+**Recent sync:** `procedures/IMPLEMENTATION_ROADMAP.md` is now the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue.
 
 ---
 

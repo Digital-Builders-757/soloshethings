@@ -1,4 +1,7 @@
+import 'server-only'
+
 import { getCommunityPostsByIds, type CommunityFeedPost } from '@/lib/queries/community-posts'
+import { logServerFailure } from '@/lib/server-log'
 import { createClient } from '@/lib/supabase/server'
 
 type SavedPostRow = {
@@ -24,7 +27,12 @@ export async function getSavedCommunityPostIds(userId: string, postIds: string[]
     .in('community_post_id', postIds)
 
   if (error) {
-    console.error('Failed to fetch saved community post ids:', error)
+    logServerFailure({
+      category: 'query',
+      operation: 'getSavedCommunityPostIds',
+      cause: error,
+      context: { userId, postIdCount: postIds.length },
+    })
     return new Set()
   }
 
@@ -42,7 +50,12 @@ export async function getSavedCommunityPosts(userId: string): Promise<SavedCommu
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Failed to fetch saved community posts:', error)
+    logServerFailure({
+      category: 'query',
+      operation: 'getSavedCommunityPosts',
+      cause: error,
+      context: { userId },
+    })
     return []
   }
 

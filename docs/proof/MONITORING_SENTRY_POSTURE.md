@@ -2,6 +2,31 @@
 
 **Purpose:** Error tracking, logging rules, error taxonomy, alert thresholds, and "no silent failure" enforcement for SoloSheThings.
 
+## Implementation (this repository)
+
+Use these primitives for new server code instead of raw `console.error` or ad hoc `Sentry.captureException` calls:
+
+1. **`logServerFailure`** — [`lib/server-log.ts`](../../lib/server-log.ts). Server-only. Logs a structured `[server-failure]` JSON payload to stderr (includes the `Error` in development). If `SENTRY_DSN` or `NEXT_PUBLIC_SENTRY_DSN` is set, also sends `Sentry.captureException` with `tags.category`, `tags.operation`, and optional `extra` (UUIDs, counts, short path prefixes only — **never** secrets or raw session tokens).
+2. **`mapSupabaseErrorForUser`** — [`lib/supabase-errors.ts`](../../lib/supabase-errors.ts). Returns `{ userMessage, devHint? }`. Show `userMessage` in UI; use `devHint` only inside `logServerFailure` context, not in HTML.
+3. **Sentry bootstrap** — [`instrumentation.ts`](../../instrumentation.ts) registers [`sentry.server.config.ts`](../../sentry.server.config.ts) (Node) and [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (Edge). [`instrumentation-client.ts`](../../instrumentation-client.ts) initializes the browser SDK when `NEXT_PUBLIC_SENTRY_DSN` is set. `export const onRequestError = Sentry.captureRequestError` captures unhandled App Router request errors.
+4. **Next.js config** — [`next.config.ts`](../../next.config.ts) applies `withSentryConfig` only when **`SENTRY_AUTH_TOKEN`**, **`SENTRY_ORG`**, and **`SENTRY_PROJECT`** are all defined (source maps in CI/production). Runtime capture still works with DSN only.
+5. **Route-level UI** — [`app/error.tsx`](../../app/error.tsx) and [`app/global-error.tsx`](../../app/global-error.tsx) provide user-facing recovery UI; both call `Sentry.captureException` on the client when the SDK is active.
+
+### Environment variables
+
+| Variable | Scope | Purpose |
+|----------|--------|---------|
+| `NEXT_PUBLIC_SENTRY_DSN` | Client + can mirror server | Browser events; required for client replay/tracing in the bundle |
+| `SENTRY_DSN` | Server/Edge (optional) | Prefer for server-only events if you keep browser DSN separate |
+| `SENTRY_AUTH_TOKEN` | Build/CI | Upload source maps |
+| `SENTRY_ORG` | Build/CI | Organization slug for the Sentry webpack plugin |
+| `SENTRY_PROJECT` | Build/CI | Project slug for the Sentry webpack plugin |
+
+### Current verification note (2026-05-14)
+
+- `npm run typecheck`, `npm run lint`, and `npm run build` pass with the current observability batch in the tree.
+- The webpack production build currently emits non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive instrumentation packages. Treat that as known upstream noise unless it turns into a failing build or runtime issue.
+
 ## Non-Negotiables
 
 1. **No Silent Failures** - All errors MUST be logged. Operations MUST throw or return explicit error states.

@@ -16,6 +16,8 @@ import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 import { isValidUsername, normalizeUsername } from '@/lib/auth-utils'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
+import { logServerFailure } from '@/lib/server-log'
+import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import type { user_role } from '@/types/database'
 import { revalidatePath } from 'next/cache'
@@ -54,18 +56,30 @@ export async function signup(
 
     if (usernameLookupError) {
       if (usernameLookupError.code === 'PGRST205') {
-        console.error(
-          "[signup] public.profiles is missing on the Supabase project for NEXT_PUBLIC_SUPABASE_URL. " +
-            'Apply migrations (e.g. `supabase link` then `supabase db push`, or run `supabase/migrations/*.sql` in the SQL editor).'
-        )
+        logServerFailure({
+          category: 'mutation',
+          operation: 'signup.usernameLookup',
+          cause: usernameLookupError,
+          context: { note: 'profiles_table_or_schema_missing' },
+        })
         if (process.env.NODE_ENV === 'development') {
           return {
             error:
-              'Database schema is not applied: the profiles table was not found. Run Supabase migrations for this project (see console).',
+              'Database schema is not applied: the profiles table was not found. Run Supabase migrations for this project (see server logs).',
           }
         }
       } else {
-        console.error('Signup username lookup failed:', usernameLookupError)
+        const mapped = mapSupabaseErrorForUser(
+          usernameLookupError,
+          'We could not validate your username. Please try again.'
+        )
+        logServerFailure({
+          category: 'mutation',
+          operation: 'signup.usernameLookup',
+          cause: usernameLookupError,
+          context: mapped.devHint ? { devHint: mapped.devHint } : undefined,
+        })
+        return { error: mapped.userMessage }
       }
       return { error: 'We could not validate your username. Please try again.' }
     }
@@ -99,19 +113,33 @@ export async function signup(
       .single()
 
     if (profileError) {
-      console.error('Profile creation failed:', profileError)
+      logServerFailure({
+        category: 'mutation',
+        operation: 'signup.insertProfile',
+        cause: profileError,
+        context: { userId: authData.user.id },
+      })
 
       try {
         await adminSupabase.auth.admin.deleteUser(authData.user.id)
       } catch (deleteError) {
-        console.error('Auth rollback failed after profile creation error:', deleteError)
+        logServerFailure({
+          category: 'auth',
+          operation: 'signup.rollbackDeleteUser',
+          cause: deleteError,
+          context: { userId: authData.user.id },
+        })
       }
 
       if (profileError.code === '23505') {
         return { error: 'That username was just claimed. Please choose another and try again.' }
       }
 
-      return { error: 'Profile creation failed. Please try again or contact support.' }
+      const mapped = mapSupabaseErrorForUser(
+        profileError,
+        'Profile creation failed. Please try again or contact support.'
+      )
+      return { error: mapped.userMessage }
     }
 
     revalidatePath('/', 'layout')
@@ -130,7 +158,7 @@ export async function signup(
     redirect(nextPath)
   } catch (error) {
     unstable_rethrow(error)
-    console.error('Signup error:', error)
+    logServerFailure({ category: 'auth', operation: 'signup', cause: error })
     return { error: 'Something went wrong during sign up. Please try again.' }
   }
 }
@@ -182,7 +210,7 @@ export async function login(
     role = profile.role
     revalidatePath('/', 'layout')
   } catch (error) {
-    console.error('Login error:', error)
+    logServerFailure({ category: 'auth', operation: 'login', cause: error })
     return { error: 'Something went wrong during sign in. Please try again.' }
   }
 
@@ -201,13 +229,13 @@ export async function logout(): Promise<
     const { error } = await supabase.auth.signOut()
 
     if (error) {
-      console.error('Logout Supabase error:', error)
+      logServerFailure({ category: 'auth', operation: 'logout.signOut', cause: error })
       return { error: 'We could not sign you out. Please try again.' }
     }
 
     revalidatePath('/', 'layout')
   } catch (error) {
-    console.error('Logout error:', error)
+    logServerFailure({ category: 'auth', operation: 'logout', cause: error })
     return { error: 'Something went wrong while signing out.' }
   }
 

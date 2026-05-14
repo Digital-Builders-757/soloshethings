@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { logServerFailure } from '@/lib/server-log'
 import { createClient } from '@/lib/supabase/server'
 
 export const AVATAR_BUCKET = 'avatars'
@@ -57,7 +58,12 @@ export async function getAvatarSignedUrl(storagePath: string | null | undefined)
   const { data, error } = await supabase.storage.from(AVATAR_BUCKET).createSignedUrl(storagePath, 3600)
 
   if (error || !data?.signedUrl) {
-    console.error('Failed to create signed avatar URL:', error)
+    logServerFailure({
+      category: 'storage',
+      operation: 'getAvatarSignedUrl',
+      cause: error ?? new Error('Missing signedUrl'),
+      context: { storagePathPrefix: storagePath.slice(0, 24) },
+    })
     return null
   }
 

@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { logServerFailure } from '@/lib/server-log'
 import { createClient } from '@/lib/supabase/server'
 
 export const POST_IMAGE_BUCKET = 'post-images'
@@ -48,7 +49,12 @@ export async function getPostImageSignedUrl(storagePath: string | null | undefin
     .createSignedUrl(storagePath, 3600)
 
   if (error || !data?.signedUrl) {
-    console.error('Failed to create signed post image URL:', error)
+    logServerFailure({
+      category: 'storage',
+      operation: 'getPostImageSignedUrl',
+      cause: error ?? new Error('Missing signedUrl'),
+      context: { storagePathPrefix: storagePath.slice(0, 32) },
+    })
     return null
   }
 

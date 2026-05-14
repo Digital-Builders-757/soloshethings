@@ -2,12 +2,14 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { logServerFailure } from '@/lib/server-log'
 import {
   buildPostImageStoragePath,
   POST_IMAGE_BUCKET,
   POST_IMAGE_MAX_FILES,
   validatePostImageFile,
 } from '@/lib/storage/post-images'
+import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, getUser } from '@/lib/supabase/server'
 
 type CreateCommunityPostState = {
@@ -61,8 +63,14 @@ async function getOwnedCommunityPost(postId: string, userId: string) {
     .maybeSingle()
 
   if (error) {
-    console.error('Owned community post lookup error:', error)
-    return { post: null, lookupError: 'Could not check that story right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(error, 'Could not check that story right now. Please try again.')
+    logServerFailure({
+      category: 'query',
+      operation: 'getOwnedCommunityPost',
+      cause: error,
+      context: { userId, postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { post: null, lookupError: mapped.userMessage }
   }
 
   if (!post) {
@@ -81,8 +89,17 @@ async function getOwnedPostImages(postId: string) {
     .order('order', { ascending: true })
 
   if (error) {
-    console.error('Owned post images lookup error:', error)
-    return { images: null, lookupError: 'Could not check this story\'s photos right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(
+      error,
+      'Could not check this story\'s photos right now. Please try again.'
+    )
+    logServerFailure({
+      category: 'query',
+      operation: 'getOwnedPostImages',
+      cause: error,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { images: null, lookupError: mapped.userMessage }
   }
 
   return { images: images ?? [], lookupError: null }
@@ -98,8 +115,17 @@ async function getOwnedPostImage(postId: string, imageId: string) {
     .maybeSingle()
 
   if (error) {
-    console.error('Owned post image lookup error:', error)
-    return { image: null, lookupError: 'Could not check this story image right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(
+      error,
+      'Could not check this story image right now. Please try again.'
+    )
+    logServerFailure({
+      category: 'query',
+      operation: 'getOwnedPostImage',
+      cause: error,
+      context: { postId, imageId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { image: null, lookupError: mapped.userMessage }
   }
 
   if (!image) {
@@ -173,7 +199,16 @@ export async function createCommunityPost(
       .single()
 
     if (postError || !post) {
-      console.error('Create post error:', postError)
+      if (postError) {
+        const mapped = mapSupabaseErrorForUser(postError, 'Could not save your post. Please try again.')
+        logServerFailure({
+          category: 'mutation',
+          operation: 'createCommunityPost.insert',
+          cause: postError,
+          context: { userId: user.id, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+        })
+        return { error: mapped.userMessage }
+      }
       return { error: 'Could not save your post. Please try again.' }
     }
 
@@ -197,7 +232,12 @@ export async function createCommunityPost(
       })
 
       if (uploadError) {
-        console.error('Post image upload error:', uploadError)
+        logServerFailure({
+          category: 'storage',
+          operation: 'createCommunityPost.imageUpload',
+          cause: uploadError,
+          context: { userId: user.id, postId: post.id },
+        })
         throw new Error('Could not upload one of your images.')
       }
 
@@ -215,7 +255,12 @@ export async function createCommunityPost(
       const { error: imageInsertError } = await supabase.from('post_images').insert(imageRows)
 
       if (imageInsertError) {
-        console.error('Create post image metadata error:', imageInsertError)
+        logServerFailure({
+          category: 'mutation',
+          operation: 'createCommunityPost.postImagesInsert',
+          cause: imageInsertError,
+          context: { userId: user.id, postId: post.id },
+        })
         throw new Error('Could not save your image details.')
       }
     }
@@ -231,18 +276,33 @@ export async function createCommunityPost(
     if (uploadedPaths.length > 0) {
       const { error: cleanupError } = await supabase.storage.from(POST_IMAGE_BUCKET).remove(uploadedPaths)
       if (cleanupError) {
-        console.error('Post image cleanup error:', cleanupError)
+        logServerFailure({
+          category: 'storage',
+          operation: 'createCommunityPost.uploadCleanup',
+          cause: cleanupError,
+          context: { userId: user.id, pathCount: uploadedPaths.length },
+        })
       }
     }
 
     if (postId) {
       const { error: rollbackError } = await supabase.from('community_posts').delete().eq('id', postId)
       if (rollbackError) {
-        console.error('Post rollback error:', rollbackError)
+        logServerFailure({
+          category: 'mutation',
+          operation: 'createCommunityPost.postRollback',
+          cause: rollbackError,
+          context: { userId: user.id, postId },
+        })
       }
     }
 
-    console.error('Create community post exception:', error)
+    logServerFailure({
+      category: 'mutation',
+      operation: 'createCommunityPost',
+      cause: error,
+      context: { userId: user.id },
+    })
     return { error: error instanceof Error ? error.message : 'Could not publish your post. Please try again.' }
   }
 }
@@ -293,8 +353,14 @@ export async function updateCommunityPost(
     .eq('author_id', user.id)
 
   if (error) {
-    console.error('Update community post error:', error)
-    return { error: 'Could not save your story changes right now.' }
+    const mapped = mapSupabaseErrorForUser(error, 'Could not save your story changes right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'updateCommunityPost',
+      cause: error,
+      context: { userId: user.id, postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   revalidateCommunityPostSurfaces(postId, path)
@@ -378,7 +444,12 @@ export async function addImagesToCommunityPost(
       })
 
       if (uploadError) {
-        console.error('Add post image upload error:', uploadError)
+        logServerFailure({
+          category: 'storage',
+          operation: 'addImagesToCommunityPost.upload',
+          cause: uploadError,
+          context: { userId: user.id, postId },
+        })
         throw new Error('Could not upload one of your images.')
       }
 
@@ -395,7 +466,12 @@ export async function addImagesToCommunityPost(
     const { error: imageInsertError } = await supabase.from('post_images').insert(imageRows)
 
     if (imageInsertError) {
-      console.error('Add post image metadata error:', imageInsertError)
+      logServerFailure({
+        category: 'mutation',
+        operation: 'addImagesToCommunityPost.insertMetadata',
+        cause: imageInsertError,
+        context: { userId: user.id, postId },
+      })
       throw new Error('Could not save your new image details.')
     }
 
@@ -410,11 +486,21 @@ export async function addImagesToCommunityPost(
     if (uploadedPaths.length > 0) {
       const { error: cleanupError } = await supabase.storage.from(POST_IMAGE_BUCKET).remove(uploadedPaths)
       if (cleanupError) {
-        console.error('Add post image cleanup error:', cleanupError)
+        logServerFailure({
+          category: 'storage',
+          operation: 'addImagesToCommunityPost.uploadCleanup',
+          cause: cleanupError,
+          context: { userId: user.id, postId, pathCount: uploadedPaths.length },
+        })
       }
     }
 
-    console.error('Add images to community post exception:', error)
+    logServerFailure({
+      category: 'mutation',
+      operation: 'addImagesToCommunityPost',
+      cause: error,
+      context: { userId: user.id, postId },
+    })
     return { error: error instanceof Error ? error.message : 'Could not update this story\'s photos right now.' }
   }
 }
@@ -459,13 +545,24 @@ export async function removeImageFromCommunityPost(
     .eq('post_id', postId)
 
   if (error) {
-    console.error('Remove post image metadata error:', error)
-    return { error: 'Could not remove this photo right now.' }
+    const mapped = mapSupabaseErrorForUser(error, 'Could not remove this photo right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'removeImageFromCommunityPost.deleteRow',
+      cause: error,
+      context: { userId: user.id, postId, imageId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   const { error: storageError } = await supabase.storage.from(POST_IMAGE_BUCKET).remove([image.storage_path])
   if (storageError) {
-    console.error('Remove post image storage error:', storageError)
+    logServerFailure({
+      category: 'storage',
+      operation: 'removeImageFromCommunityPost.removeObject',
+      cause: storageError,
+      context: { userId: user.id, postId, imageId },
+    })
   }
 
   revalidateCommunityPostSurfaces(postId, path)
@@ -511,8 +608,14 @@ export async function archiveCommunityPost(
     .eq('author_id', user.id)
 
   if (error) {
-    console.error('Archive community post error:', error)
-    return { error: 'Could not archive this story right now.' }
+    const mapped = mapSupabaseErrorForUser(error, 'Could not archive this story right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'archiveCommunityPost',
+      cause: error,
+      context: { userId: user.id, postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   revalidateCommunityPostSurfaces(postId, path)
@@ -558,8 +661,14 @@ export async function restoreCommunityPost(
     .eq('author_id', user.id)
 
   if (error) {
-    console.error('Restore community post error:', error)
-    return { error: 'Could not restore this story right now.' }
+    const mapped = mapSupabaseErrorForUser(error, 'Could not restore this story right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'restoreCommunityPost',
+      cause: error,
+      context: { userId: user.id, postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   revalidateCommunityPostSurfaces(postId, path)

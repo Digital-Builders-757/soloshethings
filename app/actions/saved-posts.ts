@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { logServerFailure } from '@/lib/server-log'
+import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, getUser } from '@/lib/supabase/server'
 
 type ToggleSavedCommunityPostState = {
@@ -39,8 +41,14 @@ export async function toggleSavedCommunityPost(
     .maybeSingle()
 
   if (postError) {
-    console.error('Toggle saved post lookup error:', postError)
-    return { error: 'Could not check that story right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(postError, 'Could not check that story right now. Please try again.')
+    logServerFailure({
+      category: 'query',
+      operation: 'toggleSavedCommunityPost.postLookup',
+      cause: postError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   if (!post) {
@@ -56,16 +64,34 @@ export async function toggleSavedCommunityPost(
     .maybeSingle()
 
   if (existingSaveError) {
-    console.error('Toggle saved post existing lookup error:', existingSaveError)
-    return { error: 'Could not check your saved stories right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(
+      existingSaveError,
+      'Could not check your saved stories right now. Please try again.'
+    )
+    logServerFailure({
+      category: 'query',
+      operation: 'toggleSavedCommunityPost.existingLookup',
+      cause: existingSaveError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   if (existingSave) {
     const { error: deleteError } = await supabase.from('saved_posts').delete().eq('id', existingSave.id)
 
     if (deleteError) {
-      console.error('Toggle saved post delete error:', deleteError)
-      return { error: 'Could not remove this story from your saves right now.' }
+      const mapped = mapSupabaseErrorForUser(
+        deleteError,
+        'Could not remove this story from your saves right now.'
+      )
+      logServerFailure({
+        category: 'mutation',
+        operation: 'toggleSavedCommunityPost.delete',
+        cause: deleteError,
+        context: { saveId: existingSave.id, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+      })
+      return { error: mapped.userMessage }
     }
 
     revalidatePath(path)
@@ -85,8 +111,14 @@ export async function toggleSavedCommunityPost(
   })
 
   if (insertError) {
-    console.error('Toggle saved post insert error:', insertError)
-    return { error: 'Could not save this story right now. Please try again.' }
+    const mapped = mapSupabaseErrorForUser(insertError, 'Could not save this story right now. Please try again.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'toggleSavedCommunityPost.insert',
+      cause: insertError,
+      context: { postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
   }
 
   revalidatePath(path)
