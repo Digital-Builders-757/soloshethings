@@ -94,6 +94,7 @@ curl -I https://app.com/blog
 - [ ] Opening a story from `/places`, `/saved`, `/reports`, or `/submit` carries that source context into the detail breadcrumb
 - [ ] Story detail helper links return members to the current `/saved` or `/reports` workspace context when they entered from those filtered views
 - [ ] `/places`, `/saved`, `/reports`, `/submit`, and story detail all expose the shared community workspace nav
+- [ ] When a member filter is active, the shared community workspace nav preserves that same member across `/places`, `/saved`, and `/reports`
 - [ ] `/submit` exposes owner-only search and quick filters for all, published, archived, public, private, and photo stories
 - [ ] Story owner can restore an archived post from `/submit` and it returns to `/places`, `/places/[id]`, and `/saved`
 - [ ] Restoring from a filtered `/submit` view preserves the current owner history search/filter context

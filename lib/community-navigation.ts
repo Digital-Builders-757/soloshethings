@@ -2,6 +2,11 @@ import { getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 
 export type CommunitySurfaceKey = 'places' | 'saved' | 'reports' | 'submit'
 
+type CommunityWorkspaceHrefOptions = {
+  authorId?: string
+  authorLabel?: string
+}
+
 export function buildStoryDetailHref(postId: string, returnTo?: string) {
   const safeReturnTo = getSafeInternalRedirectPath(returnTo, '')
 
@@ -68,4 +73,21 @@ export function appendCommunityAuthorParams(params: URLSearchParams, authorId?: 
   if (authorLabel?.trim()) {
     params.set('authorLabel', authorLabel.trim())
   }
+}
+
+export function buildCommunityWorkspaceHref(
+  surface: CommunitySurfaceKey,
+  options?: CommunityWorkspaceHrefOptions
+) {
+  const pathname = surface === 'places' ? '/places' : `/${surface}`
+
+  if (surface === 'submit') {
+    return pathname
+  }
+
+  const params = new URLSearchParams()
+  appendCommunityAuthorParams(params, options?.authorId, options?.authorLabel)
+
+  const search = params.toString()
+  return search ? `${pathname}?${search}` : pathname
 }

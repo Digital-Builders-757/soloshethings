@@ -6,6 +6,7 @@ type CommunitySurfaceNavProps = {
   active: CommunitySurfaceKey
   backHref?: string
   backLabel?: string
+  itemHrefs?: Partial<Record<CommunitySurfaceKey, string>>
 }
 
 const NAV_ITEMS: Array<{ key: CommunitySurfaceKey; href: string; label: string }> = [
@@ -15,7 +16,7 @@ const NAV_ITEMS: Array<{ key: CommunitySurfaceKey; href: string; label: string }
   { key: 'submit', href: '/submit', label: 'Submit story' },
 ]
 
-export function CommunitySurfaceNav({ active, backHref, backLabel }: CommunitySurfaceNavProps) {
+export function CommunitySurfaceNav({ active, backHref, backLabel, itemHrefs }: CommunitySurfaceNavProps) {
   return (
     <section className="editorial-card mt-6 p-4 sm:p-5" aria-label="Community workspace navigation">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -38,7 +39,7 @@ export function CommunitySurfaceNav({ active, backHref, backLabel }: CommunitySu
           return (
             <Link
               key={item.key}
-              href={item.href}
+              href={itemHrefs?.[item.key] ?? item.href}
               aria-current={isActive ? 'page' : undefined}
               className={
                 isActive

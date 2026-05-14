@@ -7,7 +7,7 @@ import { ActiveMemberFilterBanner } from '@/components/community/active-member-f
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { appendCommunityAuthorParams, buildStoryDetailHref } from '@/lib/community-navigation'
+import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { getCommunityFeedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -158,6 +158,13 @@ export default async function PlacesPage({ searchParams }: Props) {
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All stories'
   const showFilteredEmptyState = posts.length > 0 && filteredPosts.length === 0
   const currentPath = buildPlacesHref(activeView, query, page, activeAuthorId, activeAuthorLabel)
+  const workspaceHrefs = activeAuthorId
+    ? {
+        places: buildCommunityWorkspaceHref('places', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+        saved: buildCommunityWorkspaceHref('saved', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+        reports: buildCommunityWorkspaceHref('reports', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+      }
+    : undefined
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -211,7 +218,7 @@ export default async function PlacesPage({ searchParams }: Props) {
         </div>
       </header>
 
-      <CommunitySurfaceNav active="places" />
+      <CommunitySurfaceNav active="places" itemHrefs={workspaceHrefs} />
 
       {posts.length === 0 ? (
         <section className="editorial-card mt-6 p-6 sm:p-8">

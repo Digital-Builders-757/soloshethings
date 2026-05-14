@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Badge } from '@/components/ui/badge'
-import { appendCommunityAuthorParams, buildStoryDetailHref } from '@/lib/community-navigation'
+import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
 import { getUser } from '@/lib/supabase/server'
 import type { report_status } from '@/types/database'
@@ -137,6 +137,13 @@ export default async function ReportsPage({ searchParams }: Props) {
   const activeViewLabel = VIEW_OPTIONS.find((option) => option.value === activeView)?.label ?? 'All reports'
   const showFilteredEmptyState = reports.length > 0 && matchingReports.length === 0
   const currentPath = buildReportsHref(activeView, query, page, activeAuthorId, activeAuthorLabel)
+  const workspaceHrefs = activeAuthorId
+    ? {
+        places: buildCommunityWorkspaceHref('places', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+        saved: buildCommunityWorkspaceHref('saved', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+        reports: buildCommunityWorkspaceHref('reports', { authorId: activeAuthorId, authorLabel: activeAuthorLabel }),
+      }
+    : undefined
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -184,7 +191,7 @@ export default async function ReportsPage({ searchParams }: Props) {
         </div>
       </header>
 
-      <CommunitySurfaceNav active="reports" />
+      <CommunitySurfaceNav active="reports" itemHrefs={workspaceHrefs} />
 
       {reports.length === 0 ? (
         <section className="editorial-card mt-6 p-6 sm:p-8">
