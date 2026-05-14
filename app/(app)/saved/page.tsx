@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
+import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -293,6 +294,12 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                 )
               })}
             </div>
+
+            <ActiveMemberFilterBanner
+              className="mt-4"
+              memberLabel={activeAuthorLabel}
+              clearHref={buildSavedHref(activeView, query, 1)}
+            />
           </section>
 
           {showFilteredEmptyState ? (

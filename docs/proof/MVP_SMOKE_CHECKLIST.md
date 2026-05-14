@@ -156,9 +156,11 @@
 - [ ] If you reported the story, confirm `/places`, `/saved`, and `/places/[id]` show the latest report status and link back to `/reports`
 - [ ] Open any story detail and confirm the new explore shortcuts deep-link back into honest live feed filters (same-member author filter, featured stories, photo stories, or your own stories when relevant)
 - [ ] Use a `More from {member}` link from `/places` or `/saved` and confirm the resulting list is filtered to that exact member while preserving any active quick view or keyword search
+- [ ] On `/places` and `/saved`, confirm an active member-filter banner appears with the selected member name and that `Clear member filter` removes only the member filter while keeping the current quick view and keyword search
 - [ ] On that same detail page, confirm the related-story section only surfaces stories already visible to the signed-in member and does not include the current story itself
 - [ ] Open `/reports` and, if enough report entries exist, use `Load older reports` and `Show fewer` to confirm the current report-history context is preserved
 - [ ] From a report card, use `Only this member's stories` and confirm `/reports` narrows to that exact storyteller while preserving any active status view or keyword search
+- [ ] On `/reports`, confirm the same active member-filter banner appears and that `Clear member filter` keeps the current status view and keyword search intact
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildStoryDetailHref } from '@/lib/community-navigation'
@@ -272,16 +273,11 @@ export default async function ReportsPage({ searchParams }: Props) {
               })}
             </div>
 
-            {activeAuthorLabel ? (
-              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
-                <span>
-                  Member filter active: <span className="font-semibold text-[#7a331b]">{activeAuthorLabel}</span>
-                </span>
-                <Link href={buildReportsHref(activeView, query, 1)} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Clear member filter
-                </Link>
-              </div>
-            ) : null}
+            <ActiveMemberFilterBanner
+              className="mt-4"
+              memberLabel={activeAuthorLabel}
+              clearHref={buildReportsHref(activeView, query, 1)}
+            />
           </section>
 
           {showFilteredEmptyState ? (
