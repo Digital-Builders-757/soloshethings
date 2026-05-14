@@ -44,6 +44,8 @@ export async function proxy(request: NextRequest) {
     '/submit',
     '/saved',
     '/places',
+    '/reports',
+    '/subscribe',
     '/posts',
     '/messages',
     '/upload',

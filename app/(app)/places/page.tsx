@@ -8,6 +8,7 @@ import { CommunitySurfaceNav } from '@/components/community/community-surface-na
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getCommunityFeedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -114,6 +115,8 @@ export default async function PlacesPage({ searchParams }: Props) {
     redirect('/login?redirectTo=/places')
   }
 
+  const membershipTier = await getMembershipTier(user.id)
+
   const feedPosts = await getCommunityFeedPosts(user.id, requestedPostCount + 1)
   const hasMorePosts = feedPosts.length > requestedPostCount
   const posts = feedPosts.slice(0, requestedPostCount)
@@ -219,6 +222,19 @@ export default async function PlacesPage({ searchParams }: Props) {
       </header>
 
       <CommunitySurfaceNav active="places" itemHrefs={workspaceHrefs} />
+
+      {membershipTier === 'limited' ? (
+        <aside
+          className="mt-4 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] px-4 py-3 text-sm text-[#7a331b]"
+          role="note"
+        >
+          <span className="font-semibold">Limited member access:</span>{' '}
+          you can open up to three other members&apos; stories per day (UTC). Subscribe for unlimited reads, saves, and posting.{' '}
+          <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
+            Open billing
+          </Link>
+        </aside>
+      ) : null}
 
       {posts.length === 0 ? (
         <section className="editorial-card mt-6 p-6 sm:p-8">

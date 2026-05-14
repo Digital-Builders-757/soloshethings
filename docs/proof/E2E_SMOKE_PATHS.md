@@ -182,7 +182,9 @@ WHERE user_id = '<user-id>';
 
 ### Path 3: Subscribe → Unlock Full Access
 
-**Purpose:** Verify subscription flow, payment processing, webhook handling, and premium access activation.
+**Purpose:** Verify `/pricing` marketing surface (optional), `/subscribe` Checkout hand-off, Stripe payment (test mode), `POST /api/webhooks/stripe` ingestion + `stripe_webhook_ledger`, and restored **community** entitlement from `subscriptions` rows.
+
+**Note:** Update Playwright selectors to match shipped UI (primary CTA copies `Start checkout (7‑day trial)`). Premium reads apply to authenticated `/places/[slug]` flows (not anonymous WordPress `/blog`).
 
 **Scripted Steps:**
 
@@ -200,14 +202,14 @@ test('Path 3: Subscribe → Unlock Full Access', async ({ page, context }) => {
   await page.goto('/subscribe');
   await expect(page.locator('text=/subscribe|upgrade/i')).toBeVisible();
   
-  // Step 2: Click subscribe button
-  await page.click('button:has-text("Subscribe")');
+  // Step 2: Submit checkout form / CTA (matches shipped label)
+  await page.click('button[type="submit"]');
   
   // Step 3: Wait for Stripe checkout (opens in new window or iframe)
   // Handle Stripe checkout window
   const [checkoutPage] = await Promise.all([
     context.waitForEvent('page'), // Wait for Stripe checkout
-    page.click('button:has-text("Subscribe")')
+    page.click('button[type="submit"]')
   ]);
   
   await checkoutPage.waitForLoadState();

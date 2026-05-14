@@ -19,6 +19,7 @@ import { redirect } from 'next/navigation'
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
@@ -84,6 +85,7 @@ export default async function DashboardPage() {
 
   const avatarUrl = await getAvatarSignedUrl(profile.avatar_url)
   const displayName = profile.full_name?.trim() || profile.username
+  const membershipTier = await getMembershipTier(user.id)
   const memberSinceLabel = profile.created_at
     ? new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(
         new Date(profile.created_at)
@@ -206,6 +208,20 @@ export default async function DashboardPage() {
               <span className="sr-only">Account email:</span>
               Signed in as <span className="font-medium text-[#7a331b]">{user.email}</span>
             </p>
+
+            <div className="mt-4 rounded-2xl border border-[#ead8c2] bg-[#fffaf4] px-4 py-3 text-sm text-[#7a331b]">
+              {membershipTier === 'full' ? (
+                <span>You have full community access (active trial or paid membership).</span>
+              ) : (
+                <span>
+                  Limited community access until you subscribe (7‑day trial, then US $3.99/mo via Stripe).{' '}
+                  <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
+                    Billing
+                  </Link>
+                  .
+                </span>
+              )}
+            </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
               <Link

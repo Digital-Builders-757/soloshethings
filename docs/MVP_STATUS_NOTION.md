@@ -27,10 +27,10 @@
 - **Member-focused discovery filters (2026-05)** - `/places`, `/saved`, and `/reports` now support a dedicated member filter on top of the existing search and quick views, so member-focused discovery and moderation history can stay grounded on the actual storyteller instead of fuzzy text matching. Filter state stays visible in the UI, now uses a shared active-member banner with a one-click clear action across all three surfaces, and carries through load-more / show-fewer pagination.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 - **Observability + error UX (2026-05-14)** - Structured server failures use `logServerFailure` (`lib/server-log.ts`); user-facing Supabase errors use `mapSupabaseErrorForUser` and deliberate server throws use `safeThrownErrorMessage` (`lib/supabase-errors.ts`); Sentry is bootstrapped via `instrumentation.ts` / `instrumentation-client.ts` / server+edge configs with conditional `withSentryConfig` when upload env vars are present; `app/error.tsx` and `app/global-error.tsx` show on-brand recovery UI and report to Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set; WordPress preview/revalidate stay honest for callers; profile queries and `lib/wp-rest.ts` use the shared logger instead of stray `console.error`.
+- **Stripe subscriptions + premium gates (2026-05-14)** - Public `/pricing`; signed-in `/subscribe` + `startMembershipCheckout` open Stripe Checkout (`STRIPE_PRICE_ID`, 7-day trial). Webhook `POST /api/webhooks/stripe` verifies signatures, ledger in `stripe_webhook_ledger`, upserts `subscriptions`. Entitlement is DB-only (`lib/billing/entitlements.ts`); `community_post_reads` enforces 3 third-party story views per UTC day when `limited`; community writes and new saves require `full`.
 
 ### 🚧 In Progress
 
-- **Stripe and premium gating** - Billing still needs its first real implementation batch.
 - **Community second-pass depth** - The member surfaces are real now, but they still need stronger taxonomy/location discovery, richer recommendation logic, and richer image-management follow-through.
 - **Moderation/admin follow-through** - Broader trust & safety surfaces, admin post tooling, and deeper owner lifecycle controls are still pending.
 - **Newsletter pipeline** - The dedicated newsletter delivery path is still intentionally not shipped.
@@ -39,7 +39,7 @@
 
 - **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
-- **Immediate focus** - Stripe/premium gating, then deeper community/moderation backlog (see `docs/procedures/IMPLEMENTATION_ROADMAP.md`)
+- **Immediate focus** - community second-pass depth, then moderation/admin backlog (`docs/procedures/IMPLEMENTATION_ROADMAP.md`)
 
 ### ❌ Blocked
 
@@ -64,9 +64,9 @@ Foundational documentation, architecture, schema design, contracts, procedures, 
 - avatar uploads and profile continuity
 - real community submit/browse/save/report/owner-management surfaces
 - first-pass discovery/search/filter/load-more/member-filter polish
+- Stripe Checkout + webhook-backed `subscriptions` + DB-only premium gates (see `BILLING_STRIPE_CONTRACT.md`)
 
 **Still open in this phase:**
-- Stripe subscription integration and premium gating
 - dedicated newsletter pipeline
 - broader moderation/admin tooling
 - richer upload management (reordering, replace flows, alt text, broader surfaces)
@@ -191,6 +191,19 @@ Next Steps:
 ```
 
 ### Progress Entries
+
+#### 2026-05-14 — Stripe subscriptions + premium gates
+
+**Status:** ✅ VERIFIED (typecheck/lint/build gate)
+
+**Description:**
+- Stripe Checkout from `/subscribe`; webhook `POST /api/webhooks/stripe` with ledger idempotency.
+- New tables: `stripe_webhook_ledger`, `community_post_reads` (migration `20260514194500_...`).
+- `lib/billing/entitlements.ts` + gated community actions, saves, and detail read budget.
+
+**Verification:** `npm run typecheck`, `npm run lint`, `npm run build`.
+
+**Next steps:** community second-pass depth per roadmap.
 
 #### 2026-05-14 - Observability + error UX batch
 

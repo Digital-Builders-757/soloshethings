@@ -10,6 +10,7 @@ import { getUser } from "@/lib/supabase/server";
 
 const publicNavLinks = [
   { href: "/", label: "Home" },
+  { href: "/pricing", label: "Membership" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Travel + SHE Things" },
   { href: "/collections", label: "Solo SHEntries" },
@@ -19,6 +20,7 @@ const publicNavLinks = [
 
 const authNavLinks = [
   { href: "/dashboard", label: "My dashboard" },
+  { href: "/subscribe", label: "Billing" },
   { href: "/places", label: "Browse stories" },
   { href: "/saved", label: "Saved stories" },
   { href: "/profile", label: "My profile" },

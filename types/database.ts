@@ -394,6 +394,85 @@ export interface Database {
           }
         ]
       }
+      stripe_webhook_ledger: {
+        Row: {
+          id: string
+          event_id: string
+          event_type: string
+          processed: boolean
+          processing: boolean
+          processed_at: string | null
+          error_message: string | null
+          retry_count: number
+          event_data: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          event_type: string
+          processed?: boolean
+          processing?: boolean
+          processed_at?: string | null
+          error_message?: string | null
+          retry_count?: number
+          event_data: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          event_type?: string
+          processed?: boolean
+          processing?: boolean
+          processed_at?: string | null
+          error_message?: string | null
+          retry_count?: number
+          event_data?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_post_reads: {
+        Row: {
+          id: string
+          user_id: string
+          community_post_id: string
+          read_day: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          community_post_id: string
+          read_day?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          community_post_id?: string
+          read_day?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_post_reads_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_post_reads_community_post_id_fkey"
+            columns: ["community_post_id"]
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

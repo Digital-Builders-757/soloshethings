@@ -103,7 +103,7 @@ Behavioral contracts for integrations and services.
 - **[contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md](./contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md)** - What anonymous vs authenticated vs subscribed users can access
 - **[contracts/DATA_ACCESS_QUERY_CONTRACT.md](./contracts/DATA_ACCESS_QUERY_CONTRACT.md)** - Query patterns, RLS enforcement, and data access rules
 - **[contracts/UPLOADS_STORAGE_CONTRACT.md](./contracts/UPLOADS_STORAGE_CONTRACT.md)** - File upload rules, storage buckets, privacy toggles, and image handling
-- **[contracts/BILLING_STRIPE_CONTRACT.md](./contracts/BILLING_STRIPE_CONTRACT.md)** - Subscription flow, webhook handling, trial management, and access control
+- **[contracts/BILLING_STRIPE_CONTRACT.md](./contracts/BILLING_STRIPE_CONTRACT.md)** - Subscription flow, webhook handling, trial management, and access control (live app routes: `/pricing`, `/subscribe`, `POST /api/webhooks/stripe`)
 - **[contracts/EMAIL_NOTIFICATIONS_CONTRACT.md](./contracts/EMAIL_NOTIFICATIONS_CONTRACT.md)** - Email sending rules, templates, and Resend integration patterns
 - **[contracts/WORDPRESS_CONTENT_CONTRACT.md](./contracts/WORDPRESS_CONTENT_CONTRACT.md)** - Headless WordPress integration, ISR, revalidation, and content sanitization
 

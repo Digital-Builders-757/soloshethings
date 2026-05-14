@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { logServerFailure } from '@/lib/server-log'
 import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, getUser } from '@/lib/supabase/server'
@@ -101,6 +102,14 @@ export async function toggleSavedCommunityPost(
       success: true,
       saved: false,
       message: `Removed “${post.title}” from your saved stories.`,
+    }
+  }
+
+  const tier = await getMembershipTier(user.id)
+  if (tier !== 'full') {
+    return {
+      error:
+        'Active membership or trial is required to save stories. Open Billing in the nav to subscribe.',
     }
   }
 

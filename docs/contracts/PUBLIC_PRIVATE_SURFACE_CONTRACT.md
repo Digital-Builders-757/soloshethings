@@ -12,6 +12,27 @@
 6. **Non-Enumerating Behavior** - Error messages MUST NOT reveal existence of resources.
 7. **Safe Error Messages** - Error messages MUST NOT leak sensitive information.
 
+## Live implementation snapshot (2026-05)
+
+This section documents **what shipped in-repo** alongside the conceptual matrix further down.
+
+**Routes**
+- Anonymous pricing overview: **`/pricing`**
+- Authenticated Stripe Checkout: **`/subscribe`** (server action `startMembershipCheckout` in [`app/actions/billing.ts`](../../app/actions/billing.ts))
+- Post-checkout landing: **`/subscribe/success`**
+- Webhook: **`POST /api/webhooks/stripe`** (signature-verified; service role + ledger pattern per [`BILLING_STRIPE_CONTRACT.md`](./BILLING_STRIPE_CONTRACT.md))
+
+**Entitlement rule**
+
+- Requests decide access only from Supabase **`subscriptions`** (`trial_end`, `current_period_end`, `status`) via [`lib/billing/entitlements.ts`](../../lib/billing/entitlements.ts)—never live Stripe APIs on gate paths.
+
+**Authenticated free tier (no qualifying subscription / trial)**
+
+- Story detail quota: **3 distinct other-authors’ stories per UTC calendar day** via **`community_post_reads`**; **viewing own stories does not increment the cap**.
+- Blocked mutations: publishing, post body/visibility edits, archive/restore, photo add/remove, **new** saved-post rows (**unsaving** allowed).
+
+Messaging UI is not shipped; future surfaces must inherit the same tier rules described in later sections.
+
 ## Anonymous User Access (Not Authenticated)
 
 ### Marketing Pages

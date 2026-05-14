@@ -18,9 +18,9 @@
 - [ ] User can sign up with email/password
 - [ ] Profile is created automatically after signup
 - [ ] User is redirected to correct dashboard based on role
-- [ ] Trial subscription is created automatically
-- [ ] Trial countdown displays correctly
-- [ ] Welcome email is sent (check logs)
+- [ ] **Subscription is NOT auto-created on signup** — user starts Checkout from `/subscribe` when ready; row appears after Stripe webhooks process
+- [ ] After Checkout + webhooks, subscription status is `trialing` (7-day Stripe trial) until conversion
+- [ ] Welcome email is sent (future / check logs when email work ships)
 
 **Verification:**
 ```sql
@@ -31,7 +31,7 @@ SELECT id, username, role FROM profiles WHERE id = '<user-id>';
 SELECT id, user_id, status, trial_end FROM subscriptions WHERE user_id = '<user-id>';
 ```
 
-**Expected:** Profile exists, subscription status is 'trialing', trial_end is 7 days from now
+**Expected:** Profile exists immediately after signup. Subscription row exists **only after** Checkout + webhook processing; while `trialing`, `trial_end` reflects Stripe’s trial window.
 
 ### Flow 2: Login → Access Protected Routes
 

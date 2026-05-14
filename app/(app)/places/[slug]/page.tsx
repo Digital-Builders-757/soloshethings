@@ -13,6 +13,7 @@ import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
 import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
+import { ensureCommunityStoryReadAllowed } from '@/lib/billing/community-story-reads'
 import { getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
@@ -78,6 +79,15 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
 
   if (!post) {
     notFound()
+  }
+
+  const readGate = await ensureCommunityStoryReadAllowed({
+    readerId: user.id,
+    authorId: post.author_id,
+    postId: post.id,
+  })
+  if (!readGate.ok) {
+    redirect(`/subscribe?reason=${readGate.reason}`)
   }
 
   const relatedPosts = await getCommunityRelatedPosts(user.id, post.id, post.author_id)

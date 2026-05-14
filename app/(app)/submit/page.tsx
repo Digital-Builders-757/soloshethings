@@ -12,6 +12,7 @@ import { CommunitySurfaceNav } from '@/components/community/community-surface-na
 import { RestoreCommunityPostButton } from '@/components/submit/restore-community-post-button'
 import { SubmitForm } from '@/components/submit/submit-form'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getRecentPostsForAuthor } from '@/lib/queries/community-posts'
 import { getUser } from '@/lib/supabase/server'
 
@@ -79,6 +80,8 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
     redirect('/login?redirectTo=/submit')
   }
 
+  const membershipTier = await getMembershipTier(user.id)
+
   const params = searchParams ? await searchParams : {}
   const query = normalizeQuery(params.q)
   const activeView = normalizeView(params.view)
@@ -127,6 +130,16 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
             <div className="mb-6 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800" role="status">
               Story restored. It is back in your community surfaces and ready for owner controls again.
             </div>
+          ) : null}
+          {membershipTier === 'limited' ? (
+            <aside className="mb-6 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] p-4 text-sm text-[#7a331b]" role="note">
+              <span className="font-semibold">Posting requires membership.</span> Start checkout for a 7‑day trial, then $3.99/mo via
+              Stripe, on the{' '}
+              <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
+                Billing
+              </Link>{' '}
+              page—your drafts stay safe here until you subscribe.
+            </aside>
           ) : null}
           <SubmitForm recentPostCount={recentPosts.length} />
         </div>

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { getMembershipTier } from '@/lib/billing/entitlements'
 import { logServerFailure } from '@/lib/server-log'
 import {
   buildPostImageStoragePath,
@@ -31,6 +32,14 @@ type OwnerCommunityPostState = {
 
 function parsePrivacy(raw: FormDataEntryValue | null) {
   return raw === 'private' ? false : true
+}
+
+async function requireFullMembership(userId: string): Promise<string | null> {
+  const tier = await getMembershipTier(userId)
+  if (tier !== 'full') {
+    return 'Active membership or trial is required for this story action. Open Billing in the nav to subscribe.'
+  }
+  return null
 }
 
 function validateCommunityPostInput(title: string, content: string) {
@@ -155,6 +164,11 @@ export async function createCommunityPost(
 
   if (!user) {
     return { error: 'You must be logged in to submit a post.' }
+  }
+
+  const membershipError = await requireFullMembership(user.id)
+  if (membershipError) {
+    return { error: membershipError }
   }
 
   const supabase = await createClient()
@@ -322,6 +336,11 @@ export async function updateCommunityPost(
     return { error: 'You must be logged in to edit a story.' }
   }
 
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
   const postId = `${formData.get('postId') ?? ''}`.trim()
   const path = `${formData.get('path') ?? '/submit'}`.trim()
   const title = `${formData.get('title') ?? ''}`.trim()
@@ -384,6 +403,11 @@ export async function addImagesToCommunityPost(
 
   if (!user) {
     return { error: 'You must be logged in to manage story photos.' }
+  }
+
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
   }
 
   const postId = `${formData.get('postId') ?? ''}`.trim()
@@ -525,6 +549,11 @@ export async function removeImageFromCommunityPost(
     return { error: 'You must be logged in to manage story photos.' }
   }
 
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
   const postId = `${formData.get('postId') ?? ''}`.trim()
   const path = `${formData.get('path') ?? '/submit'}`.trim()
   const imageId = `${formData.get('imageId') ?? ''}`.trim()
@@ -594,6 +623,11 @@ export async function archiveCommunityPost(
     return { error: 'You must be logged in to archive a story.' }
   }
 
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
   const postId = `${formData.get('postId') ?? ''}`.trim()
   const path = `${formData.get('path') ?? '/submit'}`.trim()
 
@@ -645,6 +679,11 @@ export async function restoreCommunityPost(
 
   if (!user) {
     return { error: 'You must be logged in to restore a story.' }
+  }
+
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
   }
 
   const postId = `${formData.get('postId') ?? ''}`.trim()

@@ -37,17 +37,18 @@ Use these companion docs for everything else:
   - hosted Supabase storage setup documentation for Dashboard SQL
   - webpack build/dev defaults and recent auth redirect/schema fixes
   - **Observability + error UX (2026-05-14)** — structured server logging (`logServerFailure` in `lib/server-log.ts`), safe Supabase mapping plus `safeThrownErrorMessage` for deliberate throws (`lib/supabase-errors.ts`), Sentry bootstrap/wiring, on-brand `app/error.tsx` / `app/global-error.tsx` (Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set), honest machine-facing responses for WordPress revalidate/preview, and profile/WP read paths using the shared logger instead of ad hoc `console.error`.
+  - **Stripe subscription + premium gating (2026-05-14)** — `/pricing`, `/subscribe` Checkout, `POST /api/webhooks/stripe` + `stripe_webhook_ledger`, Supabase-only entitlements and `community_post_reads` free-tier read caps.
 
 ### Live in-progress work
 
-- None queued ahead of the canonical plan below; the next execution batch is Stripe subscription integration + premium gating.
+- None queued ahead of the canonical plan below; next up is **community second-pass depth**.
 
 ### Resume pointer
 
 - **Branch target:** `develop`
-- **Latest shipped batch (2026-05-14):** observability + error UX hardening (see `docs/proof/MONITORING_SENTRY_POSTURE.md` and `docs/MVP_STATUS_NOTION.md`).
+- **Latest shipped batch (2026-05-14):** Stripe subscription + premium gating (see `docs/contracts/BILLING_STRIPE_CONTRACT.md`, `PUBLIC_PRIVATE_SURFACE_CONTRACT.md`, `docs/MVP_STATUS_NOTION.md`) plus prior observability work.
 - **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
-- **Next focus:** Stripe subscription integration + premium gating (see §1 below).
+- **Next focus:** community second-pass depth (see §1 below).
 
 ---
 
@@ -55,22 +56,7 @@ Use these companion docs for everything else:
 
 Work top to bottom unless a regression or blocker forces a reorder.
 
-### 1) Stripe subscription integration + premium gating
-
-**Goal:** ship the first real billing gate for paid member access.
-
-**Scope:**
-- Stripe checkout / subscription activation
-- trial handling and webhook processing
-- premium-aware access control in app surfaces
-- docs/contracts/proof updates
-
-**Primary source docs:**
-- `docs/contracts/BILLING_STRIPE_CONTRACT.md`
-- `docs/contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md`
-- `docs/proof/QA_CHECKLIST.md`
-
-### 2) Community second-pass depth
+### 1) Community second-pass depth
 
 **Goal:** make the shipped member/community surfaces feel deeper and more useful without inventing fake scope.
 
@@ -85,7 +71,7 @@ Work top to bottom unless a regression or blocker forces a reorder.
 - `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md`
 - `docs/contracts/UPLOADS_STORAGE_CONTRACT.md`
 
-### 3) Moderation/admin surfaces + owner lifecycle depth
+### 2) Moderation/admin surfaces + owner lifecycle depth
 
 **Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
@@ -95,7 +81,7 @@ Work top to bottom unless a regression or blocker forces a reorder.
 - admin post creation / editorial support where appropriate
 - deeper owner lifecycle actions beyond the current archive/restore pass
 
-### 4) Newsletter + marketing operations follow-through
+### 3) Newsletter + marketing operations follow-through
 
 **Goal:** replace placeholder interest capture with a real pipeline when product priorities justify it.
 

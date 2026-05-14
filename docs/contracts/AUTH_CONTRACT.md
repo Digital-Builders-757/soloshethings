@@ -18,7 +18,7 @@
 - ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level** and private avatar upload support
 - ✅ Signup: username is normalized + validated server-side, username availability is preflighted with the service-role client, profile bootstrap uses the service-role client so confirm-email mode does not depend on a user session, and bootstrap failure rolls back the just-created auth user via `auth.admin.deleteUser()`
 - ✅ Profile repair helper: one insert plus optional read-after-write race check in `getProfileWithBoundedRepair` (`lib/queries/profiles.ts`)
-- ⏳ Stripe subscription creation (TODO: Phase 4)
+- ✅ Stripe Checkout + webhook-driven `subscriptions` persistence (see `app/actions/billing.ts`, `app/api/webhooks/stripe/route.ts`, `BILLING_STRIPE_CONTRACT.md`)
 - ⏳ Welcome email (TODO: Phase 4)
 
 ## Non-Negotiables
@@ -66,7 +66,7 @@
 7. User sees dashboard or confirm-email notice
 ```
 
-**Implementation note:** When Supabase requires email confirmation, `signUp` may not return a session. After the profile row is created, the app redirects to `/login?notice=confirm_email` instead of `/dashboard` so users are not sent to a protected route without a session. Stripe subscription creation and welcome email are still future work and are not part of the current shipped signup path.
+**Implementation note:** When Supabase requires email confirmation, `signUp` may not return a session. After the profile row is created, the app redirects to `/login?notice=confirm_email` instead of `/dashboard` so users are not sent to a protected route without a session. **Stripe Checkout** starts from `/subscribe` after sign-in when billing env vars are set; subscription rows are populated from signed webhooks, not client code.
 
 ### Pseudo-Code
 
