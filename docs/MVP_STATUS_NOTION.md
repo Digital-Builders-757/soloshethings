@@ -14,32 +14,30 @@
 - **UI Foundation (Phase 2 partial)** - Brand tokens, typography, core components ✅
 - **Visual Design Enhancement** - Gradient border system, enhanced brand color vibrancy ✅
 - **MVP Core Features (Phase 1)** - Auth hardening, profiles, dashboard shell, WordPress graceful fallback ✅
-- **Auth + public/private surfaces (2026-05)** - Middleware and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live middleware prefixes.
+- **Auth + public/private surfaces (2026-05)** - Proxy and server helpers gate on verified `getUser()`; post-login `redirectTo` restricted to same-origin paths; bounded profile repair on dashboard/profile loads; `PUBLIC_PRIVATE_SURFACE_CONTRACT` documents live protected prefixes.
 - **Site shell + perceived performance (2026-05)** - Shared safe-area gutters (`shell-inline`, `shell-pb-safe`), section vertical rhythm (`section-y`), route-level `loading.tsx` skeletons, hero `min-height` tied to `--shell-chrome-height`, nav overflow scroll on tight desktop widths.
-- **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
+- **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; private avatar uploads now store per-user paths in Supabase Storage and resolve back through signed URLs on dashboard/profile; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
 ### 🚧 In Progress
 
-**Finish-line implementation pass**
-- ✅ Signup now validates and preflights usernames before auth user creation when possible
-- ✅ Protected-route redirects preserve same-origin query strings for return after login
-- ✅ Login / signup surfaces have more honest state messaging and pending states
-- ✅ Dashboard reads more like a member home base (readiness, next move, live-now panels)
-- ✅ Shell polish: auth-aware banner, clearer active nav states, safer mobile menu behavior
-- ✅ Homepage newsletter section no longer fakes a successful subscribe flow
+**Broader product build-out**
+- Next real implementation lane should be profile continuity plus uploads / avatars
+- Billing and premium gating still need their first real implementation batch
+- Community/member content surfaces still need to move from roadmap to product
 
 **Still intentionally not done:**
 - Stripe subscription integration and premium gating
 - Dedicated newsletter delivery pipeline
 - Admin post creation interface
-- Photo / avatar upload system
+- Broader photo upload system for posts and richer avatar management
 - Broader trust & safety and moderation surfaces
 
 ### 📋 Next
 
-- **Current queue** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
-- **Focus** - auth reliability, dashboard / frontend visual system, and docs / prompt cleanup
+- **Current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
+- **Recent completed checkpoint** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
+- **Focus** - finish the broader uploads path after avatar support, then Stripe/premium gating, then content/community surfaces
 
 ### ❌ Blocked
 

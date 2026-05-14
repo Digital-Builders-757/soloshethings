@@ -15,8 +15,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
+import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
+import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
 
 function roleLabel(role: string) {
@@ -78,6 +80,7 @@ export default async function DashboardPage() {
     return <ProfileErrorFallback context="dashboard" userEmail={user.email} />
   }
 
+  const avatarUrl = await getAvatarSignedUrl(profile.avatar_url)
   const displayName = profile.full_name?.trim() || profile.username
   const memberSinceLabel = profile.created_at
     ? new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(
@@ -86,6 +89,7 @@ export default async function DashboardPage() {
     : null
 
   const profileChecklist = [
+    { label: 'Avatar added', done: Boolean(profile.avatar_url) },
     { label: 'Display name added', done: Boolean(profile.full_name?.trim()) },
     { label: 'Bio written', done: Boolean(profile.bio?.trim()) },
     { label: 'Visibility reviewed', done: Boolean(profile.privacy_level) },
@@ -93,26 +97,33 @@ export default async function DashboardPage() {
 
   const completedChecklistCount = profileChecklist.filter((item) => item.done).length
 
-  const nextStep = !profile.full_name?.trim()
+  const nextStep = !profile.avatar_url
     ? {
-        title: 'Add your name',
-        description: 'Finish the basics so your member card feels like you right away.',
+        title: 'Add a profile photo',
+        description: 'A warm recognizable avatar helps your account feel finished right away.',
         href: '/profile',
-        cta: 'Finish profile',
+        cta: 'Upload avatar',
       }
-    : !profile.bio?.trim()
+    : !profile.full_name?.trim()
       ? {
-          title: 'Write a short bio',
-          description: 'A few lines gives your dashboard and public profile more shape.',
+          title: 'Add your name',
+          description: 'Finish the basics so your member card feels like you right away.',
           href: '/profile',
-          cta: 'Add a bio',
+          cta: 'Finish profile',
         }
-      : {
-          title: 'Share your first story',
-          description: 'Your profile is in good shape. The next meaningful move is publishing something.',
-          href: '/submit',
-          cta: 'Start a submission',
-        }
+      : !profile.bio?.trim()
+        ? {
+            title: 'Write a short bio',
+            description: 'A few lines gives your dashboard and public profile more shape.',
+            href: '/profile',
+            cta: 'Add a bio',
+          }
+        : {
+            title: 'Share your first story',
+            description: 'Your profile is in good shape. The next meaningful move is publishing something.',
+            href: '/submit',
+            cta: 'Start a submission',
+          }
 
   const liveNowItems = [
     'Profile editing and visibility settings',
@@ -143,7 +154,25 @@ export default async function DashboardPage() {
               Your home base
             </p>
 
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-5 flex items-center gap-4 rounded-[1.25rem] border border-[#ead8c2]/80 bg-white/70 p-3 sm:inline-flex">
+              <Avatar
+                src={avatarUrl}
+                fallback={displayName.slice(0, 2).toUpperCase()}
+                size="xl"
+                alt={`${displayName} avatar`}
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
+                  Profile preview
+                </p>
+                <p className="truncate text-sm font-semibold text-[#7a331b]">{displayName}</p>
+                <p className="text-sm text-[#6d5849]">
+                  {profile.avatar_url ? 'Avatar live and ready across your signed-in spaces.' : 'Add an avatar to make your account feel more like yours.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <Badge
                 variant="neutral"
                 size="sm"

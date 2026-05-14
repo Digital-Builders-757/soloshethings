@@ -2,7 +2,7 @@
 
 **Purpose:** define the next build order after the May 2026 catch-up / smoke / release milestone.
 
-This roadmap is the current "what to build next" spine. It does **not** replace the historical catch-up roadmap. It starts where the current release milestone ends.
+This roadmap records the post-catch-up finishing pass that followed the May 2026 release milestone. It does **not** replace the historical catch-up roadmap, and it is no longer the active execution queue once the batches below are verified.
 
 **Source docs:**
 - `docs/DOCUMENTATION_INDEX.md`
@@ -20,18 +20,23 @@ This roadmap is the current "what to build next" spine. It does **not** replace 
 
 The auth, dashboard, shell, polish, launch-hardening, and smoke/release catch-up batches are treated as completed for the May 2026 milestone.
 
-What still needs deliberate finishing work:
-- auth reliability needs another honest test pass
-- the dashboard should feel more like a real home base
-- the public frontend needs a stronger visual system and more premium rhythm
-- the docs need to stop drifting away from the actual code
-- prompt packs need to be prepared in a reusable way so future work stays organized
+The first three finish-line batches are now also implemented and verified on `develop`:
+- auth reliability and session sanity
+- dashboard and frontend visual system cleanup
+- docs honesty, prompt pipeline, and queue cleanup
+- Next.js route protection migrated from deprecated `middleware.ts` to `proxy.ts`
+
+What still needs deliberate product work beyond this checkpoint:
+- profile continuity still needs a real uploads / avatar system
+- Stripe subscription flow and premium gating are still missing
+- content creation and broader member/community surfaces still need implementation
+- real-world QA may still uncover auth edge cases worth a follow-up batch
 
 ---
 
 ## Roadmap order
 
-### 1) Auth reliability and session sanity
+### 1) Auth reliability and session sanity ✅ completed
 
 **Goal:** make login, signup, logout, protected routing, and profile repair feel boring and dependable.
 
@@ -46,7 +51,7 @@ What still needs deliberate finishing work:
 
 ---
 
-### 2) Dashboard and frontend visual system
+### 2) Dashboard and frontend visual system ✅ completed
 
 **Goal:** turn the dashboard into a proper home base and raise the visual quality of the whole site.
 
@@ -61,7 +66,7 @@ What still needs deliberate finishing work:
 
 ---
 
-### 3) Docs + prompt pipeline
+### 3) Docs + prompt pipeline ✅ completed
 
 **Goal:** make the documentation spine trustworthy, compact, and ready for future Cursor prompts.
 
@@ -77,23 +82,23 @@ What still needs deliberate finishing work:
 
 ### 4) Build-out backlog beyond the finish line
 
-After the three batches above, resume product work from the broader roadmap and source contracts.
+After the three completed batches above, resume product work from the broader roadmap and source contracts.
 
-Likely next lanes:
-- public/home refinement
-- profile continuity and content creation
-- any remaining auth edge cases found in real testing
-- feature expansion batches that are explicitly approved later
+Recommended next lanes:
+- profile continuity, uploads, and avatar system
+- Stripe subscription integration and premium gating
+- content creation, member posts, and broader community/private surfaces
+- any remaining auth edge cases found in real testing while those lanes land
 
 ---
 
 ## Execution rules
 
-- Work top to bottom.
-- Do not start the next batch until the current one is verified.
+- Treat batches 1-3 as completed checkpoints unless new regressions are found.
+- Resume product work from batch 4 and the broader implementation roadmap.
 - Update docs in the same batch when behavior changes.
 - Keep changes minimal in each batch, but complete enough to ship.
-- If auth is still flaky, fix auth before chasing prettier UI.
+- If auth becomes flaky again, fix auth before chasing prettier UI.
 
 ---
 

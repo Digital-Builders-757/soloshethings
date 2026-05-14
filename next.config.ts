@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 // Pin workspace root so Next doesn't pick a parent directory when multiple lockfiles exist (see Next.js lockfile warning).
 const projectRoot = __dirname;
+const supabaseImageHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : null;
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
@@ -10,6 +13,15 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      ...(supabaseImageHost
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: supabaseImageHost,
+              pathname: '/storage/v1/object/**',
+            },
+          ]
+        : []),
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',

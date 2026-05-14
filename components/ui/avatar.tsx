@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * Avatar Component
  *
@@ -68,9 +70,9 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
       <div ref={ref} className={cn('relative inline-block', className)} {...props}>
         <div
           className={cn(
-            'rounded-full overflow-hidden flex items-center justify-center',
+            'relative flex items-center justify-center overflow-hidden rounded-full',
             sizes[size],
-            !showImage && 'bg-brand-blue1 text-white font-semibold'
+            !showImage && 'bg-[#e34b16]/10 font-semibold text-[#7a331b] ring-1 ring-[#ead8c2]/90'
           )}
         >
           {showImage ? (
@@ -85,7 +87,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             <span>{fallback}</span>
           ) : (
             <svg
-              className="h-full w-full text-neutral-400"
+              className="h-full w-full text-[#d9c4a8]"
               fill="currentColor"
               viewBox="0 0 24 24"
             >

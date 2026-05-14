@@ -24,6 +24,7 @@
 - **Allowed Types:** `image/jpeg`, `image/png`, `image/webp`
 - **Auto-optimize:** Yes (via Next.js Image component)
 - **RLS:** Enabled
+- **Current implementation:** `profiles.avatar_url` stores the avatar storage path; signed URLs are generated server-side for dashboard/profile rendering
 
 **Path Convention:**
 ```

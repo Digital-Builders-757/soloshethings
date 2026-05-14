@@ -9,13 +9,13 @@
 - ✅ Route protection proxy (`proxy.ts`)
 - ✅ Functional auth pages (`app/(auth)/login`, `app/(auth)/signup`)
 - ✅ Profile query module (`lib/queries/profiles.ts`)
-- ✅ Profile update server action (`app/actions/profile.ts`): `getUser()` gate; explicit columns; `revalidatePath` for `/dashboard`, `/profile`, and `/` layout after save
+- ✅ Profile update server action (`app/actions/profile.ts`): `getUser()` gate; explicit columns; avatar upload validation/storage for profile photos; `revalidatePath` for `/dashboard`, `/profile`, and `/` layout after save
 - ✅ Profile edit page (`app/(app)/profile/page.tsx`)
 - ✅ Dashboard with profile display (`app/(app)/dashboard/page.tsx`)
 - ✅ Submit + places detail: server `getUser()` + `/login?redirectTo=…` when unauthenticated (with `proxy.ts`)
 - ✅ Header with auth state (`components/layout/SiteHeader.tsx`, `components/nav/NavClient.tsx`)
 - ✅ Missing-profile UX: `ProfileErrorFallback` when bounded repair cannot create/load a row (`app/(app)/dashboard`, `app/(app)/profile`); shows session email; **Refresh** (`router.refresh`) + **Hard reload** + **Sign out** + cross-links between dashboard/profile + support/home; **no** automatic redirect loop between app surfaces; `app/(app)/profile/loading.tsx` matches form layout
-- ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level**
+- ✅ Profile persistence: `updateProfile` **updates** existing rows and may **insert** if no row exists when Save runs (server-side; edge-case / future entry points); profile form includes **privacy_level** and private avatar upload support
 - ✅ Signup: username is normalized + validated server-side, username availability is preflighted with the service-role client, profile bootstrap uses the service-role client so confirm-email mode does not depend on a user session, and bootstrap failure rolls back the just-created auth user via `auth.admin.deleteUser()`
 - ✅ Profile repair helper: one insert plus optional read-after-write race check in `getProfileWithBoundedRepair` (`lib/queries/profiles.ts`)
 - ⏳ Stripe subscription creation (TODO: Phase 4)
