@@ -19,7 +19,7 @@ import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import type { user_role } from '@/types/database'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { redirect, unstable_rethrow } from 'next/navigation'
 
 /**
  * Signup action with profile bootstrap
@@ -129,6 +129,7 @@ export async function signup(
 
     redirect(nextPath)
   } catch (error) {
+    unstable_rethrow(error)
     console.error('Signup error:', error)
     return { error: 'Something went wrong during sign up. Please try again.' }
   }
