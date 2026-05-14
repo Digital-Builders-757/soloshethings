@@ -7,8 +7,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
+import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { getCommunityPostDetail } from '@/lib/queries/community-posts'
+import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
 
 type Props = {
@@ -30,14 +32,16 @@ export default async function PlaceDetailPage({ params }: Props) {
     redirect(`/login?redirectTo=${encodeURIComponent(`/places/${slug}`)}`)
   }
 
-  const post = await getCommunityPostDetail(slug)
+  const post = await getCommunityPostDetail(slug, user.id)
 
-  if (!post || post.status !== 'published') {
+  if (!post) {
     notFound()
   }
 
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
   const isOwnPost = post.author_id === user.id
+  const savedPostIds = await getSavedCommunityPostIds(user.id, [post.id])
+  const isSaved = savedPostIds.has(post.id)
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -122,6 +126,17 @@ export default async function PlaceDetailPage({ params }: Props) {
         </article>
 
         <aside className="space-y-5 lg:sticky lg:top-24">
+          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+            <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Save for later</p>
+            <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Keep this story close</h2>
+            <div className="mt-4">
+              <SaveCommunityPostButton postId={post.id} path={`/places/${post.id}`} initialSaved={isSaved} variant="card" />
+            </div>
+            <Link href="/saved" className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+              Open saved stories →
+            </Link>
+          </div>
+
           {isOwnPost ? (
             <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your post</p>
@@ -148,6 +163,7 @@ export default async function PlaceDetailPage({ params }: Props) {
               <li>• Story detail now renders saved community post content instead of a placeholder shell.</li>
               <li>• Public stories can be privately reported into the existing moderation table.</li>
               <li>• Duplicate open reports from the same account are blocked.</li>
+              <li>• Members can now save and remove community stories from a private saved list.</li>
             </ul>
           </div>
         </aside>

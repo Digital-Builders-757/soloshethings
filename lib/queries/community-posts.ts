@@ -29,6 +29,29 @@ export type CommunityFeedPost = CommunityPost & {
   images: ResolvedPostImage[]
 }
 
+async function resolveFeedPostsWithAuthors(
+  posts: Array<
+    Pick<CommunityPost, 'id' | 'author_id' | 'title' | 'content' | 'is_public' | 'is_featured' | 'status' | 'created_at' | 'updated_at'> & {
+      profiles: CommunityPostAuthor | CommunityPostAuthor[] | null
+    }
+  >
+): Promise<CommunityFeedPost[]> {
+  const imagesByPostId = await getResolvedImages(posts.map((post) => post.id))
+
+  return Promise.all(
+    posts.map(async (post) => {
+      const author = Array.isArray(post.profiles) ? (post.profiles[0] ?? null) : post.profiles
+
+      return {
+        ...post,
+        author,
+        authorAvatarUrl: await getAvatarSignedUrl(author?.avatar_url),
+        images: imagesByPostId.get(post.id) ?? [],
+      }
+    })
+  )
+}
+
 async function getResolvedImages(postIds: string[]) {
   if (postIds.length === 0) {
     return new Map<string, ResolvedPostImage[]>()
@@ -119,23 +142,53 @@ export async function getCommunityFeedPosts(
     return []
   }
 
-  const imagesByPostId = await getResolvedImages(posts.map((post) => post.id))
-
-  return Promise.all(
-    posts.map(async (post) => {
-      const author = Array.isArray(post.profiles) ? (post.profiles[0] ?? null) : post.profiles
-
-      return {
-        ...post,
-        author,
-        authorAvatarUrl: await getAvatarSignedUrl(author?.avatar_url),
-        images: imagesByPostId.get(post.id) ?? [],
-      }
-    })
-  )
+  return resolveFeedPostsWithAuthors(posts)
 }
 
-export async function getCommunityPostDetail(postId: string): Promise<CommunityPostDetail | null> {
+export async function getCommunityPostsByIds(
+  userId: string,
+  postIds: string[]
+): Promise<CommunityFeedPost[]> {
+  if (postIds.length === 0) {
+    return []
+  }
+
+  const supabase = await createClient()
+
+  const { data: posts, error } = await supabase
+    .from('community_posts')
+    .select(
+      `
+        id,
+        author_id,
+        title,
+        content,
+        is_public,
+        is_featured,
+        status,
+        created_at,
+        updated_at,
+        profiles:profiles!community_posts_author_id_fkey (
+          id,
+          username,
+          full_name,
+          avatar_url
+        )
+      `
+    )
+    .eq('status', 'published')
+    .in('id', postIds)
+    .or(`is_public.eq.true,author_id.eq.${userId}`)
+
+  if (error || !posts) {
+    console.error('Failed to fetch community posts by id:', error)
+    return []
+  }
+
+  return resolveFeedPostsWithAuthors(posts)
+}
+
+export async function getCommunityPostDetail(postId: string, userId: string): Promise<CommunityPostDetail | null> {
   const supabase = await createClient()
 
   const { data: post, error } = await supabase
@@ -160,6 +213,8 @@ export async function getCommunityPostDetail(postId: string): Promise<CommunityP
       `
     )
     .eq('id', postId)
+    .eq('status', 'published')
+    .or(`is_public.eq.true,author_id.eq.${userId}`)
     .maybeSingle()
 
   if (error) {

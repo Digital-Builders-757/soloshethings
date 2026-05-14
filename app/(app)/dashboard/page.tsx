@@ -7,6 +7,7 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
+  Heart,
   MapPin,
   Sparkles,
   UserRound,
@@ -429,6 +430,13 @@ export default async function DashboardPage() {
                 title="Browse member stories"
                 description="See public community posts and keep your own private stories in view."
                 cta="Open the feed"
+              />
+              <ActionTile
+                href="/saved"
+                icon={Heart}
+                title="Saved stories"
+                description="Keep community stories you want to revisit in one private list."
+                cta="Open saved stories"
               />
               <ActionTile
                 href="/submit"

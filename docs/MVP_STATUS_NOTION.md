@@ -19,19 +19,22 @@
 - **Profile / account continuity (2026-05)** - Profile save can **create** a missing `profiles` row (first-time persistence); privacy level on form; private avatar uploads now store per-user paths in Supabase Storage and resolve back through signed URLs on dashboard/profile; `router.refresh` + form keyed by `updated_at`; nav/dashboard copy highlights **My dashboard** / **My profile**; error fallback shows session email, **Refresh page** / **Hard reload** (bounded repair again), honest copy (no dashboard↔profile redirect loop).
 - **Submit flow + post image uploads (2026-05)** - `/submit` now saves real `community_posts` records, validates and uploads up to 5 JPG/PNG/WebP images server-side, stores per-user post image paths in Supabase Storage, and renders recent submissions back on the page with signed image URLs so members can verify the upload worked while broader community browsing catches up.
 - **Community feed + story detail + reporting (2026-05)** - `/places` now provides the first real authenticated browsing surface for `community_posts`, mixing public member stories with the signed-in member's own posts so private submissions remain scoped. `/places/[slug]` resolves real post content with signed images, recent submissions link into that detail page, and public stories can be reported through the existing `reports` table with duplicate-open-report protection and honest moderation copy.
+- **Saved community stories (2026-05)** - Members can now save and unsave community posts from the feed and story detail using the existing `saved_posts` table, then revisit them on a new authenticated `/saved` page. Save lookups stay user-scoped through RLS, copy stays honest that this first pass covers community stories only, and story detail now re-checks visibility so someone cannot deep-link into another member's private post.
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 
 ### 🚧 In Progress
 
 **Broader product build-out**
 - Billing and premium gating still need their first real implementation batch
-- Richer community/member browsing controls and editing surfaces still need to move from roadmap to product
+- Richer community/member browsing controls beyond save, plus editing surfaces, still need to move from roadmap to product
 - Upload system still needs follow-on work for richer image management (editing, deletion, non-submit surfaces)
 
 **Still intentionally not done:**
 - Stripe subscription integration and premium gating
 - Dedicated newsletter delivery pipeline
 - Admin post creation interface
+- Richer filters/search for community stories
+- Edit/delete controls for community posts
 - Richer photo management for posts (editing, deletion, broader viewing surfaces) and richer avatar management
 - Broader trust & safety and moderation surfaces
 
@@ -39,7 +42,7 @@
 
 - **Current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Recent completed checkpoint** - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
-- **Focus** - deepen the new authenticated community browsing surface with richer interactions/editing, then Stripe/premium gating, then broader member moderation surfaces
+- **Focus** - deepen the new authenticated community browsing surface with filters/search and editing controls, then Stripe/premium gating, then broader member moderation surfaces
 
 ### ❌ Blocked
 

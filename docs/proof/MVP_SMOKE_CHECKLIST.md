@@ -10,7 +10,7 @@
 
 **Environment:** Test on **Vercel Production** (or preview) and once locally if possible.
 
-**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **Browse stories** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
+**Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **Browse stories** / **Saved stories** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
 
 **Device matrix (manual):** Re-run sections **A–D** at **~375px wide** (mobile), **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible.
 
@@ -138,6 +138,15 @@
 ### ✅ Test 14: Concurrent Requests
 - [ ] While logged in, open dashboard in multiple tabs
 - [ ] Edit profile in one tab
+
+### ✅ Test 15: Save and Unsave a Community Story
+- [ ] While logged in, open `/places`
+- [ ] Save a visible community story from a feed card
+- [ ] Open that story detail and confirm the save control renders the saved state
+- [ ] Visit `/saved` and confirm the story appears there
+- [ ] Remove the save from `/saved`
+- [ ] Refresh `/saved` and confirm the story is gone
+- [ ] If testing a private story you authored, verify it appears only for your account and is not accessible from another signed-in user
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
