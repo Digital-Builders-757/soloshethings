@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
+import { captureProductSignal, sanitizePathPrefix } from '@/lib/analytics/product-signals'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { logServerFailure } from '@/lib/server-log'
 import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
@@ -132,6 +133,10 @@ export async function toggleSavedCommunityPost(
 
   revalidatePath(path)
   revalidatePath('/saved')
+
+  captureProductSignal('community_story_saved', {
+    path_group: sanitizePathPrefix(path),
+  })
 
   return {
     success: true,

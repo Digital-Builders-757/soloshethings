@@ -3,6 +3,13 @@
 import { revalidatePath } from 'next/cache'
 
 import { getMembershipTier } from '@/lib/billing/entitlements'
+import { captureProductSignal } from '@/lib/analytics/product-signals'
+import {
+  normalizePlaceLabel,
+  parseStoryTagsFromForm,
+  validatePlaceLabelInput,
+} from '@/lib/community-story-taxonomy'
+import { PERMANENT_REMOVE_CONFIRM_PHRASE } from '@/lib/community-owner-lifecycle'
 import { logServerFailure } from '@/lib/server-log'
 import {
   buildPostImageStoragePath,
@@ -25,6 +32,7 @@ type OwnerCommunityPostState = {
   success?: boolean
   archived?: boolean
   restored?: boolean
+  removed?: boolean
   message?: string
   uploadedCount?: number
   removedImageId?: string
@@ -185,6 +193,14 @@ export async function createCommunityPost(
     return { error: validationError }
   }
 
+  const placeLabelRaw = `${formData.get('place_label') ?? ''}`
+  const placeLabelIssue = validatePlaceLabelInput(placeLabelRaw)
+  if (placeLabelIssue) {
+    return { error: placeLabelIssue }
+  }
+  const place_label = normalizePlaceLabel(placeLabelRaw)
+  const story_tags = parseStoryTagsFromForm(formData.getAll('topics'))
+
   if (imageFiles.length > POST_IMAGE_MAX_FILES) {
     return { error: `You can upload up to ${POST_IMAGE_MAX_FILES} images per post.` }
   }
@@ -208,6 +224,8 @@ export async function createCommunityPost(
         content,
         is_public: isPublic,
         status: 'published',
+        place_label,
+        story_tags,
       })
       .select('id')
       .single()
@@ -280,6 +298,13 @@ export async function createCommunityPost(
     }
 
     revalidateCommunityPostSurfaces(post.id, '/submit')
+
+    captureProductSignal('community_post_created', {
+      photo_count: imageRows.length,
+      place_set: Boolean(place_label?.trim()),
+      topic_count: story_tags.length,
+      is_public: isPublic,
+    })
 
     return {
       success: true,
@@ -356,6 +381,14 @@ export async function updateCommunityPost(
     return { error: validationError }
   }
 
+  const placeLabelRaw = `${formData.get('place_label') ?? ''}`
+  const placeLabelIssue = validatePlaceLabelInput(placeLabelRaw)
+  if (placeLabelIssue) {
+    return { error: placeLabelIssue }
+  }
+  const place_label = normalizePlaceLabel(placeLabelRaw)
+  const story_tags = parseStoryTagsFromForm(formData.getAll('topics'))
+
   const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
   if (lookupError || !post) {
     return { error: lookupError ?? 'That story is not available from your account.' }
@@ -372,6 +405,8 @@ export async function updateCommunityPost(
       title,
       content,
       is_public: isPublic,
+      place_label,
+      story_tags,
     })
     .eq('id', postId)
     .eq('author_id', user.id)
@@ -613,6 +648,171 @@ export async function removeImageFromCommunityPost(
   }
 }
 
+export async function updateCommunityPostImageAlt(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to manage story photos.' }
+  }
+
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+  const imageId = `${formData.get('imageId') ?? ''}`.trim()
+  const altRaw = `${formData.get('alt') ?? ''}`.trim()
+
+  if (!postId || !imageId) {
+    return { error: 'Missing story image details for this update.' }
+  }
+
+  if (altRaw.length > 200) {
+    return { error: 'Image descriptions must be 200 characters or fewer.' }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status !== 'published') {
+    return { error: 'Archived stories stay read-only for now.' }
+  }
+
+  const { image, lookupError: imageLookupError } = await getOwnedPostImage(postId, imageId)
+  if (imageLookupError || !image?.id) {
+    return { error: imageLookupError ?? 'That story image is not available from your account.' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('post_images')
+    .update({ alt_text: altRaw.length === 0 ? null : altRaw })
+    .eq('id', imageId)
+    .eq('post_id', postId)
+
+  if (error) {
+    const mapped = mapSupabaseErrorForUser(error, 'Could not save this image description right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'updateCommunityPostImageAlt',
+      cause: error,
+      context: { userId: user.id, postId, imageId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
+  }
+
+  revalidateCommunityPostSurfaces(postId, path)
+
+  return {
+    success: true,
+    message: altRaw.length === 0 ? 'Cleared photo description.' : 'Saved photo description.',
+  }
+}
+
+export async function moveCommunityPostImage(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to manage story photos.' }
+  }
+
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+  const imageId = `${formData.get('imageId') ?? ''}`.trim()
+  const direction = `${formData.get('direction') ?? ''}`.trim()
+
+  if (!postId || !imageId) {
+    return { error: 'Missing story image details for this reorder.' }
+  }
+
+  if (direction !== 'up' && direction !== 'down') {
+    return { error: 'Invalid photo move direction.' }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status !== 'published') {
+    return { error: 'Archived stories stay read-only for now.' }
+  }
+
+  const { images: imageRows, lookupError: imagesLookupError } = await getOwnedPostImages(postId)
+  if (imagesLookupError || !imageRows || imageRows.length < 2) {
+    return { error: imagesLookupError ?? 'Need at least two photos to change order.' }
+  }
+
+  const sorted = [...imageRows].sort((a, b) => a.order - b.order)
+  const idx = sorted.findIndex((img) => img.id === imageId)
+  const swapIdx = direction === 'up' ? idx - 1 : idx + 1
+
+  if (idx < 0 || swapIdx < 0 || swapIdx >= sorted.length) {
+    return { success: true, message: 'Photo order unchanged.' }
+  }
+
+  const a = sorted[idx]
+  const b = sorted[swapIdx]
+
+  const supabase = await createClient()
+  const { error: firstError } = await supabase
+    .from('post_images')
+    .update({ order: b.order })
+    .eq('id', a.id)
+    .eq('post_id', postId)
+
+  if (firstError) {
+    const mapped = mapSupabaseErrorForUser(firstError, 'Could not reorder this photo right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'moveCommunityPostImage.first',
+      cause: firstError,
+      context: { userId: user.id, postId, imageId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
+  }
+
+  const { error: secondError } = await supabase
+    .from('post_images')
+    .update({ order: a.order })
+    .eq('id', b.id)
+    .eq('post_id', postId)
+
+  if (secondError) {
+    const mapped = mapSupabaseErrorForUser(secondError, 'Could not reorder this photo right now.')
+    logServerFailure({
+      category: 'mutation',
+      operation: 'moveCommunityPostImage.second',
+      cause: secondError,
+      context: { userId: user.id, postId, imageId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    await supabase.from('post_images').update({ order: a.order }).eq('id', a.id).eq('post_id', postId)
+    return { error: mapped.userMessage }
+  }
+
+  revalidateCommunityPostSurfaces(postId, path)
+
+  return {
+    success: true,
+    message: 'Updated photo order.',
+  }
+}
+
 export async function archiveCommunityPost(
   _prevState: OwnerCommunityPostState | null,
   formData: FormData
@@ -638,6 +838,10 @@ export async function archiveCommunityPost(
   const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
   if (lookupError || !post) {
     return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status === 'removed') {
+    return { error: 'This story has been permanently removed.' }
   }
 
   if (post.status === 'archived') {
@@ -698,6 +902,13 @@ export async function restoreCommunityPost(
     return { error: lookupError ?? 'That story is not available from your account.' }
   }
 
+  if (post.status === 'removed') {
+    return {
+      error:
+        'This story was permanently removed from community surfaces. It cannot be republished here. Contact support if you need help.',
+    }
+  }
+
   if (post.status === 'published') {
     return { error: 'This story is already published.' }
   }
@@ -726,5 +937,79 @@ export async function restoreCommunityPost(
     success: true,
     restored: true,
     message: `Restored "${post.title}".`,
+  }
+}
+
+export async function permanentlyRemoveCommunityPost(
+  _prevState: OwnerCommunityPostState | null,
+  formData: FormData
+): Promise<OwnerCommunityPostState> {
+  const user = await getUser()
+
+  if (!user) {
+    return { error: 'You must be logged in to remove a story.' }
+  }
+
+  const membershipErr = await requireFullMembership(user.id)
+  if (membershipErr) {
+    return { error: membershipErr }
+  }
+
+  const postId = `${formData.get('postId') ?? ''}`.trim()
+  const path = `${formData.get('path') ?? '/submit'}`.trim()
+  const confirmPhrase = `${formData.get('confirmPhrase') ?? ''}`.trim()
+
+  if (!postId) {
+    return { error: 'Missing story details for this removal action.' }
+  }
+
+  if (confirmPhrase !== PERMANENT_REMOVE_CONFIRM_PHRASE) {
+    return {
+      error: `Type "${PERMANENT_REMOVE_CONFIRM_PHRASE}" exactly in the confirmation field so we know this is intentional.`,
+    }
+  }
+
+  const { post, lookupError } = await getOwnedCommunityPost(postId, user.id)
+  if (lookupError || !post) {
+    return { error: lookupError ?? 'That story is not available from your account.' }
+  }
+
+  if (post.status === 'removed') {
+    return { error: 'This story is already permanently removed.' }
+  }
+
+  if (post.status !== 'published' && post.status !== 'archived') {
+    return {
+      error: 'Only published or archived stories can be permanently removed using this workflow.',
+    }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('community_posts')
+    .update({ status: 'removed' })
+    .eq('id', postId)
+    .eq('author_id', user.id)
+
+  if (error) {
+    const mapped = mapSupabaseErrorForUser(
+      error,
+      'Could not permanently remove this story right now.'
+    )
+    logServerFailure({
+      category: 'mutation',
+      operation: 'permanentlyRemoveCommunityPost',
+      cause: error,
+      context: { userId: user.id, postId, ...(mapped.devHint ? { devHint: mapped.devHint } : {}) },
+    })
+    return { error: mapped.userMessage }
+  }
+
+  revalidateCommunityPostSurfaces(postId, path)
+
+  return {
+    success: true,
+    removed: true,
+    message: `Removed "${post.title}". It stays in your submission history under "Permanently removed" but stays off community surfaces.`,
   }
 }

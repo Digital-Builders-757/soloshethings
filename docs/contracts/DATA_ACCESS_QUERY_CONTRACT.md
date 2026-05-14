@@ -277,6 +277,10 @@ async function deletePost(
 }
 ```
 
+### Array columns (community `story_tags`)
+
+List queries **must** still enumerate scalar columns explicitly. For `story_tags`, select the column by name (e.g., `story_tags`) rather than `*`; treat empty arrays as valid and keep tag slugs aligned with `lib/community-story-taxonomy.ts`.
+
 ## Server-Only Supabase Client for Privileged Reads
 
 ### When to Use Server-Only Client

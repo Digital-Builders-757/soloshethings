@@ -11,6 +11,7 @@ import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDet
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
+import type { report_status } from '@/types/database'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All saves' },
@@ -63,7 +64,7 @@ function normalizePage(value?: string) {
   return Math.min(parsed, 5)
 }
 
-function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
+function reportStatusTone(status: report_status) {
   switch (status) {
     case 'resolved':
       return 'border-green-200 bg-green-50 text-green-800'
@@ -71,6 +72,8 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
       return 'border-slate-200 bg-slate-50 text-slate-700'
     case 'reviewed':
       return 'border-amber-200 bg-amber-50 text-amber-800'
+    case 'withdrawn':
+      return 'border-violet-200 bg-violet-50 text-violet-800'
     default:
       return 'border-[#ead8c2] bg-white text-[#7a331b]'
   }

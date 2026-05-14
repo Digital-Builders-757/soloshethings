@@ -52,6 +52,7 @@ SoloSheThings has five distinct user roles, each with specific capabilities and 
 - ✅ Read all WordPress blog posts (unlimited)
 - ✅ Share blog posts (via URL)
 - ✅ Browse public content previews
+- ✅ Submit email on the **homepage mailing-interest panel** so operators can remember you—the form writes to **`marketing_interest`**; **automated outbound marketing/newsletter sends are not enabled** yet (see `docs/contracts/EMAIL_NOTIFICATIONS_CONTRACT.md`)
 
 ### What They Cannot Do
 

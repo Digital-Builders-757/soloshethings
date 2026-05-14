@@ -4,11 +4,12 @@
 
 ## Schema Version: v0
 
-**Last Updated:** 2026-05-14
-**Migration Base:** Initial schema + Stripe/read-cap telemetry migration
+**Last Updated:** 2026-05-15
+**Migration Base:** Initial schema + Stripe/read-cap + community discovery metadata
 **Migration Files:**
 - `supabase/migrations/20250101000000_initial_schema.sql`
 - `supabase/migrations/20260514194500_stripe_webhook_and_post_reads.sql`
+- `supabase/migrations/20260515194500_community_place_label_story_tags.sql`
 **Status:** ✅ Implemented - Migration ready to run
 
 ## Important Rules
@@ -41,7 +42,7 @@
 
 ```sql
 -- User roles
-CREATE TYPE user_role AS ENUM ('talent', 'client');
+CREATE TYPE user_role AS ENUM ('talent', 'client', 'admin');
 
 -- Privacy levels
 CREATE TYPE privacy_level AS ENUM ('public', 'limited', 'private');
@@ -56,7 +57,7 @@ CREATE TYPE post_status AS ENUM ('draft', 'published', 'archived', 'removed');
 CREATE TYPE report_reason AS ENUM ('spam', 'harassment', 'inappropriate', 'copyright', 'other');
 
 -- Report statuses
-CREATE TYPE report_status AS ENUM ('pending', 'reviewed', 'resolved', 'dismissed');
+CREATE TYPE report_status AS ENUM ('pending', 'reviewed', 'resolved', 'dismissed', 'withdrawn');
 
 -- Event statuses
 CREATE TYPE event_status AS ENUM ('draft', 'published', 'cancelled', 'completed');
@@ -307,6 +308,11 @@ CREATE TRIGGER update_community_posts_updated_at
 - `created_at` - timestamptz, NOT NULL, DEFAULT now()
 - `updated_at` - timestamptz, NOT NULL, DEFAULT now()
 
+Additional columns (migration `20260515194500_community_place_label_story_tags.sql`; not in the bootstrap `CREATE TABLE` excerpt above):
+
+- `place_label` — optional `text`; CHECK allows `NULL` **or** trimmed length between 1 and 140; discovery compares case-insensitively on read paths.
+- `story_tags` — `text[] NOT NULL DEFAULT '{}'`, cardinality ≤ 5 at the database layer; the app only persists slugs from `lib/community-story-taxonomy.ts`.
+
 ### post_images
 
 Images associated with community posts.
@@ -361,6 +367,23 @@ CREATE POLICY "Users can delete images for own posts"
       AND cp.author_id = auth.uid()
     )
   );
+
+CREATE POLICY "Users can update images for own posts"
+  ON post_images FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM community_posts cp
+      WHERE cp.id = post_images.post_id
+      AND cp.author_id = auth.uid()
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM community_posts cp
+      WHERE cp.id = post_images.post_id
+      AND cp.author_id = auth.uid()
+    )
+  );
 ```
 
 **Column Details:**
@@ -371,6 +394,47 @@ CREATE POLICY "Users can delete images for own posts"
 - `alt_text` - text, NULLABLE, CHECK (char_length <= 200)
 - `order` - integer, NOT NULL, DEFAULT 0
 - `created_at` - timestamptz, NOT NULL, DEFAULT now()
+
+### marketing_interest
+
+Public marketing/newsletter-interest captures from SoloSheThings CTAs. **Outbound marketing automation is not wired in-app** yet; submissions are persisted for operational export/import to a mailing provider later.
+
+Implementation: homepage `NewsletterSection` → `submitMarketingInterest` (`app/actions/marketing-interest.ts`) uses the **service role client** (`SUPABASE_SERVICE_ROLE_KEY`) because no member session exists and RLS default-denies anon writes.
+
+```sql
+CREATE TABLE marketing_interest (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email text NOT NULL CHECK (length(trim(email)) BETWEEN 5 AND 254),
+  source text NOT NULL DEFAULT 'homepage_newsletter' CHECK (length(source) BETWEEN 1 AND 120),
+  email_normalized text GENERATED ALWAYS AS (lower(trim(email))) STORED,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  last_submitted_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT marketing_interest_email_normalized_unique UNIQUE (email_normalized)
+);
+
+CREATE INDEX marketing_interest_last_submitted_idx
+  ON marketing_interest (last_submitted_at DESC);
+
+ALTER TABLE marketing_interest ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins select marketing interest rows"
+  ON marketing_interest FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles pr
+      WHERE pr.id = auth.uid()
+        AND pr.role = 'admin'::user_role
+    )
+  );
+```
+
+**Column details:**
+- `email` - text, NOT NULL (trimmed client-side; duplicate detection via `email_normalized`)
+- `source` - text, NOT NULL (slug identifying capture surface, e.g. `homepage_newsletter`)
+- `email_normalized` - generated text, UNIQUE (lowercased + trimmed `email`)
+- `created_at` / `last_submitted_at` - timestamptz (resubmissions bump `last_submitted_at`)
+
+**Migration:** `supabase/migrations/20260517194500_marketing_interest_newsletter_capture.sql`
 
 ### saved_posts
 
@@ -438,6 +502,8 @@ CREATE TABLE reports (
   description text CHECK (char_length(description) <= 1000),
   status report_status NOT NULL DEFAULT 'pending',
   admin_notes text,
+  reviewed_at timestamptz,
+  reviewed_by uuid REFERENCES profiles(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT reports_target_check CHECK (
@@ -464,8 +530,18 @@ CREATE POLICY "Users can view own reports"
   ON reports FOR SELECT
   USING (auth.uid() = reporter_id);
 
--- Admin access handled via service role (application layer checks role)
+CREATE POLICY "Admins select all reports"
+  ON reports FOR SELECT
+  USING (
+    EXISTS (SELECT 1 FROM profiles pr WHERE pr.id = auth.uid() AND pr.role = 'admin'::user_role)
+  );
 ```
+
+**RPCs (writes that bypass permissive UPDATE policies):**
+- `withdraw_post_report(uuid)` — SECURITY DEFINER; reporter-only; pending → withdrawn.
+- `moderator_update_report(uuid, report_status, text)` — SECURITY DEFINER; requires `profiles.role = 'admin'`; sets status, optional member-visible notes, `reviewed_at` / `reviewed_by`; cannot set `withdrawn`.
+
+**Related RLS (same migration):** admins receive additional `SELECT` policies on `community_posts`, `post_images`, and `profiles` so the moderator queue can load post and member context without broad `UPDATE` grants on `reports`.
 
 **Column Details:**
 - `id` - uuid, PRIMARY KEY, DEFAULT gen_random_uuid()
@@ -474,8 +550,10 @@ CREATE POLICY "Users can view own reports"
 - `profile_id` - uuid, NULLABLE, REFERENCES profiles(id), ON DELETE CASCADE
 - `reason` - report_reason enum, NOT NULL
 - `description` - text, NULLABLE, CHECK (char_length <= 1000)
-- `status` - report_status enum, NOT NULL, DEFAULT 'pending'
-- `admin_notes` - text, NULLABLE (admin-only field)
+- `status` - report_status enum, NOT NULL, DEFAULT 'pending' (includes `'withdrawn'` after migration `20260516203000_moderation_admin_rls_reports.sql`)
+- `admin_notes` - text, NULLABLE — member-visible summary on `/reports` when present
+- `reviewed_at` - timestamptz, NULLABLE — last moderator progression timestamp
+- `reviewed_by` - uuid, NULLABLE — moderator profile reference
 - `created_at` - timestamptz, NOT NULL, DEFAULT now()
 - `updated_at` - timestamptz, NOT NULL, DEFAULT now()
 

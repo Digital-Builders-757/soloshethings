@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
+import { PendingReportWithdrawal } from '@/components/safety/pending-report-withdrawal'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
@@ -15,6 +16,7 @@ const VIEW_OPTIONS = [
   { value: 'reviewed', label: 'Under review' },
   { value: 'resolved', label: 'Resolved' },
   { value: 'dismissed', label: 'Dismissed' },
+  { value: 'withdrawn', label: 'Withdrawn' },
 ] as const
 
 type ViewFilter = (typeof VIEW_OPTIONS)[number]['value']
@@ -87,6 +89,8 @@ function statusTone(status: report_status) {
       return 'border-slate-200 bg-slate-50 text-slate-700'
     case 'reviewed':
       return 'border-amber-200 bg-amber-50 text-amber-800'
+    case 'withdrawn':
+      return 'border-violet-200 bg-violet-50 text-violet-800'
     default:
       return 'border-[#ead8c2] bg-white text-[#7a331b]'
   }
@@ -111,6 +115,7 @@ export default async function ReportsPage({ searchParams }: Props) {
     reviewed: reports.filter((report) => report.status === 'reviewed').length,
     resolved: reports.filter((report) => report.status === 'resolved').length,
     dismissed: reports.filter((report) => report.status === 'dismissed').length,
+    withdrawn: reports.filter((report) => report.status === 'withdrawn').length,
   }
 
   const matchingReports = reports.filter((report) => {
@@ -118,7 +123,7 @@ export default async function ReportsPage({ searchParams }: Props) {
     const authorName = report.post?.author?.full_name?.trim() || report.post?.author?.username || 'Solo SHE member'
     const matchesQuery =
       query.length === 0 ||
-      [title, authorName, REPORT_REASON_LABELS[report.reason], report.description ?? '', report.admin_notes ?? '']
+      [title, authorName, REPORT_REASON_LABELS[report.reason], report.description ?? '', report.admin_notes ?? '', report.reviewed_at ?? '']
         .join(' ')
         .toLowerCase()
         .includes(query.toLowerCase())
@@ -172,6 +177,9 @@ export default async function ReportsPage({ searchParams }: Props) {
           </Badge>
           <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
             {counts.dismissed} dismissed
+          </Badge>
+          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+            {counts.withdrawn} withdrawn
           </Badge>
         </div>
 
@@ -347,11 +355,19 @@ export default async function ReportsPage({ searchParams }: Props) {
                           </div>
                         ) : null}
 
+                        {report.reviewed_at ? (
+                          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
+                            Moderation progress timestamp · {formatDate(report.reviewed_at)}
+                          </p>
+                        ) : null}
                         {report.admin_notes?.trim() ? (
                           <div className="mt-4 rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 text-sm text-[#6d5849]">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">Moderator notes</p>
                             <p className="mt-2 leading-6">{report.admin_notes}</p>
                           </div>
+                        ) : null}
+                        {report.status === 'pending' ? (
+                          <PendingReportWithdrawal reportId={report.id} returnPath={currentPath} />
                         ) : null}
                       </div>
 

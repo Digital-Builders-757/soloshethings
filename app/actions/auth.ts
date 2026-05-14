@@ -12,6 +12,7 @@
 
 'use server'
 
+import { captureProductSignal } from '@/lib/analytics/product-signals'
 import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 import { isValidUsername, normalizeUsername } from '@/lib/auth-utils'
@@ -143,6 +144,10 @@ export async function signup(
     }
 
     revalidatePath('/', 'layout')
+
+    captureProductSignal('signup_completed', {
+      confirm_email_pending: !authData.session,
+    })
 
     const defaultPath = getPostAuthRedirectPath('talent')
     const nextPath = getSafeInternalRedirectPath(redirectToRaw, defaultPath)

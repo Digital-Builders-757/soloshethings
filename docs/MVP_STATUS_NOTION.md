@@ -28,18 +28,22 @@
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 - **Observability + error UX (2026-05-14)** - Structured server failures use `logServerFailure` (`lib/server-log.ts`); user-facing Supabase errors use `mapSupabaseErrorForUser` and deliberate server throws use `safeThrownErrorMessage` (`lib/supabase-errors.ts`); Sentry is bootstrapped via `instrumentation.ts` / `instrumentation-client.ts` / server+edge configs with conditional `withSentryConfig` when upload env vars are present; `app/error.tsx` and `app/global-error.tsx` show on-brand recovery UI and report to Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set; WordPress preview/revalidate stay honest for callers; profile queries and `lib/wp-rest.ts` use the shared logger instead of stray `console.error`.
 - **Stripe subscriptions + premium gates (2026-05-14)** - Public `/pricing`; signed-in `/subscribe` + `startMembershipCheckout` open Stripe Checkout (`STRIPE_PRICE_ID`, 7-day trial). Webhook `POST /api/webhooks/stripe` verifies signatures, ledger in `stripe_webhook_ledger`, upserts `subscriptions`. Entitlement is DB-only (`lib/billing/entitlements.ts`); `community_post_reads` enforces 3 third-party story views per UTC day when `limited`; community writes and new saves require `full`.
+- **Community discovery depth — second pass (2026-05-15)** - Optional `place_label` plus capped `story_tags` slugs stored on `community_posts` (`lib/community-story-taxonomy.ts`); `/places` exposes newest/oldest ordering, place/topic anchors, and facet chips sourced from posts the viewer can already access under RLS; `getCommunityRelatedPosts` ranks overlaps in place/tags alongside author/featured/photos/recency; owners edit alt text + swap gallery order (`post_images` UPDATE policy + server actions).
+- **Moderation queue + reporter withdraw + owner permanent remove (2026-05-16)** - Migration `20260516203000_moderation_admin_rls_reports.sql` adds `profiles.role = 'admin'`, `report_status.withdrawn`, audited `reports.reviewed_at` / `reports.reviewed_by`, SECURITY DEFINER RPCs `withdraw_post_report` and `moderator_update_report`, and admin `SELECT` RLS where the queue needs post/member context (writes stay on RPCs). App: authenticated `/admin/moderation` for platform admins; `/reports` supports withdrawing pending post reports + shows reviewed timestamps; browse/saved/detail surfaces recognize withdrawn status; dashboard links **Moderation** for admins; owners can permanently remove a community post behind an explicit typed confirmation (guarded against archive/restore once `removed`).
+- **Marketing interest capture — truthful homepage signup (2026-05)** - Public homepage panel stores emails in **`marketing_interest`** via **`submitMarketingInterest`** (service role insert/update). Copy and success/error states explicitly state that **automated outbound marketing/newsletter sends are not enabled** yet; operators export/import manually until an ESP pathway is prioritized.
+- **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel events documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set.
 
 ### 🚧 In Progress
 
-- **Community second-pass depth** - The member surfaces are real now, but they still need stronger taxonomy/location discovery, richer recommendation logic, and richer image-management follow-through.
-- **Moderation/admin follow-through** - Broader trust & safety surfaces, admin post tooling, and deeper owner lifecycle controls are still pending.
-- **Newsletter pipeline** - The dedicated newsletter delivery path is still intentionally not shipped.
+- **Moderation/editorial depth (remaining)** - First-pass operator queue and safe report RPCs are shipped; broader editorial tooling, analytics-style oversight, and non-community report targets are still out of scope or not built yet.
+- **Marketing email automation** - Provider-connected newsletter sends / audience sync remains future work (`docs/contracts/EMAIL_NOTIFICATIONS_CONTRACT.md` documents the bounded capture layer).
 
 ### 📋 Next
 
 - **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
-- **Immediate focus** - community second-pass depth, then moderation/admin backlog (`docs/procedures/IMPLEMENTATION_ROADMAP.md`)
+- **Active backlog work order** - `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+- **Immediate focus** - Stretch-only: ESP audience automation **or** dashboards built on **`product_signal` tags**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
 
 ### ❌ Blocked
 
@@ -65,41 +69,45 @@ Foundational documentation, architecture, schema design, contracts, procedures, 
 - real community submit/browse/save/report/owner-management surfaces
 - first-pass discovery/search/filter/load-more/member-filter polish
 - Stripe Checkout + webhook-backed `subscriptions` + DB-only premium gates (see `BILLING_STRIPE_CONTRACT.md`)
+- taxonomy/location **anchors** authored on publish/edit (`place_label` + capped `story_tags` slugs) with browse parity
 
 **Still open in this phase:**
-- dedicated newsletter pipeline
-- broader moderation/admin tooling
-- richer upload management (reordering, replace flows, alt text, broader surfaces)
+- marketing email automation synced to an ESP provider (beyond DB capture listed in EMAIL_NOTIFICATIONS_CONTRACT)
+- moderation/editorial depth beyond the first operator queue (`/admin/moderation`) and RPC-backed report transitions
 
 **Reference:** use `docs/procedures/IMPLEMENTATION_ROADMAP.md` for the exact active queue.
 
 ### Phase 2: Community Depth
 
-**Status:** 🚧 Partially shipped
+**Status:** 🚧 Partially shipped (depth improves as members adopt new metadata fields)
 
 **Already real:**
 - authenticated member browsing
 - saved stories
 - report history
 - owner story edit/archive/restore/photo management
-- first-pass member-focused discovery
+- discovery/search/filter load-more pipelines
+- deterministic related-story ladder using anchors, shared tags, author continuity, featured/photo boosts, recency—all within posts the viewer can already fetch under RLS
+- owner-managed alt text plus gallery reordering helpers on story detail (`post_images`)
 
 **Still planned in this phase:**
-- taxonomy/location-aware discovery
-- stronger recommendation logic
-- richer media handling and presentation
-- broader trust/safety depth beyond current first pass
+- trust & safety tooling beyond the shipped reporter-first history + moderator queue increment (non-post report targets, analytics, richer escalation)
 - any future messaging/comments/realtime work if product priorities justify it
 
 ### Phase 3: Admin, Marketing, and Analytics
 
-**Status:** 📋 Planned / lightly scaffolded only
+**Status:** 🚧 First-pass shipped; stretch backlog remains
 
-**Still planned:**
-- moderation/admin dashboard depth
+**Already real:**
+- admin-only `/admin/moderation` queue, RPC-backed report transitions, reporter withdraw flow
+- honest `marketing_interest` capture on the homepage with service-role writes (`EMAIL_NOTIFICATIONS_CONTRACT`)
+- coarse `product_signal.*` Sentry funnel events (`MONITORING_SENTRY_POSTURE.md`, `DISABLE_PRODUCT_SIGNALS`)
+
+**Still planned / stretch-only:**
+- moderation/admin dashboard depth beyond the operator queue (rich editorial workflows, non-post report targets)
 - admin/editorial post workflows where needed
-- newsletter/marketing operations beyond placeholder capture
-- analytics and performance/engagement reporting
+- provider-backed mailing automation + broadcasts (captures persist to `marketing_interest` until then)
+- analytics dashboards or ESP sync beyond raw Sentry tags, when ops requests (`IMPLEMENTATION_ROADMAP.md`)
 
 **Rule:** phase labels here are coarse product buckets. The canonical execution order lives in `docs/procedures/IMPLEMENTATION_ROADMAP.md`, not in these phase summaries.
 
@@ -192,6 +200,21 @@ Next Steps:
 
 ### Progress Entries
 
+#### 2026-05-15 — Community taxonomy + discovery depth
+
+**Status:** ✅ VERIFIED (typecheck/lint/build gate)
+
+**Description:**
+- Migration `supabase/migrations/20260515194500_community_place_label_story_tags.sql`: optional `place_label`, capped `story_tags[]`, supporting indexes, and `post_images` owner `UPDATE` RLS so alt/order edits stay DB-enforced.
+- Shared taxonomy helpers in `lib/community-story-taxonomy.ts`; submit + owner edits use `CommunityDiscoveryFields`.
+- `/places` exposes newest/oldest ordering plus `place`/`topic` query filters with honest facet chips from RLS-visible posts.
+- Related stories rank shared anchors/tags deterministically atop the legacy author/featured/photo heuristics.
+- Owners can revise photo descriptions and move photos earlier/later inside the carousel.
+
+**Verification:** `npm run typecheck`, `npm run lint`, `npm run build`.
+
+**Next steps:** moderation/admin surfaces (`docs/procedures/IMPLEMENTATION_ROADMAP.md` §2).
+
 #### 2026-05-14 — Stripe subscriptions + premium gates
 
 **Status:** ✅ VERIFIED (typecheck/lint/build gate)
@@ -203,7 +226,7 @@ Next Steps:
 
 **Verification:** `npm run typecheck`, `npm run lint`, `npm run build`.
 
-**Next steps:** community second-pass depth per roadmap.
+**Next steps:** completed in subsequent 2026-05-15 community depth batch; resume at moderation/admin tooling (`IMPLEMENTATION_ROADMAP` §2).
 
 #### 2026-05-14 - Observability + error UX batch
 
@@ -840,15 +863,16 @@ Next Steps:
 - ✅ WordPress public/editorial read path with preview + revalidation hooks
 - ✅ Dashboard/profile shell and avatar uploads
 - ✅ Real community posting, browsing, saving, reporting, and owner management
-- 🚧 Observability + error UX hardening currently in progress in the working tree
-- 📋 Stripe subscription management and premium gating still pending
-- 📋 Newsletter pipeline still pending
+- ✅ Observability + error UX baseline (structured logging + Sentry wiring)
+- ✅ Stripe subscription management and premium gates (Checkout + webhook ledger)
+- ✅ Honest homepage marketing-interest capture persists to **`marketing_interest`** with explicitly non-automated copy (see EMAIL_NOTIFICATIONS_CONTRACT)
+- 📋 ESP-backed broadcasts + audience tooling remain deliberate backlog work
 
 ### Phase 2: Community Depth 🚧
 
 - ✅ First-pass discovery/search/filter/load-more/member-filter support is real
-- 📋 Taxonomy/location-aware discovery still pending
-- 📋 Richer media handling/presentation still pending
+- ✅ Honest taxonomy surface: publisher `place_label` + capped `story_tags` slugs, browse/detail parity, deterministic related ranking
+- ✅ Richer photo follow-through on story detail: alt text edits + deterministic ordering (`post_images` UPDATE RLS)
 - 📋 Messaging/comments/realtime remain future scope, not current commitments
 
 ### Phase 3: Admin + Marketing + Analytics 📋
@@ -856,7 +880,7 @@ Next Steps:
 - 📋 Moderation/admin dashboard depth still pending
 - 📋 Admin/editorial operations still pending
 - 📋 Analytics implementation still pending
-- 📋 Marketing/newsletter operations beyond placeholder capture still pending
+- 📋 Marketing automation beyond the **`marketing_interest`** capture/export path still backlog until ESP decisions land
 
 ## Release History
 

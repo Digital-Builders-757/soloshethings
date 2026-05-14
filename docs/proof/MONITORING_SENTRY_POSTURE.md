@@ -12,6 +12,7 @@ Use these primitives for new server code instead of raw `console.error` or ad ho
 4. **Sentry bootstrap** — [`instrumentation.ts`](../../instrumentation.ts) registers [`sentry.server.config.ts`](../../sentry.server.config.ts) (Node) and [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (Edge). [`instrumentation-client.ts`](../../instrumentation-client.ts) initializes the browser SDK when `NEXT_PUBLIC_SENTRY_DSN` is set. `export const onRequestError = Sentry.captureRequestError` captures unhandled App Router request errors. Init uses `sendDefaultPii: false`; the long **`beforeSend` samples later in this document** are reference patterns—they are **not** automatically mirrored in those config files unless we add equivalent hooks in a dedicated hardening pass.
 5. **Next.js config** — [`next.config.ts`](../../next.config.ts) applies `withSentryConfig` only when **`SENTRY_AUTH_TOKEN`**, **`SENTRY_ORG`**, and **`SENTRY_PROJECT`** are all defined (source maps in CI/production). Runtime capture still works with DSN only.
 6. **Route-level UI** — [`app/error.tsx`](../../app/error.tsx) and [`app/global-error.tsx`](../../app/global-error.tsx) provide user-facing recovery UI; they call `Sentry.captureException` on the client only when `NEXT_PUBLIC_SENTRY_DSN` is set (avoids useless dynamic imports when Sentry is off).
+7. **Product signals (learning, not errors)** — [`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts) emits **info-level** `Sentry.captureEvent` messages tagged `product_signal` when a DSN is configured. Used for coarse funnel/community signals (signup complete, checkout started/return, story created/saved, report filed). **Never** put email, titles, payment identifiers, or sensitive slugs in payloads; use small enums/counts only. Opt out with `DISABLE_PRODUCT_SIGNALS=1`.
 
 ### Environment variables
 
@@ -19,9 +20,21 @@ Use these primitives for new server code instead of raw `console.error` or ad ho
 |----------|--------|---------|
 | `NEXT_PUBLIC_SENTRY_DSN` | Client + can mirror server | Browser events; required for client replay/tracing in the bundle |
 | `SENTRY_DSN` | Server/Edge (optional) | Prefer for server-only events if you keep browser DSN separate |
+| `DISABLE_PRODUCT_SIGNALS` | Server (optional) | Set to `1` to silence info-level product funnel events while keeping error capture |
 | `SENTRY_AUTH_TOKEN` | Build/CI | Upload source maps |
 | `SENTRY_ORG` | Build/CI | Organization slug for the Sentry webpack plugin |
 | `SENTRY_PROJECT` | Build/CI | Project slug for the Sentry webpack plugin |
+
+### `product_signal` names (Discover filter `tags[product_signal]`)
+
+| Tag value | Rough meaning |
+|-----------|----------------|
+| `signup_completed` | Profile bootstrap succeeded (`confirm_email_pending` extras when Supabase confirms email-only hand-off) |
+| `membership_checkout_started` | Stripe Checkout Session created and user redirected host-side |
+| `membership_checkout_return` | User lands on `/subscribe/success` with Stripe `session_id` query param echo |
+| `community_post_created` | Published draft saved from `/submit` with coarse metadata counts |
+| `community_story_saved` | Net-new save inserted (bucketed via `path_group` only) |
+| `community_report_submitted` | New post report row inserted |
 
 ### Current verification note (2026-05-14)
 

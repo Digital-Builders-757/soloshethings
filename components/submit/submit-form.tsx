@@ -3,6 +3,7 @@
 import Link from 'next/link'
 
 import { createCommunityPost } from '@/app/actions/community-posts'
+import { CommunityDiscoveryFields } from '@/components/community/community-discovery-fields'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { useRouter } from 'next/navigation'
 import type { ChangeEvent } from 'react'
@@ -160,6 +161,8 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
           />
           <p className="mt-1 text-xs text-muted-foreground">{contentLength} / 5000 characters</p>
         </div>
+
+        <CommunityDiscoveryFields idPrefix="submit" />
 
         <div>
           <label htmlFor="images" className="mb-2 block text-sm font-semibold text-[#7a331b]">

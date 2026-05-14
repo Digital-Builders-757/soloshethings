@@ -9,6 +9,7 @@
 3. **Performance Checks Required** - ISR and revalidation must work correctly.
 4. **Upload Privacy Must Work** - Privacy toggles must be enforced.
 5. **Billing Flow Must Work** - Trial → Subscribe → Revoke must function correctly.
+6. **Product signals are optional noise control** — Sentry emits coarse `product_signal.*` funnel events only when DSN configured; mute with `DISABLE_PRODUCT_SIGNALS=1` (`docs/proof/MONITORING_SENTRY_POSTURE.md`).
 
 ## Phase 1 Core Flows
 
@@ -111,6 +112,10 @@ curl -I https://app.com/blog
 - [ ] Report submission succeeds and blocks duplicate open reports
 - [ ] Successful report submission links members to `/reports`
 - [ ] Already-reported stories show the latest member-visible report status on `/places`, `/saved`, and `/places/[id]`
+- [ ] Submit + owner edits capture optional place/location anchors plus up to five capped story-angle tags (persisted slug list in `lib/community-story-taxonomy.ts`)
+- [ ] `/places` supports sort + place + topic navigation (and honest facet chips) without bypassing privacy or RLS—narrowing applies atop the already-visible feed slice
+- [ ] Story detail links into those same feed filters for anchors/topics and explains related picks with deterministic metadata overlaps
+- [ ] Story owners can update each photo’s description (`alt_text`) and move photos earlier/later in gallery order backed by `post_images` UPDATE RLS
 - [ ] `/reports` lists the signed-in member's own post reports with status filters, story links, and an explicit member filter for narrowing to one storyteller
 - [ ] `/saved`, `/reports`, and `/submit` each offer load-more / show-fewer controls that preserve the current search and filter context
 

@@ -26,6 +26,8 @@
 - [ ] At ~375px viewport width: **no horizontal scroll** on the main column (hero + first sections)
 - [ ] Optional: slow 3G — confirm a **loading skeleton** appears briefly (route `loading.tsx`) instead of a long blank paint
 
+- [ ] Optional: scroll to the homepage **Stay in the loop** panel, submit an address, and confirm the success messaging matches reality (persisted intent only—no promised inbox automation)
+
 ### ✅ Test 2: Blog List (No WP_URL)
 - [ ] Visit `/blog`
 - [ ] If `WP_URL` is NOT configured: Should see "Coming Soon" message
@@ -163,6 +165,8 @@
 - [ ] From a report card, use `Only this member's stories` and confirm `/reports` narrows to that exact storyteller while preserving any active status view or keyword search
 - [ ] On `/reports`, confirm the same active member-filter banner appears and that `Clear member filter` keeps the current status view and keyword search intact
 - [ ] While a member filter is active on `/reports`, use the shared community workspace nav and confirm the same member stays selected when you switch back to browse or saved surfaces
+- [ ] With a **pending** post report you filed, withdraw it from `/reports` (or equivalent control) and confirm the status badge updates to Withdrawn consistently on `/reports`, `/places`, and `/saved`
+- [ ] As a signed-in member **without** `profiles.role = 'admin'`, visit `/admin/moderation` and confirm you cannot reach or use the operator queue UI
 - [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)

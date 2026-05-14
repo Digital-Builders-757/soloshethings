@@ -77,6 +77,17 @@ if (profile?.role !== 'admin') {
 }
 ```
 
+### Platform moderators (`profiles.role = 'admin'`)
+
+**MUST:**
+- Treat `admin` as a **manual, service-role provisioning step** — set via SQL in Supabase Dashboard (or another trusted operator flow), for example updating `profiles.role` for a known trusted account.
+- Gate every admin-only route and risky mutation on **`profiles.role` read through the authenticated user session** (same pattern as above), never on client-visible claims alone.
+- Keep moderation **writes** on `reports` on the audited RPC paths (`moderator_update_report`, `withdraw_post_report`) rather than widening blanket `UPDATE` RLS onto the table.
+
+**MUST NOT:**
+- Promote arbitrary signups to `admin` via public application code without an explicit provisioning process.
+- Expose Supabase **service_role** tokens to browsers or bundle them into client chunks.
+
 ## Database Security
 
 ### RLS Always On (Default Deny)

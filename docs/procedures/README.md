@@ -15,6 +15,12 @@ These are useful context, but they are **not** the active queue:
 - `docs/procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md`
 - `docs/procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md`
 
+## Active work-order docs
+
+These are the current execution docs:
+- `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+
 ## Historical work-order docs
 
 These are completed batch records unless a regression explicitly reopens them:
@@ -28,19 +34,17 @@ These are completed batch records unless a regression explicitly reopens them:
 
 ## Active queue snapshot (2026-05-14)
 
-1. Finish the in-progress observability + error UX hardening batch
-2. Stripe subscription integration and premium gating
-3. Community second-pass depth (taxonomy/location discovery, richer recommendations, richer image management)
-4. Moderation/admin surfaces and deeper owner lifecycle controls
-5. Newsletter + marketing operations follow-through
+1. Community second-pass depth (`SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`)
+2. Moderation/admin surfaces and deeper owner lifecycle controls (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
+3. Newsletter + marketing operations follow-through (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
 
 ## Pause / handoff note
 
 If this repo is being paused so another tool or person can take over:
 - resume from `docs/procedures/IMPLEMENTATION_ROADMAP.md`
-- treat the observability + error UX batch as the current unfinished batch
-- verify with `npm run typecheck`, `npm run lint`, and `npm run build` before starting new feature work
-- only then continue into Stripe/premium gating
+- start with `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`
+- verify with `npm run typecheck`, `npm run lint`, and `npm run build` before calling any batch done
+- only then move into the post-launch backlog work order
 
 ## Rules
 

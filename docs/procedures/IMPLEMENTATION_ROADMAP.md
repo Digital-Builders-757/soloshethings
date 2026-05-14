@@ -4,7 +4,7 @@
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** 2026-05-14
+**Last Updated:** 2026-05-17
 
 ---
 
@@ -39,16 +39,21 @@ Use these companion docs for everything else:
   - **Observability + error UX (2026-05-14)** — structured server logging (`logServerFailure` in `lib/server-log.ts`), safe Supabase mapping plus `safeThrownErrorMessage` for deliberate throws (`lib/supabase-errors.ts`), Sentry bootstrap/wiring, on-brand `app/error.tsx` / `app/global-error.tsx` (Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set), honest machine-facing responses for WordPress revalidate/preview, and profile/WP read paths using the shared logger instead of ad hoc `console.error`.
   - **Stripe subscription + premium gating (2026-05-14)** — `/pricing`, `/subscribe` Checkout, `POST /api/webhooks/stripe` + `stripe_webhook_ledger`, Supabase-only entitlements and `community_post_reads` free-tier read caps.
 
+  - **Community second-pass depth (2026-05-15)** — optional `place_label` + capped `story_tags` on `community_posts` (migration `20260515194500_community_place_label_story_tags.sql`), honest `/places` facet chips + `place`/`topic`/`sort` query helpers, stronger `getCommunityRelatedPosts` ranking from shared anchors/tags (no ML), owner `post_images` alt + reorder via new `UPDATE` RLS policy (`app/actions/community-posts.ts`, `components/submit/owner-post-image-manager.tsx`).
+  - **Moderation operator increment (2026-05-16)** — migration `20260516203000_moderation_admin_rls_reports.sql`, `/admin/moderation`, reporter `withdraw_post_report`, admin-only `moderator_update_report`, `withdrawn` report status surfaced across member UIs, owner permanent-remove confirmation.
+  - **Honest homepage marketing-interest capture (2026-05-17)** — `marketing_interest` table + `/` newsletter panel (`submitMarketingInterest`, service role insert/update); no outbound marketing/automation bundled.
+  - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry info events tagged `product_signal` (signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
+
 ### Live in-progress work
 
-- None queued ahead of the canonical plan below; next up is **community second-pass depth**.
+- **No mandatory queue item** until product prioritizes the stretch lane below.
 
 ### Resume pointer
 
 - **Branch target:** `develop`
-- **Latest shipped batch (2026-05-14):** Stripe subscription + premium gating (see `docs/contracts/BILLING_STRIPE_CONTRACT.md`, `PUBLIC_PRIVATE_SURFACE_CONTRACT.md`, `docs/MVP_STATUS_NOTION.md`) plus prior observability work.
+- **Latest shipped batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs). Prior batch: moderation operator increment (2026-05-16).
 - **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
-- **Next focus:** community second-pass depth (see §1 below).
+- **Next focus:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
 
 ---
 
@@ -56,41 +61,48 @@ Use these companion docs for everything else:
 
 Work top to bottom unless a regression or blocker forces a reorder.
 
-### 1) Community second-pass depth
+### 1) Community second-pass depth — ✅ SHIPPED (2026-05-15)
 
-**Goal:** make the shipped member/community surfaces feel deeper and more useful without inventing fake scope.
+Honest taxonomy + place anchors tied to publisher input, deterministic related-story ranking within RLS-visible candidates, richer owner media controls (description + ordering), feed sort + anchored discovery UX on `/places`.
 
-**Scope:**
-- taxonomy/location-aware discovery
-- stronger recommendation logic beyond the current first-pass related stories
-- richer image handling (reorder, replace, alt text, broader viewing surfaces)
-- any honest pagination/filter improvements still needed after real QA
+**Implementation pointers:** [`lib/community-story-taxonomy.ts`](../../lib/community-story-taxonomy.ts), [`lib/queries/community-posts.ts`](../../lib/queries/community-posts.ts), migration `supabase/migrations/20260515194500_community_place_label_story_tags.sql`.
 
-**Primary source docs:**
-- `docs/MVP_STATUS_NOTION.md`
-- `docs/contracts/DATA_ACCESS_QUERY_CONTRACT.md`
-- `docs/contracts/UPLOADS_STORAGE_CONTRACT.md`
+**Historical work-order notes:** `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md` (execution checklist / context).
 
-### 2) Moderation/admin surfaces + owner lifecycle depth
+### 2) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
 
 **Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
-**Scope:**
-- broader trust & safety / moderation surfaces
-- report resolution workflows where they are still missing
-- admin post creation / editorial support where appropriate
-- deeper owner lifecycle actions beyond the current archive/restore pass
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
 
-### 3) Newsletter + marketing operations follow-through
+**Shipped in this increment:**
+- Platform role `profiles.role = 'admin'` plus `/admin/moderation` queue (App Router + RLS-backed reads)
+- Reporter-only `withdraw_post_report`, admin-only `moderator_update_report`, `report_status.withdrawn`, audited `reviewed_at` / `reviewed_by`
+- Owner **permanent remove** with destructive-action guardrails (complements archive/restore)
 
-**Goal:** replace placeholder interest capture with a real pipeline when product priorities justify it.
+**Still open / intentionally out of scope for this increment:**
+- Rich editorial workflows, analytics dashboards, non-post report targets
+- Optional future admin post-creation tooling if product priorities change
 
-**Scope:**
-- dedicated newsletter delivery path
-- honest CTA and marketing follow-through
-- docs and operational notes for whoever owns campaign execution
+### 3) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
 
----
+**Goal:** Replace placeholder marketing CTAs with **honest, operations-friendly** tooling while larger ESP integrations stay optional.
+
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+
+**Shipped in this increment (2026-05-17):**
+- `marketing_interest` table migration (`supabase/migrations/20260517194500_marketing_interest_newsletter_capture.sql`)
+- Authentic public homepage form routed through **`submitMarketingInterest`** (`app/actions/marketing-interest.ts`) via **service-role** inserts/updates (`SUPABASE_SERVICE_ROLE_KEY`)
+- UI + success/error copy stating **explicitly** that automated marketing sends are **not wired** yet; operators manually export/import
+
+**Companion backlog deliverable (prompt pack Prompt 3, 2026-05-17):**
+
+- Coarse **`product_signal.*`** funnel events emitted via **`captureProductSignal`** ([`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts)); Discover filter `tags[product_signal]` — opt out globally with **`DISABLE_PRODUCT_SIGNALS=1`**.
+
+**Still deliberate follow-up (explicitly optional / backlog-driven):**
+- ESP audience sync & scheduled campaigns
+- Double opt-in or compliance tooling if/when broadcasts begin
+- Dedicated dashboards interpreting `product_signal` volume beyond raw Sentry search
 
 ## Priority override rule
 

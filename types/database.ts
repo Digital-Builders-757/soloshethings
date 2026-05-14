@@ -23,12 +23,12 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type user_role = 'talent' | 'client'
+export type user_role = 'talent' | 'client' | 'admin'
 export type privacy_level = 'public' | 'limited' | 'private'
 export type subscription_status = 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete'
 export type post_status = 'draft' | 'published' | 'archived' | 'removed'
 export type report_reason = 'spam' | 'harassment' | 'inappropriate' | 'copyright' | 'other'
-export type report_status = 'pending' | 'reviewed' | 'resolved' | 'dismissed'
+export type report_status = 'pending' | 'reviewed' | 'resolved' | 'dismissed' | 'withdrawn'
 export type event_status = 'draft' | 'published' | 'cancelled' | 'completed'
 export type saved_post_type = 'wordpress' | 'community'
 
@@ -138,6 +138,8 @@ export interface Database {
           content: string
           is_public: boolean
           is_featured: boolean
+          place_label: string | null
+          story_tags: string[]
           status: post_status
           created_at: string
           updated_at: string
@@ -149,6 +151,8 @@ export interface Database {
           content: string
           is_public?: boolean
           is_featured?: boolean
+          place_label?: string | null
+          story_tags?: string[]
           status?: post_status
           created_at?: string
           updated_at?: string
@@ -160,6 +164,8 @@ export interface Database {
           content?: string
           is_public?: boolean
           is_featured?: boolean
+          place_label?: string | null
+          story_tags?: string[]
           status?: post_status
           created_at?: string
           updated_at?: string
@@ -260,6 +266,8 @@ export interface Database {
           description: string | null
           status: report_status
           admin_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           created_at: string
           updated_at: string
         }
@@ -272,6 +280,8 @@ export interface Database {
           description?: string | null
           status?: report_status
           admin_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -284,6 +294,8 @@ export interface Database {
           description?: string | null
           status?: report_status
           admin_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -436,6 +448,31 @@ export interface Database {
         }
         Relationships: []
       }
+      marketing_interest: {
+        Row: {
+          id: string
+          email: string
+          source: string
+          email_normalized: string
+          created_at: string
+          last_submitted_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          source?: string
+          created_at?: string
+          last_submitted_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          source?: string
+          created_at?: string
+          last_submitted_at?: string
+        }
+        Relationships: []
+      }
       community_post_reads: {
         Row: {
           id: string
@@ -478,7 +515,20 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      withdraw_post_report: {
+        Args: {
+          p_report_id: string
+        }
+        Returns: undefined
+      }
+      moderator_update_report: {
+        Args: {
+          p_report_id: string
+          p_status: report_status
+          p_admin_notes: string | null
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       user_role: user_role

@@ -10,6 +10,7 @@ import {
   Flag,
   Heart,
   MapPin,
+  ShieldCheck,
   Sparkles,
   UserRound,
 } from 'lucide-react'
@@ -469,6 +470,15 @@ export default async function DashboardPage() {
                 description="Share a lesson, ritual, or field note with the collective."
                 cta="Start a submission"
               />
+              {profile.role === 'admin' ? (
+                <ActionTile
+                  href="/admin/moderation"
+                  icon={ShieldCheck}
+                  title="Moderation queue"
+                  description="Review member reports and publish honest status updates."
+                  cta="Open moderation"
+                />
+              ) : null}
             </ul>
           </section>
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { addImagesToCommunityPost, removeImageFromCommunityPost } from '@/app/actions/community-posts'
+import { addImagesToCommunityPost, moveCommunityPostImage, removeImageFromCommunityPost, updateCommunityPostImageAlt } from '@/app/actions/community-posts'
 import type { CommunityPostDetail } from '@/lib/queries/community-posts'
 import type { ChangeEvent } from 'react'
 import { useActionState, useEffect, useMemo, useRef, useState } from 'react'
@@ -51,18 +51,54 @@ function RemoveImageButton() {
   )
 }
 
+function SaveAltButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="min-h-10 rounded-full bg-[#7a331b] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#632815] disabled:pointer-events-none disabled:opacity-60"
+    >
+      {pending ? 'Saving description…' : 'Save photo description'}
+    </button>
+  )
+}
+
+function MovePhotoButton({
+  disabled,
+  direction,
+}: {
+  disabled?: boolean
+  direction: 'up' | 'down'
+}) {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={disabled || pending}
+      className="min-h-10 rounded-full border border-[#d9c4a8] bg-white px-4 py-2 text-xs font-semibold text-[#7a331b] transition hover:border-[#cfa882] hover:text-[#e34b16] disabled:pointer-events-none disabled:opacity-60"
+    >
+      {pending ? 'Updating…' : direction === 'up' ? 'Show earlier in story' : 'Show later in story'}
+    </button>
+  )
+}
+
 export function OwnerPostImageManager({ postId, path, title, images }: OwnerPostImageManagerProps) {
   const router = useRouter()
   const formRef = useRef<HTMLFormElement>(null)
   const previewsRef = useRef<LocalImagePreview[]>([])
   const [addState, addAction] = useActionState(addImagesToCommunityPost, null)
   const [removeState, removeAction] = useActionState(removeImageFromCommunityPost, null)
+  const [altState, altAction] = useActionState(updateCommunityPostImageAlt, null)
+  const [moveState, moveAction] = useActionState(moveCommunityPostImage, null)
   const [previews, setPreviews] = useState<LocalImagePreview[]>([])
 
   const remainingSlots = Math.max(0, MAX_POST_IMAGE_FILES - images.length)
 
   useEffect(() => {
-    if (addState?.success || removeState?.success) {
+    if (addState?.success || removeState?.success || altState?.success || moveState?.success) {
       formRef.current?.reset()
       setPreviews((current) => {
         for (const preview of current) {
@@ -74,7 +110,7 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
       })
       router.refresh()
     }
-  }, [addState?.success, removeState?.success, router])
+  }, [addState?.success, removeState?.success, altState?.success, moveState?.success, router])
 
   useEffect(() => {
     return () => {
@@ -118,8 +154,22 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
       <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Manage your photos</p>
       <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Add or remove story images</h2>
       <p className="mt-3 text-sm leading-6 text-[#6d5849]">
-        This pass covers owner photo management for published stories. You can remove images you no longer want shown and add new ones until the story reaches the 5-photo limit.
+        This pass lets owners reorder photos left-to-right/top-to-bottom, tighten alt text so screen readers reflect
+        the honest scene, remove images they no longer want shown, or add replacements until you reach the five-photo
+        limit.
       </p>
+
+      {moveState?.message ? (
+        <div className="mt-4 rounded-2xl border border-green-200/80 bg-green-50/90 p-3 text-sm text-green-800" role="status">
+          {moveState.message}
+        </div>
+      ) : null}
+
+      {altState?.message ? (
+        <div className="mt-4 rounded-2xl border border-green-200/80 bg-green-50/90 p-3 text-sm text-green-800" role="status">
+          {altState.message}
+        </div>
+      ) : null}
 
       {addState?.message ? (
         <div className="mt-4 rounded-2xl border border-green-200/80 bg-green-50/90 p-3 text-sm text-green-800" role="status">
@@ -142,6 +192,18 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
       {removeState?.error ? (
         <div className="mt-4 rounded-2xl border border-red-200/80 bg-red-50/90 p-3 text-sm text-red-800" role="alert">
           {removeState.error}
+        </div>
+      ) : null}
+
+      {moveState?.error ? (
+        <div className="mt-4 rounded-2xl border border-red-200/80 bg-red-50/90 p-3 text-sm text-red-800" role="alert">
+          {moveState.error}
+        </div>
+      ) : null}
+
+      {altState?.error ? (
+        <div className="mt-4 rounded-2xl border border-red-200/80 bg-red-50/90 p-3 text-sm text-red-800" role="alert">
+          {altState.error}
         </div>
       ) : null}
 
@@ -172,6 +234,43 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
                 </div>
                 <div className="space-y-3 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">Photo {index + 1}</p>
+
+                  <form action={altAction} className="space-y-2">
+                    <input type="hidden" name="postId" value={postId} />
+                    <input type="hidden" name="path" value={path} />
+                    <input type="hidden" name="imageId" value={image.id} />
+                    <label htmlFor={`alt-${image.id}`} className="block text-xs font-semibold text-[#7a331b]">
+                      Describe this photo for screen readers (optional)
+                    </label>
+                    <textarea
+                      id={`alt-${image.id}`}
+                      name="alt"
+                      rows={3}
+                      maxLength={200}
+                      defaultValue={image.alt_text ?? ''}
+                      className="min-h-[4.25rem] w-full rounded-xl border border-[#ead8c2] bg-white px-3 py-2 text-sm text-[#4f4034] outline-none focus:border-[#e34b16]/40"
+                      placeholder={`What shows in ${title}?`}
+                    />
+                    <SaveAltButton />
+                  </form>
+
+                  <div className="flex flex-wrap gap-2">
+                    <form action={moveAction}>
+                      <input type="hidden" name="postId" value={postId} />
+                      <input type="hidden" name="path" value={path} />
+                      <input type="hidden" name="imageId" value={image.id} />
+                      <input type="hidden" name="direction" value="up" />
+                      <MovePhotoButton direction="up" disabled={index === 0} />
+                    </form>
+                    <form action={moveAction}>
+                      <input type="hidden" name="postId" value={postId} />
+                      <input type="hidden" name="path" value={path} />
+                      <input type="hidden" name="imageId" value={image.id} />
+                      <input type="hidden" name="direction" value="down" />
+                      <MovePhotoButton direction="down" disabled={index === images.length - 1} />
+                    </form>
+                  </div>
+
                   <form action={removeAction}>
                     <input type="hidden" name="postId" value={postId} />
                     <input type="hidden" name="path" value={path} />
@@ -202,7 +301,10 @@ export function OwnerPostImageManager({ postId, path, title, images }: OwnerPost
           className="warm-focus-ring block w-full rounded-2xl border border-[#ead8c2] bg-white px-4 py-3 text-sm text-[#6d5849] file:mr-3 file:rounded-full file:border-0 file:bg-[#f7e8be] file:px-3 file:py-2 file:font-semibold file:text-[#7a331b] hover:file:bg-[#f3ddb3] disabled:pointer-events-none disabled:opacity-60"
         />
         <p className="mt-3 text-sm text-[#6d5849]">{uploadSummary}</p>
-        <p className="mt-1 text-xs text-muted-foreground">Add up to {remainingSlots} more photo{remainingSlots === 1 ? '' : 's'} in this pass. New images append after your existing ones, so reordering is still a later pass.</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Add up to {remainingSlots} more photo{remainingSlots === 1 ? '' : 's'}. Uploads attach after existing photos—you
+          can move them afterward with “earlier/later”.
+        </p>
 
         {previews.length > 0 ? (
           <div className="mt-4 grid gap-3 sm:grid-cols-2">

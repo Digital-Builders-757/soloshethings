@@ -21,10 +21,19 @@ This section documents **what shipped in-repo** alongside the conceptual matrix 
 - Authenticated Stripe Checkout: **`/subscribe`** (server action `startMembershipCheckout` in [`app/actions/billing.ts`](../../app/actions/billing.ts))
 - Post-checkout landing: **`/subscribe/success`**
 - Webhook: **`POST /api/webhooks/stripe`** (signature-verified; service role + ledger pattern per [`BILLING_STRIPE_CONTRACT.md`](./BILLING_STRIPE_CONTRACT.md))
+- **Homepage mailing interest (`/`):** Saves email to **`marketing_interest`** through `submitMarketingInterest` (`app/actions/marketing-interest.ts`) using **`SUPABASE_SERVICE_ROLE_KEY`**. Automated marketing broadcasts are intentionally **manual** until an ESP is configured (truth contract: [`EMAIL_NOTIFICATIONS_CONTRACT.md`](./EMAIL_NOTIFICATIONS_CONTRACT.md))
 
 **Entitlement rule**
 
 - Requests decide access only from Supabase **`subscriptions`** (`trial_end`, `current_period_end`, `status`) via [`lib/billing/entitlements.ts`](../../lib/billing/entitlements.ts)—never live Stripe APIs on gate paths.
+
+**`/places` discovery (2026-05 depth pass)**
+
+- Optional query params `place`, `topic` (fixed slug from [`lib/community-story-taxonomy.ts`](../../lib/community-story-taxonomy.ts)), and `sort=newest|oldest` further narrow the feed **without** changing RLS: filtering is client-side on the already-authorized post list, and related-story ranking still only considers posts the member could load.
+
+**Moderation queue (`/admin/moderation`, 2026-05)**
+
+- Requires `profiles.role = 'admin'` (see middleware + [`AUTH_CONTRACT.md`](./AUTH_CONTRACT.md)). Members use `/reports` for their **own** report history—including withdrawing pending post reports (`withdraw_post_report`) into `withdrawn`—while operator transitions use `moderator_update_report`.
 
 **Authenticated free tier (no qualifying subscription / trial)**
 

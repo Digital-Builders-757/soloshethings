@@ -119,6 +119,8 @@ Workflow documentation and step-by-step processes.
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)
 - **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Historical archive of the post-catch-up finishing checkpoint
+- **[procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md)** - Active work order for the next community discovery/media depth batch
+- **[procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md](./procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md)** - Active backlog work order for moderation/admin, newsletter, and analytics follow-through
 - **[procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md)** - Historical batch record for auth/session reliability
 - **[procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md](./procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md)** - Historical batch record for dashboard + public frontend system cleanup
 - **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Historical batch record for docs honesty and prompt-pipeline cleanup
@@ -190,6 +192,7 @@ Architecture diagrams and flow documentation.
 
 ### Email Notifications
 - **Source of Truth:** [contracts/EMAIL_NOTIFICATIONS_CONTRACT.md](./contracts/EMAIL_NOTIFICATIONS_CONTRACT.md)
+- **Marketing / newsletter interest (DB capture, no ESP yet):** `marketing_interest` table — migration `supabase/migrations/20260517194500_marketing_interest_newsletter_capture.sql`, server action `app/actions/marketing-interest.ts`
 - **Related:** [procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)
 
 ### Migration Workflow
@@ -218,6 +221,7 @@ Architecture diagrams and flow documentation.
 
 ### Monitoring & Observability
 - **Source of Truth:** [proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)
+- **Product funnel signals (`product_signal`):** [`lib/analytics/product-signals.ts`](../lib/analytics/product-signals.ts) (`captureProductSignal`; Sentry Discover filter `product_signal`)
 - **Related:** [procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)
 
 ### User Experience

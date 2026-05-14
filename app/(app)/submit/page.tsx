@@ -20,6 +20,7 @@ const VIEW_OPTIONS = [
   { value: 'all', label: 'All stories' },
   { value: 'published', label: 'Published' },
   { value: 'archived', label: 'Archived' },
+  { value: 'removed', label: 'Permanently removed' },
   { value: 'public', label: 'Public' },
   { value: 'private', label: 'Private' },
   { value: 'photos', label: 'With photos' },
@@ -71,7 +72,14 @@ function buildSubmitHref(view: ViewFilter, query: string, page = 1) {
 }
 
 type SubmitPageProps = {
-  searchParams?: Promise<{ storyArchived?: string; storyRestored?: string; q?: string; view?: string; page?: string }>
+  searchParams?: Promise<{
+    storyArchived?: string
+    storyRestored?: string
+    storyRemoved?: string
+    q?: string
+    view?: string
+    page?: string
+  }>
 }
 
 export default async function SubmitPage({ searchParams }: SubmitPageProps) {
@@ -90,6 +98,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
   const counts = {
     published: recentPosts.filter((post) => post.status === 'published').length,
     archived: recentPosts.filter((post) => post.status === 'archived').length,
+    removed: recentPosts.filter((post) => post.status === 'removed').length,
     public: recentPosts.filter((post) => post.is_public).length,
     private: recentPosts.filter((post) => !post.is_public).length,
     photos: recentPosts.filter((post) => post.images.length > 0).length,
@@ -102,6 +111,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
       activeView === 'all' ||
       (activeView === 'published' && post.status === 'published') ||
       (activeView === 'archived' && post.status === 'archived') ||
+      (activeView === 'removed' && post.status === 'removed') ||
       (activeView === 'public' && post.is_public) ||
       (activeView === 'private' && !post.is_public) ||
       (activeView === 'photos' && post.images.length > 0)
@@ -131,6 +141,12 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               Story restored. It is back in your community surfaces and ready for owner controls again.
             </div>
           ) : null}
+          {params.storyRemoved === '1' ? (
+            <div className="mb-6 rounded-2xl border border-amber-200/80 bg-amber-50/90 p-4 text-sm text-amber-900" role="status">
+              Story permanently removed. It will stay out of authenticated community feeds; your submission timeline holds the reference for
+              your account.
+            </div>
+          ) : null}
           {membershipTier === 'limited' ? (
             <aside className="mb-6 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] p-4 text-sm text-[#7a331b]" role="note">
               <span className="font-semibold">Posting requires membership.</span> Start checkout for a 7‑day trial, then $3.99/mo via
@@ -148,10 +164,10 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           <div className="surface-card p-5 text-foreground sm:p-6">
             <p className="eyebrow text-[0.65rem] tracking-[0.2em]">What saves right now</p>
             <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
-              <li>• Title, description, privacy, and optional images save into Supabase now.</li>
+              <li>• Title, description, privacy, optional place anchors, story-angle tags, and optional images save into Supabase now.</li>
               <li>• Images upload server-side with validation and per-user storage paths.</li>
               <li>• Your recent submissions render back here with signed image URLs for verification.</li>
-              <li>• Story detail now includes owner edit, archive, and photo-management controls for published posts.</li>
+              <li>• Story detail includes owner edit, archive, photo management, gallery ordering, and optional alt text on each image.</li>
               <li>• Archived stories can now be restored from your recent submissions list when you want them live again.</li>
             </ul>
           </div>
@@ -182,6 +198,9 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                     {counts.archived} archived
                   </span>
                   <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
+                    {counts.removed} removed
+                  </span>
+                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
                     {counts.public} public
                   </span>
                   <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
@@ -197,6 +216,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                     <form method="get" className="flex-1">
                       <input type="hidden" name="storyArchived" value={params.storyArchived ?? ''} />
                       <input type="hidden" name="storyRestored" value={params.storyRestored ?? ''} />
+                      <input type="hidden" name="storyRemoved" value={params.storyRemoved ?? ''} />
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <label className="flex-1">
                           <span className="mb-2 block text-sm font-semibold text-[#7a331b]">Search your stories</span>
@@ -271,7 +291,9 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                     <div className="mt-6 space-y-4">
                       {filteredPosts.map((post) => {
                       const isArchived = post.status === 'archived'
+                      const isRemoved = post.status === 'removed'
                       const detailHref = buildStoryDetailHref(post.id, currentPath)
+                      const statusLabel = isRemoved ? 'Permanently removed' : isArchived ? 'Archived' : 'Published'
 
                       return (
                         <article key={post.id} className="overflow-hidden rounded-3xl border border-[#ead8c2] bg-white shadow-sm">
@@ -292,7 +314,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
                               <span>{post.is_public ? 'Public' : 'Private'}</span>
                               <span aria-hidden>•</span>
-                              <span>{isArchived ? 'Archived' : 'Published'}</span>
+                              <span>{statusLabel}</span>
                               <span aria-hidden>•</span>
                               <span>
                                 {post.images.length} image{post.images.length === 1 ? '' : 's'}
@@ -304,12 +326,19 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                               <p className="mt-2 line-clamp-4 text-sm leading-6 text-[#6d5849]">{post.content}</p>
                             </div>
 
-                            {isArchived ? (
+                            {!isRemoved && isArchived ? (
                               <div className="space-y-3 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-3 text-sm text-[#6d5849]">
                                 <p>
-                                  Archived stories stay off community surfaces until you restore them. Restoring puts them back into the feed, detail, and saved surfaces.
+                                  Archived stories stay off community surfaces until you restore them. Restoring puts them back into the feed,
+                                  detail, and saved surfaces.
                                 </p>
                                 <RestoreCommunityPostButton postId={post.id} path={currentPath} />
+                              </div>
+                            ) : null}
+
+                            {isRemoved ? (
+                              <div className="rounded-2xl border border-amber-200/80 bg-amber-50/60 p-3 text-sm text-amber-900">
+                                Permanently removed stories cannot be reopened from restore. Use archiving when you may want the story to return.
                               </div>
                             ) : null}
 
@@ -319,12 +348,14 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                                 <Link href="/places" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
                                   Browse feed
                                 </Link>
-                                {!isArchived ? (
+                                {isRemoved ? (
+                                  <span className="text-sm font-semibold text-[#9b7455]">Community detail disabled</span>
+                                ) : isArchived ? (
+                                  <span className="text-sm font-semibold text-[#9b7455]">Restore to reopen owner controls</span>
+                                ) : (
                                   <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
                                     Manage story →
                                   </Link>
-                                ) : (
-                                  <span className="text-sm font-semibold text-[#9b7455]">Restore to reopen owner controls</span>
                                 )}
                               </div>
                             </div>

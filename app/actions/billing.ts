@@ -3,6 +3,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+import { captureProductSignal } from '@/lib/analytics/product-signals'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { logServerFailure } from '@/lib/server-log'
 import { getStripe } from '@/lib/stripe'
@@ -57,6 +58,9 @@ export async function startMembershipCheckout(): Promise<void> {
     if (!url) {
       throw new Error('checkout_missing_url')
     }
+
+    captureProductSignal('membership_checkout_started', {})
+
     redirect(url)
   } catch (e) {
     logServerFailure({

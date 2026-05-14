@@ -11,6 +11,27 @@
 5. **Audit Logging** - All email sends MUST be logged for audit trail.
 6. **Error Handling** - Email failures MUST NOT break user flows.
 
+## Newsletter / marketing interest captures (`marketing_interest`)
+
+**Purpose:** Store public email submissions from SoloSheThings marketing CTAs (`HomepageInterestForm` on `/`) with **truthful UX** until a dedicated mailing provider workflow is justified.
+
+### What actually happens today
+
+- **Writes:** Anonymous visitors submit via the **`submitMarketingInterest`** server action ([`app/actions/marketing-interest.ts`](../../app/actions/marketing-interest.ts)), which persists rows using the **`SUPABASE_SERVICE_ROLE_KEY`** (same operational baseline as signup bootstrap / Stripe webhooks). **No transactional or marketing emails are dispatched** from this path.
+- **Reads:** Rows are intentionally **opaque to regular members**. Platform admins (`profiles.role = admin`) inherit a guarded `SELECT` policy for operational review/export; everybody else relies on Dashboard SQL/service-role tooling documented in deployment runbooks.
+
+### Operational expectations for humans
+
+**MUST treat as manual follow-up until an ESP connector ships:**
+- Operators export/import addresses into Beehiiv, Mailchimp, Loops, etc. deliberately—don’t pretend in-app automation exists.
+- Re-submits from the same inbox refresh `last_submitted_at`; **do not leak** duplicate status in UX (enumeration resistance is lower priority here than transactional auth endpoints, still keep messages calm).
+
+### Resend + marketing boundary (clarification)
+
+Resend remains **transactional-only** per rules above. When marketing automation eventually exists, prefer a **marketing ESP** or Resend **Audiences** only after an explicit architectural decision—not implicit reuse of transactional templates.
+
+---
+
 ## Email Triggers
 
 ### Phase 1 Triggers (Current)

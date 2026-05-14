@@ -1,7 +1,8 @@
 import 'server-only'
 
-import type { Database, report_reason, report_status } from '@/types/database'
+import type { Database } from '@/types/database'
 
+export { REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/constants/report-labels'
 import { logServerFailure } from '@/lib/server-log'
 import { createClient } from '@/lib/supabase/server'
 
@@ -14,13 +15,32 @@ type CommunityPost = Pick<
   author: Profile | null
 }
 
-type ReportRowWithPost = Pick<ReportRow, 'id' | 'post_id' | 'reason' | 'description' | 'status' | 'admin_notes' | 'created_at' | 'updated_at'> & {
+type ReportRowWithPost = Pick<
+  ReportRow,
+  | 'id'
+  | 'post_id'
+  | 'reason'
+  | 'description'
+  | 'status'
+  | 'admin_notes'
+  | 'created_at'
+  | 'updated_at'
+  | 'reviewed_at'
+> & {
   community_posts: CommunityPost | CommunityPost[] | null
 }
 
 export type MemberPostReport = Pick<
   ReportRow,
-  'id' | 'post_id' | 'reason' | 'description' | 'status' | 'admin_notes' | 'created_at' | 'updated_at'
+  | 'id'
+  | 'post_id'
+  | 'reason'
+  | 'description'
+  | 'status'
+  | 'admin_notes'
+  | 'created_at'
+  | 'updated_at'
+  | 'reviewed_at'
 > & {
   post: CommunityPost | null
 }
@@ -29,21 +49,6 @@ export type MemberPostReportSummary = Pick<
   ReportRow,
   'id' | 'post_id' | 'reason' | 'status' | 'created_at' | 'updated_at'
 >
-
-export const REPORT_REASON_LABELS: Record<report_reason, string> = {
-  spam: 'Spam or scammy promotion',
-  harassment: 'Harassment or bullying',
-  inappropriate: 'Unsafe, explicit, or inappropriate content',
-  copyright: 'Copyright issue',
-  other: 'Something else',
-}
-
-export const REPORT_STATUS_LABELS: Record<report_status, string> = {
-  pending: 'Pending review',
-  reviewed: 'Under review',
-  resolved: 'Resolved',
-  dismissed: 'Dismissed',
-}
 
 export async function getMemberPostReports(userId: string): Promise<MemberPostReport[]> {
   const supabase = await createClient()
@@ -59,6 +64,7 @@ export async function getMemberPostReports(userId: string): Promise<MemberPostRe
         admin_notes,
         created_at,
         updated_at,
+        reviewed_at,
         community_posts:community_posts!reports_post_id_fkey (
           id,
           author_id,
@@ -98,6 +104,7 @@ export async function getMemberPostReports(userId: string): Promise<MemberPostRe
     admin_notes: report.admin_notes,
     created_at: report.created_at,
     updated_at: report.updated_at,
+    reviewed_at: report.reviewed_at,
     post: Array.isArray(report.community_posts) ? (report.community_posts[0] ?? null) : report.community_posts,
   }))
 }

@@ -13,8 +13,9 @@ import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
 import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
+import { COMMUNITY_STORY_TOPIC_LABELS, placeLabelMatchKey, type CommunityStoryTopicSlug } from '@/lib/community-story-taxonomy'
 import { ensureCommunityStoryReadAllowed } from '@/lib/billing/community-story-reads'
-import { getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
+import { type CommunityFeedPost, getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -31,7 +32,44 @@ function formatPublishedAt(value: string) {
   }).format(new Date(value))
 }
 
-function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
+function relatedStoryReason(args: {
+  baseAuthorId: string
+  baseAuthorDisplay: string
+  basePlaceKey: string | null
+  baseTopicSet: Set<string>
+  related: CommunityFeedPost
+}): string {
+  const snippets: string[] = []
+
+  if (args.related.author_id === args.baseAuthorId) {
+    snippets.push(`More from ${args.baseAuthorDisplay}`)
+  }
+
+  if (args.basePlaceKey) {
+    const relatedKey = placeLabelMatchKey(args.related.place_label)
+    if (relatedKey && relatedKey === args.basePlaceKey) {
+      snippets.push('Same place anchor')
+    }
+  }
+
+  let overlap = 0
+  for (const tag of args.related.story_tags ?? []) {
+    if (args.baseTopicSet.has(tag)) overlap += 1
+  }
+  if (overlap > 0) {
+    snippets.push(overlap === 1 ? 'Shared story angle' : `Shared story angles (${overlap})`)
+  }
+
+  if (snippets.length === 0) {
+    if (args.related.is_featured) return 'Featured story'
+    if (args.related.images.length > 0) return 'Story with photos'
+    return 'Fresh from the community'
+  }
+
+  return snippets.slice(0, 2).join(' · ')
+}
+
+function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed' | 'withdrawn') {
   switch (status) {
     case 'resolved':
       return 'border-green-200 bg-green-50 text-green-800'
@@ -39,6 +77,8 @@ function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismiss
       return 'border-slate-200 bg-slate-50 text-slate-700'
     case 'reviewed':
       return 'border-amber-200 bg-amber-50 text-amber-800'
+    case 'withdrawn':
+      return 'border-violet-200 bg-violet-50 text-violet-800'
     default:
       return 'border-[#ead8c2] bg-white text-[#7a331b]'
   }
@@ -49,6 +89,9 @@ function buildPlacesExploreHref(options?: {
   view?: 'featured' | 'photos' | 'mine'
   authorId?: string
   authorLabel?: string
+  place?: string | null
+  topic?: CommunityStoryTopicSlug | string | null
+  sort?: 'newest' | 'oldest'
 }) {
   const params = new URLSearchParams()
 
@@ -61,6 +104,18 @@ function buildPlacesExploreHref(options?: {
   }
 
   appendCommunityAuthorParams(params, options?.authorId, options?.authorLabel)
+
+  if (options?.place?.trim()) {
+    params.set('place', options.place.trim())
+  }
+
+  if (options?.topic?.trim()) {
+    params.set('topic', options.topic.trim())
+  }
+
+  if (options?.sort === 'oldest') {
+    params.set('sort', 'oldest')
+  }
 
   const search = params.toString()
   return search ? `/places?${search}` : '/places'
@@ -90,8 +145,13 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
     redirect(`/subscribe?reason=${readGate.reason}`)
   }
 
-  const relatedPosts = await getCommunityRelatedPosts(user.id, post.id, post.author_id)
+  const relatedPosts = await getCommunityRelatedPosts(user.id, post.id, post.author_id, {
+    placeLabel: post.place_label,
+    storyTags: post.story_tags ?? [],
+  })
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
+  const basePlaceKey = placeLabelMatchKey(post.place_label ?? null)
+  const baseTopicSet = new Set(post.story_tags ?? [])
   const isOwnPost = post.author_id === user.id
   const returnLink = getCommunityReturnLink(resolvedSearchParams?.returnTo)
   const submitReturnTo = returnLink.href.split('?')[0] === '/submit' ? returnLink.href : null
@@ -108,6 +168,10 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
   const exploreFeaturedHref = buildPlacesExploreHref({ view: 'featured' })
   const explorePhotosHref = buildPlacesExploreHref({ view: 'photos' })
   const exploreMineHref = buildPlacesExploreHref({ view: 'mine' })
+  const explorePlaceHref =
+    post.place_label && post.place_label.trim().length > 0
+      ? buildPlacesExploreHref({ place: post.place_label.trim() })
+      : null
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
@@ -154,6 +218,12 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               </span>
               <span aria-hidden>•</span>
               <time dateTime={post.created_at}>{formatPublishedAt(post.created_at)}</time>
+              {post.place_label?.trim() ? (
+                <>
+                  <span aria-hidden>•</span>
+                  <span>{post.place_label.trim()}</span>
+                </>
+              ) : null}
               {post.images.length > 0 ? (
                 <>
                   <span aria-hidden>•</span>
@@ -172,6 +242,23 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
               This detail page is now the real view for community stories. If something here breaks trust or safety,
               members can send a private report for review.
             </p>
+
+            {(post.story_tags ?? []).filter(Boolean).length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2" aria-label="Story angles">
+                {(post.story_tags ?? []).map((slug) => {
+                  const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
+                  if (!label) return null
+                  return (
+                    <span
+                      key={slug}
+                      className="rounded-full border border-[#ead8c2] bg-[#fff8ec] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#9b7455]"
+                    >
+                      {label}
+                    </span>
+                  )
+                })}
+              </div>
+            ) : null}
           </header>
 
           {post.images.length > 0 ? (
@@ -220,14 +307,13 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                 {relatedPosts.map((relatedPost) => {
                   const relatedAuthorName = relatedPost.author?.full_name?.trim() || relatedPost.author?.username || 'Solo SHE member'
                   const relatedHref = buildStoryDetailHref(relatedPost.id, '/places')
-                  const relatedReason =
-                    relatedPost.author_id === post.author_id
-                      ? `More from ${authorName}`
-                      : relatedPost.is_featured
-                        ? 'Featured story'
-                        : relatedPost.images.length > 0
-                          ? 'Story with photos'
-                          : 'Fresh from the community'
+                  const relatedReason = relatedStoryReason({
+                    baseAuthorId: post.author_id,
+                    baseAuthorDisplay: authorName,
+                    basePlaceKey,
+                    baseTopicSet,
+                    related: relatedPost,
+                  })
 
                   return (
                     <article key={relatedPost.id} className="rounded-[1.5rem] border border-[#ead8c2] bg-[#fffaf5] p-4">
@@ -295,6 +381,9 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                 title={post.title}
                 content={post.content}
                 isPublic={post.is_public}
+                postStatus={post.status}
+                placeLabel={post.place_label}
+                storyTopics={post.story_tags ?? []}
                 submitReturnTo={submitReturnTo}
               />
               <OwnerPostImageManager
@@ -343,6 +432,27 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                   Explore stories with photos
                 </Link>
               ) : null}
+              {explorePlaceHref ? (
+                <Link
+                  href={explorePlaceHref}
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                >
+                  Browse this place anchor
+                </Link>
+              ) : null}
+              {(post.story_tags ?? []).map((slug) => {
+                const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
+                if (!label) return null
+                return (
+                  <Link
+                    key={slug}
+                    href={buildPlacesExploreHref({ topic: slug })}
+                    className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                  >
+                    More {label} stories
+                  </Link>
+                )
+              })}
               {isOwnPost ? (
                 <Link
                   href={exploreMineHref}

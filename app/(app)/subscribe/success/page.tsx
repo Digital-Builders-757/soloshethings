@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
+import { captureProductSignal } from '@/lib/analytics/product-signals'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getUser } from '@/lib/supabase/server'
 
@@ -14,8 +15,15 @@ export default async function SubscribeSuccessPage({
     redirect(`/login?redirectTo=${encodeURIComponent('/subscribe/success')}`)
   }
 
-  await searchParams
+  const sp = await searchParams
+  const stripeSessionEcho = `${sp.session_id ?? ''}`.trim()
+
   const tier = await getMembershipTier(user.id)
+
+  /** Avoid counting bare revisits — only Stripe-happy paths include `session_id`. */
+  if (stripeSessionEcho) {
+    captureProductSignal('membership_checkout_return', { tier_gate: tier })
+  }
 
   return (
     <div className="shell-inline mx-auto w-full max-w-lg py-10 sm:py-14">

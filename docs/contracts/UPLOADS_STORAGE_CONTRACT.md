@@ -53,7 +53,7 @@ avatars/
 - **Max Files per Post:** 5
 - **Auto-optimize:** Yes (via Next.js Image component)
 - **RLS:** Enabled
-- **Current implementation:** `/submit` uses a server action to create `community_posts`, upload validated files to `post-images`, insert `post_images` metadata rows, and then resolve recent-submit previews from `storage_path` via signed URLs on the server
+- **Current implementation:** `/submit` uses a server action to create `community_posts`, upload validated files to `post-images`, insert `post_images` metadata rows, and then resolve recent-submit previews from `storage_path` via signed URLs on the server. Story owners manage photos from `/places/[id]`: remove, add (until the 5-image cap), edit `alt_text`, and reorder gallery order by updating the `order` column (RLS `UPDATE` policy on `post_images`); replacing an asset still means delete + upload—no hidden storage overwrite.
 
 **Path Convention:**
 ```
