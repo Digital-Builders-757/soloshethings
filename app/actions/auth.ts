@@ -14,8 +14,9 @@
 
 import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
+import { isValidUsername, normalizeUsername } from '@/lib/auth-utils'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import type { user_role } from '@/types/database'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -29,15 +30,37 @@ export async function signup(
 ): Promise<{ error: string } | null> {
   const supabase = await createClient()
 
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const username = formData.get('username') as string
+  const email = `${formData.get('email') ?? ''}`.trim().toLowerCase()
+  const password = `${formData.get('password') ?? ''}`
+  const username = normalizeUsername(`${formData.get('username') ?? ''}`)
+  const redirectToRaw = formData.get('redirectTo') as string | null
 
   if (!email || !password || !username) {
     return { error: 'Email, password, and username are required' }
   }
 
+  if (!isValidUsername(username)) {
+    return { error: 'Username can only contain letters, numbers, and underscores' }
+  }
+
   try {
+    const adminSupabase = createServiceRoleClient()
+
+    const { data: existingUsername, error: usernameLookupError } = await adminSupabase
+      .from('profiles')
+      .select('id')
+      .eq('username', username)
+      .maybeSingle()
+
+    if (usernameLookupError) {
+      console.error('Signup username lookup failed:', usernameLookupError)
+      return { error: 'We could not validate your username. Please try again.' }
+    }
+
+    if (existingUsername) {
+      return { error: 'This username is already taken. Please choose another.' }
+    }
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -51,11 +74,11 @@ export async function signup(
       return { error: 'We could not create your account. Please try again.' }
     }
 
-    const { error: profileError } = await supabase
+    const { error: profileError } = await adminSupabase
       .from('profiles')
       .insert({
         id: authData.user.id,
-        username: username.toLowerCase().trim(),
+        username,
         role: 'talent',
         privacy_level: 'public',
       })
@@ -64,21 +87,38 @@ export async function signup(
 
     if (profileError) {
       console.error('Profile creation failed:', profileError)
-      await supabase.auth.signOut()
+
+      try {
+        await adminSupabase.auth.admin.deleteUser(authData.user.id)
+      } catch (deleteError) {
+        console.error('Auth rollback failed after profile creation error:', deleteError)
+      }
+
+      if (profileError.code === '23505') {
+        return { error: 'That username was just claimed. Please choose another and try again.' }
+      }
+
       return { error: 'Profile creation failed. Please try again or contact support.' }
     }
 
     revalidatePath('/', 'layout')
 
+    const defaultPath = getPostAuthRedirectPath('talent')
+    const nextPath = getSafeInternalRedirectPath(redirectToRaw, defaultPath)
+
     if (!authData.session) {
-      redirect('/login?notice=confirm_email')
+      const params = new URLSearchParams({ notice: 'confirm_email' })
+      if (nextPath !== defaultPath) {
+        params.set('redirectTo', nextPath)
+      }
+      redirect(`/login?${params.toString()}`)
     }
+
+    redirect(nextPath)
   } catch (error) {
     console.error('Signup error:', error)
     return { error: 'Something went wrong during sign up. Please try again.' }
   }
-
-  redirect(getPostAuthRedirectPath('talent'))
 }
 
 /**
@@ -90,8 +130,8 @@ export async function login(
 ): Promise<{ error: string } | null> {
   const supabase = await createClient()
 
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const email = `${formData.get('email') ?? ''}`.trim().toLowerCase()
+  const password = `${formData.get('password') ?? ''}`
   const redirectToRaw = formData.get('redirectTo') as string | null
 
   if (!email || !password) {

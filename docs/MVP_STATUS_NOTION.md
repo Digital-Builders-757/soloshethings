@@ -21,20 +21,20 @@
 
 ### 🚧 In Progress
 
-**Phase 2: Design System** (60% Complete)
-- ✅ Typography system (Inter font, design tokens)
-- ✅ Core UI components (Button, Input, Textarea, Badge, Avatar)
-- ✅ Brand color vibrancy enhancement (gradient borders, enhanced gradients)
-- ✅ Visual polish (African heritage-inspired color system)
-- 📋 Feedback components (Alert, Skeleton, Spinner, Modal, Toast)
-- 📋 Trust & safety components (Privacy Toggle, Privacy Badge, Report Button)
-- 📋 Empty State component
+**Finish-line implementation pass**
+- ✅ Signup now validates and preflights usernames before auth user creation when possible
+- ✅ Protected-route redirects preserve same-origin query strings for return after login
+- ✅ Login / signup surfaces have more honest state messaging and pending states
+- ✅ Dashboard reads more like a member home base (readiness, next move, live-now panels)
+- ✅ Shell polish: auth-aware banner, clearer active nav states, safer mobile menu behavior
+- ✅ Homepage newsletter section no longer fakes a successful subscribe flow
 
-**Remaining Phase 1 Features:**
-- Stripe subscription integration (7-day trial, billing webhook)
+**Still intentionally not done:**
+- Stripe subscription integration and premium gating
+- Dedicated newsletter delivery pipeline
 - Admin post creation interface
-- Photo upload system (Supabase Storage)
-- Avatar uploads (profile editing complete ✅)
+- Photo / avatar upload system
+- Broader trust & safety and moderation surfaces
 
 ### 📋 Next
 

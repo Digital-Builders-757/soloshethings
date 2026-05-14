@@ -2,6 +2,8 @@
 
 **Purpose:** Complete user role definitions, capabilities, restrictions, and UX expectations for SoloSheThings platform.
 
+> **Status note (2026-05):** This guide mixes current behavior with planned billing/subscription behavior. The currently shipped app primarily distinguishes **anonymous** vs **authenticated** users. Free-trial, paid subscription, and premium gating sections below should be treated as planned-state guidance until `docs/contracts/BILLING_STRIPE_CONTRACT.md` is implemented.
+
 ## User Roles Overview
 
 SoloSheThings has five distinct user roles, each with specific capabilities and access levels:

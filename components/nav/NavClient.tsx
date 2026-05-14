@@ -49,6 +49,18 @@ export function NavClient({
     return () => window.removeEventListener("scroll", handleScroll)
   }, [showStickyNav])
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.removeProperty("overflow")
+      return
+    }
+
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.removeProperty("overflow")
+    }
+  }, [isMobileMenuOpen])
+
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
 
   function renderAccountNavDesktop() {
@@ -155,15 +167,24 @@ export function NavClient({
             className="flex min-w-0 w-full items-center justify-center gap-3 overflow-x-auto [scrollbar-width:none] sm:gap-4 md:gap-5 xl:gap-7 [&::-webkit-scrollbar]:hidden"
             aria-label="Main navigation"
           >
-            {publicLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#7a331b] transition-colors hover:text-[#e34b16] sm:text-sm sm:tracking-[0.14em]"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {publicLinks.map((link) => {
+              const isActive = isRouteActive(pathname, link.href)
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "shrink-0 rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] transition-colors sm:text-sm sm:tracking-[0.14em]",
+                    isActive
+                      ? "bg-[#fff4e7] text-[#e34b16] ring-1 ring-[#ead8c2]"
+                      : "text-[#7a331b] hover:text-[#e34b16]"
+                  )}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
           </nav>
 
           <div className="flex min-w-0 justify-end">
@@ -191,16 +212,25 @@ export function NavClient({
         {isMobileMenuOpen && (
           <div className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-[#ead8c2] bg-white lg:hidden">
             <nav className="container mx-auto flex flex-col gap-4 py-5 shell-inline" aria-label="Mobile navigation">
-              {publicLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-semibold uppercase tracking-[0.14em] text-[#7a331b] transition-colors hover:text-[#e34b16]"
-                  onClick={closeMobileMenu}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {publicLinks.map((link) => {
+                const isActive = isRouteActive(pathname, link.href)
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "rounded-xl px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.14em] transition-colors",
+                      isActive
+                        ? "bg-[#fff4e7] text-[#e34b16]"
+                        : "text-[#7a331b] hover:text-[#e34b16]"
+                    )}
+                    onClick={closeMobileMenu}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
 
               {isAuthenticated ? (
                 renderAccountNavMobile()
@@ -241,15 +271,24 @@ export function NavClient({
             </Link>
 
             <div className="flex min-w-0 flex-1 items-center justify-center gap-3 overflow-x-auto [scrollbar-width:none] md:gap-5 [&::-webkit-scrollbar]:hidden">
-              {publicLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#7a331b] transition-colors hover:text-[#e34b16] xl:text-xs xl:tracking-[0.14em]"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {publicLinks.map((link) => {
+                const isActive = isRouteActive(pathname, link.href)
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "shrink-0 rounded-full px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors xl:text-xs xl:tracking-[0.14em]",
+                      isActive
+                        ? "bg-[#fff4e7] text-[#e34b16] ring-1 ring-[#ead8c2]"
+                        : "text-[#7a331b] hover:text-[#e34b16]"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
             </div>
 
             <div className="flex flex-shrink-0 justify-end">

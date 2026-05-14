@@ -19,7 +19,7 @@ const companyLinks = [
 export function Footer() {
   return (
     <footer className="bg-[#7a331b] text-[#fff5df]">
-      <div className="container mx-auto px-6 py-14 md:py-16">
+      <div className="container mx-auto shell-inline py-14 md:py-16">
         <div className="grid gap-12 border-b border-white/12 pb-12 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#fab642]">

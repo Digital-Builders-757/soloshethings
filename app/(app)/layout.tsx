@@ -14,7 +14,7 @@ export default function AppLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex min-h-dvh flex-col overflow-x-clip bg-[#fffaf0]">
+    <div className="page-warm flex min-h-dvh flex-col overflow-x-clip">
       <Banner />
       <SiteHeader />
       <main

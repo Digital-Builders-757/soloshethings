@@ -132,6 +132,109 @@
   border-radius: var(--radius);
 }
 
+/* Warm editorial system */
+.page-warm {
+  background: #fffaf0;
+}
+
+.editorial-card {
+  background: rgba(255, 253, 248, 0.94);
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.14);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 50px rgba(var(--brand-brown-rgb), 0.08);
+}
+
+.editorial-card-strong {
+  background: linear-gradient(135deg, #ffffff 0%, #fffdf8 58%, rgba(var(--brand-cream-rgb), 0.45) 100%);
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.14);
+  border-radius: 1.75rem;
+  box-shadow: 0 24px 60px rgba(var(--brand-brown-rgb), 0.1);
+}
+
+.eyebrow {
+  color: #a14b24;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.cta-primary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: #e34b16;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.cta-primary:hover {
+  background: #c74010;
+}
+
+.cta-secondary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.16);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #7a331b;
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+
+.cta-secondary:hover {
+  border-color: rgba(var(--brand-orange-rgb), 0.4);
+  color: #e34b16;
+}
+
+.cta-ghost {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.75rem 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #e34b16;
+  transition: color 150ms ease;
+}
+
+.cta-ghost:hover {
+  color: #c74010;
+}
+
+.editorial-input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.14);
+  background: white;
+  color: #3a3a3a;
+  box-shadow: 0 1px 2px rgba(var(--brand-brown-rgb), 0.06);
+  outline: none;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.editorial-input:focus,
+.editorial-input:focus-visible,
+.warm-focus-ring:focus,
+.warm-focus-ring:focus-visible {
+  border-color: rgba(var(--brand-orange-rgb), 0.4);
+  box-shadow: 0 0 0 4px rgba(var(--brand-orange-rgb), 0.14);
+  outline: none;
+}
+
 /* Glassmorphism */
 .glass {
   background: rgba(255, 255, 255, 0.92);

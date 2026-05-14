@@ -14,6 +14,16 @@ import { getPostAuthRedirectPath } from '@/lib/auth-redirects'
 import { updateSession } from '@/lib/supabase/middleware'
 import { type NextRequest, NextResponse } from 'next/server'
 
+function redirectWithCookies(baseResponse: NextResponse, destination: URL) {
+  const redirectResponse = NextResponse.redirect(destination)
+
+  for (const cookie of baseResponse.cookies.getAll()) {
+    redirectResponse.cookies.set(cookie)
+  }
+
+  return redirectResponse
+}
+
 export async function middleware(request: NextRequest) {
   // Update Supabase session
   const { supabase, response } = await updateSession(request)
@@ -62,15 +72,16 @@ export async function middleware(request: NextRequest) {
       .maybeSingle()
 
     const dest = getPostAuthRedirectPath(profile?.role)
-    return NextResponse.redirect(new URL(dest, request.url))
+    return redirectWithCookies(response, new URL(dest, request.url))
   }
 
   // If user is NOT authenticated and trying to access protected routes, redirect to login
   if (!user && isProtectedRoute) {
-    // Preserve the original URL to redirect back after login
+    // Preserve the original URL (including same-origin query string) to redirect back after login
     const redirectUrl = new URL('/login', request.url)
-    redirectUrl.searchParams.set('redirectTo', pathname)
-    return NextResponse.redirect(redirectUrl)
+    const returnTo = `${pathname}${url.search}`
+    redirectUrl.searchParams.set('redirectTo', returnTo)
+    return redirectWithCookies(response, redirectUrl)
   }
 
   // Allow request to proceed
