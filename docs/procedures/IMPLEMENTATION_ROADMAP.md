@@ -42,7 +42,7 @@ Use these companion docs for everything else:
   - **Community second-pass depth (2026-05-15)** — optional `place_label` + capped `story_tags` on `community_posts` (migration `20260515194500_community_place_label_story_tags.sql`), honest `/places` facet chips + `place`/`topic`/`sort` query helpers, stronger `getCommunityRelatedPosts` ranking from shared anchors/tags (no ML), owner `post_images` alt + reorder via new `UPDATE` RLS policy (`app/actions/community-posts.ts`, `components/submit/owner-post-image-manager.tsx`).
   - **Moderation operator increment (2026-05-16)** — migration `20260516203000_moderation_admin_rls_reports.sql`, `/admin/moderation`, reporter `withdraw_post_report`, admin-only `moderator_update_report`, `withdrawn` report status surfaced across member UIs, owner permanent-remove confirmation.
   - **Honest homepage marketing-interest capture (2026-05-17)** — `marketing_interest` table + `/` newsletter panel (`submitMarketingInterest`, service role insert/update); no outbound marketing/automation bundled.
-  - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry info events tagged `product_signal` (signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
+  - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry **Logs** (`Sentry.logger.info`, attribute `product_signal`: signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
 
 ### Live in-progress work
 
@@ -97,12 +97,12 @@ Honest taxonomy + place anchors tied to publisher input, deterministic related-s
 
 **Companion backlog deliverable (prompt pack Prompt 3, 2026-05-17):**
 
-- Coarse **`product_signal.*`** funnel events emitted via **`captureProductSignal`** ([`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts)); Discover filter `tags[product_signal]` — opt out globally with **`DISABLE_PRODUCT_SIGNALS=1`**.
+- Coarse **`product_signal.*`** funnel signals emitted via **`captureProductSignal`** ([`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts)); query **Sentry Logs** via attribute **`product_signal`** — opt out globally with **`DISABLE_PRODUCT_SIGNALS=1`**.
 
 **Still deliberate follow-up (explicitly optional / backlog-driven):**
 - ESP audience sync & scheduled campaigns
 - Double opt-in or compliance tooling if/when broadcasts begin
-- Dedicated dashboards interpreting `product_signal` volume beyond raw Sentry search
+- Dedicated dashboards interpreting `product_signal` volume beyond raw **Sentry Logs** search
 
 ## Priority override rule
 

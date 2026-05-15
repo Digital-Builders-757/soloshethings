@@ -1,6 +1,8 @@
 /**
- * Lightweight product-learning signals routed through Sentry as **info-level events**.
+ * Lightweight product-learning signals sent to **Sentry Logs** (not Issues) via `Sentry.logger.info`.
  * Requires `NEXT_PUBLIC_SENTRY_DSN` or `SENTRY_DSN` — otherwise no-ops (no local noise).
+ * Structured logs appear when **`enableLogs: true`** is set in [`sentry.server.config.ts`](../../sentry.server.config.ts) /
+ * [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (already enabled for SoloSheThings).
  *
  * NEVER attach email addresses, passwords, Stripe ids, titles, report bodies, or full paths with slugs
  * containing PII. Keep keys snake_case ≤40 chars and values coarse (enums, small counts).
@@ -53,7 +55,8 @@ export function sanitizePathPrefix(path: string): string {
 }
 
 /**
- * Emits `product_signal.<name>` info event with tag `product_signal` for Sentry Metrics / issue search.
+ * Emits `product_signal.<name>` as a **structured log** (attribute `product_signal`).
+ * Uses Sentry Logs so funnel counts do not open Issues; query under Logs / Explore with attribute filter.
  */
 export function captureProductSignal(
   name: string,
@@ -61,10 +64,9 @@ export function captureProductSignal(
 ): void {
   if (!signalsEnabled()) return
   const safeName = /^[a-z][a-z0-9_.]{1,63}$/.test(name) ? name : 'unknown_signal'
-  Sentry.captureEvent({
-    level: 'info',
-    message: `product_signal.${safeName}`,
-    tags: { product_signal: safeName },
-    extra: sanitizeData(data),
+  const sanitized = sanitizeData(data)
+  Sentry.logger.info(`product_signal.${safeName}`, {
+    ...sanitized,
+    product_signal: safeName,
   })
 }
