@@ -2,6 +2,24 @@
 
 **Purpose:** Error tracking, logging rules, error taxonomy, alert thresholds, and "no silent failure" enforcement for SoloSheThings.
 
+## Core loop: Sentry project → Next.js SDK → env → source maps → verify
+
+Blueprint for this stack (**Next.js + Supabase + Vercel**), aligned with [Sentry’s Next.js guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/) and [manual setup](https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/).
+
+1. **Create the Sentry project** — Platform **Next.js**; name e.g. `soloshethings-web` or `solo-she-things`; copy the **DSN**; note **organization slug** and **project slug**; create an **Auth Token** with scopes needed for **release / source map upload** (treat like a password).
+2. **`NEXT_PUBLIC_SENTRY_DSN`** — Safe to expose to the browser (by design). **`SENTRY_AUTH_TOKEN`** — **secret**; never commit; store in Vercel + CI only.
+3. **Install SDK** — This repo already depends on **`@sentry/nextjs`**. New clones: `pnpm add @sentry/nextjs`. Optional greenfield speed-run: `npx @sentry/wizard@latest -i nextjs` — reconcile output with our **conditional** [`next.config.ts`](../../next.config.ts) and privacy defaults below.
+4. **Local env** — `.env.local`: at minimum `NEXT_PUBLIC_SENTRY_DSN`; optionally `SENTRY_DSN` for a server-only DSN, plus `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` when testing upload locally. `.gitignore` must keep **`.env.local`** and **`.env.sentry-build-plugin`** out of git.
+5. **Vercel env** — Project → Settings → Environment Variables: `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` for **Production / Preview / Development** as needed. **Auth token** is what makes production stack traces **readable** (source maps); without it, Issues still ingest but frames stay minified.
+6. **`next.config.ts`** — When **`SENTRY_ORG`** and **`SENTRY_PROJECT`** are set, the app uses **`withSentryConfig`** with **`tunnelRoute: "/monitoring"`** (fewer ad-blocker drops), **`widenClientFileUpload: true`**, **`silent: !process.env.CI`**, optional **`SENTRY_AUTH_TOKEN`**. If org/project are unset, config falls back to plain Next (local/off builds).
+7. **Tunnel + routing** — Ensure **`/monitoring`** stays reachable **without auth**. This app uses root [`proxy.ts`](../../proxy.ts) (not classic `middleware.ts`); `/monitoring` is **not** in `protectedRoutes`, so the tunnel should work anonymously—do not add it to protected prefixes.
+8. **SDK entrypoints (this repo)** — [`instrumentation.ts`](../../instrumentation.ts) loads [`sentry.server.config.ts`](../../sentry.server.config.ts) (Node) and [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (Edge); **`onRequestError`** = `Sentry.captureRequestError`. Browser SDK: [`instrumentation-client.ts`](../../instrumentation-client.ts). **Session Replay is intentionally off** here (lean bundle + privacy); turning it on requires an explicit decision and strong masking — see Sentry [Session Replay](https://docs.sentry.io/platforms/javascript/session-replay/).
+9. **App Router error UI** — [`app/error.tsx`](../../app/error.tsx) and [`app/global-error.tsx`](../../app/global-error.tsx) call **`captureException`** when `NEXT_PUBLIC_SENTRY_DSN` is set — boundaries can swallow errors before automatic hooks see them ([capturing errors](https://docs.sentry.io/platforms/javascript/guides/nextjs/capturing-errors/)).
+10. **User context** — After auth resolves, prefer **`Sentry.setUser({ id: user.id })` only**. Helper: [`lib/sentry-user.ts`](../../lib/sentry-user.ts) (`setSentryUser`). Avoid email, display name, locations, and story content in user scope by default.
+11. **Verify** — Trigger failures from **real UI or route code** (not only the browser console—events can be unreliable there per Sentry). Confirm Issues appear; confirm readable stacks when **`SENTRY_AUTH_TOKEN`** is present on the build. **Do not ship** public throw-test routes to production; remove wizard demo routes before launch (this repo does not ship `/sentry-example-page`).
+
+Optional hardening (not all mirrored in config files yet): strip **`Authorization`** / **`Cookie`** in **`beforeSend`** on client/server — patterns appear later in this doc under **Sentry Configuration** as reference.
+
 ## Implementation (this repository)
 
 Use these primitives for new server code instead of raw `console.error` or ad hoc `Sentry.captureException` calls:
@@ -12,7 +30,8 @@ Use these primitives for new server code instead of raw `console.error` or ad ho
 4. **Sentry bootstrap** — [`instrumentation.ts`](../../instrumentation.ts) registers [`sentry.server.config.ts`](../../sentry.server.config.ts) (Node) and [`sentry.edge.config.ts`](../../sentry.edge.config.ts) (Edge) when `SENTRY_DSN` or `NEXT_PUBLIC_SENTRY_DSN` is set (`Sentry.init` is skipped entirely when neither is present—no hardcoded DSN in repo). [`instrumentation-client.ts`](../../instrumentation-client.ts) initializes the browser SDK only when `NEXT_PUBLIC_SENTRY_DSN` is set. **Session Replay is not enabled** (lean bundle / privacy). Server/Edge use `enableLogs: true` and traced sampling (`development` 1.0, otherwise 0.1). `export const onRequestError = Sentry.captureRequestError` captures unhandled App Router request errors. Init uses `sendDefaultPii: false`; the long **`beforeSend` samples later in this document** are reference patterns—they are **not** automatically mirrored in those config files unless we add equivalent hooks in a dedicated hardening pass.
 5. **Next.js config** — [`next.config.ts`](../../next.config.ts) applies a **single** `withSentryConfig` wrapper when **`SENTRY_ORG`** and **`SENTRY_PROJECT`** are set (typical on Vercel and CI). **`SENTRY_AUTH_TOKEN`** is optional at build time but **required for source map uploads**; without it, the tunnel and other SDK wiring still apply when org/project exist. **Tunnel route** is `/monitoring` (browser events proxied through the app to reduce ad-blocker drops). Ensure the root [`proxy.ts`](../../proxy.ts) does **not** treat `/monitoring` as an authenticated route—it is not listed under `protectedRoutes`, so the tunnel should remain reachable anonymously. If you paste a build auth token into a terminal or chat, **revoke and rotate it in Sentry** immediately and store the replacement only in CI/hosting env vars—never commit it.
 6. **Route-level UI** — [`app/error.tsx`](../../app/error.tsx) and [`app/global-error.tsx`](../../app/global-error.tsx) provide user-facing recovery UI; they call `Sentry.captureException` on the client only when `NEXT_PUBLIC_SENTRY_DSN` is set (avoids useless dynamic imports when Sentry is off).
-7. **Product signals (learning, not errors)** — [`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts) emits **`Sentry.logger.info`** structured logs tagged by attribute **`product_signal`** when a DSN is configured and **`enableLogs: true`** in Sentry init. Used for coarse funnel/community signals (signup complete, checkout started/return, story created/saved, report filed); these go to **Sentry Logs**, not Issues, so normal signups must not inflate the error backlog. **Never** put email, titles, payment identifiers, or sensitive slugs in payloads; use small enums/counts only. Opt out with `DISABLE_PRODUCT_SIGNALS=1`.
+7. **User correlation** — [`lib/sentry-user.ts`](../../lib/sentry-user.ts) exposes **`setSentryUser`** for **`id`-only** Supabase user tagging when a DSN is configured (optional at call sites after auth resolves).
+8. **Product signals (learning, not errors)** — [`lib/analytics/product-signals.ts`](../../lib/analytics/product-signals.ts) emits **`Sentry.logger.info`** structured logs tagged by attribute **`product_signal`** when a DSN is configured and **`enableLogs: true`** in Sentry init. Used for coarse funnel/community signals (signup complete, checkout started/return, story created/saved, report filed); these go to **Sentry Logs**, not Issues, so normal signups must not inflate the error backlog. **Never** put email, titles, payment identifiers, or sensitive slugs in payloads; use small enums/counts only. Opt out with `DISABLE_PRODUCT_SIGNALS=1`.
 
 ### Environment variables
 
@@ -762,6 +781,8 @@ export async function POST(request: Request) {
 ```
 
 ## Sentry Configuration
+
+> **Note:** Snippets below are **reference patterns** (e.g. `beforeSend` hygiene). **Live initialization** is in repo-root **`instrumentation-client.ts`**, **`sentry.server.config.ts`**, and **`sentry.edge.config.ts`** — not necessarily `sentry.client.config.ts`.
 
 ### Production Setup
 

@@ -225,6 +225,7 @@ Architecture diagrams and flow documentation.
 ### Monitoring & Observability
 - **Source of Truth:** [proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)
 - **Product funnel signals (`product_signal`):** [`lib/analytics/product-signals.ts`](../lib/analytics/product-signals.ts) (`captureProductSignal`; Sentry **Logs** attribute `product_signal`, not Issues)
+- **Sentry user scope (id only):** [`lib/sentry-user.ts`](../lib/sentry-user.ts) (`setSentryUser`)
 - **Related:** [procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)
 
 ### User Experience
