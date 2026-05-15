@@ -41,6 +41,22 @@ export function mapSupabaseErrorForUser(error: unknown, fallbackUserMessage: str
       }
     }
 
+    if (code === '23503') {
+      return {
+        userMessage:
+          'We could not link your profile to your account. Please try again in a moment, or contact support if this continues.',
+        devHint: 'profiles_fk_parent_missing',
+      }
+    }
+
+    if (code === '42703') {
+      return {
+        userMessage:
+          'Something is out of sync on our side. Please try again shortly. If this continues, contact support.',
+        devHint: 'schema_column_or_object_missing',
+      }
+    }
+
     if (code === '42501' || msg.includes('permission denied') || msg.includes('row-level security')) {
       return {
         userMessage: 'You do not have permission to do that. If you are signed in, try signing out and back in.',

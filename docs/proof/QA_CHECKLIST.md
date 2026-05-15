@@ -9,7 +9,7 @@
 3. **Performance Checks Required** - ISR and revalidation must work correctly.
 4. **Upload Privacy Must Work** - Privacy toggles must be enforced.
 5. **Billing Flow Must Work** - Trial → Subscribe → Revoke must function correctly.
-6. **Product signals are optional noise control** — Sentry emits coarse `product_signal.*` funnel events only when DSN configured; mute with `DISABLE_PRODUCT_SIGNALS=1` (`docs/proof/MONITORING_SENTRY_POSTURE.md`).
+6. **Product signals are optional noise control** — Sentry emits coarse `product_signal.*` **structured Logs** when DSN + `enableLogs` are configured (`Sentry.logger.info`); mute with `DISABLE_PRODUCT_SIGNALS=1` (`docs/proof/MONITORING_SENTRY_POSTURE.md`).
 
 ## Phase 1 Core Flows
 

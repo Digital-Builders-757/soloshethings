@@ -94,6 +94,9 @@ export default function SignupPage() {
             <p className="mt-2 text-sm leading-6 text-[#6d5849] lg:mt-3">
               A few details and you are in—same warmth as the homepage, none of the cold SaaS vibes.
             </p>
+            <p className="mt-3 text-xs leading-relaxed text-[#6d5849]/90">
+              We may send a confirmation email after sign up—if it doesn&apos;t arrive right away, take a peek in Spam or Promotions before you head over to Sign in.
+            </p>
 
             {state?.error && (
               <div

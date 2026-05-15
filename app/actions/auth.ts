@@ -22,8 +22,55 @@ import { logServerFailure } from '@/lib/server-log'
 import { mapSupabaseErrorForUser } from '@/lib/supabase-errors'
 import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import type { user_role } from '@/types/database'
+import type { PostgrestError } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { redirect, unstable_rethrow } from 'next/navigation'
+
+const SIGNUP_PROFILE_FK_MAX_ATTEMPTS = 4
+const SIGNUP_PROFILE_FK_RETRY_DELAYS_MS = [120, 200, 280] as const
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Insert signup profile with bounded retries when the FK parent row is not yet visible (replication / ordering).
+ */
+async function insertSignupProfileRow(
+  adminSupabase: ReturnType<typeof createServiceRoleClient>,
+  params: { userId: string; username: string },
+): Promise<{ error: PostgrestError | null }> {
+  const row = {
+    id: params.userId,
+    username: params.username,
+    role: 'talent' as const,
+    privacy_level: 'public' as const,
+  }
+
+  for (let attempt = 0; attempt < SIGNUP_PROFILE_FK_MAX_ATTEMPTS; attempt++) {
+    const { error } = await adminSupabase.from('profiles').insert(row).select('id').single()
+
+    if (!error) {
+      return { error: null }
+    }
+
+    const isLastAttempt = attempt >= SIGNUP_PROFILE_FK_MAX_ATTEMPTS - 1
+    if (error.code === '23503' && !isLastAttempt) {
+      logServerFailure({
+        category: 'mutation',
+        operation: 'signup.insertProfile.retry',
+        cause: error,
+        context: { userId: params.userId, attempt: attempt + 1, maxAttempts: SIGNUP_PROFILE_FK_MAX_ATTEMPTS },
+      })
+      await delay(SIGNUP_PROFILE_FK_RETRY_DELAYS_MS[attempt] ?? 300)
+      continue
+    }
+
+    return { error }
+  }
+
+  return { error: null }
+}
 
 /**
  * Signup action with profile bootstrap
@@ -114,33 +161,51 @@ export async function signup(
       return { error: 'We could not create your account. Please try again.' }
     }
 
-    const { error: profileError } = await adminSupabase
-      .from('profiles')
-      .insert({
-        id: authData.user.id,
-        username,
-        role: 'talent',
-        privacy_level: 'public',
+    const userId = authData.user.id
+
+    const { data: verifiedAuthUser, error: verifyUserError } =
+      await adminSupabase.auth.admin.getUserById(userId)
+    if (verifyUserError || !verifiedAuthUser.user) {
+      logServerFailure({
+        category: 'mutation',
+        operation: 'signup.verifyAuthUser',
+        cause: verifyUserError ?? new Error('auth_user_missing_after_signup'),
+        context: { userId },
       })
-      .select('id')
-      .single()
+      try {
+        await adminSupabase.auth.admin.deleteUser(userId)
+      } catch (deleteError) {
+        logServerFailure({
+          category: 'auth',
+          operation: 'signup.rollbackDeleteUser',
+          cause: deleteError,
+          context: { userId, note: 'after_verifyAuthUser_failed' },
+        })
+      }
+      return { error: 'We could not create your account. Please try again.' }
+    }
+
+    const { error: profileError } = await insertSignupProfileRow(adminSupabase, {
+      userId,
+      username,
+    })
 
     if (profileError) {
       logServerFailure({
         category: 'mutation',
         operation: 'signup.insertProfile',
         cause: profileError,
-        context: { userId: authData.user.id },
+        context: { userId, profileErrorCode: profileError.code },
       })
 
       try {
-        await adminSupabase.auth.admin.deleteUser(authData.user.id)
+        await adminSupabase.auth.admin.deleteUser(userId)
       } catch (deleteError) {
         logServerFailure({
           category: 'auth',
           operation: 'signup.rollbackDeleteUser',
           cause: deleteError,
-          context: { userId: authData.user.id },
+          context: { userId },
         })
       }
 

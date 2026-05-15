@@ -28,12 +28,15 @@
 - **Release prep / QA docs (2026-05)** - Smoke checklist: viewport matrix (mobile/tablet/desktop), profile repair vs fallback accuracy, nav label checks, `Last Updated`; `AUTH_CONTRACT` + `DEBUG_AUTH` synced to current recovery UX (no duplicate runbooks).
 - **Observability + error UX (2026-05-14)** - Structured server failures use `logServerFailure` (`lib/server-log.ts`); user-facing Supabase errors use `mapSupabaseErrorForUser` and deliberate server throws use `safeThrownErrorMessage` (`lib/supabase-errors.ts`); Sentry is bootstrapped via `instrumentation.ts` / `instrumentation-client.ts` / server+edge configs; `app/error.tsx` and `app/global-error.tsx` show on-brand recovery UI and report to Sentry only when `NEXT_PUBLIC_SENTRY_DSN` is set; WordPress preview/revalidate stay honest for callers; profile queries and `lib/wp-rest.ts` use the shared logger instead of stray `console.error`.
 - **Sentry posture hardening (2026-05)** - Server/edge `Sentry.init` only when a DSN is set from env (no hardcoded keys), sampled tracing and `sendDefaultPii: false`; client bundle without Session Replay; `next.config.ts` uses a single `withSentryConfig` when `SENTRY_ORG` and `SENTRY_PROJECT` are set, optional `SENTRY_AUTH_TOKEN` for source-map upload, `tunnelRoute` `/monitoring`; `.gitignore` includes `.env.sentry-build-plugin`; wizard throwaway example routes removed; **MONITORING_SENTRY_POSTURE.md** and **.env.example** updated.
+- **Sentry onboarding + user scope helper (2026-05-15)** - **MONITORING_SENTRY_POSTURE.md** documents the full **project → SDK → env → source maps → verify** loop (Vercel vars, tunnel `/monitoring` + `proxy.ts`, wizard vs repo files, Replay off by default); **`lib/sentry-user.ts`** exposes **`setSentryUser`** for **`id`-only** correlation after Supabase auth; index + `.env.example` point maintainers at the guide.
 - **Stripe subscriptions + premium gates (2026-05-14)** - Public `/pricing`; signed-in `/subscribe` + `startMembershipCheckout` open Stripe Checkout (`STRIPE_PRICE_ID`, 7-day trial). Webhook `POST /api/webhooks/stripe` verifies signatures, ledger in `stripe_webhook_ledger`, upserts `subscriptions`. Entitlement is DB-only (`lib/billing/entitlements.ts`); `community_post_reads` enforces 3 third-party story views per UTC day when `limited`; community writes and new saves require `full`.
 - **Community discovery depth — second pass (2026-05-15)** - Optional `place_label` plus capped `story_tags` slugs stored on `community_posts` (`lib/community-story-taxonomy.ts`); `/places` exposes newest/oldest ordering, place/topic anchors, and facet chips sourced from posts the viewer can already access under RLS; `getCommunityRelatedPosts` ranks overlaps in place/tags alongside author/featured/photos/recency; owners edit alt text + swap gallery order (`post_images` UPDATE policy + server actions).
 - **Moderation queue + reporter withdraw + owner permanent remove (2026-05-16)** - Migration `20260516203000_moderation_admin_rls_reports.sql` adds `profiles.role = 'admin'`, `report_status.withdrawn`, audited `reports.reviewed_at` / `reports.reviewed_by`, SECURITY DEFINER RPCs `withdraw_post_report` and `moderator_update_report`, and admin `SELECT` RLS where the queue needs post/member context (writes stay on RPCs). App: authenticated `/admin/moderation` for platform admins; `/reports` supports withdrawing pending post reports + shows reviewed timestamps; browse/saved/detail surfaces recognize withdrawn status; dashboard links **Moderation** for admins; owners can permanently remove a community post behind an explicit typed confirmation (guarded against archive/restore once `removed`).
 - **Marketing interest capture — truthful homepage signup (2026-05)** - Public homepage panel stores emails in **`marketing_interest`** via **`submitMarketingInterest`** (service role insert/update). Copy and success/error states explicitly state that **automated outbound marketing/newsletter sends are not enabled** yet; operators export/import manually until an ESP pathway is prioritized.
-- **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel events documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set.
+- **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel signals documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits **structured Logs** (`Sentry.logger.info`, attribute **`product_signal`**) on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set and **`enableLogs`** is on in Sentry init (**not** Issues), so successful signups stop polluting the error backlog.
 - **Saved list + moderation withdrawn parity (2026-05)** - `/saved` passes explicit **`initialSaved={true}`** on save controls; admin moderation accepts **`withdrawn`** in `moderateCommunityReportAction`, exposes **Mark withdrawn** transitions in the queue UI, and migration **`20260518120000_moderator_update_report_allow_withdrawn.sql`** aligns `moderator_update_report` with the app (schema audit updated).
+
+- **Signed-in + community visual polish (2026-05-15)** - Shared warm editorial primitives in `app/globals.css` (`community-*`, editorial shells, CTA/chip/badge patterns); reusable story metadata helpers in `components/community/community-story-surface.tsx`; `/places`, `/saved`, `/reports`, `/submit`, signed-in nav, and `/profile` aligned to one visual family; [`BRAND_STYLE_GUIDE.md`](./BRAND_STYLE_GUIDE.md) documents implementation pointers (avoid page-local duplicate styling).
 
 ### 🚧 In Progress
 
@@ -45,7 +48,7 @@
 - **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
 - **Active backlog work order** - `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
-- **Immediate focus** - Stretch-only: ESP audience automation **or** dashboards built on **`product_signal` tags**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
+- **Immediate focus** - Stretch-only: ESP audience automation **or** dashboards built on **`product_signal`** **Log attributes**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
 
 ### ❌ Blocked
 
@@ -103,13 +106,13 @@ Foundational documentation, architecture, schema design, contracts, procedures, 
 **Already real:**
 - admin-only `/admin/moderation` queue, RPC-backed report transitions, reporter withdraw flow
 - honest `marketing_interest` capture on the homepage with service-role writes (`EMAIL_NOTIFICATIONS_CONTRACT`)
-- coarse `product_signal.*` Sentry funnel events (`MONITORING_SENTRY_POSTURE.md`, `DISABLE_PRODUCT_SIGNALS`)
+- coarse `product_signal.*` **Sentry Logs** funnel signals (`MONITORING_SENTRY_POSTURE.md`, `DISABLE_PRODUCT_SIGNALS`)
 
 **Still planned / stretch-only:**
 - moderation/admin dashboard depth beyond the operator queue (rich editorial workflows, non-post report targets)
 - admin/editorial post workflows where needed
 - provider-backed mailing automation + broadcasts (captures persist to `marketing_interest` until then)
-- analytics dashboards or ESP sync beyond raw Sentry tags, when ops requests (`IMPLEMENTATION_ROADMAP.md`)
+- analytics dashboards or ESP sync beyond raw **Sentry Logs** **`product_signal`** attributes, when ops requests (`IMPLEMENTATION_ROADMAP.md`)
 
 **Rule:** phase labels here are coarse product buckets. The canonical execution order lives in `docs/procedures/IMPLEMENTATION_ROADMAP.md`, not in these phase summaries.
 
@@ -846,6 +849,28 @@ Next Steps:
 
 **Next Steps:**
 - Add GitHub Actions secrets (`SUPABASE_ACCESS_TOKEN`, staging/production project refs + DB passwords); confirm first workflow runs succeed after merge/push paths
+
+#### 2026-05-14 - Auth UX: confirmation email messaging (login + signup copy)
+
+**Status:** ✅ SHIPPED
+
+**Description:**
+- Calmer copy for **`/login`** `notice=confirm_email` / `confirmed_email` banners (Spam/Promotions hint on confirm path).
+- Matching one-line signup helper on **`/signup`** so the confirmation flow feels connected (`app/(auth)/signup/page.tsx`); no redirects, Supabase behavior, or server actions touched.
+
+**Verification:**
+- `npm run lint`, `npm run build` (ship checks)
+
+#### 2026-05-15 - Observability: `product_signal` funnel → Sentry Logs (not Issues)
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- `captureProductSignal` switched from **`Sentry.captureEvent` (info)** to **`Sentry.logger.info`** so funnel signals (**`signup_completed`**, checkout, community events, etc.) land in **Sentry Logs** with attribute **`product_signal`** instead of opening **Issues**. `confirm_email_pending` in extras was expected behavior, not a signup failure.
+- Docs + `.env.example` comment aligned (`MONITORING_SENTRY_POSTURE`, implementation roadmap, QA checklist, MVP dashboard bullets).
+
+**Verification:**
+- `npm run typecheck`, `npm run lint`, `npm run build` (existing webpack/OpenTelemetry warnings unchanged; build exit 0)
 
 #### [Future Entry Template]
 

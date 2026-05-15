@@ -4,6 +4,16 @@ import { redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
+import {
+  communityWarmCardClassName,
+  CommunityBadgeFeatured,
+  CommunityBadgeReported,
+  CommunityChipEmphasis,
+  CommunityChipPrivate,
+  CommunityChipPublic,
+  CommunityChipTopic,
+  CommunityPillSaved,
+} from '@/components/community/community-story-surface'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -567,9 +577,9 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const moreFromAuthorHref = buildPlacesHref(activeView, query, 1, post.author_id, authorName, discoveryForHref)
 
                 return (
-                  <article key={post.id} className="editorial-card overflow-hidden">
+                  <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
                     {coverImage ? (
-                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f6efe4]">
+                      <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
                         <Image
                           src={coverImage}
                           alt={post.images[0]?.alt_text ?? post.title}
@@ -582,38 +592,21 @@ export default async function PlacesPage({ searchParams }: Props) {
                     ) : null}
 
                     <div className="p-5 sm:p-6">
-                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                        <span>{post.is_public ? 'Public story' : 'Private to you'}</span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {post.is_public ? (
+                          <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
+                        ) : (
+                          <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
+                        )}
                         {isOwnPost ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Your post</span>
-                          </>
+                          <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
                         ) : null}
-                        {savedPostIds.has(post.id) ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Saved</span>
-                          </>
-                        ) : null}
-                        {post.is_featured ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Featured</span>
-                          </>
-                        ) : null}
-                        {post.images.length > 0 ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
-                          </>
-                        ) : null}
-                        {latestReport ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Reported by you</span>
-                          </>
-                        ) : null}
+                        {savedPostIds.has(post.id) ? <CommunityPillSaved /> : null}
+                        {post.is_featured ? <CommunityBadgeFeatured /> : null}
+                        <span className="story-meta-chip text-[0.58rem]">
+                          {post.images.length} image{post.images.length === 1 ? '' : 's'}
+                        </span>
+                        {latestReport ? <CommunityBadgeReported /> : null}
                       </div>
 
                       <div className="mt-4 flex items-center gap-3">
@@ -645,12 +638,7 @@ export default async function PlacesPage({ searchParams }: Props) {
                             const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
                             if (!label) return null
                             return (
-                              <span
-                                key={`${post.id}-${slug}`}
-                                className="rounded-full border border-[#ead8c2] bg-[#fffaf5] px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-[#9b7455]"
-                              >
-                                {label}
-                              </span>
+                              <CommunityChipTopic key={`${post.id}-${slug}`}>{label}</CommunityChipTopic>
                             )
                           })}
                         </div>
