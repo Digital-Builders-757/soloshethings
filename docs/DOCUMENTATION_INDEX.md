@@ -112,9 +112,9 @@ Behavioral contracts for integrations and services.
 Workflow documentation and step-by-step processes.
 
 - **[procedures/PRE_PUSH_CHECKLIST.md](./procedures/PRE_PUSH_CHECKLIST.md)** - Mandatory checks before committing code
-- **[procedures/MIGRATION_PROCEDURE.md](./procedures/MIGRATION_PROCEDURE.md)** - Database migration workflow and versioning rules
+- **[procedures/MIGRATION_PROCEDURE.md](./procedures/MIGRATION_PROCEDURE.md)** - Database migration workflow and versioning rules (includes GitHub Actions `develop`/`main` migration deploy + secret names)
 - **[procedures/ENVIRONMENT_PROCEDURE.md](./procedures/ENVIRONMENT_PROCEDURE.md)** - Dev vs production setup, Supabase project separation, and secret management
-- **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, and rollback steps
+- **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, rollback steps, and automated migration CI on branch pushes (pnpm-aligned)
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)

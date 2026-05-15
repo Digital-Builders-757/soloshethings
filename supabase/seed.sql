@@ -1,0 +1,1 @@
+-- SoloSHEThings: reserved for optional local INSERTs after `supabase db reset`.

@@ -100,6 +100,15 @@ export function LoginForm() {
               </div>
             )}
 
+            {notice === "confirmed_email" && (
+              <div
+                className="mt-6 rounded-2xl border border-[#d7e8cc] bg-[#f4fbef] p-4 text-sm text-[#365229]"
+                role="status"
+              >
+                Your email is confirmed. Sign in below to continue.
+              </div>
+            )}
+
             {signedOut === "1" && (
               <div
                 className="mt-6 rounded-2xl border border-[#ead8c2] bg-white p-4 text-sm text-[#6d5849]"

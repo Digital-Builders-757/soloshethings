@@ -20,6 +20,6 @@ YYYYMMDDHHMMSS_<description>.sql
 2. **Test locally first** - Test migrations before applying to production
 3. **Include RLS policies** - All new tables must have RLS enabled
 4. **Document changes** - Include comments explaining migration purpose
+5. **Staging/production CI:** Pushes to `develop` / `main` run GitHub Actions `supabase db push`; see **[MIGRATION_PROCEDURE.md](../../docs/procedures/MIGRATION_PROCEDURE.md)** (CI/CD section).
 
-See [MIGRATION_PROCEDURE.md](../docs/procedures/MIGRATION_PROCEDURE.md) for detailed migration workflow.
-
+See [MIGRATION_PROCEDURE.md](../../docs/procedures/MIGRATION_PROCEDURE.md) for the full migration workflow.

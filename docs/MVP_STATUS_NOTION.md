@@ -33,6 +33,7 @@
 - **Moderation queue + reporter withdraw + owner permanent remove (2026-05-16)** - Migration `20260516203000_moderation_admin_rls_reports.sql` adds `profiles.role = 'admin'`, `report_status.withdrawn`, audited `reports.reviewed_at` / `reports.reviewed_by`, SECURITY DEFINER RPCs `withdraw_post_report` and `moderator_update_report`, and admin `SELECT` RLS where the queue needs post/member context (writes stay on RPCs). App: authenticated `/admin/moderation` for platform admins; `/reports` supports withdrawing pending post reports + shows reviewed timestamps; browse/saved/detail surfaces recognize withdrawn status; dashboard links **Moderation** for admins; owners can permanently remove a community post behind an explicit typed confirmation (guarded against archive/restore once `removed`).
 - **Marketing interest capture — truthful homepage signup (2026-05)** - Public homepage panel stores emails in **`marketing_interest`** via **`submitMarketingInterest`** (service role insert/update). Copy and success/error states explicitly state that **automated outbound marketing/newsletter sends are not enabled** yet; operators export/import manually until an ESP pathway is prioritized.
 - **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel events documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set.
+- **Saved list + moderation withdrawn parity (2026-05)** - `/saved` passes explicit **`initialSaved={true}`** on save controls; admin moderation accepts **`withdrawn`** in `moderateCommunityReportAction`, exposes **Mark withdrawn** transitions in the queue UI, and migration **`20260518120000_moderator_update_report_allow_withdrawn.sql`** aligns `moderator_update_report` with the app (schema audit updated).
 
 ### 🚧 In Progress
 
@@ -830,6 +831,21 @@ Next Steps:
 **Next Steps:**
 - Add richer restore/delete lifecycle options if owners need more than simple archive and restore
 - Consider pagination or stronger sorting if owner submission history grows beyond the current first-pass list
+
+#### 2026-05-14 - CI: pnpm + automated Supabase migrations (GitHub Actions)
+
+**Status:** ✅ VERIFIED
+
+**Description:**
+- **Lint/build CI** aligned with repo installs: `.github/workflows/lint-and-build.yml` uses **pnpm** (`pnpm/action-setup`, `pnpm install --frozen-lockfile`, `pnpm run lint` / `pnpm run build`); stale **`package-lock.json`** removed so **`pnpm-lock.yaml`** is the single lockfile (matches Vercel when `pnpm-lock.yaml` is present).
+- **Hosted migrations:** `.github/workflows/supabase-migrations-develop.yml` (`develop` → staging) and `supabase-migrations-main.yml` (`main` → production) install pinned Supabase CLI **2.98.2**, `supabase link`, `supabase db push --yes`; secrets documented in [`docs/procedures/MIGRATION_PROCEDURE.md`](docs/procedures/MIGRATION_PROCEDURE.md) / [`docs/procedures/RELEASE_PROCEDURE.md`](docs/procedures/RELEASE_PROCEDURE.md).
+- **CLI scaffold:** [`supabase/config.toml`](supabase/config.toml), [`supabase/seed.sql`](supabase/seed.sql), [`supabase/.gitignore`](supabase/.gitignore) committed so CI/local CLI has a baseline config (dashboard-only storage SQL stays manual per [`docs/supabase/storage_setup_dashboard.sql`](docs/supabase/storage_setup_dashboard.sql)).
+
+**Verification:**
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` (Next.js reported existing webpack/OpenTelemetry warnings from dependencies; build exited successfully)
+
+**Next Steps:**
+- Add GitHub Actions secrets (`SUPABASE_ACCESS_TOKEN`, staging/production project refs + DB passwords); confirm first workflow runs succeed after merge/push paths
 
 #### [Future Entry Template]
 
