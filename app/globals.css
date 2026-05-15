@@ -151,6 +151,27 @@
   box-shadow: 0 24px 60px rgba(var(--brand-brown-rgb), 0.1);
 }
 
+.editorial-card-sun {
+  background: linear-gradient(180deg, rgba(var(--brand-cream-rgb), 0.86) 0%, rgba(255, 253, 247, 0.98) 100%);
+  border: 1px solid rgba(var(--brand-gold-rgb), 0.32);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 50px rgba(var(--brand-gold-rgb), 0.14);
+}
+
+.editorial-card-ember {
+  background: linear-gradient(180deg, rgba(var(--brand-orange-rgb), 0.09) 0%, rgba(255, 248, 243, 0.98) 100%);
+  border: 1px solid rgba(var(--brand-orange-rgb), 0.2);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 50px rgba(var(--brand-orange-rgb), 0.12);
+}
+
+.editorial-card-cocoa {
+  background: linear-gradient(160deg, rgba(var(--brand-brown-rgb), 0.94) 0%, rgba(95, 43, 26, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 52px rgba(74, 28, 14, 0.26);
+}
+
 .eyebrow {
   color: #a14b24;
   font-size: 0.72rem;
