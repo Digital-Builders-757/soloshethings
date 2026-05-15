@@ -18,7 +18,7 @@ function RestoreButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815] disabled:pointer-events-none disabled:opacity-60"
+      className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-pinkDark px-5 text-sm font-semibold text-white transition hover:bg-brand-pinkDark/90 disabled:pointer-events-none disabled:opacity-60"
     >
       {pending ? 'Restoring…' : 'Restore story'}
     </button>

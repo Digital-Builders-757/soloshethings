@@ -13,8 +13,10 @@ import { RestoreCommunityPostButton } from '@/components/submit/restore-communit
 import { SubmitForm } from '@/components/submit/submit-form'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
 import { getMembershipTier } from '@/lib/billing/entitlements'
+import type { RecentCommunityPost } from '@/lib/queries/community-posts'
 import { getRecentPostsForAuthor } from '@/lib/queries/community-posts'
 import { getUser } from '@/lib/supabase/server'
+import { cn } from '@/lib/utils'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All stories' },
@@ -27,6 +29,42 @@ const VIEW_OPTIONS = [
 ] as const
 
 type ViewFilter = (typeof VIEW_OPTIONS)[number]['value']
+
+type PostLifecycle = RecentCommunityPost['status']
+
+function lifecycleChipLabel(status: PostLifecycle) {
+  switch (status) {
+    case 'draft':
+      return 'Draft'
+    case 'published':
+      return 'Published'
+    case 'archived':
+      return 'Archived'
+    case 'removed':
+      return 'Permanently removed'
+    default: {
+      const _exhaustive: never = status
+      return _exhaustive
+    }
+  }
+}
+
+function lifecycleChipClass(status: PostLifecycle) {
+  switch (status) {
+    case 'draft':
+      return 'inline-flex items-center rounded-full border border-brand-orange/35 bg-brand-orange/10 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-brand-pinkDark'
+    case 'published':
+      return 'story-meta-chip community-chip-public text-[0.58rem]'
+    case 'archived':
+      return 'inline-flex items-center rounded-full border border-slate-400/50 bg-slate-50 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-slate-800'
+    case 'removed':
+      return 'inline-flex items-center rounded-full border border-amber-400/55 bg-amber-50 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-amber-950'
+    default: {
+      const _exhaustive: never = status
+      return _exhaustive
+    }
+  }
+}
 
 function normalizePage(value?: string) {
   const parsed = Number.parseInt(value ?? '1', 10)
@@ -128,287 +166,346 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
   const currentPath = buildSubmitHref(activeView, query, page)
 
   return (
-    <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-5xl flex-1 overflow-x-clip">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)] lg:items-start">
-        <div>
+    <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
+      <header className="places-hero-shell mb-8 overflow-hidden p-6 sm:mb-10 sm:p-8 lg:p-10">
+        <div className="places-hero-inner">
+          <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Creative workspace</p>
+          <h1 className="mt-3 font-serif text-3xl font-bold leading-tight text-brand-pinkDark sm:text-4xl md:text-5xl">
+            Publish spots and stories members can trust
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
+            Compose on the left, keep an eye on your shelf on the right — drafts become live posts with the same privacy and storage rules as
+            everywhere else in Solo SHE Things.
+          </p>
+        </div>
+      </header>
+
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(17.5rem,0.88fr)] lg:items-start lg:gap-12">
+        <div className="space-y-6">
           {params.storyArchived === '1' ? (
-            <div className="mb-6 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800" role="status">
-              Story archived. It is now out of the feed, detail, and saved surfaces.
+            <div
+              className="rounded-[1.25rem] border border-emerald-300/75 bg-emerald-50/95 p-4 text-sm leading-relaxed text-emerald-950"
+              role="status"
+            >
+              Story archived. It is out of the feed, detail, and saved surfaces until you restore it from your shelf.
             </div>
           ) : null}
           {params.storyRestored === '1' ? (
-            <div className="mb-6 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800" role="status">
-              Story restored. It is back in your community surfaces and ready for owner controls again.
+            <div
+              className="rounded-[1.25rem] border border-emerald-300/75 bg-emerald-50/95 p-4 text-sm leading-relaxed text-emerald-950"
+              role="status"
+            >
+              Story restored. It is back in community surfaces with full owner controls on the detail page.
             </div>
           ) : null}
           {params.storyRemoved === '1' ? (
-            <div className="mb-6 rounded-2xl border border-amber-200/80 bg-amber-50/90 p-4 text-sm text-amber-900" role="status">
-              Story permanently removed. It will stay out of authenticated community feeds; your submission timeline holds the reference for
-              your account.
+            <div
+              className="rounded-[1.25rem] border border-amber-300/80 bg-amber-50/95 p-4 text-sm leading-relaxed text-amber-950"
+              role="status"
+            >
+              Story permanently removed from community surfaces. Your timeline below keeps the reference for your account only.
             </div>
           ) : null}
           {membershipTier === 'limited' ? (
-            <aside className="mb-6 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] p-4 text-sm text-[#7a331b]" role="note">
-              <span className="font-semibold">Posting requires membership.</span> Start checkout for a 7‑day trial, then $3.99/mo via
-              Stripe, on the{' '}
-              <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
+            <aside
+              className="rounded-[1.25rem] border border-brand-orange/28 bg-gradient-to-br from-brand-cream/60 to-white p-4 text-sm leading-relaxed text-brand-pinkDark sm:p-5"
+              role="note"
+            >
+              <span className="font-semibold">Posting needs membership.</span> Start a trial from{' '}
+              <Link href="/subscribe" className="font-semibold text-brand-orange underline-offset-2 hover:text-brand-coral hover:underline">
                 Billing
-              </Link>{' '}
-              page—your drafts stay safe here until you subscribe.
+              </Link>
+              — drafts stay here until you subscribe.
             </aside>
           ) : null}
+
           <SubmitForm recentPostCount={recentPosts.length} />
         </div>
 
-        <aside className="space-y-4">
-          <div className="surface-card p-5 text-foreground sm:p-6">
-            <p className="eyebrow text-[0.65rem] tracking-[0.2em]">What saves right now</p>
-            <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
-              <li>• Title, description, privacy, optional place anchors, story-angle tags, and optional images save into Supabase now.</li>
-              <li>• Images upload server-side with validation and per-user storage paths.</li>
-              <li>• Your recent submissions render back here with signed image URLs for verification.</li>
-              <li>• Story detail includes owner edit, archive, photo management, gallery ordering, and optional alt text on each image.</li>
-              <li>• Archived stories can now be restored from your recent submissions list when you want them live again.</li>
+        <aside className="flex flex-col gap-6">
+          <div className="editorial-card-sun p-5 sm:p-6">
+            <p className="profile-form-section-label text-[0.62rem]">How this studio works</p>
+            <h2 className="mt-2 font-serif text-xl font-bold text-brand-pinkDark sm:text-2xl">Saved to Supabase</h2>
+            <ul className="mt-4 space-y-3 text-sm leading-relaxed text-brand-blue/85">
+              <li className="flex gap-3">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange/80" aria-hidden />
+                <span>Title, story text, privacy, place label, tags, and optional images save when you publish.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange/80" aria-hidden />
+                <span>Photos upload server-side into your <code className="rounded bg-white/80 px-1 text-xs">post-images</code> folder with validation.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange/80" aria-hidden />
+                <span>Story detail is where you edit, reorder photos, archive, or restore — archived rows can come back from this shelf.</span>
+              </li>
             </ul>
           </div>
 
           <CommunitySurfaceNav active="submit" />
 
-          <div className="editorial-card p-5 sm:p-6">
-            <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Recent submissions</h2>
-            <p className="mt-2 text-sm leading-6 text-[#6d5849]">
-              A quick confirmation surface for your latest posts, now with search and owner-focused filters so archived, private,
-              and photo-heavy stories are easier to manage without losing the restore handoff.
-            </p>
-
-            {recentPosts.length === 0 ? (
-              <p className="mt-6 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-4 text-sm text-[#6d5849]">
-                No posts yet. Your first saved spot or story will show up here.
+          <div className="editorial-card-strong overflow-hidden p-0 shadow-[0_18px_46px_rgba(122,51,27,0.08)]">
+            <div className="border-b border-brand-pinkDark/10 bg-brand-cream/25 px-5 py-5 sm:px-6 sm:py-6">
+              <p className="profile-form-section-label text-[0.62rem]">Your shelf</p>
+              <h2 className="mt-2 font-serif text-xl font-bold text-brand-pinkDark sm:text-2xl">Recent submissions</h2>
+              <p className="mt-2 text-sm leading-relaxed text-brand-blue/85">
+                Search and filter by lifecycle (live, archived, removed), visibility, or photos — same data as before, clearer layout.
               </p>
-            ) : (
-              <>
-                <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#6d5849]">
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {filteredPosts.length} of {recentPosts.length} stories showing
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.published} published
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.archived} archived
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.removed} removed
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.public} public
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.private} private
-                  </span>
-                  <span className="inline-flex rounded-full border border-[#ead8c2] bg-white px-3 py-2 font-semibold text-[#7a331b]">
-                    {counts.photos} with photos
-                  </span>
+            </div>
+
+            <div className="p-5 sm:p-6">
+              {recentPosts.length === 0 ? (
+                <div className="rounded-[1.25rem] border border-dashed border-brand-pinkDark/22 bg-brand-cream/35 px-4 py-6 text-center">
+                  <p className="text-sm font-semibold text-brand-pinkDark">No stories yet</p>
+                  <p className="mt-2 text-sm leading-relaxed text-brand-blue/85">
+                    Publish your first spot or narrative — it will land here with thumbnails when you add photos.
+                  </p>
                 </div>
-
-                <section className="mt-6 rounded-[1.75rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 sm:p-5">
-                  <div className="flex flex-col gap-5">
-                    <form method="get" className="flex-1">
-                      <input type="hidden" name="storyArchived" value={params.storyArchived ?? ''} />
-                      <input type="hidden" name="storyRestored" value={params.storyRestored ?? ''} />
-                      <input type="hidden" name="storyRemoved" value={params.storyRemoved ?? ''} />
-                      <div className="flex flex-col gap-3 sm:flex-row">
-                        <label className="flex-1">
-                          <span className="mb-2 block text-sm font-semibold text-[#7a331b]">Search your stories</span>
-                          <input
-                            type="search"
-                            name="q"
-                            defaultValue={query}
-                            placeholder="Search by title or story text"
-                            className="min-h-11 w-full rounded-[1rem] border border-[#d9c4a8] bg-white px-4 text-sm text-[#4f4034] outline-none transition placeholder:text-[#9b7455] focus:border-[#e34b16]/50 focus:ring-2 focus:ring-[#e34b16]/15"
-                          />
-                        </label>
-                        <input type="hidden" name="view" value={activeView} />
-                        <div className="flex gap-3 sm:self-end">
-                          <button
-                            type="submit"
-                            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
-                          >
-                            Apply
-                          </button>
-                          <Link
-                            href="/submit"
-                            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-                          >
-                            Clear
-                          </Link>
-                        </div>
-                      </div>
-                    </form>
-
-                    <div className="rounded-[1.25rem] border border-[#ead8c2] bg-white px-4 py-3 text-sm text-[#6d5849]">
-                      <p>
-                        Showing <span className="font-semibold text-[#7a331b]">{activeViewLabel}</span>
-                        {query ? (
-                          <>
-                            {' '}
-                            for <span className="font-semibold text-[#7a331b]">“{query}”</span>
-                          </>
-                        ) : null}
-                        .
-                      </p>
-                    </div>
+              ) : (
+                <>
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    <span className="community-summary-chip text-xs font-semibold sm:text-sm">
+                      {filteredPosts.length} of {recentPosts.length} showing
+                    </span>
+                    <span className="community-summary-chip community-summary-chip-gold text-xs font-semibold sm:text-sm">
+                      {counts.published} published
+                    </span>
+                    <span className="community-summary-chip text-xs font-semibold sm:text-sm">{counts.archived} archived</span>
+                    <span className="community-summary-chip community-summary-chip-ember text-xs font-semibold sm:text-sm">
+                      {counts.removed} removed
+                    </span>
+                    <span className="community-summary-chip community-summary-chip-gold text-xs font-semibold sm:text-sm">
+                      {counts.public} public
+                    </span>
+                    <span className="community-summary-chip text-xs font-semibold sm:text-sm">{counts.private} private</span>
+                    <span className="community-summary-chip community-summary-chip-gold text-xs font-semibold sm:text-sm">
+                      {counts.photos} with photos
+                    </span>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    {VIEW_OPTIONS.map((option) => {
-                      const isActive = option.value === activeView
-
-                      return (
-                        <Link
-                          key={option.value}
-                          href={buildSubmitHref(option.value, query, 1)}
-                          aria-current={isActive ? 'page' : undefined}
-                          className={
-                            isActive
-                              ? 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-sm font-semibold text-[#7a331b]'
-                              : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]'
-                          }
-                        >
-                          {option.label}
-                        </Link>
-                      )
-                    })}
-                  </div>
-                </section>
-
-                {showFilteredEmptyState ? (
-                  <div className="mt-6 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-4 text-sm text-[#6d5849]">
-                    No stories match this view yet. Try a different keyword or switch filters to get back to your full submission history.
-                  </div>
-                ) : (
-                  <>
-                    <div className="mt-6 space-y-4">
-                      {filteredPosts.map((post) => {
-                      const isArchived = post.status === 'archived'
-                      const isRemoved = post.status === 'removed'
-                      const detailHref = buildStoryDetailHref(post.id, currentPath)
-                      const statusLabel = isRemoved ? 'Permanently removed' : isArchived ? 'Archived' : 'Published'
-
-                      return (
-                        <article key={post.id} className="overflow-hidden rounded-3xl border border-[#ead8c2] bg-white shadow-sm">
-                          {post.images[0]?.signedUrl ? (
-                            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f6efe4]">
-                              <Image
-                                src={post.images[0].signedUrl}
-                                alt={post.images[0].alt_text ?? post.title}
-                                fill
-                                className="object-cover"
-                                sizes="(min-width: 1024px) 28rem, 100vw"
-                                unoptimized
-                              />
-                            </div>
-                          ) : null}
-
-                          <div className="space-y-3 p-5">
-                            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                              <span>{post.is_public ? 'Public' : 'Private'}</span>
-                              <span aria-hidden>•</span>
-                              <span>{statusLabel}</span>
-                              <span aria-hidden>•</span>
-                              <span>
-                                {post.images.length} image{post.images.length === 1 ? '' : 's'}
-                              </span>
-                            </div>
-
-                            <div>
-                              <h3 className="font-serif text-xl font-semibold text-[#7a331b]">{post.title}</h3>
-                              <p className="mt-2 line-clamp-4 text-sm leading-6 text-[#6d5849]">{post.content}</p>
-                            </div>
-
-                            {!isRemoved && isArchived ? (
-                              <div className="space-y-3 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-3 text-sm text-[#6d5849]">
-                                <p>
-                                  Archived stories stay off community surfaces until you restore them. Restoring puts them back into the feed,
-                                  detail, and saved surfaces.
-                                </p>
-                                <RestoreCommunityPostButton postId={post.id} path={currentPath} />
-                              </div>
-                            ) : null}
-
-                            {isRemoved ? (
-                              <div className="rounded-2xl border border-amber-200/80 bg-amber-50/60 p-3 text-sm text-amber-900">
-                                Permanently removed stories cannot be reopened from restore. Use archiving when you may want the story to return.
-                              </div>
-                            ) : null}
-
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              <p className="text-xs text-muted-foreground">Saved {formatSubmittedAt(post.created_at)}</p>
-                              <div className="flex flex-wrap items-center gap-3">
-                                <Link href="/places" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                                  Browse feed
-                                </Link>
-                                {isRemoved ? (
-                                  <span className="text-sm font-semibold text-[#9b7455]">Community detail disabled</span>
-                                ) : isArchived ? (
-                                  <span className="text-sm font-semibold text-[#9b7455]">Restore to reopen owner controls</span>
-                                ) : (
-                                  <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                                    Manage story →
-                                  </Link>
-                                )}
-                              </div>
-                            </div>
+                  <section className="mt-6 rounded-[1.35rem] border border-brand-pinkDark/10 bg-white/90 p-4 sm:p-5">
+                    <div className="flex flex-col gap-5">
+                      <form method="get" className="flex-1">
+                        <input type="hidden" name="storyArchived" value={params.storyArchived ?? ''} />
+                        <input type="hidden" name="storyRestored" value={params.storyRestored ?? ''} />
+                        <input type="hidden" name="storyRemoved" value={params.storyRemoved ?? ''} />
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                          <label className="flex-1">
+                            <span className="mb-2 block text-sm font-semibold text-brand-pinkDark">Search shelf</span>
+                            <input
+                              type="search"
+                              name="q"
+                              defaultValue={query}
+                              placeholder="Title or story text"
+                              className="min-h-12 w-full rounded-[1rem] border border-brand-pinkDark/18 bg-white px-4 text-base text-brand-blue outline-none transition placeholder:text-brand-pinkDark/45 focus:border-brand-orange/40 focus:ring-2 focus:ring-brand-orange/12 sm:min-h-11 sm:text-sm"
+                            />
+                          </label>
+                          <input type="hidden" name="view" value={activeView} />
+                          <div className="flex gap-3 sm:self-end">
+                            <button
+                              type="submit"
+                              className="inline-flex min-h-12 min-w-[5.5rem] items-center justify-center rounded-full bg-brand-pinkDark px-5 text-sm font-semibold text-white transition hover:bg-brand-pinkDark/90 sm:min-h-11"
+                            >
+                              Apply
+                            </button>
+                            <Link
+                              href="/submit"
+                              className="inline-flex min-h-12 items-center justify-center rounded-full border border-brand-pinkDark/18 bg-white px-5 text-sm font-semibold text-brand-pinkDark transition hover:border-brand-orange/35 hover:text-brand-orange sm:min-h-11"
+                            >
+                              Clear
+                            </Link>
                           </div>
-                        </article>
-                      )
+                        </div>
+                      </form>
+
+                      <div className="community-context-banner px-4 py-3 text-sm leading-relaxed text-brand-blue/85">
+                        <p>
+                          Showing <span className="font-semibold text-brand-pinkDark">{activeViewLabel}</span>
+                          {query ? (
+                            <>
+                              {' '}
+                              for <span className="font-semibold text-brand-pinkDark">&ldquo;{query}&rdquo;</span>
+                            </>
+                          ) : null}
+                          .
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2 sm:gap-3">
+                      {VIEW_OPTIONS.map((option) => {
+                        const isActive = option.value === activeView
+
+                        return (
+                          <Link
+                            key={option.value}
+                            href={buildSubmitHref(option.value, query, 1)}
+                            aria-current={isActive ? 'page' : undefined}
+                            className={cn('community-filter-pill min-h-11 text-center sm:text-left', isActive && 'community-filter-pill-active')}
+                          >
+                            {option.label}
+                          </Link>
+                        )
                       })}
                     </div>
+                  </section>
 
-                    {hasMorePosts ? (
-                      <section className="mt-6 rounded-[1.75rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 sm:p-5">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#7a331b]">Loaded {filteredPosts.length} submission entries so far</p>
-                            <p className="mt-1 text-sm text-[#6d5849]">
-                              Need older owner history? Load the next set without dropping your current filter handoff.
+                  {showFilteredEmptyState ? (
+                    <div className="mt-6 rounded-[1.35rem] border border-brand-pinkDark/12 bg-brand-cream/30 p-5 sm:p-6">
+                      <p className="community-section-label text-[0.65rem]">No matches</p>
+                      <p className="mt-2 font-serif text-lg font-semibold text-brand-pinkDark">Nothing on this shelf row</p>
+                      <p className="mt-2 text-sm leading-relaxed text-brand-blue/85">
+                        Try another keyword or tab — your stories are still here.
+                      </p>
+                      <Link
+                        href="/submit"
+                        className="cta-secondary mt-5 inline-flex min-h-11 items-center justify-center px-6 text-sm"
+                      >
+                        Reset filters
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mt-6 space-y-5">
+                        {filteredPosts.map((post) => {
+                          const isArchived = post.status === 'archived'
+                          const isRemoved = post.status === 'removed'
+                          const detailHref = buildStoryDetailHref(post.id, currentPath)
+
+                          return (
+                            <article
+                              key={post.id}
+                              className={cn(
+                                'editorial-card overflow-hidden p-0 shadow-[0_12px_34px_rgba(122,51,27,0.06)] transition-shadow duration-200 hover:shadow-[0_20px_44px_rgba(122,51,27,0.09)]',
+                                post.status === 'draft' && 'ring-1 ring-brand-orange/30',
+                                isArchived && 'ring-1 ring-slate-200/85',
+                                isRemoved && 'ring-1 ring-amber-200/90'
+                              )}
+                            >
+                              {post.images[0]?.signedUrl ? (
+                                <div className="story-detail-photo-frame relative aspect-[4/3] w-full border-x-0 border-t-0">
+                                  <Image
+                                    src={post.images[0].signedUrl}
+                                    alt={post.images[0].alt_text ?? post.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(min-width: 1024px) 28rem, 100vw"
+                                    unoptimized
+                                  />
+                                </div>
+                              ) : (
+                                <div className="border-b border-brand-pinkDark/10 bg-brand-cream/25 px-5 py-6 text-center sm:px-6">
+                                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-blue/65">Text-only story</p>
+                                </div>
+                              )}
+
+                              <div className="space-y-4 p-5 sm:p-6">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span
+                                    className={cn(
+                                      'story-meta-chip text-[0.58rem]',
+                                      post.is_public ? 'community-chip-public' : 'community-chip-private'
+                                    )}
+                                  >
+                                    {post.is_public ? 'Public' : 'Private'}
+                                  </span>
+                                  <span className={lifecycleChipClass(post.status)}>{lifecycleChipLabel(post.status)}</span>
+                                  <span className="story-meta-chip text-[0.58rem]">
+                                    {post.images.length} image{post.images.length === 1 ? '' : 's'}
+                                  </span>
+                                </div>
+
+                                <div>
+                                  <h3 className="font-serif text-lg font-semibold text-brand-pinkDark sm:text-xl">{post.title}</h3>
+                                  <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-brand-blue/85">{post.content}</p>
+                                </div>
+
+                                {!isRemoved && isArchived ? (
+                                  <div className="space-y-3 rounded-[1.15rem] border border-dashed border-brand-pinkDark/22 bg-brand-cream/35 p-4 text-sm leading-relaxed text-brand-blue/85">
+                                    <p>
+                                      Archived stories stay off community surfaces until you restore them. Restoring returns them to the feed,
+                                      detail, and saved lists.
+                                    </p>
+                                    <RestoreCommunityPostButton postId={post.id} path={currentPath} />
+                                  </div>
+                                ) : null}
+
+                                {isRemoved ? (
+                                  <div className="rounded-[1.15rem] border border-amber-300/75 bg-amber-50/90 p-4 text-sm leading-relaxed text-amber-950">
+                                    Permanently removed stories cannot be reopened here. Use archive when you might want a story back.
+                                  </div>
+                                ) : null}
+
+                                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-brand-pinkDark/10 pt-4">
+                                  <p className="text-xs font-medium text-brand-blue/70">Submitted {formatSubmittedAt(post.created_at)}</p>
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                    <Link
+                                      href="/places"
+                                      className="text-sm font-semibold text-brand-pinkDark transition hover:text-brand-orange"
+                                    >
+                                      Browse feed
+                                    </Link>
+                                    {isRemoved ? (
+                                      <span className="text-sm font-semibold text-brand-blue/65">Detail unavailable</span>
+                                    ) : isArchived ? (
+                                      <span className="text-sm font-semibold text-brand-blue/65">Restore to manage</span>
+                                    ) : (
+                                      <Link
+                                        href={detailHref}
+                                        className="text-sm font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline"
+                                      >
+                                        Manage story
+                                      </Link>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </article>
+                          )
+                        })}
+                      </div>
+
+                      {hasMorePosts ? (
+                        <section className="editorial-card-strong mt-6 p-5 sm:flex sm:items-center sm:justify-between sm:p-6">
+                          <div className="max-w-xl">
+                            <p className="text-sm font-semibold text-brand-pinkDark">
+                              Showing {filteredPosts.length} stor{filteredPosts.length === 1 ? 'y' : 'ies'} in this view
                             </p>
+                            <p className="mt-1 text-sm text-brand-blue/85">Load older rows without losing filters.</p>
                           </div>
-                          <div className="flex flex-wrap items-center gap-3">
+                          <div className="mt-4 flex flex-wrap gap-3 sm:mt-0">
                             {page > 1 ? (
                               <Link
                                 href={buildSubmitHref(activeView, query, page - 1)}
-                                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                                className="community-filter-pill inline-flex min-h-11 items-center justify-center"
                               >
-                                Show fewer
+                                Previous page
                               </Link>
                             ) : null}
                             <Link
                               href={buildSubmitHref(activeView, query, page + 1)}
-                              className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-pinkDark px-6 text-sm font-semibold text-white transition hover:bg-brand-pinkDark/90"
                             >
-                              Load older submissions
+                              Next page
                             </Link>
                           </div>
-                        </div>
-                      </section>
-                    ) : page > 1 ? (
-                      <section className="mt-6 rounded-[1.75rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 sm:p-5">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-sm text-[#6d5849]">You have reached the oldest story in this filtered submission history.</p>
+                        </section>
+                      ) : page > 1 ? (
+                        <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                          <p className="text-sm text-brand-blue/85">Oldest entries for this filter.</p>
                           <Link
                             href={buildSubmitHref(activeView, query, page - 1)}
-                            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                            className="community-filter-pill inline-flex min-h-11 items-center justify-center"
                           >
-                            Show fewer
+                            Previous page
                           </Link>
-                        </div>
-                      </section>
-                    ) : null}
-                  </>
-                )}
-              </>
-            )}
+                        </section>
+                      ) : null}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </aside>
       </div>

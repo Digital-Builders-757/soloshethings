@@ -106,14 +106,14 @@ export function NavClient({
   function renderAccountNavMobile() {
     if (!isAuthenticated) return null
     return (
-      <div className="border-t border-[#ead8c2] pt-5">
-        <p className="eyebrow text-xs tracking-[0.22em]">Your account</p>
+      <div className="mt-6 border-t border-brand-pinkDark/12 bg-brand-cream/20 px-3 py-5 pb-1">
+        <p className="eyebrow px-1 text-[0.65rem] tracking-[0.22em]">Your account</p>
         {accountHint ? (
-          <p className="mt-2 truncate text-xs font-medium text-[#6d5849]" title={accountHint}>
+          <p className="mt-3 truncate px-1 text-xs font-medium leading-snug text-brand-blue/85" title={accountHint}>
             {accountHint}
           </p>
         ) : null}
-        <div className="mt-3 flex flex-col gap-2">
+        <div className="mt-4 flex flex-col gap-1">
           {authLinks.map((link) => {
             const isActive = isRouteActive(pathname, link.href)
             return (
@@ -122,8 +122,10 @@ export function NavClient({
                 href={link.href}
                 onClick={closeMobileMenu}
                 className={cn(
-                  "min-h-11 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
-                  isActive ? "bg-[#fffaf0] text-[#e34b16]" : "text-[#3a3a3a] hover:bg-[#fffaf0]/80"
+                  "flex min-h-12 items-center rounded-xl px-3 py-3 text-sm font-semibold transition-colors",
+                  isActive
+                    ? "bg-white text-brand-orange shadow-sm ring-1 ring-brand-orange/20"
+                    : "text-brand-blue hover:bg-white/70 hover:text-brand-orange"
                 )}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -131,8 +133,8 @@ export function NavClient({
               </Link>
             )
           })}
-          <div className="pt-1">
-            <LogoutButton className="w-full min-[400px]:w-auto" />
+          <div className="pt-3">
+            <LogoutButton className="flex min-h-12 w-full items-center justify-center px-6 text-sm" />
           </div>
         </div>
       </div>
@@ -187,8 +189,8 @@ export function NavClient({
           </div>
         </div>
 
-        <div className="container mx-auto flex min-h-12 items-center justify-between py-2.5 shell-inline lg:hidden">
-          <Link href="/" className="leading-none text-[#e34b16]">
+        <div className="container mx-auto flex min-h-[3.25rem] items-center justify-between gap-3 py-3 shell-inline lg:hidden">
+          <Link href="/" className="min-w-0 shrink leading-none text-brand-orange">
             <span className="wordmark block text-xl [text-shadow:0_1px_0_#7a331b]">
               SOLO <span className="wordmark-accent">SHE</span> THINGS
             </span>
@@ -198,15 +200,22 @@ export function NavClient({
             onClick={() => setIsMobileMenuOpen((open) => !open)}
             aria-expanded={isMobileMenuOpen}
             aria-label="Toggle menu"
-            className="rounded-full border border-[#ead8c2] p-2 text-[#7a331b] transition-colors hover:border-[#e34b16] hover:text-[#e34b16]"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-pinkDark/15 bg-white text-brand-pinkDark shadow-sm transition-colors hover:border-brand-orange/40 hover:text-brand-orange active:bg-brand-cream/40"
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMobileMenuOpen ? <X className="h-6 w-6" aria-hidden /> : <Menu className="h-6 w-6" aria-hidden />}
           </button>
         </div>
 
         {isMobileMenuOpen && (
-          <div className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-[#ead8c2] bg-white lg:hidden">
-            <nav className="container mx-auto flex flex-col gap-4 py-5 shell-inline" aria-label="Mobile navigation">
+          <div className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-brand-pinkDark/12 bg-gradient-to-b from-white to-brand-cream/25 lg:hidden">
+            <nav
+              className="container mx-auto flex flex-col gap-0 py-4 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] shell-inline"
+              aria-label="Mobile navigation"
+            >
+              <p className="mb-2 px-1 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-brand-pinkDark/55">
+                Site
+              </p>
+              <div className="flex flex-col gap-1">
               {publicLinks.map((link) => {
                 const isActive = isRouteActive(pathname, link.href)
                 return (
@@ -214,10 +223,10 @@ export function NavClient({
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "rounded-xl px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.14em] transition-colors",
+                      "flex min-h-12 items-center rounded-xl px-4 py-3 text-sm font-semibold uppercase tracking-[0.1em] transition-colors",
                       isActive
-                        ? "bg-[#fff4e7] text-[#e34b16]"
-                        : "text-[#7a331b] hover:text-[#e34b16]"
+                        ? "bg-brand-orange/10 text-brand-orange ring-1 ring-brand-orange/25"
+                        : "text-brand-pinkDark hover:bg-brand-cream/50 hover:text-brand-orange"
                     )}
                     onClick={closeMobileMenu}
                     aria-current={isActive ? "page" : undefined}
@@ -226,22 +235,23 @@ export function NavClient({
                   </Link>
                 )
               })}
+              </div>
 
               {isAuthenticated ? (
                 renderAccountNavMobile()
               ) : (
-                <div className="flex flex-col gap-3 border-t border-[#ead8c2] pt-5">
+                <div className="mt-6 flex flex-col gap-3 border-t border-brand-pinkDark/12 pt-6">
                   <Button
                     asChild
                     variant="outline"
-                    className="cta-secondary h-11 border-[#e34b16] bg-white/95 py-0 text-[#e34b16] hover:bg-[#e34b16]/5 hover:text-[#e34b16]"
+                    className="cta-secondary h-12 min-h-12 border-brand-orange bg-white/95 py-0 text-brand-orange hover:bg-brand-orange/5 hover:text-brand-orange"
                   >
-                    <Link href="/login" onClick={closeMobileMenu}>
+                    <Link href="/login" onClick={closeMobileMenu} className="flex items-center justify-center">
                       Sign In
                     </Link>
                   </Button>
-                  <Button asChild className="cta-primary h-11 py-0 text-white hover:bg-[#c74010]">
-                    <Link href="/signup" onClick={closeMobileMenu}>
+                  <Button asChild className="cta-primary h-12 min-h-12 py-0 text-white hover:bg-[#c74010]">
+                    <Link href="/signup" onClick={closeMobileMenu} className="flex items-center justify-center">
                       Get Started
                     </Link>
                   </Button>

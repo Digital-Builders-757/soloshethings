@@ -5,9 +5,18 @@ import { redirect } from 'next/navigation'
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
+import {
+  CommunityBadgeFeatured,
+  CommunityBadgeReported,
+  CommunityChipEmphasis,
+  CommunityChipPrivate,
+  CommunityChipPublic,
+  CommunityChipSavedTimestamp,
+  communityWarmCardClassName,
+} from '@/components/community/community-story-surface'
 import { Avatar } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
+import { cn } from '@/lib/utils'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
@@ -176,41 +185,23 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           search and narrow that list without changing who can see what.
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#6d5849]">
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
+        <div className="mt-6 flex flex-wrap gap-3 text-sm">
+          <span className="community-summary-chip community-summary-chip-gold">
             {filteredPosts.length} of {savedPosts.length} saved stor{savedPosts.length === 1 ? 'y' : 'ies'} showing
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {publicSavedPostsCount} public
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {privateSavedPostsCount} private
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {featuredSavedPostsCount} featured
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {ownSavedPostsCount} yours
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {reportedSavedPostsCount} reported by you
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {postsWithPhotosCount} with photos
-          </Badge>
+          </span>
+          <span className="community-summary-chip">{publicSavedPostsCount} public</span>
+          <span className="community-summary-chip community-summary-chip-ember">{privateSavedPostsCount} private</span>
+          <span className="community-summary-chip community-summary-chip-gold">{featuredSavedPostsCount} featured</span>
+          <span className="community-summary-chip">{ownSavedPostsCount} yours</span>
+          <span className="community-summary-chip community-summary-chip-ember">{reportedSavedPostsCount} reported by you</span>
+          <span className="community-summary-chip">{postsWithPhotosCount} with photos</span>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/places"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#e34b16] px-5 text-sm font-semibold text-white transition hover:bg-[#c74010]"
-          >
+          <Link href="/places" className="cta-primary px-5 py-0 text-sm hover:bg-[#c74010]">
             Browse stories
           </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-          >
+          <Link href="/dashboard" className="cta-secondary px-5 py-0 text-sm">
             Back to dashboard
           </Link>
         </div>
@@ -276,7 +267,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                   {query ? (
                     <>
                       {' '}
-                      for <span className="font-semibold text-[#7a331b]">“{query}”</span>
+                      for <span className="font-semibold text-[#7a331b]">&ldquo;{query}&rdquo;</span>
                     </>
                   ) : null}
                   .
@@ -293,11 +284,7 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                     key={option.value}
                     href={buildSavedHref(option.value, query, 1, activeAuthorId, activeAuthorLabel)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={
-                      isActive
-                        ? 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-sm font-semibold text-[#7a331b]'
-                        : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]'
-                    }
+                    className={cn('community-filter-pill min-h-11', isActive && 'community-filter-pill-active')}
                   >
                     {option.label}
                   </Link>
@@ -339,106 +326,102 @@ export default async function SavedPostsPage({ searchParams }: Props) {
             <>
               <section className="mt-6 grid gap-5 lg:grid-cols-2">
                 {filteredPosts.map((post) => {
-                const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
-                const coverImage = post.images[0]?.signedUrl ?? null
-                const isOwnPost = post.author_id === user.id
-                const latestReport = latestReportsByPostId.get(post.id)
-                const detailHref = buildStoryDetailHref(post.id, currentPath)
-                const moreFromAuthorHref = buildSavedHref(activeView, query, 1, post.author_id, authorName)
+                  const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
+                  const coverImage = post.images[0]?.signedUrl ?? null
+                  const isOwnPost = post.author_id === user.id
+                  const latestReport = latestReportsByPostId.get(post.id)
+                  const detailHref = buildStoryDetailHref(post.id, currentPath)
+                  const moreFromAuthorHref = buildSavedHref(activeView, query, 1, post.author_id, authorName)
 
-                return (
-                  <article key={post.id} className="editorial-card overflow-hidden">
-                    {coverImage ? (
-                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f6efe4]">
-                        <Image
-                          src={coverImage}
-                          alt={post.images[0]?.alt_text ?? post.title}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                          unoptimized
-                        />
-                      </div>
-                    ) : null}
-
-                    <div className="p-5 sm:p-6">
-                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                        <span>{post.is_public ? 'Public story' : 'Private to you'}</span>
-                        <span aria-hidden>•</span>
-                        <span>Saved {formatDate(post.saved_at)}</span>
-                        {isOwnPost ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Your post</span>
-                          </>
-                        ) : null}
-                        {post.is_featured ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Featured</span>
-                          </>
-                        ) : null}
-                        {post.images.length > 0 ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
-                          </>
-                        ) : null}
-                        {latestReport ? (
-                          <>
-                            <span aria-hidden>•</span>
-                            <span>Reported by you</span>
-                          </>
-                        ) : null}
-                      </div>
-
-                      <div className="mt-4 flex items-center gap-3">
-                        <Avatar
-                          src={post.authorAvatarUrl}
-                          fallback={authorName.slice(0, 2).toUpperCase()}
-                          alt={`${authorName} avatar`}
-                          size="md"
-                        />
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
-                          <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
-                        </div>
-                      </div>
-
-                      <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                        <Link href={detailHref} className="transition hover:text-[#e34b16]">
-                          {post.title}
-                        </Link>
-                      </h2>
-                      <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                      {latestReport ? (
-                        <div className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
-                          {REPORT_STATUS_LABELS[latestReport.status]}
+                  return (
+                    <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
+                      {coverImage ? (
+                        <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
+                          <Image
+                            src={coverImage}
+                            alt={post.images[0]?.alt_text ?? post.title}
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 50vw, 100vw"
+                            unoptimized
+                          />
                         </div>
                       ) : null}
 
-                      <div className="mt-6 space-y-3">
-                        <SaveCommunityPostButton postId={post.id} path={currentPath} initialSaved variant="card" />
-                        <div className="flex flex-wrap items-center gap-4">
-                          {!isOwnPost ? (
-                            <Link href={moreFromAuthorHref} className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                              More from {authorName}
-                            </Link>
+                      <div className="p-5 sm:p-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                          {post.is_public ? (
+                            <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
+                          ) : (
+                            <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
+                          )}
+                          <CommunityChipSavedTimestamp>Saved {formatDate(post.saved_at)}</CommunityChipSavedTimestamp>
+                          {isOwnPost ? (
+                            <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
                           ) : null}
-                          <Link href={detailHref} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                            Open story →
+                          {post.is_featured ? <CommunityBadgeFeatured /> : null}
+                          <span className="story-meta-chip text-[0.58rem]">
+                            {post.images.length} photo{post.images.length === 1 ? '' : 's'}
+                          </span>
+                          {latestReport ? <CommunityBadgeReported /> : null}
+                        </div>
+
+                        <div className="mt-4 flex items-center gap-3">
+                          <Avatar
+                            src={post.authorAvatarUrl}
+                            fallback={authorName.slice(0, 2).toUpperCase()}
+                            alt={`${authorName} avatar`}
+                            size="md"
+                          />
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
+                            <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
+                          </div>
+                        </div>
+
+                        <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
+                          <Link href={detailHref} className="transition hover:text-[#e34b16]">
+                            {post.title}
                           </Link>
-                          {latestReport ? (
-                            <Link href="/reports" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                              Track report
+                        </h2>
+                        <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
+
+                        {latestReport ? (
+                          <div
+                            className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}
+                          >
+                            {REPORT_STATUS_LABELS[latestReport.status]}
+                          </div>
+                        ) : null}
+
+                        <div className="mt-6 border-t border-brand-pinkDark/10 pt-5">
+                          <p className="profile-form-section-label mb-3 text-[0.62rem]">Library cleanup</p>
+                          <SaveCommunityPostButton
+                            postId={post.id}
+                            path={currentPath}
+                            initialSaved
+                            variant="card"
+                            savedListContext
+                          />
+                          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                            {!isOwnPost ? (
+                              <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                                More from {authorName}
+                              </Link>
+                            ) : null}
+                            <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                              Open story →
                             </Link>
-                          ) : null}
+                            {latestReport ? (
+                              <Link href="/reports" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+                                Track report
+                              </Link>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                )
+                    </article>
+                  )
                 })}
               </section>
 

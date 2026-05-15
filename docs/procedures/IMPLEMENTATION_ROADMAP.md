@@ -4,7 +4,7 @@
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** 2026-05-17
+**Last Updated:** 2026-05-15
 
 ---
 
@@ -23,6 +23,10 @@ Use these companion docs for everything else:
 ---
 
 ## Current repo state
+
+### Active operational blocker
+
+- **Supabase hosted migration CI/CD recovery (2026-05-15)** — GitHub Actions migration workflows exist for `develop` and `main`, but rollout/debugging exposed repeated confusion around GitHub secret scope, project-ref injection, and staging/production DB password pairing. Treat this as the current recovery lane until at least staging `supabase db push` is boring again. Work-order anchor: `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`.
 
 ### Completed checkpoints
 
@@ -46,14 +50,16 @@ Use these companion docs for everything else:
 
 ### Live in-progress work
 
-- **No mandatory queue item** until product prioritizes the stretch lane below.
+- **Mandatory operational lane:** hosted Supabase migration stability / secret-scope recovery (`SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`)
+- **Product queue remains paused behind the blocker above** unless the work in hand is clearly unrelated.
 
 ### Resume pointer
 
 - **Branch target:** `develop`
+- **Operational recovery doc:** `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
 - **Latest shipped batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs). Prior batch: moderation operator increment (2026-05-16).
 - **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
-- **Next focus:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
+- **Next focus after recovery:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
 
 ---
 
@@ -61,7 +67,21 @@ Use these companion docs for everything else:
 
 Work top to bottom unless a regression or blocker forces a reorder.
 
-### 1) Community second-pass depth — ✅ SHIPPED (2026-05-15)
+### 1) Supabase hosted migration recovery — 🚧 ACTIVE OPERATIONAL BLOCKER
+
+**Goal:** make GitHub Actions hosted Supabase migration deploys (`supabase link` → `supabase db push`) reliable again by fixing secret scope, project-ref injection, and DB password pairing confusion.
+
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
+
+**What this covers:**
+- repository secrets vs environment secrets vs GitHub Agents secret confusion
+- staging / production project-ref pairing
+- staging / production database password pairing
+- workflow validation without thrashing app code or Vercel deploys
+
+**Definition of done:** staging hosted migration run is boring; production path is either validated or blocked by one explicit documented issue.
+
+### 2) Community second-pass depth — ✅ SHIPPED (2026-05-15)
 
 Honest taxonomy + place anchors tied to publisher input, deterministic related-story ranking within RLS-visible candidates, richer owner media controls (description + ordering), feed sort + anchored discovery UX on `/places`.
 
@@ -69,7 +89,7 @@ Honest taxonomy + place anchors tied to publisher input, deterministic related-s
 
 **Historical work-order notes:** `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md` (execution checklist / context).
 
-### 2) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
+### 3) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
 
 **Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
@@ -84,7 +104,7 @@ Honest taxonomy + place anchors tied to publisher input, deterministic related-s
 - Rich editorial workflows, analytics dashboards, non-post report targets
 - Optional future admin post-creation tooling if product priorities change
 
-### 3) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
+### 4) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
 
 **Goal:** Replace placeholder marketing CTAs with **honest, operations-friendly** tooling while larger ESP integrations stay optional.
 

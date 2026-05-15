@@ -117,6 +117,7 @@ Workflow documentation and step-by-step processes.
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, rollback steps, and automated migration CI on branch pushes (pnpm-aligned)
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
+- **[procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md)** - Active operational work order for hosted Supabase migration CI/CD recovery, secret scope, and project/password pairing
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)
 - **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Historical archive of the post-catch-up finishing checkpoint
 - **[procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md)** - Active work order for the next community discovery/media depth batch
@@ -126,6 +127,8 @@ Workflow documentation and step-by-step processes.
 - **[procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_DOCS_PROMPT_PIPELINE_WORK_ORDER.md)** - Historical batch record for docs honesty and prompt-pipeline cleanup
 - **[procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md](./procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md)** - Historical combined auth/dashboard batch record
 - **[procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SITE_POLISH_PERFORMANCE_WORK_ORDER.md)** - Historical batch record for responsive polish and loading feel
+- **[procedures/SOLOSHETHINGS_APP_SHELL_AND_PROFILE_VISUAL_WORK_ORDER.md](./procedures/SOLOSHETHINGS_APP_SHELL_AND_PROFILE_VISUAL_WORK_ORDER.md)** - Prompt pack for signed-in shell + profile visual passes; reusable primitives are summarized under **Signed-in & community surfaces** in [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)
+- **[procedures/SOLOSHETHINGS_COMMUNITY_VISUAL_JOY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_VISUAL_JOY_WORK_ORDER.md)** - Prompt pack for `/places`, `/saved`, `/reports`, `/submit`, and detail polish; shared community patterns live in `app/globals.css` + `components/community/community-story-surface.tsx` (see [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md))
 - **[procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md](./procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md)** - Historical batch record for profile continuity, access-control QA, and release readiness
 - **[procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md)** - Historical batch record for MVP smoke, docs sync, and release prep
 - **[procedures/README.md](./procedures/README.md)** - Queue entry point and archive/canonical-plan guide
@@ -228,6 +231,10 @@ Architecture diagrams and flow documentation.
 - **Source of Truth:** [USER_GUIDE.md](./USER_GUIDE.md)
 - **Related:** [MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md), [contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md](./contracts/PUBLIC_PRIVATE_SURFACE_CONTRACT.md)
 
+### Brand colors & reusable UI surfaces
+- **Source of Truth:** [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md) (palette + **Signed-in & community surfaces** implementation pointers)
+- **Related:** [UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md) (structure only), [procedures/SOLOSHETHINGS_COMMUNITY_VISUAL_JOY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_VISUAL_JOY_WORK_ORDER.md), [procedures/SOLOSHETHINGS_APP_SHELL_AND_PROFILE_VISUAL_WORK_ORDER.md](./procedures/SOLOSHETHINGS_APP_SHELL_AND_PROFILE_VISUAL_WORK_ORDER.md)
+
 ### Project Status
 - **Source of Truth:** [MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)
 - **Related:** [USER_GUIDE.md](./USER_GUIDE.md)
@@ -271,10 +278,10 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-05-14  
+**Last Updated:** 2026-05-15  
 **Maintainer:** Development Team
 
-**Recent sync:** `procedures/IMPLEMENTATION_ROADMAP.md` is now the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue.
+**Recent sync:** `procedures/IMPLEMENTATION_ROADMAP.md` is now the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue. Reusable signed-in/community CSS and React helpers are indexed from [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md) (**Signed-in & community surfaces**).
 
 ---
 

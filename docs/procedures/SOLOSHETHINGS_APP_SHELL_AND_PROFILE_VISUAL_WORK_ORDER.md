@@ -2,7 +2,7 @@
 
 **Execution batch for extending the warmer, more playful front-end system beyond the dashboard.**
 
-**Status (2026-05-15):** Ready for execution.
+**Status (2026-05-15):** Prompt pack remains valid for optional shell/profile passes. **Reusable primitives** (warm panels, CTAs, community/editorial classes used across signed-in routes) are summarized under **Signed-in & community surfaces** in [`docs/BRAND_STYLE_GUIDE.md`](../BRAND_STYLE_GUIDE.md); implement new signed-in styling there first.
 
 **Why this exists:** The dashboard just got a stronger color pass and more personality. The next job is to make the rest of the signed-in shell feel like it belongs to the same product instead of dropping back to quieter/default surfaces.
 

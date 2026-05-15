@@ -35,6 +35,8 @@
 - **Product learning instrumentation (2026-05-17)** - Coarse Sentry **`product_signal.*`** funnel signals documented in **`MONITORING_SENTRY_POSTURE.md`** (`lib/analytics/product-signals.ts`); emits **structured Logs** (`Sentry.logger.info`, attribute **`product_signal`**) on signup, Stripe checkout/start-return, published community submissions, saves, and reports when a DSN is set and **`enableLogs`** is on in Sentry init (**not** Issues), so successful signups stop polluting the error backlog.
 - **Saved list + moderation withdrawn parity (2026-05)** - `/saved` passes explicit **`initialSaved={true}`** on save controls; admin moderation accepts **`withdrawn`** in `moderateCommunityReportAction`, exposes **Mark withdrawn** transitions in the queue UI, and migration **`20260518120000_moderator_update_report_allow_withdrawn.sql`** aligns `moderator_update_report` with the app (schema audit updated).
 
+- **Signed-in + community visual polish (2026-05-15)** - Shared warm editorial primitives in `app/globals.css` (`community-*`, editorial shells, CTA/chip/badge patterns); reusable story metadata helpers in `components/community/community-story-surface.tsx`; `/places`, `/saved`, `/reports`, `/submit`, signed-in nav, and `/profile` aligned to one visual family; [`BRAND_STYLE_GUIDE.md`](./BRAND_STYLE_GUIDE.md) documents implementation pointers (avoid page-local duplicate styling).
+
 ### 🚧 In Progress
 
 - **Moderation/editorial depth (remaining)** - First-pass operator queue and safe report RPCs are shipped; broader editorial tooling, analytics-style oversight, and non-community report targets are still out of scope or not built yet.

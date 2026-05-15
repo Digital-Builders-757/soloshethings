@@ -146,6 +146,21 @@ If a new token is added, mirror the CSS vars in the shared token layer instead o
 <div className="border-gradient-brand"> {/* Use shared surface utilities instead */}
 ```
 
+### Signed-in & community surfaces (implementation)
+
+**Where the reusable UI lives:** extend authenticated and member-facing routes using classes in **`app/globals.css`** first, then Tailwind brand tokens. Do not introduce parallel “community theme” class names without consolidating here.
+
+**CSS buckets (non-exhaustive):**
+- **Editorial shells:** `editorial-card`, `editorial-card-strong`, `community-card-warm`, `community-card-dark`, `community-card-lift`, `story-card-featured`
+- **Browse chrome:** `places-hero-shell`, `community-context-banner`, `community-filter-pill` (+ `-active`), `community-summary-chip` (+ `-gold` / `-ember` / `-cocoa`)
+- **Story state:** `community-chip-public` / `community-chip-private`, `community-badge-featured`, `community-badge-reported`, `community-pill-saved`, `community-chip-topic`, neutral `story-meta-chip`
+- **Save control (card row):** `community-save-card-idle`, `community-save-card-saved`, `community-save-card-saved-library`
+- **Actions:** `cta-primary`, `cta-secondary` (and variants defined beside them in `globals.css`)
+
+**React helpers for community cards/chips:** **`components/community/community-story-surface.tsx`** — `communityWarmCardClassName`, `communityDarkCardClassName`, and small presentational chips/badges for public/private, featured, reported-by-you, saved pill, topics, and saved timestamps. Prefer these when building `/places`, `/saved`, and similar feeds so metadata styling stays consistent.
+
+**Save button wiring:** **`components/cards/save-community-post-button.tsx`** uses the `community-save-card-*` classes for the **`card`** variant (pill variant stays Tailwind + tokens).
+
 ## What We Do NOT Copy
 
 ### Accidentally Wes Anderson Colors
@@ -271,5 +286,6 @@ The gradient border system uses the warm editorial palette to create vibrant, ey
 - [UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md) - AWA inspiration (structure only)
 - [PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md) - Brand reference
 - [CODING_STANDARDS.md](./CODING_STANDARDS.md) - Component patterns
+- [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md) - Procedure links for visual batch docs
 - [design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md) - Design implementation plan
 

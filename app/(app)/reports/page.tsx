@@ -4,11 +4,19 @@ import { redirect } from 'next/navigation'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { PendingReportWithdrawal } from '@/components/safety/pending-report-withdrawal'
-import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
-import { REPORT_REASON_LABELS, REPORT_STATUS_LABELS, getMemberPostReports } from '@/lib/queries/reports'
+import {
+  REPORT_REASON_LABELS,
+  REPORT_STATUS_LABELS,
+  getMemberPostReports,
+} from '@/lib/queries/reports'
+import {
+  reportCardRailBg,
+  reportStatusBadgeClasses,
+  reportSummaryChipClasses,
+} from '@/lib/report-status-presentational'
 import { getUser } from '@/lib/supabase/server'
-import type { report_status } from '@/types/database'
+import { cn } from '@/lib/utils'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All reports' },
@@ -81,21 +89,6 @@ function buildReportsHref(view: ViewFilter, query: string, page = 1, authorId?: 
   return search ? `/reports?${search}` : '/reports'
 }
 
-function statusTone(status: report_status) {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
-}
-
 export default async function ReportsPage({ searchParams }: Props) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const query = normalizeQuery(resolvedSearchParams?.q)
@@ -152,64 +145,62 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
-      <header className="editorial-card-strong overflow-hidden p-6 sm:p-8 lg:p-10">
-        <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Safety reports</p>
-        <h1 className="mt-3 font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl md:text-5xl">
-          Track the stories you flagged for moderation
-        </h1>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-[#6d5849] sm:text-base">
-          Reports stay private to you and the moderation team. This page gives members a simple place to check what is still waiting,
-          what is under review, and what has been resolved.
-        </p>
+      <header className="places-hero-shell overflow-hidden p-6 sm:p-8 lg:p-10">
+        <div className="places-hero-inner">
+          <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Safety and moderation</p>
+          <h1 className="mt-3 font-serif text-3xl font-bold leading-tight text-brand-pinkDark sm:text-4xl md:text-5xl">
+            Your report history
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
+            Only you and the moderation team can see these submissions. Use this page to check what is still queued,
+            what is being reviewed, and what has been closed — without alerts or noise.
+          </p>
 
-        <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#6d5849]">
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {filteredReports.length} of {reports.length} report{reports.length === 1 ? '' : 's'} showing
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {counts.pending} pending
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {counts.reviewed} under review
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {counts.resolved} resolved
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {counts.dismissed} dismissed
-          </Badge>
-          <Badge variant="neutral" size="sm" className="border border-[#ead8c2] bg-white/90 text-[#7a331b]">
-            {counts.withdrawn} withdrawn
-          </Badge>
-        </div>
+          <div className="mt-6 flex flex-wrap gap-2 sm:gap-3">
+            <span className="community-summary-chip text-xs font-semibold sm:text-sm">
+              {filteredReports.length} of {reports.length} report{reports.length === 1 ? '' : 's'} showing
+            </span>
+            <span className={reportSummaryChipClasses('pending')}>{counts.pending} pending</span>
+            <span className={reportSummaryChipClasses('reviewed')}>{counts.reviewed} under review</span>
+            <span className={reportSummaryChipClasses('resolved')}>{counts.resolved} resolved</span>
+            <span className={reportSummaryChipClasses('dismissed')}>{counts.dismissed} dismissed</span>
+            <span className={reportSummaryChipClasses('withdrawn')}>{counts.withdrawn} withdrawn</span>
+          </div>
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/places"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#e34b16] px-5 text-sm font-semibold text-white transition hover:bg-[#c74010]"
-          >
-            Browse stories
-          </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-          >
-            Back to dashboard
-          </Link>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/places" className="cta-secondary inline-flex min-h-11 items-center justify-center px-6 text-sm">
+              Browse stories
+            </Link>
+            <Link href="/dashboard" className="cta-secondary inline-flex min-h-11 items-center justify-center px-6 text-sm">
+              Back to dashboard
+            </Link>
+          </div>
         </div>
       </header>
 
       <CommunitySurfaceNav active="reports" itemHrefs={workspaceHrefs} />
 
       {reports.length === 0 ? (
-        <section className="editorial-card mt-6 p-6 sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No reports from your account yet</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-            If you report a public story from its detail page, it will appear here with its moderation status.
+        <section className="mt-6 rounded-[1.5rem] border border-brand-pinkDark/12 bg-white p-6 shadow-[0_16px_40px_rgba(122,51,27,0.06)] sm:p-10">
+          <p className="profile-form-section-label text-[0.65rem]">No activity yet</p>
+          <h2 className="mt-3 font-serif text-2xl font-semibold text-brand-pinkDark sm:text-3xl">
+            You have not submitted any reports
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
+            If something on the feed concerns you, open the story and use Report — it will show up here with a clear
+            status so you can follow moderation outcomes at your own pace.
           </p>
-          <Link href="/places" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-            Explore the feed →
-          </Link>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="/places" className="cta-secondary inline-flex min-h-12 items-center justify-center px-8 text-sm sm:min-h-11">
+              Go to the feed
+            </Link>
+            <Link
+              href="/saved"
+              className="community-filter-pill inline-flex min-h-12 items-center justify-center border-brand-pinkDark/15 bg-brand-cream/40 text-brand-pinkDark hover:border-brand-pinkDark/25 sm:min-h-11"
+            >
+              View saved stories
+            </Link>
+          </div>
         </section>
       ) : (
         <>
@@ -218,13 +209,13 @@ export default async function ReportsPage({ searchParams }: Props) {
               <form method="get" className="flex-1">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <label className="flex-1">
-                    <span className="mb-2 block text-sm font-semibold text-[#7a331b]">Search your reports</span>
+                    <span className="mb-2 block text-sm font-semibold text-brand-pinkDark">Search reports</span>
                     <input
                       type="search"
                       name="q"
                       defaultValue={query}
-                      placeholder="Search by story title, reason, or your notes"
-                      className="min-h-11 w-full rounded-[1rem] border border-[#d9c4a8] bg-white px-4 text-sm text-[#4f4034] outline-none transition placeholder:text-[#9b7455] focus:border-[#e34b16]/50 focus:ring-2 focus:ring-[#e34b16]/15"
+                      placeholder="Story title, reason, or notes"
+                      className="min-h-12 w-full rounded-[1rem] border border-brand-pinkDark/18 bg-white px-4 text-base text-brand-blue outline-none transition placeholder:text-brand-pinkDark/45 focus:border-brand-orange/40 focus:ring-2 focus:ring-brand-orange/12 sm:min-h-11 sm:text-sm"
                     />
                   </label>
                   <input type="hidden" name="view" value={activeView} />
@@ -233,13 +224,13 @@ export default async function ReportsPage({ searchParams }: Props) {
                   <div className="flex gap-3 sm:self-end">
                     <button
                       type="submit"
-                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                      className="inline-flex min-h-12 min-w-[5.5rem] items-center justify-center rounded-full bg-brand-pinkDark px-5 text-sm font-semibold text-white transition hover:bg-brand-pinkDark/90 sm:min-h-11"
                     >
                       Apply
                     </button>
                     <Link
                       href="/reports"
-                      className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-brand-pinkDark/18 bg-white px-5 text-sm font-semibold text-brand-pinkDark transition hover:border-brand-orange/35 hover:text-brand-orange sm:min-h-11"
                     >
                       Clear
                     </Link>
@@ -247,19 +238,19 @@ export default async function ReportsPage({ searchParams }: Props) {
                 </div>
               </form>
 
-              <div className="rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] px-4 py-3 text-sm text-[#6d5849]">
+              <div className="community-context-banner max-w-lg px-4 py-3 text-sm leading-relaxed text-brand-blue/85">
                 <p>
-                  Showing <span className="font-semibold text-[#7a331b]">{activeViewLabel}</span>
+                  Viewing <span className="font-semibold text-brand-pinkDark">{activeViewLabel}</span>
                   {activeAuthorLabel ? (
                     <>
                       {' '}
-                      for stories by <span className="font-semibold text-[#7a331b]">{activeAuthorLabel}</span>
+                      for stories by <span className="font-semibold text-brand-pinkDark">{activeAuthorLabel}</span>
                     </>
                   ) : null}
                   {query ? (
                     <>
                       {' '}
-                      for <span className="font-semibold text-[#7a331b]">“{query}”</span>
+                      matching <span className="font-semibold text-brand-pinkDark">&ldquo;{query}&rdquo;</span>
                     </>
                   ) : null}
                   .
@@ -267,7 +258,7 @@ export default async function ReportsPage({ searchParams }: Props) {
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap gap-2 sm:gap-3">
               {VIEW_OPTIONS.map((option) => {
                 const isActive = option.value === activeView
 
@@ -276,11 +267,7 @@ export default async function ReportsPage({ searchParams }: Props) {
                     key={option.value}
                     href={buildReportsHref(option.value, query, 1, activeAuthorId, activeAuthorLabel)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={
-                      isActive
-                        ? 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-sm font-semibold text-[#7a331b]'
-                        : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]'
-                    }
+                    className={cn('community-filter-pill min-h-11', isActive && 'community-filter-pill-active')}
                   >
                     {option.label}
                   </Link>
@@ -296,133 +283,174 @@ export default async function ReportsPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
-              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No reports match this view yet</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-                Try a different keyword or switch filters to return to your full report history.
+            <section className="mt-6 rounded-[1.5rem] border border-brand-pinkDark/12 bg-brand-cream/25 p-6 sm:p-8">
+              <p className="community-section-label text-[0.65rem]">Nothing in this view</p>
+              <h2 className="mt-2 font-serif text-2xl font-semibold text-brand-pinkDark sm:text-3xl">
+                No reports match your filters
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
+                Try another status tab or clear search — your full history is unchanged.
               </p>
-              <Link href="/reports" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                Reset report filters →
-              </Link>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link href="/reports" className="cta-secondary inline-flex min-h-12 items-center justify-center px-8 text-sm sm:min-h-11">
+                  Reset filters
+                </Link>
+                {activeAuthorId ? (
+                  <Link
+                    href={buildReportsHref(activeView, query, 1)}
+                    className="community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11"
+                  >
+                    Clear member filter
+                  </Link>
+                ) : null}
+                <Link href="/places" className="community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11">
+                  Browse stories
+                </Link>
+              </div>
             </section>
           ) : (
             <>
-              <section className="mt-6 space-y-4">
+              <section className="mt-6 space-y-4 sm:space-y-5">
                 {filteredReports.map((report) => {
-                const postTitle = report.post?.title ?? 'Story no longer available'
-                const postHref = report.post?.id ? buildStoryDetailHref(report.post.id, currentPath) : null
-                const authorName = report.post?.author?.full_name?.trim() || report.post?.author?.username || 'Solo SHE member'
-                const authorFilterHref = report.post?.author_id
-                  ? buildReportsHref(activeView, query, 1, report.post.author_id, authorName)
-                  : null
+                  const postTitle = report.post?.title ?? 'Story no longer available'
+                  const postHref = report.post?.id ? buildStoryDetailHref(report.post.id, currentPath) : null
+                  const authorName =
+                    report.post?.author?.full_name?.trim() || report.post?.author?.username || 'Solo SHE member'
+                  const authorFilterHref = report.post?.author_id
+                    ? buildReportsHref(activeView, query, 1, report.post.author_id, authorName)
+                    : null
 
-                return (
-                  <article key={report.id} className="editorial-card p-5 sm:p-6">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                          <span>Sent {formatDate(report.created_at)}</span>
-                          <span aria-hidden>•</span>
-                          <span>Reason: {REPORT_REASON_LABELS[report.reason]}</span>
-                        </div>
+                  return (
+                    <article key={report.id} className="editorial-card overflow-hidden p-0 shadow-[0_14px_36px_rgba(122,51,27,0.06)]">
+                      <div className="flex min-w-0">
+                        <div
+                          className={cn('w-1.5 shrink-0 sm:w-2', reportCardRailBg(report.status))}
+                          aria-hidden
+                        />
+                        <div className="flex min-w-0 flex-1 flex-col gap-5 p-5 sm:flex-row sm:gap-6 sm:p-6">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-brand-blue/70">
+                              <span>Submitted {formatDate(report.created_at)}</span>
+                              <span className="text-brand-pinkDark/35" aria-hidden>
+                                ·
+                              </span>
+                              <span>{REPORT_REASON_LABELS[report.reason]}</span>
+                            </div>
 
-                        <h2 className="mt-3 font-serif text-2xl font-semibold text-[#7a331b]">
-                          {postHref ? (
-                            <Link href={postHref} className="transition hover:text-[#e34b16]">
-                              {postTitle}
-                            </Link>
-                          ) : (
-                            postTitle
-                          )}
-                        </h2>
+                            <h2 className="mt-3 font-serif text-xl font-semibold text-brand-pinkDark sm:text-2xl">
+                              {postHref ? (
+                                <Link href={postHref} className="transition hover:text-brand-orange">
+                                  {postTitle}
+                                </Link>
+                              ) : (
+                                postTitle
+                              )}
+                            </h2>
 
-                        <p className="mt-3 text-sm leading-7 text-[#6d5849]">
-                          {report.description?.trim()
-                            ? report.description
-                            : 'You did not add extra notes for this report.'}
-                        </p>
+                            <p className="mt-3 text-sm leading-relaxed text-brand-blue/85">
+                              {report.description?.trim()
+                                ? report.description
+                                : 'No additional notes were added with this report.'}
+                            </p>
 
-                        {report.post ? (
-                          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-[#6d5849]">
-                            <span>
-                              Story by <span className="font-semibold text-[#7a331b]">{authorName}</span>
+                            {report.post ? (
+                              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-brand-blue/85">
+                                <span>
+                                  Story by <span className="font-semibold text-brand-pinkDark">{authorName}</span>
+                                </span>
+                                {authorFilterHref ? (
+                                  <Link
+                                    href={authorFilterHref}
+                                    className="font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline"
+                                  >
+                                    Filter to this author
+                                  </Link>
+                                ) : null}
+                              </div>
+                            ) : null}
+
+                            {report.reviewed_at ? (
+                              <p className="mt-4 text-xs font-medium uppercase tracking-[0.12em] text-brand-blue/65">
+                                Last moderation update · {formatDate(report.reviewed_at)}
+                              </p>
+                            ) : null}
+                            {report.admin_notes?.trim() ? (
+                              <div className="mt-4 rounded-[1.15rem] border border-brand-pinkDark/12 bg-brand-cream/35 px-4 py-3 sm:px-5 sm:py-4">
+                                <p className="profile-form-section-label text-[0.62rem]">Note from moderators</p>
+                                <p className="mt-2 text-sm leading-relaxed text-brand-blue/90">{report.admin_notes}</p>
+                              </div>
+                            ) : null}
+                            {report.status === 'pending' ? (
+                              <PendingReportWithdrawal reportId={report.id} returnPath={currentPath} />
+                            ) : null}
+                          </div>
+
+                          <div className="flex w-full shrink-0 flex-col gap-3 rounded-xl border border-brand-pinkDark/10 bg-brand-cream/30 p-4 sm:max-w-[15rem] sm:p-4">
+                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-brand-blue/65">
+                              Status
+                            </p>
+                            <span
+                              className={cn(
+                                'inline-flex min-h-10 w-full items-center justify-center rounded-full border px-3 text-center text-sm font-semibold leading-snug sm:min-h-0 sm:justify-start sm:px-4 sm:py-2',
+                                reportStatusBadgeClasses(report.status)
+                              )}
+                            >
+                              {REPORT_STATUS_LABELS[report.status]}
                             </span>
-                            {authorFilterHref ? (
-                              <Link href={authorFilterHref} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                                Only this member&apos;s stories
+                            <p className="text-xs leading-relaxed text-brand-blue/75">
+                              Record updated {formatDate(report.updated_at)}
+                            </p>
+                            {postHref ? (
+                              <Link
+                                href={postHref}
+                                className="text-sm font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline"
+                              >
+                                Open story
                               </Link>
                             ) : null}
                           </div>
-                        ) : null}
-
-                        {report.reviewed_at ? (
-                          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-                            Moderation progress timestamp · {formatDate(report.reviewed_at)}
-                          </p>
-                        ) : null}
-                        {report.admin_notes?.trim() ? (
-                          <div className="mt-4 rounded-[1.25rem] border border-[#f0e1cf] bg-[#fffaf5] p-4 text-sm text-[#6d5849]">
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">Moderator notes</p>
-                            <p className="mt-2 leading-6">{report.admin_notes}</p>
-                          </div>
-                        ) : null}
-                        {report.status === 'pending' ? (
-                          <PendingReportWithdrawal reportId={report.id} returnPath={currentPath} />
-                        ) : null}
+                        </div>
                       </div>
-
-                      <div className="flex w-full flex-col gap-3 lg:w-auto lg:min-w-[14rem] lg:items-end">
-                        <span className={`inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${statusTone(report.status)}`}>
-                          {REPORT_STATUS_LABELS[report.status]}
-                        </span>
-                        <p className="text-sm text-[#6d5849] lg:text-right">
-                          Last updated {formatDate(report.updated_at)}
-                        </p>
-                        {postHref ? (
-                          <Link href={postHref} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                            Open story →
-                          </Link>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
-                )
+                    </article>
+                  )
                 })}
               </section>
 
               {hasMoreReports ? (
-                <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                <section className="editorial-card-strong mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                   <div>
-                    <p className="text-sm font-semibold text-[#7a331b]">Loaded {filteredReports.length} reports so far</p>
-                    <p className="mt-1 text-sm text-[#6d5849]">
-                      Need older moderation updates? Load the next set without dropping your current status view.
+                    <p className="text-sm font-semibold text-brand-pinkDark">
+                      Showing {filteredReports.length} report{filteredReports.length === 1 ? '' : 's'} in this view
+                    </p>
+                    <p className="mt-1 text-sm text-brand-blue/85">
+                      Older entries load with the same filters so you can read chronologically.
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
                     {page > 1 ? (
                       <Link
                         href={buildReportsHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
-                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                        className="community-filter-pill inline-flex min-h-11 items-center justify-center"
                       >
-                        Show fewer
+                        Previous page
                       </Link>
                     ) : null}
                     <Link
                       href={buildReportsHref(activeView, query, page + 1, activeAuthorId, activeAuthorLabel)}
-                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#7a331b] px-5 text-sm font-semibold text-white transition hover:bg-[#632815]"
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-pinkDark px-6 text-sm font-semibold text-white transition hover:bg-brand-pinkDark/90"
                     >
-                      Load older reports
+                      Next page
                     </Link>
                   </div>
                 </section>
               ) : page > 1 ? (
                 <section className="editorial-card mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                  <p className="text-sm text-[#6d5849]">You have reached the oldest report in this filtered history.</p>
+                  <p className="text-sm text-brand-blue/85">End of list for this filter.</p>
                   <Link
                     href={buildReportsHref(activeView, query, page - 1, activeAuthorId, activeAuthorLabel)}
-                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-5 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                    className="community-filter-pill inline-flex min-h-11 items-center justify-center"
                   >
-                    Show fewer
+                    Previous page
                   </Link>
                 </section>
               ) : null}
