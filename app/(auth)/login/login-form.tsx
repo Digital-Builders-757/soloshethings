@@ -93,19 +93,25 @@ export function LoginForm() {
 
             {notice === "confirm_email" && (
               <div
-                className="mt-6 rounded-2xl border border-[#efd4b2] bg-[#f7e8be]/40 p-4 text-sm text-[#7a331b]"
+                className="mt-6 rounded-2xl border border-[#efd4b2] bg-[#f7e8be]/40 p-4 text-sm leading-6 text-[#7a331b]"
                 role="status"
               >
-                Check your email to confirm your account, then sign in below.
+                <p className="font-medium">Almost there—we sent a confirmation link to your inbox.</p>
+                <p className="mt-2 text-[#6d5849]">
+                  Open the email and tap the link to verify your address, then sign in below whenever you&apos;re ready.
+                  If nothing shows up within a minute or two, check your <span className="font-medium text-[#7a331b]">Spam</span> or{" "}
+                  <span className="font-medium text-[#7a331b]">Promotions</span> folder; providers sometimes tuck it away.
+                </p>
               </div>
             )}
 
             {notice === "confirmed_email" && (
               <div
-                className="mt-6 rounded-2xl border border-[#d7e8cc] bg-[#f4fbef] p-4 text-sm text-[#365229]"
+                className="mt-6 rounded-2xl border border-[#d7e8cc] bg-[#f4fbef] p-4 text-sm leading-6 text-[#365229]"
                 role="status"
               >
-                Your email is confirmed. Sign in below to continue.
+                <p className="font-medium">Your email is confirmed—nice work.</p>
+                <p className="mt-2 text-[#4a6838]/95">Sign in below and we&apos;ll take you wherever you wanted to go next.</p>
               </div>
             )}
 

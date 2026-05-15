@@ -847,6 +847,17 @@ Next Steps:
 **Next Steps:**
 - Add GitHub Actions secrets (`SUPABASE_ACCESS_TOKEN`, staging/production project refs + DB passwords); confirm first workflow runs succeed after merge/push paths
 
+#### 2026-05-14 - Auth UX: confirmation email messaging (login + signup copy)
+
+**Status:** ✅ SHIPPED
+
+**Description:**
+- Calmer copy for **`/login`** `notice=confirm_email` / `confirmed_email` banners (Spam/Promotions hint on confirm path).
+- Matching one-line signup helper on **`/signup`** so the confirmation flow feels connected (`app/(auth)/signup/page.tsx`); no redirects, Supabase behavior, or server actions touched.
+
+**Verification:**
+- `npm run lint`, `npm run build` (ship checks)
+
 #### [Future Entry Template]
 
 **Status:** 🚧 IN PROGRESS
