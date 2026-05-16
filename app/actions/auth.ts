@@ -346,7 +346,10 @@ export async function requestPasswordReset(
   }
 
   const origin = await getRequestOriginOrConfiguredAppOrigin()
-  const redirectTo = `${origin}/auth/callback?next=/reset-password`
+  // Point directly to /reset-password — no query params, so Supabase URL allowlisting
+  // works correctly. The page detects ?code= and forwards to /auth/callback for the
+  // PKCE exchange before rendering the form.
+  const redirectTo = `${origin}/reset-password`
 
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })

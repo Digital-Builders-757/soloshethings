@@ -1,12 +1,22 @@
 /**
  * Reset Password Page
  *
- * Server Component — verifies an active recovery session exists before rendering
- * the password form. If the session is missing (link expired / not clicked),
- * the user is sent back to /forgot-password to request a fresh link.
- *
  * Route: /reset-password
  * Follows: docs/contracts/AUTH_CONTRACT.md
+ *
+ * Two entry modes:
+ *
+ * 1. Via recovery email link — Supabase delivers the PKCE code directly here:
+ *      /reset-password?code=xxxx
+ *    The page detects the code and forwards to /auth/callback, which does the
+ *    PKCE exchange (Session Components cannot set cookies), then redirects back
+ *    here. On the second visit there is no code and a live session exists.
+ *
+ * 2. Already has a recovery session — no code in URL, getUser() succeeds,
+ *    the password form is rendered.
+ *
+ * If neither condition is met (no code, no session) the user is sent back to
+ * /forgot-password to request a fresh link.
  */
 
 import { Suspense } from 'react'
@@ -22,10 +32,23 @@ function ResetPasswordFallback() {
   )
 }
 
-export default async function ResetPasswordPage() {
+export default async function ResetPasswordPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string }>
+}) {
+  const { code } = await searchParams
+
+  // Recovery email lands here with ?code=xxxx.
+  // Delegate the PKCE exchange to the /auth/callback route handler (which can
+  // set cookies), passing next=/reset-password so it returns here after exchange.
+  if (code) {
+    redirect(`/auth/callback?code=${encodeURIComponent(code)}&next=/reset-password`)
+  }
+
+  // No code — verify an active recovery session was established by the callback.
   const user = await getUser()
 
-  // No active session — the recovery link was never clicked, already used, or expired
   if (!user) {
     redirect('/forgot-password?notice=link_expired')
   }
