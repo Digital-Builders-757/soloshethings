@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { createCommunityPost } from '@/app/actions/community-posts'
 import { CommunityDiscoveryFields } from '@/components/community/community-discovery-fields'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
+import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
@@ -28,11 +29,15 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="cta-primary min-h-12 w-full px-8 py-3 text-sm shadow-[0_10px_24px_rgba(227,75,22,0.3)] hover:bg-[#c74010] disabled:pointer-events-none disabled:opacity-60"
+      className="cta-primary min-h-12 w-full px-8 py-3 text-sm disabled:pointer-events-none disabled:opacity-60"
     >
       {pending ? 'Saving your post…' : 'Publish my post'}
     </button>
   )
+}
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <p className="profile-form-section-label mb-3 text-[0.62rem]">{children}</p>
 }
 
 export function SubmitForm({ recentPostCount }: SubmitFormProps) {
@@ -45,8 +50,8 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
 
   const uploadSummary = useMemo(() => {
     if (previews.length === 0) return 'No photos selected yet.'
-    if (previews.length === 1) return '1 photo ready to upload.'
-    return `${previews.length} photos ready to upload.`
+    if (previews.length === 1) return '1 photo queued for upload.'
+    return `${previews.length} photos queued for upload.`
   }, [previews.length])
 
   useEffect(() => {
@@ -82,153 +87,176 @@ export function SubmitForm({ recentPostCount }: SubmitFormProps) {
   }
 
   return (
-    <div className="editorial-card-strong p-6 sm:p-8">
-      <h1 className="font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl">Submit a safe spot or story</h1>
-      <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-        This is now a real save flow. Posts publish into your community record right away, private posts stay
-        scoped to you, and the member feed now shows public stories plus your own submissions.
-      </p>
+    <div className="editorial-card-strong overflow-hidden shadow-[0_20px_52px_rgba(122,51,27,0.09)]">
+      <div className="border-b border-brand-pinkDark/10 bg-gradient-to-br from-brand-cream/45 via-white to-white px-6 py-6 sm:px-8 sm:py-7">
+        <p className="eyebrow text-[0.62rem] tracking-[0.2em]">Compose</p>
+        <h2 className="mt-2 font-serif text-2xl font-bold text-brand-pinkDark sm:text-3xl">Draft a new spot or story</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
+          Take your time — title, narrative, optional photos, and privacy save together when you publish. Everything below stays on this
+          card until you submit.
+        </p>
+      </div>
 
-      {state?.success ? (
-        <div
-          className="mt-6 rounded-2xl border border-green-200/80 bg-green-50/90 p-4 text-sm text-green-800"
-          role="status"
-          aria-live="polite"
-        >
-          <p>
-            Post saved. {state.uploadedCount ?? 0} image{state.uploadedCount === 1 ? '' : 's'} uploaded.
-            {recentPostCount === 0 ? ' Your first submission is now on file.' : ' Your latest submission appears below.'}
-          </p>
-
-          <div className="mt-3 flex flex-wrap gap-3">
-            {state.postId ? (
-              <Link
-                href={buildStoryDetailHref(state.postId, '/submit')}
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-green-900 px-4 text-sm font-semibold text-white transition hover:bg-green-950"
-              >
-                Open story controls
-              </Link>
-            ) : null}
-            <Link
-              href="/places"
-              className="inline-flex min-h-10 items-center justify-center rounded-full border border-green-300 bg-white px-4 text-sm font-semibold text-green-900 transition hover:border-green-400 hover:text-green-950"
-            >
-              Browse community feed
-            </Link>
-          </div>
-        </div>
-      ) : null}
-
-      {state?.error ? (
-        <div
-          className="mt-6 rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-800"
-          role="alert"
-          aria-live="assertive"
-        >
-          {state.error}
-        </div>
-      ) : null}
-
-      <form ref={formRef} action={formAction} className="mt-8 space-y-6">
-        <div>
-          <label htmlFor="title" className="mb-2 block text-sm font-semibold text-[#7a331b]">
-            Title <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            className="editorial-input warm-focus-ring min-w-0 px-4 py-3"
-            placeholder="Name of the safe spot or story title"
-            maxLength={200}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="content" className="mb-2 block text-sm font-semibold text-[#7a331b]">
-            Description <span className="text-red-600">*</span>
-          </label>
-          <textarea
-            id="content"
-            name="content"
-            rows={6}
-            maxLength={5000}
-            onChange={(event) => setContentLength(event.target.value.length)}
-            className="editorial-input warm-focus-ring min-w-0 resize-y px-4 py-3"
-            placeholder="Tell us why this place felt safe, useful, or memorable. Include the practical context another member would want to know."
-            required
-          />
-          <p className="mt-1 text-xs text-muted-foreground">{contentLength} / 5000 characters</p>
-        </div>
-
-        <CommunityDiscoveryFields idPrefix="submit" />
-
-        <div>
-          <label htmlFor="images" className="mb-2 block text-sm font-semibold text-[#7a331b]">
-            Photos
-          </label>
-          <div className="rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-4 sm:p-5">
-            <input
-              id="images"
-              name="images"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              onChange={handleImagesChange}
-              className="warm-focus-ring block w-full rounded-2xl border border-[#ead8c2] bg-white px-4 py-3 text-sm text-[#6d5849] file:mr-3 file:rounded-full file:border-0 file:bg-[#f7e8be] file:px-3 file:py-2 file:font-semibold file:text-[#7a331b] hover:file:bg-[#f3ddb3]"
-            />
-            <p className="mt-3 text-sm text-[#6d5849]">{uploadSummary}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Up to 5 JPG, PNG, or WebP images, 5MB each. We do not use face recognition on user-uploaded
-              content.
+      <div className="space-y-8 px-6 py-8 sm:space-y-10 sm:px-8 sm:py-10">
+        {state?.success ? (
+          <div
+            className="rounded-[1.25rem] border border-emerald-300/70 bg-emerald-50/95 p-4 text-sm text-emerald-950 sm:p-5"
+            role="status"
+            aria-live="polite"
+          >
+            <p className="font-semibold text-emerald-950">Post saved</p>
+            <p className="mt-2 leading-relaxed">
+              {state.uploadedCount ?? 0} image{state.uploadedCount === 1 ? '' : 's'} uploaded.
+              {recentPostCount === 0 ? ' Your first submission is on file.' : ' It appears in your shelf on the right.'}
             </p>
 
-            {previews.length > 0 ? (
-              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {previews.map((preview) => (
-                  <div key={preview.id} className="overflow-hidden rounded-2xl border border-[#ead8c2] bg-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={preview.url} alt={preview.name} className="h-40 w-full object-cover" />
-                    <p className="truncate px-3 py-2 text-xs text-[#6d5849]">{preview.name}</p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {state.postId ? (
+                <Link
+                  href={buildStoryDetailHref(state.postId, '/submit')}
+                  className="cta-primary inline-flex min-h-10 items-center justify-center px-5 text-sm"
+                >
+                  Open story workspace
+                </Link>
+              ) : null}
+              <Link href="/places" className="cta-secondary inline-flex min-h-10 items-center justify-center px-5 text-sm">
+                View community feed
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : null}
 
-        <div>
-          <label htmlFor="privacy" className="mb-2 block text-sm font-semibold text-[#7a331b]">
-            Privacy setting
-          </label>
-          <select
-            id="privacy"
-            name="privacy"
-            defaultValue="public"
-            className="editorial-input warm-focus-ring min-w-0 px-4 py-3"
+        {state?.error ? (
+          <div
+            className="rounded-[1.25rem] border border-red-200/90 bg-red-50/95 p-4 text-sm text-red-900 sm:p-5"
+            role="alert"
+            aria-live="assertive"
           >
-            <option value="public">Public, visible to authenticated members in the community feed</option>
-            <option value="private">Private, visible only to you</option>
-          </select>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Your latest posts stay visible here after save, and public stories now appear in the member feed.
-          </p>
-        </div>
+            {state.error}
+          </div>
+        ) : null}
 
-        <div className="rounded-2xl bg-neutral-50 p-4">
-          <p className="text-sm text-neutral-700">
-            <strong>Privacy note:</strong> Your photos are yours. We do not use face recognition on
-            user-uploaded content. See our{' '}
-            <a href="/privacy" className="font-medium text-[#e34b16] hover:text-[#c74010]">
-              Privacy Policy
-            </a>{' '}
-            for more information.
-          </p>
-        </div>
+        <form ref={formRef} action={formAction} className="space-y-10">
+          <section className="space-y-4">
+            <SectionLabel>Story</SectionLabel>
+            <div>
+              <label htmlFor="title" className="mb-2 block text-sm font-semibold text-brand-pinkDark">
+                Title <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                className="editorial-input warm-focus-ring min-w-0 px-4 py-3"
+                placeholder="Name of the safe spot or story title"
+                maxLength={200}
+                required
+              />
+            </div>
 
-        <SubmitButton />
-      </form>
+            <div>
+              <label htmlFor="content" className="mb-2 block text-sm font-semibold text-brand-pinkDark">
+                Description <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                id="content"
+                name="content"
+                rows={6}
+                maxLength={5000}
+                onChange={(event) => setContentLength(event.target.value.length)}
+                className="editorial-input warm-focus-ring min-w-0 resize-y px-4 py-3"
+                placeholder="Tell us why this place felt safe, useful, or memorable. Include the practical context another member would want to know."
+                required
+              />
+              <p className="mt-1.5 text-xs text-brand-blue/70">{contentLength} / 5000 characters</p>
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <SectionLabel>Place & angles</SectionLabel>
+            <CommunityDiscoveryFields idPrefix="submit" />
+          </section>
+
+          <section className="space-y-4">
+            <SectionLabel>Photos (optional)</SectionLabel>
+            <div
+              className={cn(
+                'rounded-[1.35rem] border-2 border-dashed border-brand-orange/28 bg-gradient-to-b from-brand-cream/35 via-white to-white px-4 py-6 sm:px-6 sm:py-7',
+                previews.length > 0 && 'border-brand-orange/40'
+              )}
+            >
+              <p className="text-sm font-semibold text-brand-pinkDark">Bring the scene to life</p>
+              <p className="mt-1 text-xs leading-relaxed text-brand-blue/80">
+                JPG, PNG, or WebP · up to 5 files · 5MB each · validated server-side before storage
+              </p>
+
+              <input
+                id="images"
+                name="images"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                onChange={handleImagesChange}
+                className={cn(
+                  'warm-focus-ring mt-4 block w-full cursor-pointer rounded-xl border border-brand-pinkDark/14 bg-white px-4 py-3 text-sm text-brand-blue',
+                  'file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-brand-cream file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand-pinkDark',
+                  'hover:file:bg-brand-gold/35'
+                )}
+              />
+
+              <p className="mt-3 text-sm font-medium text-brand-pinkDark">{uploadSummary}</p>
+              <p className="mt-1 text-xs leading-relaxed text-brand-blue/75">
+                We do not use face recognition on member uploads. Images follow your story privacy setting.
+              </p>
+
+              {previews.length > 0 ? (
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {previews.map((preview) => (
+                    <figure
+                      key={preview.id}
+                      className="story-detail-photo-frame overflow-hidden rounded-xl border border-brand-gold/25 bg-white shadow-[0_10px_28px_rgba(122,51,27,0.07)]"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={preview.url} alt={preview.name} className="aspect-[4/3] w-full object-cover" />
+                      <figcaption className="truncate px-3 py-2 text-xs font-medium text-brand-blue/85">{preview.name}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <SectionLabel>Who can see this</SectionLabel>
+            <div>
+              <label htmlFor="privacy" className="mb-2 block text-sm font-semibold text-brand-pinkDark">
+                Privacy setting
+              </label>
+              <select id="privacy" name="privacy" defaultValue="public" className="editorial-input warm-focus-ring min-w-0 px-4 py-3">
+                <option value="public">Public — visible to authenticated members in the community feed</option>
+                <option value="private">Private — visible only to you</option>
+              </select>
+              <p className="mt-1.5 text-xs leading-relaxed text-brand-blue/75">
+                After publishing, open your story to edit text, manage photos, archive, or restore.
+              </p>
+            </div>
+
+            <div className="rounded-[1.15rem] border border-brand-pinkDark/12 bg-brand-cream/30 px-4 py-3 sm:px-5 sm:py-4">
+              <p className="text-sm leading-relaxed text-brand-blue/90">
+                <span className="font-semibold text-brand-pinkDark">Privacy note:</span> Your photos stay yours. Read our{' '}
+                <a href="/privacy" className="font-semibold text-brand-orange underline-offset-2 hover:text-brand-coral hover:underline">
+                  Privacy Policy
+                </a>{' '}
+                for how we handle uploads.
+              </p>
+            </div>
+          </section>
+
+          <div className="border-t border-brand-pinkDark/10 pt-8">
+            <SubmitButton />
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

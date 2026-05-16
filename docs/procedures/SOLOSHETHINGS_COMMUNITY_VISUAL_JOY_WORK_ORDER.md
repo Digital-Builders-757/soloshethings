@@ -2,7 +2,7 @@
 
 **Execution batch for making the signed-in community surfaces feel more alive, playful, and premium.**
 
-**Status (2026-05-15):** Ready for execution.
+**Status (2026-05-15):** Documented for follow-on work. Shared community styling is centralized in **`app/globals.css`** (community/editorial/chip/badge/save-card classes) and **`components/community/community-story-surface.tsx`** (card class helpers + chip/badge components). Extend new community UI there; do not copy-paste long class strings across pages. Full acceptance QA list below remains useful for regressions.
 
 **Why this exists:** `/places`, `/saved`, `/reports`, and `/submit` already do real work. The next opportunity is to make them feel better — more colorful, more expressive, more memorable — without losing trust, clarity, or privacy boundaries.
 

@@ -58,8 +58,8 @@ export function PlaceCard({
             </div>
           )}
           {isFeatured && (
-            <div className="absolute top-4 left-4 bg-brand-yellow1 text-black px-3 py-1 rounded text-sm font-semibold">
-              Featured
+            <div className="absolute left-4 top-4">
+              <span className="community-badge-featured shadow-md">Featured</span>
             </div>
           )}
         </div>

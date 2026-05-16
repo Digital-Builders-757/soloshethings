@@ -12,7 +12,7 @@ function WithdrawButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#cfa882] bg-white px-4 text-xs font-semibold uppercase tracking-[0.12em] text-[#7a331b] transition hover:border-[#e34b16]/50 hover:text-[#e34b16] disabled:opacity-50"
+      className="inline-flex min-h-10 items-center justify-center rounded-full border border-brand-pinkDark/22 bg-white px-4 text-xs font-semibold uppercase tracking-[0.12em] text-brand-pinkDark transition hover:border-brand-orange/40 hover:text-brand-orange disabled:opacity-50"
     >
       {pending ? 'Withdrawing…' : 'Withdraw report'}
     </button>
@@ -30,7 +30,7 @@ export function PendingReportWithdrawal({ reportId, returnPath }: { reportId: st
   }, [router, state?.success])
 
   return (
-    <div className="mt-4 rounded-2xl border border-dashed border-[#d9c4a8] bg-[#fffaf4] p-4">
+    <div className="mt-4 rounded-2xl border border-dashed border-brand-pinkDark/20 bg-brand-cream/40 p-4">
       {state?.error ? (
         <p className="text-sm text-red-700" role="alert">
           {state.error}
@@ -41,7 +41,7 @@ export function PendingReportWithdrawal({ reportId, returnPath }: { reportId: st
         </p>
       ) : (
         <>
-          <p className="text-sm leading-6 text-[#6d5849]">
+          <p className="text-sm leading-relaxed text-brand-blue/85">
             Sent this by mistake before moderators acted? Withdrawing clears your open pending report for this story. This action is logged
             and only works while status is pending.
           </p>

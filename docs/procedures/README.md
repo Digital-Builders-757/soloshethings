@@ -18,8 +18,16 @@ These are useful context, but they are **not** the active queue:
 ## Active work-order docs
 
 These are the current execution docs:
+- `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
+
+## Visual system prompt packs
+
+Implementation pointers live in **`docs/BRAND_STYLE_GUIDE.md`** (section **Signed-in & community surfaces**). Use these procedures for scoped passes, not as the active queue:
+
+- `docs/procedures/SOLOSHETHINGS_APP_SHELL_AND_PROFILE_VISUAL_WORK_ORDER.md`
+- `docs/procedures/SOLOSHETHINGS_COMMUNITY_VISUAL_JOY_WORK_ORDER.md`
 
 ## Historical work-order docs
 
@@ -32,17 +40,19 @@ These are completed batch records unless a regression explicitly reopens them:
 - `docs/procedures/SOLOSHETHINGS_LAUNCH_HARDENING_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_SMOKE_AND_RELEASE_WORK_ORDER.md`
 
-## Active queue snapshot (2026-05-14)
+## Active queue snapshot (2026-05-15)
 
-1. Community second-pass depth (`SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`)
-2. Moderation/admin surfaces and deeper owner lifecycle controls (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
-3. Newsletter + marketing operations follow-through (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
+1. Supabase CI/CD recovery + hosted migration debugging (`SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`)
+2. Community second-pass depth (`SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`)
+3. Moderation/admin surfaces and deeper owner lifecycle controls (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
+4. Newsletter + marketing operations follow-through (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`)
 
 ## Pause / handoff note
 
 If this repo is being paused so another tool or person can take over:
 - resume from `docs/procedures/IMPLEMENTATION_ROADMAP.md`
-- start with `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`
+- if hosted migrations / deploy plumbing are failing, start with `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
+- otherwise start with `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md`
 - verify with `npm run typecheck`, `npm run lint`, and `npm run build` before calling any batch done
 - only then move into the post-launch backlog work order
 

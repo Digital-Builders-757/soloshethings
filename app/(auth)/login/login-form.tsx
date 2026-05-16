@@ -122,6 +122,12 @@ export function LoginForm() {
               >
                 <p className="font-medium">Password updated successfully.</p>
                 <p className="mt-2 text-[#4a6838]/95">Sign in with your new password to continue.</p>
+            {notice === "confirmed_email" && (
+              <div
+                className="mt-6 rounded-2xl border border-[#d7e8cc] bg-[#f4fbef] p-4 text-sm text-[#365229]"
+                role="status"
+              >
+                Your email is confirmed. Sign in below to continue.
               </div>
             )}
 

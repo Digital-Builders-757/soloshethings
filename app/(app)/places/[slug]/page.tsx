@@ -8,17 +8,27 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 
 import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
+import {
+  CommunityBadgeFeatured,
+  CommunityBadgeReported,
+  CommunityChipPrivate,
+  CommunityChipPublic,
+  CommunityChipTopic,
+} from '@/components/community/community-story-surface'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
+import { Avatar } from '@/components/ui/avatar'
 import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
 import { COMMUNITY_STORY_TOPIC_LABELS, placeLabelMatchKey, type CommunityStoryTopicSlug } from '@/lib/community-story-taxonomy'
 import { ensureCommunityStoryReadAllowed } from '@/lib/billing/community-story-reads'
 import { type CommunityFeedPost, getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
 import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
+import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
+import { cn } from '@/lib/utils'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -149,6 +159,7 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
     placeLabel: post.place_label,
     storyTags: post.story_tags ?? [],
   })
+  const authorAvatarUrl = await getAvatarSignedUrl(post.author?.avatar_url)
   const authorName = post.author?.full_name?.trim() || post.author?.username || 'Solo SHE member'
   const basePlaceKey = placeLabelMatchKey(post.place_label ?? null)
   const baseTopicSet = new Set(post.story_tags ?? [])
@@ -175,138 +186,191 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
 
   return (
     <main className="section-y shell-inline mx-auto min-w-0 w-full max-w-6xl flex-1 overflow-x-clip py-10 sm:py-14">
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-[#6d5849]">
-        <Link href="/dashboard" className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-          My dashboard
-        </Link>
-        <span className="mx-2 text-[#d9c4a8]" aria-hidden>
-          /
-        </span>
-        <Link href={returnLink.href} className="font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-          {returnLink.label}
-        </Link>
-        <span className="mx-2 text-[#d9c4a8]" aria-hidden>
-          /
-        </span>
-        <span className="font-medium text-[#7a331b]">Story detail</span>
-      </nav>
+      <div className="story-detail-breadcrumb-strip mb-6">
+        <nav aria-label="Breadcrumb" className="text-sm text-brand-blue/85">
+          <Link href="/dashboard" className="font-semibold text-brand-orange transition hover:text-brand-coral">
+            My dashboard
+          </Link>
+          <span className="mx-2 text-brand-gold/90" aria-hidden>
+            /
+          </span>
+          <Link href={returnLink.href} className="font-semibold text-brand-orange transition hover:text-brand-coral">
+            {returnLink.label}
+          </Link>
+          <span className="mx-2 text-brand-gold/90" aria-hidden>
+            /
+          </span>
+          <span className="font-medium text-brand-pinkDark">Story detail</span>
+        </nav>
+        <p className="story-detail-return-hint">
+          Return path: you can jump back to{' '}
+          <Link href={returnLink.href} className="font-semibold text-brand-orange underline-offset-2 hover:underline">
+            {returnLink.label.toLowerCase()}
+          </Link>{' '}
+          anytime — filters and workspace context stay where you left them.
+        </p>
+      </div>
 
       <CommunitySurfaceNav active={returnLink.active} backHref={returnLink.href} backLabel={returnLink.label} />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <article className="min-w-0">
-          <header className="editorial-card-strong overflow-hidden p-6 sm:p-8 lg:p-10">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#9b7455]">
-              <span>{post.is_public ? 'Public member story' : 'Private story'}</span>
-              {post.is_featured ? (
-                <>
-                  <span aria-hidden>•</span>
-                  <span>Featured</span>
-                </>
-              ) : null}
-              <span aria-hidden>•</span>
-              <span>Published</span>
-            </div>
-
-            <h1 className="mt-4 text-balance font-serif text-3xl font-bold text-[#7a331b] sm:text-4xl md:text-5xl">
-              {post.title}
-            </h1>
-
-            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[#6d5849]">
-              <span>
-                By <span className="font-semibold text-[#7a331b]">{authorName}</span>
-              </span>
-              <span aria-hidden>•</span>
-              <time dateTime={post.created_at}>{formatPublishedAt(post.created_at)}</time>
-              {post.place_label?.trim() ? (
-                <>
-                  <span aria-hidden>•</span>
-                  <span>{post.place_label.trim()}</span>
-                </>
-              ) : null}
-              {post.images.length > 0 ? (
-                <>
-                  <span aria-hidden>•</span>
-                  <span>{post.images.length} photo{post.images.length === 1 ? '' : 's'}</span>
-                </>
-              ) : null}
-              {latestReport ? (
-                <>
-                  <span aria-hidden>•</span>
-                  <span>Reported by you</span>
-                </>
-              ) : null}
-            </div>
-
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-[#6d5849] sm:text-base">
-              This detail page is now the real view for community stories. If something here breaks trust or safety,
-              members can send a private report for review.
-            </p>
-
-            {(post.story_tags ?? []).filter(Boolean).length > 0 ? (
-              <div className="mt-4 flex flex-wrap gap-2" aria-label="Story angles">
-                {(post.story_tags ?? []).map((slug) => {
-                  const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
-                  if (!label) return null
-                  return (
-                    <span
-                      key={slug}
-                      className="rounded-full border border-[#ead8c2] bg-[#fff8ec] px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#9b7455]"
-                    >
-                      {label}
-                    </span>
-                  )
-                })}
+          <header
+            className={cn(
+              'places-hero-shell overflow-hidden p-6 sm:p-8 lg:p-10',
+              post.is_featured && 'story-detail-hero-featured'
+            )}
+          >
+            <div className="places-hero-inner">
+              <div className="flex flex-wrap items-center gap-2">
+                {post.is_public ? (
+                  <CommunityChipPublic>Public member story</CommunityChipPublic>
+                ) : (
+                  <CommunityChipPrivate>Private story</CommunityChipPrivate>
+                )}
+                {post.is_featured ? <CommunityBadgeFeatured /> : null}
+                <span className="story-meta-chip">Published</span>
+                {latestReport ? <CommunityBadgeReported /> : null}
               </div>
-            ) : null}
+
+              <h1 className="mt-5 text-balance font-serif text-3xl font-bold text-brand-pinkDark sm:text-4xl md:text-5xl lg:text-[3.25rem] lg:leading-[1.12]">
+                {post.title}
+              </h1>
+
+              {post.place_label?.trim() ? (
+                <p className="story-detail-meta-kicker mt-3">
+                  <span className="font-semibold uppercase tracking-[0.14em] text-brand-orange">Place anchor · </span>
+                  {post.place_label.trim()}
+                </p>
+              ) : null}
+
+              <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-brand-brown/10 pt-6">
+                <Avatar
+                  src={authorAvatarUrl}
+                  fallback={authorName.slice(0, 2).toUpperCase()}
+                  alt={`${authorName} avatar`}
+                  size="lg"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-brand-blue/90">
+                    <span className="font-semibold text-brand-pinkDark">{authorName}</span>
+                    {isOwnPost ? (
+                      <span className="ml-2 inline-flex rounded-full bg-brand-gold/25 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-brand-pinkDark">
+                        Your story
+                      </span>
+                    ) : null}
+                  </p>
+                  <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-brand-blue/85">
+                    <time dateTime={post.created_at} className="font-medium text-brand-pinkDark/90">
+                      {formatPublishedAt(post.created_at)}
+                    </time>
+                    {post.images.length > 0 ? (
+                      <>
+                        <span className="text-brand-gold" aria-hidden>
+                          ·
+                        </span>
+                        <span>
+                          {post.images.length} photo{post.images.length === 1 ? '' : 's'}
+                        </span>
+                      </>
+                    ) : null}
+                  </p>
+                </div>
+              </div>
+
+              <div className="community-context-banner mt-6 px-4 py-3 text-sm leading-relaxed text-brand-blue/90">
+                This is the live member story view — same copy others see when the post is public. If something feels off,
+                use reporting tools in the sidebar for public stories.
+              </div>
+
+              {(post.story_tags ?? []).filter(Boolean).length > 0 ? (
+                <div className="mt-5 flex flex-wrap gap-2" aria-label="Story angles">
+                  {(post.story_tags ?? []).map((slug) => {
+                    const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
+                    if (!label) return null
+                    return (
+                      <CommunityChipTopic key={slug} className="px-3 py-1 text-[0.65rem]">
+                        {label}
+                      </CommunityChipTopic>
+                    )
+                  })}
+                </div>
+              ) : null}
+            </div>
           </header>
 
           {post.images.length > 0 ? (
-            <section className="mt-6 grid gap-4 sm:grid-cols-2" aria-label="Story photos">
-              {post.images.map((image, index) => (
-                <div key={image.id} className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-[#ead8c2] bg-[#f6efe4] shadow-sm">
-                  {image.signedUrl ? (
-                    <Image
-                      src={image.signedUrl}
-                      alt={image.alt_text ?? `${post.title} photo ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-[#6d5849]">
-                      Photo preview unavailable right now.
-                    </div>
-                  )}
+            <section className="mt-8" aria-labelledby="story-photos-heading">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p id="story-photos-heading" className="story-detail-photo-section-label">
+                    Field photos
+                  </p>
+                  <p className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">How this story looked on the ground</p>
                 </div>
-              ))}
+                <span className="community-summary-chip community-summary-chip-gold text-xs">
+                  {post.images.length} image{post.images.length === 1 ? '' : 's'}
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {post.images.map((image, index) => (
+                  <figure key={image.id} className="story-detail-photo-frame relative aspect-[4/3]">
+                    {image.signedUrl ? (
+                      <Image
+                        src={image.signedUrl}
+                        alt={image.alt_text ?? `${post.title} photo ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center px-6 text-center text-sm text-brand-blue/85">
+                        Photo preview unavailable right now.
+                      </div>
+                    )}
+                  </figure>
+                ))}
+              </div>
             </section>
           ) : null}
 
-          <section className="editorial-card mt-6 p-6 sm:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Story</h2>
-            <div className="prose prose-neutral mt-4 max-w-none whitespace-pre-wrap break-words text-[#4f4034]">
+          <section className="story-detail-body-panel mt-8 p-6 sm:p-8">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="eyebrow text-[0.65rem] tracking-[0.22em]">The narrative</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-brand-orange/35 to-transparent sm:max-w-[12rem]" aria-hidden />
+            </div>
+            <h2 className="mt-3 font-serif text-2xl font-semibold text-brand-pinkDark">Story</h2>
+            <div className="prose prose-neutral prose-headings:font-serif prose-headings:text-brand-pinkDark prose-a:text-brand-orange hover:prose-a:text-brand-coral mt-5 max-w-none whitespace-pre-wrap break-words text-brand-blue">
               {post.content}
             </div>
           </section>
 
           {relatedPosts.length > 0 ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
+            <section className="story-detail-related-section mt-8 p-6 sm:p-8">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Keep exploring</p>
-                  <h2 className="mt-2 font-serif text-2xl font-semibold text-[#7a331b]">More stories worth opening next</h2>
+                  <h2 className="mt-2 font-serif text-2xl font-semibold text-brand-pinkDark md:text-3xl">
+                    Grounded next reads
+                  </h2>
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-brand-blue/85">
+                    Pulled from authors, place anchors, and story angles that overlap with what you are reading — not a separate recommendation engine.
+                  </p>
                 </div>
-                <Link href="/places" className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Browse the full feed →
+                <Link
+                  href={returnLink.href}
+                  className="inline-flex shrink-0 text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
+                >
+                  Back to {returnLink.label.toLowerCase()} →
                 </Link>
               </div>
 
               <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                {relatedPosts.map((relatedPost) => {
-                  const relatedAuthorName = relatedPost.author?.full_name?.trim() || relatedPost.author?.username || 'Solo SHE member'
-                  const relatedHref = buildStoryDetailHref(relatedPost.id, '/places')
+                {relatedPosts.map((relatedPost, relatedIndex) => {
+                  const relatedAuthorName =
+                    relatedPost.author?.full_name?.trim() || relatedPost.author?.username || 'Solo SHE member'
+                  const relatedHref = buildStoryDetailHref(relatedPost.id, returnLink.href)
                   const relatedReason = relatedStoryReason({
                     baseAuthorId: post.author_id,
                     baseAuthorDisplay: authorName,
@@ -316,21 +380,36 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                   })
 
                   return (
-                    <article key={relatedPost.id} className="rounded-[1.5rem] border border-[#ead8c2] bg-[#fffaf5] p-4">
-                      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-[#9b7455]">{relatedReason}</p>
-                      <h3 className="mt-3 font-serif text-xl font-semibold text-[#7a331b]">
-                        <Link href={relatedHref} className="transition hover:text-[#e34b16]">
+                    <article
+                      key={relatedPost.id}
+                      className={cn(
+                        'story-detail-related-card flex flex-col p-4 sm:p-5',
+                        relatedIndex === 0 && 'lg:ring-2 lg:ring-brand-gold/35'
+                      )}
+                    >
+                      <p className="community-section-label text-[0.65rem]">{relatedReason}</p>
+                      <h3 className="mt-3 font-serif text-xl font-semibold text-brand-pinkDark">
+                        <Link href={relatedHref} className="transition hover:text-brand-orange">
                           {relatedPost.title}
                         </Link>
                       </h3>
-                      <p className="mt-2 text-sm font-medium text-[#7a331b]">{relatedAuthorName}</p>
-                      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[#6d5849]">{relatedPost.content}</p>
-                      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#9b7455]">
-                        <span>{relatedPost.is_public ? 'Public' : 'Private to owner'}</span>
-                        {relatedPost.is_featured ? <span>Featured</span> : null}
-                        {relatedPost.images.length > 0 ? <span>{relatedPost.images.length} photo{relatedPost.images.length === 1 ? '' : 's'}</span> : null}
+                      <p className="mt-2 text-sm font-semibold text-brand-pinkDark">{relatedAuthorName}</p>
+                      <p className="mt-2 line-clamp-3 flex-1 text-sm leading-6 text-brand-blue/85">{relatedPost.content}</p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {relatedPost.is_public ? (
+                          <CommunityChipPublic className="text-[0.58rem]">Public</CommunityChipPublic>
+                        ) : (
+                          <CommunityChipPrivate className="text-[0.58rem]">Private to owner</CommunityChipPrivate>
+                        )}
+                        {relatedPost.is_featured ? <CommunityBadgeFeatured /> : null}
+                        <span className="story-meta-chip text-[0.58rem]">
+                          {relatedPost.images.length} photo{relatedPost.images.length === 1 ? '' : 's'}
+                        </span>
                       </div>
-                      <Link href={relatedHref} className="mt-5 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+                      <Link
+                        href={relatedHref}
+                        className="mt-5 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
+                      >
                         Open story →
                       </Link>
                     </article>
@@ -342,31 +421,38 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
         </article>
 
         <aside className="space-y-5 lg:sticky lg:top-24">
-          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+          <div className="story-detail-aside-panel p-5 sm:p-6">
             <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Save for later</p>
-            <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Keep this story close</h2>
+            <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">Keep this story close</h2>
             <div className="mt-4">
               <SaveCommunityPostButton postId={post.id} path={`/places/${post.id}`} initialSaved={isSaved} variant="card" />
             </div>
-            <Link href={savedStoriesHref} className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+            <Link
+              href={savedStoriesHref}
+              className="mt-4 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
+            >
               {savedStoriesLabel} →
             </Link>
           </div>
 
           {!isOwnPost && latestReport ? (
-            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+            <div className="story-detail-aside-panel p-5 sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your report status</p>
-              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">You already flagged this story</h2>
+              <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">You already flagged this story</h2>
               <div className={`mt-4 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
                 {REPORT_STATUS_LABELS[latestReport.status]}
               </div>
-              <p className="mt-4 text-sm leading-6 text-[#6d5849]">
-                Latest reason: <span className="font-semibold text-[#7a331b]">{REPORT_REASON_LABELS[latestReport.reason]}</span>
+              <p className="mt-4 text-sm leading-6 text-brand-blue/85">
+                Latest reason:{' '}
+                <span className="font-semibold text-brand-pinkDark">{REPORT_REASON_LABELS[latestReport.reason]}</span>
               </p>
-              <p className="mt-2 text-sm leading-6 text-[#6d5849]">
+              <p className="mt-2 text-sm leading-6 text-brand-blue/85">
                 Sent {formatPublishedAt(latestReport.created_at)}. You can track the full moderation timeline from your private reports page.
               </p>
-              <Link href={reportHistoryHref} className="mt-4 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+              <Link
+                href={reportHistoryHref}
+                className="mt-4 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
+              >
                 {reportHistoryLabel} →
               </Link>
             </div>
@@ -397,46 +483,34 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
           ) : post.is_public && !hasOpenReport ? (
             <ReportPostForm postId={post.id} path={`/places/${post.id}`} postTitle={post.title} />
           ) : !post.is_public ? (
-            <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+            <div className="story-detail-aside-panel p-5 sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Privacy</p>
-              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Private stories stay scoped</h2>
-              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
+              <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">Private stories stay scoped</h2>
+              <p className="mt-3 text-sm leading-6 text-brand-blue/85">
                 This post is private, so reporting from the shared story detail surface is not enabled.
               </p>
             </div>
           ) : null}
 
-          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+          <div className="story-detail-aside-panel p-5 sm:p-6">
             <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Explore from here</p>
-            <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Use this story as a jumping-off point</h2>
+            <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">Use this story as a jumping-off point</h2>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                href={exploreAuthorHref}
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-              >
+              <Link href={exploreAuthorHref} className={cn('community-filter-pill community-filter-pill-sm shrink-0')}>
                 More from {authorName}
               </Link>
               {post.is_featured ? (
-                <Link
-                  href={exploreFeaturedHref}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-                >
+                <Link href={exploreFeaturedHref} className={cn('community-filter-pill community-filter-pill-sm shrink-0')}>
                   Browse featured stories
                 </Link>
               ) : null}
               {post.images.length > 0 ? (
-                <Link
-                  href={explorePhotosHref}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-                >
+                <Link href={explorePhotosHref} className={cn('community-filter-pill community-filter-pill-sm shrink-0')}>
                   Explore stories with photos
                 </Link>
               ) : null}
               {explorePlaceHref ? (
-                <Link
-                  href={explorePlaceHref}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-                >
+                <Link href={explorePlaceHref} className={cn('community-filter-pill community-filter-pill-sm shrink-0')}>
                   Browse this place anchor
                 </Link>
               ) : null}
@@ -447,39 +521,36 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                   <Link
                     key={slug}
                     href={buildPlacesExploreHref({ topic: slug })}
-                    className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
+                    className={cn('community-filter-pill community-filter-pill-sm shrink-0')}
                   >
                     More {label} stories
                   </Link>
                 )
               })}
               {isOwnPost ? (
-                <Link
-                  href={exploreMineHref}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#ead8c2] bg-[#fffaf5] px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]"
-                >
+                <Link href={exploreMineHref} className={cn('community-filter-pill community-filter-pill-sm shrink-0')}>
                   Reopen your story list
                 </Link>
               ) : null}
             </div>
-            <p className="mt-4 text-sm leading-6 text-[#6d5849]">
+            <p className="mt-4 text-sm leading-6 text-brand-blue/85">
               These shortcuts reuse the live feed filters instead of inventing a second browsing system, so visibility stays honest.
             </p>
           </div>
 
           {post.is_featured ? (
-            <div className="rounded-[1.75rem] border border-[#f4c7a8] bg-[#fff7f0] p-5 shadow-sm sm:p-6">
+            <div className="editorial-card-sun p-5 sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Featured story</p>
-              <h2 className="mt-2 font-serif text-xl font-semibold text-[#7a331b]">Community-highlighted right now</h2>
-              <p className="mt-3 text-sm leading-6 text-[#6d5849]">
+              <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">Community-highlighted right now</h2>
+              <p className="mt-3 text-sm leading-6 text-brand-blue/85">
                 This story is marked as featured, so members can now find it faster from both the browse feed and saved list.
               </p>
             </div>
           ) : null}
 
-          <div className="rounded-[1.75rem] border border-[#ead8c2] bg-white p-5 shadow-sm sm:p-6">
+          <div className="story-detail-aside-panel p-5 sm:p-6">
             <p className="eyebrow text-[0.65rem] tracking-[0.22em]">What changed</p>
-            <ul className="mt-3 space-y-3 text-sm leading-6 text-[#6d5849]">
+            <ul className="mt-3 space-y-3 text-sm leading-6 text-brand-blue/85">
               <li>• Story detail now renders saved community post content instead of a placeholder shell.</li>
               <li>• Owners can now edit title, story copy, and visibility from their story detail page.</li>
               <li>• Owners can archive a story to remove it from community surfaces without fake delete copy.</li>

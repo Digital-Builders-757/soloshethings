@@ -10,6 +10,8 @@
 - `supabase/migrations/20250101000000_initial_schema.sql`
 - `supabase/migrations/20260514194500_stripe_webhook_and_post_reads.sql`
 - `supabase/migrations/20260515194500_community_place_label_story_tags.sql`
+- `supabase/migrations/20260515030823_repair_profiles_id_fkey_auth_users.sql` — idempotent repair: `profiles.id` FK must reference `auth.users(id)` (fixes drift if an older DB pointed at the wrong target).
+- `supabase/migrations/20260519120000_repair_community_posts_place_label_story_tags.sql` — idempotent repair: ensures `place_label` / `story_tags` (+ constraints, indexes, owner `post_images` UPDATE policy alignment) when an environment missed `20260515194500`.
 **Status:** ✅ Implemented - Migration ready to run
 
 ## Important Rules

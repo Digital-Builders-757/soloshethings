@@ -12,17 +12,33 @@ type SaveCommunityPostButtonProps = {
   path: string
   initialSaved: boolean
   variant?: 'pill' | 'card'
+  /** Copy + emphasis tuned for /saved (remove = cleanup). */
+  savedListContext?: boolean
   className?: string
 }
 
-function SaveButtonLabel({ saved, variant }: { saved: boolean; variant: 'pill' | 'card' }) {
+function SaveButtonLabel({
+  saved,
+  variant,
+  savedListContext,
+}: {
+  saved: boolean
+  variant: 'pill' | 'card'
+  savedListContext?: boolean
+}) {
   const { pending } = useFormStatus()
 
   if (pending) {
+    if (savedListContext && variant === 'card') {
+      return <>{saved ? 'Removing…' : 'Saving…'}</>
+    }
     return <>{saved ? 'Updating…' : 'Saving…'}</>
   }
 
   if (variant === 'card') {
+    if (savedListContext) {
+      return <>{saved ? 'Remove from library' : 'Save to library again'}</>
+    }
     return <>{saved ? 'Saved to your list' : 'Save this story'}</>
   }
 
@@ -34,6 +50,7 @@ export function SaveCommunityPostButton({
   path,
   initialSaved,
   variant = 'pill',
+  savedListContext = false,
   className,
 }: SaveCommunityPostButtonProps) {
   const [state, formAction] = useActionState(toggleSavedCommunityPost, null)
@@ -58,17 +75,20 @@ export function SaveCommunityPostButton({
         type="submit"
         aria-pressed={saved}
         className={cn(
-          'inline-flex min-h-11 items-center justify-center rounded-full text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-60',
+          'inline-flex items-center justify-center rounded-full text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-60',
+          variant === 'card' ? 'min-h-12 w-full px-5 sm:min-h-11' : 'min-h-11 px-4',
           variant === 'card'
             ? saved
-              ? 'w-full border border-[#e34b16]/30 bg-[#fff3ec] px-5 text-[#7a331b] hover:bg-[#ffe8db]'
-              : 'w-full border border-[#d9c4a8] bg-white px-5 text-[#7a331b] hover:border-[#e34b16]/40 hover:text-[#e34b16]'
+              ? savedListContext
+                ? 'community-save-card-saved-library'
+                : 'community-save-card-saved'
+              : 'community-save-card-idle'
             : saved
-              ? 'border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-[#7a331b] hover:bg-[#ffe8db]'
-              : 'border border-[#d9c4a8] bg-white px-4 text-[#7a331b] hover:border-[#e34b16]/40 hover:text-[#e34b16]'
+              ? 'border border-brand-orange/30 bg-brand-orange/10 text-brand-pinkDark hover:bg-brand-orange/15'
+              : 'border border-brand-pinkDark/20 bg-white text-brand-pinkDark hover:border-brand-orange/40 hover:text-brand-orange'
         )}
       >
-        <SaveButtonLabel saved={saved} variant={variant} />
+        <SaveButtonLabel saved={saved} variant={variant} savedListContext={savedListContext} />
       </button>
 
       {state?.error ? (
@@ -78,8 +98,15 @@ export function SaveCommunityPostButton({
       ) : null}
 
       {variant === 'card' ? (
-        <p className="text-xs leading-5 text-[#6d5849]" role={state?.success ? 'status' : undefined}>
-          {state?.message ?? (saved ? 'This story stays on your private saved list until you remove it.' : 'Save this story so it is easy to find again from your private list.')}
+        <p className="text-xs leading-5 text-brand-blue/85" role={state?.success ? 'status' : undefined}>
+          {state?.message ??
+            (savedListContext
+              ? saved
+                ? 'Only you see this list — removing sends the card back to the feed without deleting the story.'
+                : 'Add this story back to your private shelf anytime.'
+              : saved
+                ? 'This story stays on your private saved list until you remove it.'
+                : 'Save this story so it is easy to find again from your private list.')}
         </p>
       ) : null}
     </form>
