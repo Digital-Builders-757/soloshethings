@@ -13,7 +13,12 @@
 'use server'
 
 import { captureProductSignal } from '@/lib/analytics/product-signals'
-import { formatSignInError, formatSignUpError } from '@/lib/auth-errors'
+import {
+  formatPasswordResetError,
+  formatSignInError,
+  formatSignUpError,
+  formatUpdatePasswordError,
+} from '@/lib/auth-errors'
 import { getPostAuthRedirectPath, getSafeInternalRedirectPath } from '@/lib/auth-redirects'
 import { isValidUsername, normalizeUsername } from '@/lib/auth-utils'
 import { getRequestOriginOrConfiguredAppOrigin } from '@/lib/app-url'
@@ -320,4 +325,115 @@ export async function logout(): Promise<
   }
 
   return { ok: true }
+}
+
+/**
+ * Request a password reset email.
+ *
+ * SECURITY: Always returns { sent: true } regardless of whether the email
+ * exists — this prevents user enumeration. Only rate-limit errors are surfaced.
+ */
+export async function requestPasswordReset(
+  _prevState: { error?: string; sent?: boolean } | null,
+  formData: FormData
+): Promise<{ error?: string; sent?: boolean } | null> {
+  const supabase = await createClient()
+
+  const email = `${formData.get('email') ?? ''}`.trim().toLowerCase()
+
+  if (!email) {
+    return { error: 'Please enter your email address.' }
+  }
+
+  const origin = await getRequestOriginOrConfiguredAppOrigin()
+  const redirectTo = `${origin}/auth/callback?next=/reset-password`
+
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+
+    if (error) {
+      logServerFailure({
+        category: 'auth',
+        operation: 'requestPasswordReset',
+        cause: error,
+      })
+
+      // Surface rate-limit errors only — all other errors are silenced to
+      // prevent revealing whether an account with that email exists.
+      if (
+        error.message?.toLowerCase().includes('rate limit') ||
+        error.message?.toLowerCase().includes('too many')
+      ) {
+        return { error: formatPasswordResetError(error) }
+      }
+    }
+
+    // Always show "sent" — never enumerate email existence
+    return { sent: true }
+  } catch (error) {
+    unstable_rethrow(error)
+    logServerFailure({ category: 'auth', operation: 'requestPasswordReset', cause: error })
+    return { error: 'Something went wrong. Please try again.' }
+  }
+}
+
+/**
+ * Update the authenticated user's password using an active recovery session.
+ *
+ * The recovery session is established by the /auth/callback route handler
+ * after the user clicks the reset link in their email.
+ */
+export async function updatePassword(
+  _prevState: { error: string } | null,
+  formData: FormData
+): Promise<{ error: string } | null> {
+  const password = `${formData.get('password') ?? ''}`
+  const confirmPassword = `${formData.get('confirmPassword') ?? ''}`
+
+  if (!password || !confirmPassword) {
+    return { error: 'Both password fields are required.' }
+  }
+
+  if (password.length < 8) {
+    return { error: 'Password must be at least 8 characters long.' }
+  }
+
+  if (password !== confirmPassword) {
+    return { error: 'Passwords do not match. Please try again.' }
+  }
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser()
+
+    if (userError || !user) {
+      return { error: 'Your reset link has expired. Please request a new one.' }
+    }
+
+    const { error } = await supabase.auth.updateUser({ password })
+
+    if (error) {
+      logServerFailure({
+        category: 'auth',
+        operation: 'updatePassword',
+        cause: error,
+        context: { userId: user.id },
+      })
+      return { error: formatUpdatePasswordError(error) }
+    }
+
+    // Sign out the recovery session — force the user to log in fresh
+    await supabase.auth.signOut()
+    revalidatePath('/', 'layout')
+  } catch (error) {
+    unstable_rethrow(error)
+    logServerFailure({ category: 'auth', operation: 'updatePassword', cause: error })
+    return { error: 'Something went wrong. Please try again.' }
+  }
+
+  redirect('/login?notice=password_updated')
 }
