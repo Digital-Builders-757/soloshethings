@@ -115,6 +115,16 @@ export function LoginForm() {
               </div>
             )}
 
+            {notice === "password_updated" && (
+              <div
+                className="mt-6 rounded-2xl border border-[#d7e8cc] bg-[#f4fbef] p-4 text-sm leading-6 text-[#365229]"
+                role="status"
+              >
+                <p className="font-medium">Password updated successfully.</p>
+                <p className="mt-2 text-[#4a6838]/95">Sign in with your new password to continue.</p>
+              </div>
+            )}
+
             {signedOut === "1" && (
               <div
                 className="mt-6 rounded-2xl border border-[#ead8c2] bg-white p-4 text-sm text-[#6d5849]"
@@ -163,9 +173,17 @@ export function LoginForm() {
               </div>
 
               <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-semibold text-[#7a331b]">
-                  Password
-                </label>
+                <div className="mb-2 flex items-center justify-between">
+                  <label htmlFor="password" className="block text-sm font-semibold text-[#7a331b]">
+                    Password
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-semibold text-[#e34b16] underline-offset-2 transition-colors hover:text-[#c74010] hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#a14b24]" />
                   <input
