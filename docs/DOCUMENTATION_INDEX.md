@@ -82,6 +82,7 @@
 Foundational principles and architectural decisions.
 
 - **[ARCHITECTURE_CONSTITUTION.md](./ARCHITECTURE_CONSTITUTION.md)** - Foundational principles, tech stack, non-negotiables, and architectural rules
+- **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - High-level system map (stack, routing, features-at-a-glance) and pointers to canonical backlog/shipped-status/contracts; does not duplicate schema or MVP depth
 - **[PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md)** - Read-first prompt for agents/devs before changing code
 - **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** - Next.js 16 App Router + strict TypeScript conventions and patterns
 - **[SECURITY_INVARIANTS.md](./SECURITY_INVARIANTS.md)** - Security rules that must never be violated
@@ -117,7 +118,9 @@ Workflow documentation and step-by-step processes.
 - **[procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)** - Deployment workflow, Vercel configuration, rollback steps, and automated migration CI on branch pushes (pnpm-aligned)
 - **[procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)** - Incident response, escalation, and post-mortem process
 - **[procedures/IMPLEMENTATION_ROADMAP.md](./procedures/IMPLEMENTATION_ROADMAP.md)** - **Canonical active plan** and quick resume guide
+- **[procedures/IMPLEMENTATION_HANDOFF_GUIDE.md](./procedures/IMPLEMENTATION_HANDOFF_GUIDE.md)** - New-contributor onboarding, access guidance, and external implementation handoff for this repo
 - **[procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md](./procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md)** - Active operational work order for hosted Supabase migration CI/CD recovery, secret scope, and project/password pairing
+- **[procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md](./procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md)** - Active safe-parallel UI/UX work order for dashboard/blog/member-surface polish, empty/loading/error states, trust signals, and mobile-first refinement
 - **[procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md](./procedures/SOLOSHETHINGS_CATCHUP_ROADMAP.md)** - Historical archive of the May 2026 catch-up execution order (items **1–5** complete)
 - **[procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md](./procedures/SOLOSHETHINGS_FINISH_LINE_ROADMAP.md)** - Historical archive of the post-catch-up finishing checkpoint
 - **[procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md](./procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md)** - Active work order for the next community discovery/media depth batch
@@ -214,6 +217,10 @@ Architecture diagrams and flow documentation.
 - **Source of Truth:** [procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)
 - **Related:** [procedures/PRE_PUSH_CHECKLIST.md](./procedures/PRE_PUSH_CHECKLIST.md), [proof/E2E_SMOKE_PATHS.md](./proof/E2E_SMOKE_PATHS.md)
 
+### Contributor Handoff & Access
+- **Source of Truth:** [procedures/IMPLEMENTATION_HANDOFF_GUIDE.md](./procedures/IMPLEMENTATION_HANDOFF_GUIDE.md)
+- **Related:** [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md), [procedures/ENVIRONMENT_PROCEDURE.md](./procedures/ENVIRONMENT_PROCEDURE.md), [procedures/RELEASE_PROCEDURE.md](./procedures/RELEASE_PROCEDURE.md)
+
 ### Incident Response
 - **Source of Truth:** [procedures/INCIDENT_TRIAGE_PROCEDURE.md](./procedures/INCIDENT_TRIAGE_PROCEDURE.md)
 - **Related:** [proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)
@@ -238,6 +245,7 @@ Architecture diagrams and flow documentation.
 
 ### Project Status
 - **Source of Truth:** [MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)
+- **Orientation map (links backlog + contracts; does not duplicate shipped log):** [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)
 - **Related:** [USER_GUIDE.md](./USER_GUIDE.md)
 
 ## Adding New Documentation
@@ -282,10 +290,11 @@ Architecture diagrams and flow documentation.
 **Last Updated:** 2026-05-15  
 **Maintainer:** Development Team
 
-**Recent sync:** `procedures/IMPLEMENTATION_ROADMAP.md` is now the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue. Reusable signed-in/community CSS and React helpers are indexed from [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md) (**Signed-in & community surfaces**).
+**Recent sync:** [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) is the high-level onboarding map (stack, routing, contract pointers); `procedures/IMPLEMENTATION_ROADMAP.md` is the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue. Reusable signed-in/community CSS and React helpers are indexed from [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md) (**Signed-in & community surfaces**).
 
 ---
 
 **Related Documents:**
 - [ARCHITECTURE_CONSTITUTION.md](./ARCHITECTURE_CONSTITUTION.md)
+- [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)
 - [PROJECT_CONTEXT_PROMPT.md](./PROJECT_CONTEXT_PROMPT.md)

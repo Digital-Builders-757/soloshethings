@@ -51,14 +51,17 @@ Use these companion docs for everything else:
 ### Live in-progress work
 
 - **Mandatory operational lane:** hosted Supabase migration stability / secret-scope recovery (`SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`)
-- **Product queue remains paused behind the blocker above** unless the work in hand is clearly unrelated.
+- **Safe parallel product lane:** UI/UX catch-up and design-system completion work that avoids schema, migrations, RLS, auth, billing, and new protected behavior (`SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`)
+- **Product queue remains paused behind the blocker above** unless the work in hand is clearly unrelated or safely visual-only.
 
 ### Resume pointer
 
 - **Branch target:** `develop`
 - **Operational recovery doc:** `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
+- **Safe visual/UI doc:** `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
 - **Latest shipped batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs). Prior batch: moderation operator increment (2026-05-16).
 - **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
+- **Best safe parallel focus while recovery is still open:** UI/UX catch-up across dashboard, blog, member surfaces, empty/loading/error states, trust/safety cues, and mobile polish (`SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`).
 - **Next focus after recovery:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
 
 ---
@@ -81,7 +84,23 @@ Work top to bottom unless a regression or blocker forces a reorder.
 
 **Definition of done:** staging hosted migration run is boring; production path is either validated or blocked by one explicit documented issue.
 
-### 2) Community second-pass depth — ✅ SHIPPED (2026-05-15)
+### 2) UI/UX catch-up pass — 🚧 SAFE PARALLEL PRODUCT LANE
+
+**Goal:** close the product-experience gap between the already-shipped functionality and the current presentation so SoloSHEThings feels like a trustworthy travel publication, private member community, calm member dashboard, premium subscription product, and privacy-aware platform.
+
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
+
+**What this covers:**
+- dashboard usefulness and recent-activity framing
+- blog/public editorial quality
+- shared story-card and state-badge language
+- empty/loading/error-state design
+- trust/safety/private/public visibility cues
+- mobile-first accessibility/composition cleanup
+
+**Hard guardrail:** this lane is safe only while it avoids schema, migrations, RLS, auth, billing, and new protected behavior.
+
+### 3) Community second-pass depth — ✅ SHIPPED (2026-05-15)
 
 Honest taxonomy + place anchors tied to publisher input, deterministic related-story ranking within RLS-visible candidates, richer owner media controls (description + ordering), feed sort + anchored discovery UX on `/places`.
 
@@ -89,7 +108,7 @@ Honest taxonomy + place anchors tied to publisher input, deterministic related-s
 
 **Historical work-order notes:** `docs/procedures/SOLOSHETHINGS_COMMUNITY_DEPTH_WORK_ORDER.md` (execution checklist / context).
 
-### 3) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
+### 4) Moderation/admin surfaces + owner lifecycle depth — ✅ First pass shipped (2026-05-16)
 
 **Goal:** follow the member-facing community work with the operational surfaces that keep it manageable.
 
@@ -104,7 +123,7 @@ Honest taxonomy + place anchors tied to publisher input, deterministic related-s
 - Rich editorial workflows, analytics dashboards, non-post report targets
 - Optional future admin post-creation tooling if product priorities change
 
-### 4) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
+### 5) Newsletter + marketing operations follow-through — 🚧 Bounded capture shipped
 
 **Goal:** Replace placeholder marketing CTAs with **honest, operations-friendly** tooling while larger ESP integrations stay optional.
 

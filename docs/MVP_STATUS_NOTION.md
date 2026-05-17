@@ -47,8 +47,11 @@
 
 - **Canonical current queue** - `docs/procedures/IMPLEMENTATION_ROADMAP.md`
 - **Canonical shipped-status log** - `docs/MVP_STATUS_NOTION.md`
+- **Active operational blocker** - `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
+- **Safe parallel UI/UX lane** - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
 - **Active backlog work order** - `docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`
-- **Immediate focus** - Stretch-only: ESP audience automation **or** dashboards built on **`product_signal`** **Log attributes**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
+- **Immediate product-experience focus (when staying visual-only)** - dashboard/home-base usefulness, blog/publication quality, shared story-card language, empty/loading/error states, trust-safety cues, and mobile-first polish.
+- **Immediate stretch-only ops focus after recovery** - ESP audience automation **or** dashboards built on **`product_signal`** **Log attributes**, when ops requests (`docs/procedures/SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md`).
 
 ### ❌ Blocked
 
