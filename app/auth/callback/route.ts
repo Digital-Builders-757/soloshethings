@@ -69,8 +69,17 @@ export async function GET(request: NextRequest) {
         // propagate to a manually constructed NextResponse in all Next.js
         // versions, so we attach them here to ensure the browser receives them.
         capturedCookies.forEach(({ name, value, options }) => {
-          const { encode: _encode, ...cookieOpts } = options
-          response.cookies.set(name, value, cookieOpts)
+          // Explicitly pick ResponseCookie-compatible fields — `encode` from
+          // CookieOptions has no equivalent in ResponseCookie and is omitted.
+          response.cookies.set(name, value, {
+            httpOnly: options.httpOnly,
+            maxAge: options.maxAge,
+            path: options.path,
+            domain: options.domain,
+            secure: options.secure,
+            sameSite: options.sameSite,
+            expires: options.expires,
+          })
         })
 
         return response
