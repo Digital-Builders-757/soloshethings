@@ -9,8 +9,8 @@
  * 1. Via recovery email link — Supabase delivers the PKCE code directly here:
  *      /reset-password?code=xxxx
  *    The page detects the code and forwards to /auth/callback, which does the
- *    PKCE exchange (Session Components cannot set cookies), then redirects back
- *    here. On the second visit there is no code and a live session exists.
+ *    PKCE exchange and attaches session cookies to the redirect response, then
+ *    returns here. On the second visit there is no code and a live session exists.
  *
  * 2. Already has a recovery session — no code in URL, getUser() succeeds,
  *    the password form is rendered.
@@ -39,15 +39,24 @@ export default async function ResetPasswordPage({
 }) {
   const { code } = await searchParams
 
+  // TEMPORARY — remove after recovery flow is verified in production
+  console.log('[reset-password] code present:', Boolean(code))
+
   // Recovery email lands here with ?code=xxxx.
   // Delegate the PKCE exchange to the /auth/callback route handler (which can
-  // set cookies), passing next=/reset-password so it returns here after exchange.
+  // explicitly attach session cookies to the redirect response), passing
+  // next=/reset-password so it returns here after a successful exchange.
   if (code) {
+    // TEMPORARY — remove after recovery flow is verified in production
+    console.log('[reset-password] forwarding code to /auth/callback for PKCE exchange')
     redirect(`/auth/callback?code=${encodeURIComponent(code)}&next=/reset-password`)
   }
 
   // No code — verify an active recovery session was established by the callback.
   const user = await getUser()
+
+  // TEMPORARY — remove after recovery flow is verified in production
+  console.log('[reset-password] getUser result:', user ? `userId=${user.id}` : 'null — no session')
 
   if (!user) {
     redirect('/forgot-password?notice=link_expired')
