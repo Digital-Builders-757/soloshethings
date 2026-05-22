@@ -345,11 +345,10 @@ export async function requestPasswordReset(
     return { error: 'Please enter your email address.' }
   }
 
-  const origin = await getRequestOriginOrConfiguredAppOrigin()
-  // Point directly to /reset-password — no query params, so Supabase URL allowlisting
-  // works correctly. The page detects ?code= and forwards to /auth/callback for the
-  // PKCE exchange before rendering the form.
-  const redirectTo = `${origin}/reset-password`
+  // TEMPORARY: hardcoded to isolate dynamic origin resolution issue.
+  // If this fixes the redirect_to in recovery emails, the problem is in
+  // getRequestOriginOrConfiguredAppOrigin() returning the wrong value in production.
+  const redirectTo = 'https://soloshethings.com/reset-password'
 
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
