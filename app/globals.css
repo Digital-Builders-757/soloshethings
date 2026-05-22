@@ -988,3 +988,215 @@
     padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DASHBOARD EDITORIAL SYSTEM
+   Additive classes for the magazine-style member experience.
+   Never conflicts with existing .editorial-card-* or community surface classes.
+───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Hero identity panel — replaces plain card header.
+ * Full-width, 2-column split on desktop. Stacked on mobile.
+ */
+.dash-hero-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 62vh;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.12);
+  box-shadow:
+    0 32px 80px rgba(var(--brand-brown-rgb), 0.12),
+    0 4px 16px rgba(var(--brand-orange-rgb), 0.06);
+}
+
+@media (min-width: 900px) {
+  .dash-hero-panel {
+    grid-template-columns: 55fr 45fr;
+    min-height: 60vh;
+  }
+}
+
+/**
+ * Left text field inside the hero panel.
+ * Cream base, room for large editorial type.
+ */
+.dash-hero-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background: linear-gradient(
+    148deg,
+    #fffdf8 0%,
+    #fff9f0 55%,
+    rgba(var(--brand-cream-rgb), 0.55) 100%
+  );
+  z-index: 1;
+}
+
+@media (min-width: 640px) {
+  .dash-hero-left {
+    padding: 3rem 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dash-hero-left {
+    padding: 3.5rem 3.25rem;
+  }
+}
+
+/**
+ * Right art field inside the hero panel.
+ * Bold orange/warm emotional accent field.
+ */
+.dash-hero-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #e34b16 0%,
+    #c73d10 38%,
+    #b5350d 65%,
+    #d4490f 100%
+  );
+  min-height: 260px;
+}
+
+@media (min-width: 900px) {
+  .dash-hero-art {
+    min-height: unset;
+  }
+}
+
+/* Stripe pattern overlay for art field */
+.dash-hero-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 16px
+  );
+  pointer-events: none;
+}
+
+/* Radial glow accent in art field */
+.dash-hero-art::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--brand-gold-rgb), 0.28) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+/**
+ * Editorial split layout — 55/45 grid for mixed sections.
+ */
+.editorial-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .editorial-split {
+    grid-template-columns: 55fr 45fr;
+    gap: 2.5rem;
+  }
+}
+
+/**
+ * Display impact — Fraunces 900, tight, editorial.
+ * Used for hero titles, big section headings.
+ */
+.display-impact {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/**
+ * Display headline — slightly lighter than impact, editorial body heading.
+ */
+.display-headline {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+/**
+ * Organic blob — decorative SVG-style container for art field content.
+ * Pure CSS approximation via border-radius.
+ */
+.organic-blob-frame {
+  border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+  overflow: hidden;
+}
+
+/**
+ * Stripe pattern background overlay (standalone utility).
+ * Apply to any section that needs diagonal texture.
+ */
+.stripe-pattern-bg {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(var(--brand-brown-rgb), 0.04) 0px,
+    rgba(var(--brand-brown-rgb), 0.04) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+}
+
+/**
+ * Marquee strip — dark editorial scrolling band between sections.
+ */
+.dash-marquee-strip {
+  overflow: hidden;
+  white-space: nowrap;
+  background: #7a331b;
+  color: #f7e8be;
+  padding: 0.85rem 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/**
+ * Decorative section eye break — thin warm rule used between editorial zones.
+ */
+.editorial-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--brand-gold-rgb), 0.35) 20%,
+    rgba(var(--brand-brown-rgb), 0.18) 50%,
+    rgba(var(--brand-gold-rgb), 0.35) 80%,
+    transparent 100%
+  );
+  border: none;
+  margin: 0;
+}

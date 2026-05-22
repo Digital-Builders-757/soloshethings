@@ -18,13 +18,12 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
-import { Avatar } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { DashboardHero } from './components/dashboard-hero'
 
 function roleLabel(role: string) {
   if (role === 'client') return 'Community partner'
@@ -329,152 +328,16 @@ export default async function DashboardPage() {
       />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-6 sm:px-6 sm:pb-16 sm:pt-9 lg:px-8 lg:pb-20 lg:pt-11">
-        <header className="editorial-card-strong overflow-hidden">
-          <div className="relative px-5 py-8 sm:p-8 md:p-10 lg:p-11">
-            <div
-              className="pointer-events-none absolute -right-16 -top-24 h-56 w-56 rounded-full bg-[#fab642]/15 blur-3xl"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute -bottom-20 left-1/4 h-40 w-40 rounded-full bg-[#e34b16]/10 blur-3xl"
-              aria-hidden
-            />
-
-            <p className="eyebrow text-[0.65rem] sm:text-xs sm:tracking-[0.28em]">Your home base</p>
-
-            <div className="mt-5 flex items-center gap-4 rounded-[1.4rem] border border-[#ead8c2]/80 bg-white/75 p-3 shadow-[0_18px_40px_rgba(122,51,27,0.08)] sm:inline-flex">
-              <Avatar
-                src={avatarUrl}
-                fallback={displayName.slice(0, 2).toUpperCase()}
-                size="xl"
-                alt={`${displayName} avatar`}
-              />
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a14b24]">
-                  Profile preview
-                </p>
-                <p className="truncate text-sm font-semibold text-[#7a331b]">{displayName}</p>
-                <p className="text-sm text-[#6d5849]">
-                  {profile.avatar_url
-                    ? 'Avatar live and ready across your signed-in spaces.'
-                    : 'Add an avatar to make your account feel more like yours.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <Badge
-                variant="neutral"
-                size="sm"
-                className="border border-[#ead8c2] bg-white/90 font-semibold capitalize text-[#7a331b]"
-              >
-                {roleLabel(profile.role)}
-              </Badge>
-              <span className="inline-flex items-center rounded-full border border-[#efc0af] bg-[#fff2eb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#b44d20]">
-                {membershipLabel}
-              </span>
-              {memberSinceLabel ? (
-                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#a14b24]/90">
-                  Member since {memberSinceLabel}
-                </span>
-              ) : null}
-            </div>
-
-            <h1 className="mt-4 max-w-3xl font-serif text-display-md text-[#7a331b] sm:text-display-lg">
-              Welcome back, <span className="text-[#e34b16] italic" data-testid="user-name">{displayName}</span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#6d5849] sm:text-[1.05rem] sm:leading-7">
-              Everything signed-in lives here. Start by tightening your profile, then move into stories,
-              places, and whatever brave thing is next.
-            </p>
-            <p className="mt-2 max-w-2xl text-sm text-[#6d5849]/90">
-              <span className="sr-only">Account email:</span>
-              Signed in as <span className="font-medium text-[#7a331b]">{user.email}</span>
-            </p>
-
-            <div className="mt-4 rounded-[1.35rem] border border-[#ead8c2] bg-[linear-gradient(135deg,#fffaf4_0%,rgba(247,232,190,0.4)_100%)] px-4 py-3 text-sm text-[#7a331b] shadow-[0_12px_30px_rgba(122,51,27,0.06)]">
-              {membershipTier === 'full' ? (
-                <span>You have full community access (active trial or paid membership).</span>
-              ) : (
-                <span>
-                  Limited community access until you subscribe (7-day trial, then US $3.99/mo via Stripe).{' '}
-                  <Link
-                    href="/subscribe"
-                    className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]"
-                  >
-                    Billing
-                  </Link>
-                  .
-                </span>
-              )}
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
-              <Link
-                href="/profile"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#e34b16] px-6 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(227,75,22,0.32)] transition hover:bg-[#c74010] sm:px-7"
-              >
-                <UserRound className="h-4 w-4 shrink-0" aria-hidden />
-                Edit profile
-              </Link>
-              <Link
-                href="/collections"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d9c4a8] bg-white/90 px-6 text-sm font-semibold text-[#7a331b] shadow-sm transition hover:border-[#e34b16]/45 hover:text-[#e34b16] sm:px-7"
-              >
-                Solo SHEntries
-              </Link>
-              <Link
-                href="/submit"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-transparent px-1 text-sm font-semibold text-[#e34b16] underline-offset-4 hover:underline sm:px-3"
-              >
-                Share a story →
-              </Link>
-            </div>
-
-            <nav className="mt-8 border-t border-[#ead8c2]/70 pt-6 sm:mt-10" aria-label="Explore more of the site">
-              <p className="eyebrow text-[0.65rem] tracking-[0.26em]">Browse next</p>
-              <ul className="mt-3 flex list-none flex-wrap gap-x-1 gap-y-2 text-sm font-semibold text-[#7a331b]">
-                <li>
-                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/blog">
-                    Blog
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none text-[#d9c4a8]">
-                  ·
-                </li>
-                <li>
-                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/map">
-                    Map
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none text-[#d9c4a8]">
-                  ·
-                </li>
-                <li>
-                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/sprint">
-                    Sprint
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none text-[#d9c4a8]">
-                  ·
-                </li>
-                <li>
-                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/shop">
-                    Shop
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none text-[#d9c4a8]">
-                  ·
-                </li>
-                <li>
-                  <Link className="rounded-md px-1.5 py-1 hover:text-[#e34b16]" href="/contact">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </header>
+        <DashboardHero
+          avatarUrl={avatarUrl}
+          displayName={displayName}
+          email={user.email ?? ''}
+          role={profile.role}
+          membershipTier={membershipTier}
+          membershipLabel={membershipLabel}
+          memberSinceLabel={memberSinceLabel}
+          profileChecklist={profileChecklist}
+        />
 
         <section aria-labelledby="dash-start-here-heading" className="mt-6 grid gap-4 sm:mt-7 lg:grid-cols-3">
           <article className="editorial-card-sun relative overflow-hidden p-5 sm:p-6">

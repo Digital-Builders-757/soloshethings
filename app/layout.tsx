@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next"
-import { Rokkitt } from "next/font/google"
+import { Fraunces, Rokkitt } from "next/font/google"
 import "./globals.css"
 
 const rokkitt = Rokkitt({
   subsets: ["latin"],
   variable: "--font-rokkitt",
   weight: ["300", "400", "500", "600", "700"],
+})
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
 })
 
 export const metadata: Metadata = {
@@ -30,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body
-        className={`${rokkitt.variable} font-sans antialiased min-h-dvh overflow-x-clip`}
+        className={`${rokkitt.variable} ${fraunces.variable} font-sans antialiased min-h-dvh overflow-x-clip`}
         suppressHydrationWarning
       >
         {children}
