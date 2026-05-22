@@ -27,9 +27,6 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const next = getSafeInternalRedirectPath(searchParams.get('next'), '/dashboard')
 
-  // TEMP DEBUG — REMOVE AFTER FIXED
-  console.log('[auth/callback] code present:', Boolean(code), '| next:', next)
-
   if (code) {
     const capturedCookies: Array<{
       name: string
@@ -62,17 +59,15 @@ export async function GET(request: NextRequest) {
         }
       )
 
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-
-      // TEMP DEBUG — REMOVE AFTER FIXED
-      console.log('[auth/callback] exchange error:', error?.message ?? 'none')
-      console.log('[auth/callback] session userId:', data?.user?.id ?? 'none')
-      console.log('[auth/callback] cookies captured:', capturedCookies.length)
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
 
       if (!error) {
         const response = NextResponse.redirect(new URL(next, origin))
 
         // Explicitly attach session cookies to the redirect response.
+        // Cookies written via the setAll callback are not guaranteed to
+        // propagate to a manually constructed NextResponse in all Next.js
+        // versions, so we attach them here to ensure the browser receives them.
         capturedCookies.forEach(({ name, value, options }) => {
           const { encode: _encode, ...cookieOpts } = options
           response.cookies.set(name, value, cookieOpts)
@@ -86,35 +81,16 @@ export async function GET(request: NextRequest) {
         operation: 'auth.callback.exchangeCodeForSession',
         cause: error,
       })
-
-      // TEMP DEBUG — REMOVE AFTER FIXED
-      // Redirect to /reset-password with visible error instead of silently
-      // bouncing to /forgot-password so the exact failure is readable in the browser.
-      const debugUrl = new URL('/reset-password', origin)
-      debugUrl.searchParams.set('debug_error', error.message)
-      debugUrl.searchParams.set('debug_cookies', String(capturedCookies.length))
-      debugUrl.searchParams.set('debug_session', String(Boolean(data?.user)))
-      return NextResponse.redirect(debugUrl)
-
     } catch (err) {
-      const errMessage = err instanceof Error ? err.message : String(err)
-
       logServerFailure({
         category: 'auth',
         operation: 'auth.callback.exchangeCodeForSession',
         cause: err,
       })
-
-      // TEMP DEBUG — REMOVE AFTER FIXED
-      const debugUrl = new URL('/reset-password', origin)
-      debugUrl.searchParams.set('debug_error', `EXCEPTION: ${errMessage}`)
-      debugUrl.searchParams.set('debug_cookies', String(capturedCookies.length))
-      debugUrl.searchParams.set('debug_session', 'false')
-      return NextResponse.redirect(debugUrl)
     }
   }
 
-  // No code present in URL — cannot proceed
+  // Code missing or exchange failed — send user to re-request a link
   return NextResponse.redirect(
     new URL('/forgot-password?notice=link_expired', origin)
   )
