@@ -27,22 +27,18 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const next = getSafeInternalRedirectPath(searchParams.get('next'), '/dashboard')
 
-  // TEMPORARY — remove after recovery flow is verified in production
+  // TEMP DEBUG — REMOVE AFTER FIXED
   console.log('[auth/callback] code present:', Boolean(code), '| next:', next)
 
   if (code) {
+    const capturedCookies: Array<{
+      name: string
+      value: string
+      options: CookieOptions
+    }> = []
+
     try {
       const cookieStore = await cookies()
-
-      // Capture every cookie Supabase wants to set during the code exchange.
-      // We then attach these explicitly to the redirect response — the
-      // cookieStore.set() call alone does NOT guarantee the cookies appear on
-      // a manually created NextResponse.redirect() in all Next.js versions.
-      const capturedCookies: Array<{
-        name: string
-        value: string
-        options: CookieOptions
-      }> = []
 
       const supabase = createServerClient<Database>(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -55,7 +51,6 @@ export async function GET(request: NextRequest) {
             setAll(cookiesToSet) {
               cookiesToSet.forEach(({ name, value, options }) => {
                 capturedCookies.push({ name, value, options })
-                // Also write to the cookie store for completeness
                 try {
                   cookieStore.set(name, value, options)
                 } catch {
@@ -69,7 +64,7 @@ export async function GET(request: NextRequest) {
 
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-      // TEMPORARY — remove after recovery flow is verified in production
+      // TEMP DEBUG — REMOVE AFTER FIXED
       console.log('[auth/callback] exchange error:', error?.message ?? 'none')
       console.log('[auth/callback] session userId:', data?.user?.id ?? 'none')
       console.log('[auth/callback] cookies captured:', capturedCookies.length)
@@ -79,7 +74,6 @@ export async function GET(request: NextRequest) {
 
         // Explicitly attach session cookies to the redirect response.
         capturedCookies.forEach(({ name, value, options }) => {
-          // Strip `encode` — it's a @supabase/ssr field not accepted by ResponseCookie
           const { encode: _encode, ...cookieOpts } = options
           response.cookies.set(name, value, cookieOpts)
         })
@@ -92,16 +86,35 @@ export async function GET(request: NextRequest) {
         operation: 'auth.callback.exchangeCodeForSession',
         cause: error,
       })
+
+      // TEMP DEBUG — REMOVE AFTER FIXED
+      // Redirect to /reset-password with visible error instead of silently
+      // bouncing to /forgot-password so the exact failure is readable in the browser.
+      const debugUrl = new URL('/reset-password', origin)
+      debugUrl.searchParams.set('debug_error', error.message)
+      debugUrl.searchParams.set('debug_cookies', String(capturedCookies.length))
+      debugUrl.searchParams.set('debug_session', String(Boolean(data?.user)))
+      return NextResponse.redirect(debugUrl)
+
     } catch (err) {
+      const errMessage = err instanceof Error ? err.message : String(err)
+
       logServerFailure({
         category: 'auth',
         operation: 'auth.callback.exchangeCodeForSession',
         cause: err,
       })
+
+      // TEMP DEBUG — REMOVE AFTER FIXED
+      const debugUrl = new URL('/reset-password', origin)
+      debugUrl.searchParams.set('debug_error', `EXCEPTION: ${errMessage}`)
+      debugUrl.searchParams.set('debug_cookies', String(capturedCookies.length))
+      debugUrl.searchParams.set('debug_session', 'false')
+      return NextResponse.redirect(debugUrl)
     }
   }
 
-  // Code missing or exchange failed
+  // No code present in URL — cannot proceed
   return NextResponse.redirect(
     new URL('/forgot-password?notice=link_expired', origin)
   )
