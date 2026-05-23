@@ -81,6 +81,48 @@ export function DashboardHero({
   return (
     <header className="dash-hero-panel" aria-label="Member home base">
 
+      {/*
+       * ── SIGNATURE "S" — compositional gesture, not branding ────────────
+       *
+       * An oversized italic Fraunces "S" that spans both the cream and orange
+       * panels. Its role is atmospheric: it unifies the two halves by existing
+       * across the boundary between them.
+       *
+       * Design decisions:
+       * — Heavily cropped: font-size is ~1.6–2× the panel height. Only the
+       *   central section of the letterform is visible (the waist/counter area —
+       *   the most ambiguous and beautiful part of the S).
+       * — Off-center: left at 57% (slightly past the 55% panel boundary) with a
+       *   −2° rotation. The S leans into the orange panel, which is where it
+       *   belongs — an orange-field signature that reaches across.
+       * — 5% opacity + soft-light blend: soft-light brightens dark areas and
+       *   leaves light areas almost unchanged. The S is most present in the
+       *   deepest dark of the orange panel and nearly invisible on cream.
+       * — z-index: 2 (above panel backgrounds). At 5% opacity, full-opacity
+       *   content visually dominates — the letter reads as depth, not layer.
+       * — Only rendered at ≥900px where the split layout is active.
+       *   On mobile the panels stack and the effect breaks; hiding is correct.
+       */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute hidden select-none font-display font-black italic leading-none min-[900px]:block"
+        style={{
+          left: '57%',
+          top: '50%',
+          transform: 'translateX(-50%) translateY(-50%) rotate(-2deg)',
+          fontSize: 'clamp(50rem, 95vw, 80rem)',
+          color: '#f7e8be',
+          opacity: 0.05,
+          mixBlendMode: 'soft-light',
+          zIndex: 2,
+          lineHeight: 1,
+          letterSpacing: '-0.04em',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        S
+      </span>
+
       {/* ── LEFT: EDITORIAL TEXT FIELD ─────────────────────────────────── */}
       <motion.div
         className="dash-hero-left"

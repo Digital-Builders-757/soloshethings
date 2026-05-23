@@ -181,6 +181,53 @@
   box-shadow: 0 24px 52px rgba(74, 28, 14, 0.26);
 }
 
+/**
+ * ── EDITORIAL MODULES — Phase 2 lower-dashboard composition blocks ──────────
+ *
+ * Three distinct compositional roles, each with different visual weight:
+ *
+ *   editorial-mod-readiness  — warm, grounded, widest; the composition anchor
+ *   editorial-mod-action     — directional; left-side accent rule marks momentum
+ *   editorial-mod-live       — airy, lightest; a visual pause in the layout
+ *
+ * These are NOT generic cards. Each carries a specific atmospheric identity.
+ */
+
+.editorial-mod-readiness {
+  background: linear-gradient(
+    165deg,
+    rgba(var(--brand-cream-rgb), 0.84) 0%,
+    rgba(255, 253, 247, 0.97) 55%
+  );
+  border: 1px solid rgba(var(--brand-gold-rgb), 0.26);
+  border-radius: 1.75rem;
+  box-shadow: 0 22px 56px rgba(var(--brand-gold-rgb), 0.12);
+}
+
+.editorial-mod-action {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 248, 243, 0.98) 0%,
+    rgba(255, 244, 238, 0.97) 100%
+  );
+  /* Standard border on three sides; left side is the directional accent mark */
+  border: 1px solid rgba(var(--brand-orange-rgb), 0.14);
+  border-left: 2px solid rgba(var(--brand-orange-rgb), 0.42);
+  border-radius: 1.75rem;
+  box-shadow: 0 20px 50px rgba(var(--brand-orange-rgb), 0.09);
+}
+
+.editorial-mod-live {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 253, 248, 0.96) 0%,
+    rgba(247, 238, 220, 0.42) 100%
+  );
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.09);
+  border-radius: 1.75rem;
+  box-shadow: 0 16px 40px rgba(var(--brand-brown-rgb), 0.055);
+}
+
 .eyebrow {
   color: #a14b24;
   font-size: 0.72rem;
@@ -742,71 +789,6 @@
   z-index: 1;
 }
 
-.profile-completion-track {
-  height: 0.45rem;
-  border-radius: 9999px;
-  background: rgba(var(--brand-brown-rgb), 0.1);
-  overflow: hidden;
-}
-
-.profile-completion-fill {
-  height: 100%;
-  min-width: 0;
-  border-radius: 9999px;
-  background: linear-gradient(
-    90deg,
-    rgb(var(--brand-orange-rgb)),
-    rgb(var(--brand-gold-rgb))
-  );
-  transition: width 280ms ease;
-}
-
-.profile-checklist-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 2.75rem;
-  border-radius: 0.875rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.1);
-  background: rgba(255, 255, 255, 0.78);
-}
-
-@media (max-width: 639px) {
-  .profile-checklist-row {
-    min-height: 3rem;
-    padding: 0.75rem 0.9rem;
-  }
-}
-
-.profile-checklist-row-done {
-  border-color: rgba(var(--brand-orange-rgb), 0.22);
-  background: linear-gradient(
-    92deg,
-    rgba(var(--brand-orange-rgb), 0.07) 0%,
-    rgba(var(--brand-cream-rgb), 0.38) 100%
-  );
-}
-
-.profile-checklist-row-open {
-  border-style: dashed;
-  border-color: rgba(var(--brand-brown-rgb), 0.24);
-  background: rgba(255, 253, 248, 0.92);
-}
-
-.profile-avatar-panel {
-  border-radius: 1.5rem;
-  border: 1px solid rgba(var(--brand-gold-rgb), 0.38);
-  background: linear-gradient(
-    155deg,
-    rgba(var(--brand-cream-rgb), 0.52) 0%,
-    rgba(255, 253, 248, 0.98) 48%,
-    rgba(255, 255, 255, 0.96) 100%
-  );
-  box-shadow:
-    0 18px 46px rgba(var(--brand-brown-rgb), 0.08),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.48);
-}
 
 .profile-avatar-ring {
   flex-shrink: 0;
@@ -828,11 +810,20 @@
   color: rgba(var(--brand-brown-rgb), 0.55);
 }
 
-.profile-form-well {
-  border-radius: 1.35rem;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.1);
-  background: rgba(255, 255, 255, 0.93);
-  box-shadow: 0 14px 38px rgba(var(--brand-brown-rgb), 0.06);
+/**
+ * Portrait zone — Phase 1 profile redesign.
+ * A soft tonal container that reads as surface warmth, not a boxed card.
+ * Border is a whisper, not a boundary. Background is atmospheric, not structural.
+ */
+.profile-portrait-zone {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(var(--brand-gold-rgb), 0.2);
+  background: linear-gradient(
+    155deg,
+    rgba(var(--brand-cream-rgb), 0.32) 0%,
+    rgba(255, 253, 248, 0.62) 55%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
 }
 
 /**
@@ -965,7 +956,7 @@
   border-radius: 1rem;
   border: 1px solid rgba(var(--brand-brown-rgb), 0.14);
   background: white;
-  color: #3a3a3a;
+  color: #4a2c18;
   box-shadow: 0 1px 2px rgba(var(--brand-brown-rgb), 0.06);
   outline: none;
   transition: box-shadow 150ms ease, border-color 150ms ease;
@@ -1297,20 +1288,30 @@
 
 /**
  * Card lift — the ONE shared motion signature across all interactive cards.
- * Mirrors the CTA primary button's lift language. Cards come off the page on hover,
- * like picking up a printed piece. Not used on article hero or structural elements.
+ *
+ * Phase 6 refinement: hover is atmospheric response, not interaction.
+ * The primary signal is now a warm shadow bloom (colour shift, warmth arriving)
+ * rather than physical movement. The 1px translateY is so subtle it barely
+ * registers consciously — the viewer feels the page warming, not an element moving.
  */
 .dash-card-lift {
   transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    border-color 220ms ease;
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms ease;
 }
 
 .dash-card-lift:hover {
-  transform: translateY(-3px);
+  transform: translateY(-1px);
+  /* Warm amber glow at ~15% lower opacity: the question of whether anything happened */
+  box-shadow:
+    0 6px 24px rgba(227, 75, 22, 0.059),
+    0 2px 8px rgba(122, 51, 27, 0.033);
 }
 
 .dash-card-lift:active {
-  transform: translateY(-1px);
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px rgba(227, 75, 22, 0.04),
+    0 1px 3px rgba(122, 51, 27, 0.03);
 }
