@@ -1003,19 +1003,17 @@
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
-  min-height: 62vh;
+  min-height: 66vh;
   overflow: hidden;
-  border-radius: 1.75rem;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.12);
-  box-shadow:
-    0 32px 80px rgba(var(--brand-brown-rgb), 0.12),
-    0 4px 16px rgba(var(--brand-orange-rgb), 0.06);
+  border-radius: 1.25rem;
+  /* No border — removes card-like framing */
+  box-shadow: 0 40px 100px rgba(var(--brand-brown-rgb), 0.16);
 }
 
 @media (min-width: 900px) {
   .dash-hero-panel {
     grid-template-columns: 55fr 45fr;
-    min-height: 60vh;
+    min-height: 64vh;
   }
 }
 
@@ -1029,13 +1027,28 @@
   flex-direction: column;
   justify-content: center;
   padding: 2.5rem 2rem;
+  /* Warm gradient that breathes toward the orange panel on the right */
   background: linear-gradient(
-    148deg,
+    to right,
     #fffdf8 0%,
-    #fff9f0 55%,
-    rgba(var(--brand-cream-rgb), 0.55) 100%
+    #fffaf2 50%,
+    rgba(247, 232, 190, 0.72) 78%,
+    rgba(227, 75, 22, 0.09) 100%
   );
   z-index: 1;
+}
+
+/* Soft warm bleed on the right edge — bridges the two fields */
+.dash-hero-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  background: linear-gradient(to right, transparent, rgba(227, 75, 22, 0.06));
+  pointer-events: none;
+  z-index: 2;
 }
 
 @media (min-width: 640px) {
@@ -1057,17 +1070,17 @@
 .dash-hero-art {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
+  /* Deep, moody orange — dark bottom gives depth and cinematic weight */
   background: linear-gradient(
-    135deg,
-    #e34b16 0%,
-    #c73d10 38%,
-    #b5350d 65%,
-    #d4490f 100%
+    155deg,
+    #f05a20 0%,
+    #d94010 28%,
+    #bc3308 58%,
+    #7f200a 100%
   );
-  min-height: 260px;
+  min-height: 300px;
 }
 
 @media (min-width: 900px) {
@@ -1076,34 +1089,34 @@
   }
 }
 
-/* Stripe pattern overlay for art field */
+/* Diagonal stripe texture — more present, adds editorial grain */
 .dash-hero-art::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(255, 255, 255, 0.04) 0px,
-    rgba(255, 255, 255, 0.04) 1px,
+    rgba(255, 255, 255, 0.065) 0px,
+    rgba(255, 255, 255, 0.065) 1px,
     transparent 1px,
-    transparent 16px
+    transparent 14px
   );
   pointer-events: none;
 }
 
-/* Radial glow accent in art field */
+/* Gold warmth pool — bottom-left, anchors the composition */
 .dash-hero-art::after {
   content: '';
   position: absolute;
-  top: -20%;
-  right: -10%;
-  width: 70%;
-  height: 70%;
+  bottom: -15%;
+  left: -10%;
+  width: 65%;
+  height: 65%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(var(--brand-gold-rgb), 0.28) 0%,
-    transparent 65%
+    rgba(var(--brand-gold-rgb), 0.38) 0%,
+    transparent 62%
   );
   pointer-events: none;
 }
