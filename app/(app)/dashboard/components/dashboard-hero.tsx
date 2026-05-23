@@ -5,6 +5,12 @@ import { ArrowRight, UserRound } from 'lucide-react'
 import Link from 'next/link'
 
 import { Avatar } from '@/components/ui/avatar'
+import {
+  AmbientField,
+  ContourBackground,
+  GeometryAccent,
+  GrainOverlay,
+} from '@/components/visual'
 
 interface ProfileChecklistItem {
   label: string
@@ -236,18 +242,63 @@ export function DashboardHero({
         animate="visible"
         aria-hidden
       >
-        {/* THE signature shape — one large circle, bottom-right, bleeding off both edges.
-            Thick stroke, cream-gold colour, partial visibility only. */}
-        <svg
-          viewBox="0 0 240 240"
-          className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 opacity-[0.22] sm:h-64 sm:w-64"
-          fill="none"
-          aria-hidden
-        >
-          <circle cx="120" cy="120" r="108" stroke="#f7e8be" strokeWidth="3" />
-        </svg>
+        {/*
+         * ── ATMOSPHERE LAYERS — all below z-10 content ──────────────────
+         *
+         * Layer 1: drifting gold warmth pool — 20s cycle, barely perceptible.
+         * Opacity 0.45 × gold gradient peak (0.35) = effective 0.16 at maximum.
+         * Adds the sense that light is slowly moving across the panel.
+         */}
+        <AmbientField variant="drift" palette="gold" opacity={0.45} />
 
-        {/* ── MAIN CONTENT — bottom-anchored, left-gravity ── */}
+        {/*
+         * Layer 2: topographic contour rings — cream strokes on dark field.
+         * The cream variant rings are 0.06–0.12 opacity each; the opacity-[0.55]
+         * class multiplies that down to 0.033–0.066. Almost subliminal.
+         * Centers at (44, 47), rotated -8° — organic asymmetry, not a bullseye.
+         */}
+        <ContourBackground
+          variant="cream"
+          density={5}
+          strokeWidth={0.12}
+          className="opacity-[0.55]"
+        />
+
+        {/*
+         * Layer 3: paper grain — medium intensity (0.030 opacity).
+         * On a dark panel the grain reads as warmth, not noise.
+         * Makes the surface feel physical rather than digital.
+         */}
+        <GrainOverlay intensity="medium" />
+
+        {/*
+         * Layer 4: localised radial warmth directly behind the type block.
+         * The "YOUR / Story / BEGINS" stack sits bottom-left. This gold pool
+         * emanates from below it — the type appears to be reading by candlelight.
+         */}
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 h-3/5 w-4/5"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 65% at 18% 92%, rgba(250,182,66,0.28) 0%, rgba(250,182,66,0.08) 44%, transparent 68%)',
+          }}
+        />
+
+        {/*
+         * Layer 5 (signature shape): GeometryAccent circle-open.
+         * 85% of a circle arc — the gap at bottom-right feels editorial,
+         * like a crop mark or a stamp that is only partially revealed.
+         * Bleeds off bottom-right corner; never competes with typography.
+         */}
+        <GeometryAccent
+          shape="circle-open"
+          size="xl"
+          color="#f7e8be"
+          opacity={0.20}
+          className="absolute -bottom-14 -right-14"
+        />
+
+        {/* ── MAIN CONTENT — always above all atmosphere layers ── */}
         <div className="relative z-10 flex h-full w-full flex-1 flex-col justify-between px-7 pb-8 pt-8 sm:px-9 sm:pb-10">
 
           {/* Top accent: compact profile ring */}
