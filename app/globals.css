@@ -221,24 +221,45 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+  position: relative;
+  padding: 0.35rem 0.25rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #7a331b;
-  transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  color: rgba(var(--brand-brown-rgb), 0.72);
+  transition: color 200ms ease;
+}
+
+.nav-chip::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 1.5px;
+  background: #e34b16;
+  border-radius: 1px;
+  transition: transform 200ms ease;
+  transform-origin: center;
 }
 
 .nav-chip:hover {
   color: #e34b16;
 }
 
+.nav-chip:hover::after {
+  transform: translateX(-50%) scaleX(0.7);
+}
+
+/* Active state: warm underline drawn fully across, no filled pill */
 .nav-chip-active {
-  background: #fff4e7;
   color: #e34b16;
-  box-shadow: inset 0 0 0 1px rgba(var(--brand-brown-rgb), 0.14);
+}
+
+.nav-chip-active::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .editorial-card-dark,
@@ -806,6 +827,12 @@
   box-shadow: 0 14px 38px rgba(var(--brand-brown-rgb), 0.06);
 }
 
+/**
+ * Editorial CTA system
+ * Primary: warm orange with shadow lift on hover — action coming off the page.
+ * Secondary: defined border, warms to orange on hover — companion, never competing.
+ * Ghost: pure text link, underline sweeps in from left on hover.
+ */
 .cta-primary {
   display: inline-flex;
   min-height: 3rem;
@@ -813,16 +840,28 @@
   justify-content: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  background: #e34b16;
-  padding: 0.75rem 1.5rem;
+  background: linear-gradient(160deg, #f05320 0%, #d94010 100%);
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
   color: white;
-  transition: background-color 150ms ease, transform 150ms ease;
+  box-shadow: 0 6px 20px rgba(227, 75, 22, 0.28);
+  transition:
+    background 220ms ease,
+    box-shadow 220ms ease,
+    transform 140ms ease;
 }
 
 .cta-primary:hover {
-  background: #c74010;
+  background: linear-gradient(160deg, #e34b16 0%, #c43a0c 100%);
+  box-shadow: 0 12px 32px rgba(227, 75, 22, 0.40);
+  transform: translateY(-1px);
+}
+
+.cta-primary:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 4px 12px rgba(227, 75, 22, 0.24);
 }
 
 .cta-secondary {
@@ -831,18 +870,29 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.16);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.22);
+  background: rgba(255, 253, 248, 0.95);
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
   color: #7a331b;
-  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .cta-secondary:hover {
-  border-color: rgba(var(--brand-orange-rgb), 0.4);
+  border-color: rgba(var(--brand-orange-rgb), 0.50);
   color: #e34b16;
+  background: rgba(255, 248, 242, 0.98);
+  box-shadow: 0 6px 20px rgba(227, 75, 22, 0.10);
+}
+
+.cta-secondary:active {
+  transform: scale(0.98);
 }
 
 .cta-secondary-inverse {
@@ -851,31 +901,51 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.60);
   background: transparent;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
   color: white;
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 .cta-secondary-inverse:hover {
   background: white;
+  border-color: white;
   color: #e34b16;
 }
 
+/* Ghost: underline sweeps in from center on hover */
 .cta-ghost {
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
   justify-content: center;
+  position: relative;
   border-radius: 9999px;
   padding: 0.75rem 0.25rem;
   font-size: 0.875rem;
   font-weight: 700;
   color: #e34b16;
-  transition: color 150ms ease;
+  transition: color 200ms ease;
+}
+
+.cta-ghost::after {
+  content: '';
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 200ms ease;
+}
+
+.cta-ghost:hover::after {
+  transform: scaleX(1);
 }
 
 .cta-ghost:hover {

@@ -236,38 +236,16 @@ export function DashboardHero({
         animate="visible"
         aria-hidden
       >
-        {/* Large circle outline — decorative, top-right, bleeds off edge */}
+        {/* THE signature shape — one large circle, bottom-right, bleeding off both edges.
+            Thick stroke, cream-gold colour, partial visibility only. */}
         <svg
-          viewBox="0 0 160 160"
-          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-[0.18]"
+          viewBox="0 0 240 240"
+          className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 opacity-[0.22] sm:h-64 sm:w-64"
           fill="none"
           aria-hidden
         >
-          <circle cx="80" cy="80" r="72" stroke="#f7e8be" strokeWidth="2.5" />
+          <circle cx="120" cy="120" r="108" stroke="#f7e8be" strokeWidth="3" />
         </svg>
-
-        {/* Second, smaller circle — mid-right, geometric layer */}
-        <svg
-          viewBox="0 0 90 90"
-          className="pointer-events-none absolute right-8 top-1/3 h-20 w-20 opacity-[0.12]"
-          fill="none"
-          aria-hidden
-        >
-          <circle cx="45" cy="45" r="40" stroke="white" strokeWidth="1.5" />
-        </svg>
-
-        {/* Connecting arc — left edge of art panel, curves toward left field */}
-        <svg
-          viewBox="0 0 40 240"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute bottom-0 left-0 top-0 h-full w-10 opacity-[0.08]"
-          aria-hidden
-        >
-          <path d="M40,0 Q0,120 40,240" stroke="#f7e8be" strokeWidth="2" fill="none" />
-        </svg>
-
-        {/* Top-right ambient glow */}
-        <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
 
         {/* ── MAIN CONTENT — bottom-anchored, left-gravity ── */}
         <div className="relative z-10 flex h-full w-full flex-1 flex-col justify-between px-7 pb-8 pt-8 sm:px-9 sm:pb-10">

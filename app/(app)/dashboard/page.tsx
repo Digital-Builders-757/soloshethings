@@ -144,7 +144,7 @@ function ActionTile({
           </span>
 
           <span className="min-w-0 flex-1 sm:flex-none">
-            <span className={cn('block font-serif text-lg font-bold', toneStyles.title)}>{title}</span>
+            <span className={cn('block font-display text-lg font-black leading-tight', toneStyles.title)}>{title}</span>
             <span className={cn('mt-2 block text-sm leading-relaxed', toneStyles.description)}>
               {description}
             </span>
@@ -339,16 +339,16 @@ export default async function DashboardPage() {
           profileChecklist={profileChecklist}
         />
 
-        <section aria-labelledby="dash-start-here-heading" className="mt-6 grid gap-4 sm:mt-7 lg:grid-cols-3">
+        <section aria-labelledby="dash-start-here-heading" className="mt-7 grid gap-4 sm:mt-8 lg:grid-cols-3">
           <article className="editorial-card-sun relative overflow-hidden p-5 sm:p-6">
             <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-white/35 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
-              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Profile readiness</p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/70 text-[#c97b05] ring-1 ring-[#ebcf8b]/70">
-                <Sparkles className="h-4 w-4" aria-hidden />
+              <p className="eyebrow text-[0.62rem] tracking-[0.24em]">Profile readiness</p>
+              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/70 text-[#c97b05] ring-1 ring-[#ebcf8b]/70">
+                <Sparkles className="h-3.5 w-3.5" aria-hidden />
               </span>
             </div>
-            <h2 id="dash-start-here-heading" className="mt-3 font-serif text-xl font-bold text-[#7a331b]">
+            <h2 id="dash-start-here-heading" className="mt-3 font-display text-[1.35rem] font-black leading-tight text-[#7a331b]">
               {completedChecklistCount} of {profileChecklist.length} basics done
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[#6d5849]">
@@ -356,11 +356,11 @@ export default async function DashboardPage() {
                 ? 'Your account foundation is in great shape — now the fun part is using it.'
                 : `${remainingChecklistCount} quick ${remainingChecklistCount === 1 ? 'touch' : 'touches'} will make your space feel much more complete.`}
             </p>
-            <ul className="mt-5 space-y-3 text-sm text-[#6d5849]">
+            <ul className="mt-5 space-y-2.5 text-sm text-[#6d5849]">
               {profileChecklist.map((item) => (
-                <li key={item.label} className="flex items-center gap-3 rounded-xl bg-white/70 px-3 py-3 ring-1 ring-white/70">
+                <li key={item.label} className="flex items-center gap-3 rounded-xl bg-white/70 px-3 py-2.5 ring-1 ring-white/70">
                   <span
-                    className={item.done ? 'h-2.5 w-2.5 rounded-full bg-[#e34b16]' : 'h-2.5 w-2.5 rounded-full bg-[#d9c4a8]'}
+                    className={item.done ? 'h-2 w-2 shrink-0 rounded-full bg-[#e34b16]' : 'h-2 w-2 shrink-0 rounded-full bg-[#d9c4a8]'}
                     aria-hidden
                   />
                   <span className={item.done ? 'font-medium text-[#7a331b]' : undefined}>{item.label}</span>
@@ -372,16 +372,16 @@ export default async function DashboardPage() {
           <article className="editorial-card-ember relative overflow-hidden p-5 sm:p-6">
             <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-[#ffd2c0]/45 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
-              <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Best next move</p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80 text-[#e34b16] ring-1 ring-[#efc0af]/80">
-                <ArrowRight className="h-4 w-4" aria-hidden />
+              <p className="eyebrow text-[0.62rem] tracking-[0.24em]">Best next move</p>
+              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/80 text-[#e34b16] ring-1 ring-[#efc0af]/80">
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </span>
             </div>
-            <h2 className="mt-3 font-serif text-xl font-bold text-[#7a331b]">{nextStep.title}</h2>
+            <h2 className="mt-3 font-display text-[1.35rem] font-black leading-tight text-[#7a331b]">{nextStep.title}</h2>
             <p className="mt-3 text-sm leading-relaxed text-[#6d5849]">{nextStep.description}</p>
             <Link
               href={nextStep.href}
-              className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#e34b16] px-5 text-sm font-semibold text-white transition hover:bg-[#c74010]"
+              className="cta-primary mt-6 px-5 text-sm"
             >
               {nextStep.cta}
             </Link>
@@ -390,16 +390,16 @@ export default async function DashboardPage() {
           <article className="editorial-card-cocoa relative overflow-hidden p-5 text-[#fff5df] sm:p-6">
             <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fab642]/14 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
-              <p className="eyebrow-light text-[0.65rem] tracking-[0.22em]">Live right now</p>
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-[#fab642] ring-1 ring-white/10">
-                <Heart className="h-4 w-4" aria-hidden />
+              <p className="eyebrow-light text-[0.62rem] tracking-[0.24em]">Live right now</p>
+              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/10 text-[#fab642] ring-1 ring-white/10">
+                <Heart className="h-3.5 w-3.5" aria-hidden />
               </span>
             </div>
-            <h2 className="mt-3 font-serif text-xl font-bold text-[#fff7ea]">What this member area already does well</h2>
+            <h2 className="mt-3 font-display text-[1.35rem] font-black leading-tight text-[#fff7ea]">What this member area already does well</h2>
             <p className="mt-2 text-sm leading-relaxed text-[#f3dbc2]">A little more color, a little more delight, same honest product underneath.</p>
-            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#f3dbc2]">
+            <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-[#f3dbc2]">
               {liveNowItems.map((item) => (
-                <li key={item} className="flex gap-3 rounded-xl bg-white/5 px-3 py-3 ring-1 ring-white/8">
+                <li key={item} className="flex gap-3 rounded-xl bg-white/5 px-3 py-2.5 ring-1 ring-white/8">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#fab642]" aria-hidden />
                   <span>{item}</span>
                 </li>
@@ -415,7 +415,7 @@ export default async function DashboardPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 id="dash-snapshot-heading" className="font-serif text-lg font-bold text-[#7a331b]">
+                <h2 id="dash-snapshot-heading" className="font-display text-xl font-black leading-tight text-[#7a331b]">
                   Profile snapshot
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
@@ -480,15 +480,14 @@ export default async function DashboardPage() {
           </aside>
 
           <section aria-labelledby="dash-actions-heading" className="order-2 min-w-0 lg:order-1">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-              <div>
-                <h2 id="dash-actions-heading" className="font-serif text-xl font-bold text-[#7a331b] sm:text-2xl">
-                  Quick actions
-                </h2>
-                <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#6d5849] sm:text-base">
-                  Common places members open from here — now with a little more energy and visual rhythm.
-                </p>
-              </div>
+            <div className="flex flex-col gap-1">
+              <p className="eyebrow text-[0.62rem] tracking-[0.26em]">Your space</p>
+              <h2 id="dash-actions-heading" className="mt-1 font-display text-[1.65rem] font-black leading-tight text-[#7a331b] sm:text-[1.9rem]">
+                Quick actions
+              </h2>
+              <p className="mt-2 max-w-lg text-sm leading-relaxed text-[#6d5849]">
+                Common places members open from here.
+              </p>
             </div>
 
             <ul className="mt-8 grid list-none gap-4 sm:mt-9 sm:grid-cols-2 sm:gap-5">
