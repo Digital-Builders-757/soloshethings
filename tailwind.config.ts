@@ -90,6 +90,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-rokkitt)", "Georgia", "serif"],
         serif: ["var(--font-rokkitt)", "Georgia", "serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       fontSize: {
         'display-xl': ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }],   // 56px

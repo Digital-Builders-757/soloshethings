@@ -134,7 +134,14 @@
 
 /* Warm editorial system */
 .page-warm {
-  background: #fffaf0;
+  background-color: #fffaf0;
+  /* Micro warm-dot grain — reads as paper texture, not a pattern */
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(122, 51, 27, 0.055) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
 }
 
 .editorial-card,
@@ -174,6 +181,53 @@
   box-shadow: 0 24px 52px rgba(74, 28, 14, 0.26);
 }
 
+/**
+ * ── EDITORIAL MODULES — Phase 2 lower-dashboard composition blocks ──────────
+ *
+ * Three distinct compositional roles, each with different visual weight:
+ *
+ *   editorial-mod-readiness  — warm, grounded, widest; the composition anchor
+ *   editorial-mod-action     — directional; left-side accent rule marks momentum
+ *   editorial-mod-live       — airy, lightest; a visual pause in the layout
+ *
+ * These are NOT generic cards. Each carries a specific atmospheric identity.
+ */
+
+.editorial-mod-readiness {
+  background: linear-gradient(
+    165deg,
+    rgba(var(--brand-cream-rgb), 0.84) 0%,
+    rgba(255, 253, 247, 0.97) 55%
+  );
+  border: 1px solid rgba(var(--brand-gold-rgb), 0.26);
+  border-radius: 1.75rem;
+  box-shadow: 0 22px 56px rgba(var(--brand-gold-rgb), 0.12);
+}
+
+.editorial-mod-action {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 248, 243, 0.98) 0%,
+    rgba(255, 244, 238, 0.97) 100%
+  );
+  /* Standard border on three sides; left side is the directional accent mark */
+  border: 1px solid rgba(var(--brand-orange-rgb), 0.14);
+  border-left: 2px solid rgba(var(--brand-orange-rgb), 0.42);
+  border-radius: 1.75rem;
+  box-shadow: 0 20px 50px rgba(var(--brand-orange-rgb), 0.09);
+}
+
+.editorial-mod-live {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 253, 248, 0.96) 0%,
+    rgba(247, 238, 220, 0.42) 100%
+  );
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.09);
+  border-radius: 1.75rem;
+  box-shadow: 0 16px 40px rgba(var(--brand-brown-rgb), 0.055);
+}
+
 .eyebrow {
   color: #a14b24;
   font-size: 0.72rem;
@@ -192,7 +246,8 @@
 
 .wordmark {
   display: block;
-  font-family: Georgia, 'Times New Roman', serif;
+  /* Fraunces brings brand authority — same face as the hero headline */
+  font-family: var(--font-display), Georgia, 'Times New Roman', serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -206,7 +261,7 @@
 }
 
 .wordmark-sticky {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-display), Georgia, 'Times New Roman', serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -221,24 +276,45 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+  position: relative;
+  padding: 0.35rem 0.25rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #7a331b;
-  transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  color: rgba(var(--brand-brown-rgb), 0.72);
+  transition: color 200ms ease;
+}
+
+.nav-chip::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 1.5px;
+  background: #e34b16;
+  border-radius: 1px;
+  transition: transform 200ms ease;
+  transform-origin: center;
 }
 
 .nav-chip:hover {
   color: #e34b16;
 }
 
+.nav-chip:hover::after {
+  transform: translateX(-50%) scaleX(0.7);
+}
+
+/* Active state: warm underline drawn fully across, no filled pill */
 .nav-chip-active {
-  background: #fff4e7;
   color: #e34b16;
-  box-shadow: inset 0 0 0 1px rgba(var(--brand-brown-rgb), 0.14);
+}
+
+.nav-chip-active::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .editorial-card-dark,
@@ -713,71 +789,6 @@
   z-index: 1;
 }
 
-.profile-completion-track {
-  height: 0.45rem;
-  border-radius: 9999px;
-  background: rgba(var(--brand-brown-rgb), 0.1);
-  overflow: hidden;
-}
-
-.profile-completion-fill {
-  height: 100%;
-  min-width: 0;
-  border-radius: 9999px;
-  background: linear-gradient(
-    90deg,
-    rgb(var(--brand-orange-rgb)),
-    rgb(var(--brand-gold-rgb))
-  );
-  transition: width 280ms ease;
-}
-
-.profile-checklist-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 2.75rem;
-  border-radius: 0.875rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.1);
-  background: rgba(255, 255, 255, 0.78);
-}
-
-@media (max-width: 639px) {
-  .profile-checklist-row {
-    min-height: 3rem;
-    padding: 0.75rem 0.9rem;
-  }
-}
-
-.profile-checklist-row-done {
-  border-color: rgba(var(--brand-orange-rgb), 0.22);
-  background: linear-gradient(
-    92deg,
-    rgba(var(--brand-orange-rgb), 0.07) 0%,
-    rgba(var(--brand-cream-rgb), 0.38) 100%
-  );
-}
-
-.profile-checklist-row-open {
-  border-style: dashed;
-  border-color: rgba(var(--brand-brown-rgb), 0.24);
-  background: rgba(255, 253, 248, 0.92);
-}
-
-.profile-avatar-panel {
-  border-radius: 1.5rem;
-  border: 1px solid rgba(var(--brand-gold-rgb), 0.38);
-  background: linear-gradient(
-    155deg,
-    rgba(var(--brand-cream-rgb), 0.52) 0%,
-    rgba(255, 253, 248, 0.98) 48%,
-    rgba(255, 255, 255, 0.96) 100%
-  );
-  box-shadow:
-    0 18px 46px rgba(var(--brand-brown-rgb), 0.08),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.48);
-}
 
 .profile-avatar-ring {
   flex-shrink: 0;
@@ -799,13 +810,28 @@
   color: rgba(var(--brand-brown-rgb), 0.55);
 }
 
-.profile-form-well {
-  border-radius: 1.35rem;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.1);
-  background: rgba(255, 255, 255, 0.93);
-  box-shadow: 0 14px 38px rgba(var(--brand-brown-rgb), 0.06);
+/**
+ * Portrait zone — Phase 1 profile redesign.
+ * A soft tonal container that reads as surface warmth, not a boxed card.
+ * Border is a whisper, not a boundary. Background is atmospheric, not structural.
+ */
+.profile-portrait-zone {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(var(--brand-gold-rgb), 0.2);
+  background: linear-gradient(
+    155deg,
+    rgba(var(--brand-cream-rgb), 0.32) 0%,
+    rgba(255, 253, 248, 0.62) 55%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
 }
 
+/**
+ * Editorial CTA system
+ * Primary: warm orange with shadow lift on hover — action coming off the page.
+ * Secondary: defined border, warms to orange on hover — companion, never competing.
+ * Ghost: pure text link, underline sweeps in from left on hover.
+ */
 .cta-primary {
   display: inline-flex;
   min-height: 3rem;
@@ -813,16 +839,28 @@
   justify-content: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  background: #e34b16;
-  padding: 0.75rem 1.5rem;
+  background: linear-gradient(160deg, #f05320 0%, #d94010 100%);
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
   color: white;
-  transition: background-color 150ms ease, transform 150ms ease;
+  box-shadow: 0 6px 20px rgba(227, 75, 22, 0.28);
+  transition:
+    background 220ms ease,
+    box-shadow 220ms ease,
+    transform 140ms ease;
 }
 
 .cta-primary:hover {
-  background: #c74010;
+  background: linear-gradient(160deg, #e34b16 0%, #c43a0c 100%);
+  box-shadow: 0 12px 32px rgba(227, 75, 22, 0.40);
+  transform: translateY(-1px);
+}
+
+.cta-primary:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 4px 12px rgba(227, 75, 22, 0.24);
 }
 
 .cta-secondary {
@@ -831,18 +869,29 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid rgba(var(--brand-brown-rgb), 0.16);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(var(--brand-brown-rgb), 0.22);
+  background: rgba(255, 253, 248, 0.95);
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
   color: #7a331b;
-  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .cta-secondary:hover {
-  border-color: rgba(var(--brand-orange-rgb), 0.4);
+  border-color: rgba(var(--brand-orange-rgb), 0.50);
   color: #e34b16;
+  background: rgba(255, 248, 242, 0.98);
+  box-shadow: 0 6px 20px rgba(227, 75, 22, 0.10);
+}
+
+.cta-secondary:active {
+  transform: scale(0.98);
 }
 
 .cta-secondary-inverse {
@@ -851,31 +900,51 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.60);
   background: transparent;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   font-size: 0.875rem;
   font-weight: 700;
   color: white;
-  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 .cta-secondary-inverse:hover {
   background: white;
+  border-color: white;
   color: #e34b16;
 }
 
+/* Ghost: underline sweeps in from center on hover */
 .cta-ghost {
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
   justify-content: center;
+  position: relative;
   border-radius: 9999px;
   padding: 0.75rem 0.25rem;
   font-size: 0.875rem;
   font-weight: 700;
   color: #e34b16;
-  transition: color 150ms ease;
+  transition: color 200ms ease;
+}
+
+.cta-ghost::after {
+  content: '';
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 200ms ease;
+}
+
+.cta-ghost:hover::after {
+  transform: scaleX(1);
 }
 
 .cta-ghost:hover {
@@ -887,7 +956,7 @@
   border-radius: 1rem;
   border: 1px solid rgba(var(--brand-brown-rgb), 0.14);
   background: white;
-  color: #3a3a3a;
+  color: #4a2c18;
   box-shadow: 0 1px 2px rgba(var(--brand-brown-rgb), 0.06);
   outline: none;
   transition: box-shadow 150ms ease, border-color 150ms ease;
@@ -987,4 +1056,262 @@
   .shell-pb-safe {
     padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DASHBOARD EDITORIAL SYSTEM
+   Additive classes for the magazine-style member experience.
+   Never conflicts with existing .editorial-card-* or community surface classes.
+───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Hero identity panel — replaces plain card header.
+ * Full-width, 2-column split on desktop. Stacked on mobile.
+ */
+.dash-hero-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 66vh;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  /* No border — removes card-like framing */
+  box-shadow: 0 40px 100px rgba(var(--brand-brown-rgb), 0.16);
+}
+
+@media (min-width: 900px) {
+  .dash-hero-panel {
+    grid-template-columns: 55fr 45fr;
+    min-height: 64vh;
+  }
+}
+
+/**
+ * Left text field inside the hero panel.
+ * Cream base, room for large editorial type.
+ */
+.dash-hero-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  /* Warm gradient that breathes toward the orange panel on the right */
+  background: linear-gradient(
+    to right,
+    #fffdf8 0%,
+    #fffaf2 50%,
+    rgba(247, 232, 190, 0.72) 78%,
+    rgba(227, 75, 22, 0.09) 100%
+  );
+  z-index: 1;
+}
+
+/* Soft warm bleed on the right edge — bridges the two fields */
+.dash-hero-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  background: linear-gradient(to right, transparent, rgba(227, 75, 22, 0.06));
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (min-width: 640px) {
+  .dash-hero-left {
+    padding: 3rem 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dash-hero-left {
+    padding: 3.5rem 3.25rem;
+  }
+}
+
+/**
+ * Right art field inside the hero panel.
+ * Bold orange/warm emotional accent field.
+ */
+.dash-hero-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Orange burns bright at top, extinguishes into near-dark at base —
+     creates depth and cinematic weight without losing the brand warmth */
+  background: linear-gradient(
+    158deg,
+    #ea5118 0%,
+    #cc3c0e 24%,
+    #a62e09 50%,
+    #5c1406 76%,
+    #2e0902 100%
+  );
+  min-height: 300px;
+}
+
+@media (min-width: 900px) {
+  .dash-hero-art {
+    min-height: unset;
+  }
+}
+
+/* Diagonal stripe texture — more present, adds editorial grain */
+.dash-hero-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.065) 0px,
+    rgba(255, 255, 255, 0.065) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  pointer-events: none;
+}
+
+/* Gold warmth pool — bottom-left, lifts against the dark base */
+.dash-hero-art::after {
+  content: '';
+  position: absolute;
+  bottom: -18%;
+  left: -12%;
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--brand-gold-rgb), 0.48) 0%,
+    rgba(var(--brand-gold-rgb), 0.18) 38%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+/**
+ * Editorial split layout — 55/45 grid for mixed sections.
+ */
+.editorial-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .editorial-split {
+    grid-template-columns: 55fr 45fr;
+    gap: 2.5rem;
+  }
+}
+
+/**
+ * Display impact — Fraunces 900, tight, editorial.
+ * Used for hero titles, big section headings.
+ */
+.display-impact {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/**
+ * Display headline — slightly lighter than impact, editorial body heading.
+ */
+.display-headline {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+/**
+ * Organic blob — decorative SVG-style container for art field content.
+ * Pure CSS approximation via border-radius.
+ */
+.organic-blob-frame {
+  border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+  overflow: hidden;
+}
+
+/**
+ * Stripe pattern background overlay (standalone utility).
+ * Apply to any section that needs diagonal texture.
+ */
+.stripe-pattern-bg {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(var(--brand-brown-rgb), 0.04) 0px,
+    rgba(var(--brand-brown-rgb), 0.04) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+}
+
+/**
+ * Marquee strip — dark editorial scrolling band between sections.
+ */
+.dash-marquee-strip {
+  overflow: hidden;
+  white-space: nowrap;
+  background: #7a331b;
+  color: #f7e8be;
+  padding: 0.85rem 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/**
+ * Decorative section eye break — thin warm rule used between editorial zones.
+ */
+.editorial-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--brand-gold-rgb), 0.35) 20%,
+    rgba(var(--brand-brown-rgb), 0.18) 50%,
+    rgba(var(--brand-gold-rgb), 0.35) 80%,
+    transparent 100%
+  );
+  border: none;
+  margin: 0;
+}
+
+/**
+ * Card lift — the ONE shared motion signature across all interactive cards.
+ *
+ * Phase 6 refinement: hover is atmospheric response, not interaction.
+ * The primary signal is now a warm shadow bloom (colour shift, warmth arriving)
+ * rather than physical movement. The 1px translateY is so subtle it barely
+ * registers consciously — the viewer feels the page warming, not an element moving.
+ */
+.dash-card-lift {
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms ease;
+}
+
+.dash-card-lift:hover {
+  transform: translateY(-1px);
+  /* Warm amber glow at ~15% lower opacity: the question of whether anything happened */
+  box-shadow:
+    0 6px 24px rgba(227, 75, 22, 0.059),
+    0 2px 8px rgba(122, 51, 27, 0.033);
+}
+
+.dash-card-lift:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px rgba(227, 75, 22, 0.04),
+    0 1px 3px rgba(122, 51, 27, 0.03);
 }

@@ -68,16 +68,8 @@ export function NavClient({
     return (
       <nav
         aria-label="Your account"
-        className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-2 border-l border-[#ead8c2] pl-4 lg:gap-x-3 lg:pl-5"
+        className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-1 gap-y-1.5 border-l border-[#e8d8bc]/50 pl-4 lg:pl-5"
       >
-        {accountHint ? (
-          <span
-            className="hidden max-w-[11rem] truncate text-xs font-medium text-[#6d5849] lg:block"
-            title={accountHint}
-          >
-            {accountHint}
-          </span>
-        ) : null}
         {authLinks.map((link) => {
           const isActive = isRouteActive(pathname, link.href)
           const isDashboard = link.href === '/dashboard'
@@ -86,11 +78,11 @@ export function NavClient({
               key={link.href}
               href={link.href}
               className={cn(
-                'whitespace-nowrap rounded-full px-1.5 py-1 text-sm font-semibold transition-colors',
+                'whitespace-nowrap px-2 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.1em] transition-colors',
                 isActive
-                  ? 'text-[#e34b16] underline decoration-[#e34b16]/40 decoration-2 underline-offset-4'
-                  : 'text-[#3a3a3a] hover:text-[#e34b16]',
-                !isActive && isDashboard && 'bg-[#fffaf0] px-2.5 ring-1 ring-[#ead8c2]/90 ring-offset-1 ring-offset-white'
+                  ? 'text-[#e34b16]'
+                  : 'text-[#7a331b]/70 hover:text-[#e34b16]',
+                isDashboard && !isActive && 'rounded-full border border-[#ead8c2]/80 bg-[#fffaf0] px-2.5'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -154,7 +146,7 @@ export function NavClient({
 
   return (
     <>
-      <header className="relative z-40 border-b border-[#ead8c2] bg-white/95 backdrop-blur">
+      <header className="relative z-40 border-b border-[#e8d8bc]/60 bg-[#fffdf8]/96 backdrop-blur-md">
         <div className="container mx-auto hidden grid-cols-[auto_1fr_auto] items-center gap-3 py-3 shell-inline lg:grid lg:gap-5 xl:gap-6">
           <Link href="/" className="min-w-0 shrink-0 leading-none text-[#e34b16]">
             <span className="wordmark text-[clamp(1.35rem,2.2vw,1.9rem)]">
@@ -265,7 +257,7 @@ export function NavClient({
       {showStickyNav && (
         <nav
           className={cn(
-            "fixed inset-x-0 top-0 z-50 hidden border-b border-[#ead8c2] bg-white/95 pt-[env(safe-area-inset-top,0px)] shadow-[0_16px_50px_rgba(122,51,27,0.12)] backdrop-blur transition-all duration-300 lg:block",
+            "fixed inset-x-0 top-0 z-50 hidden border-b border-[#e8d8bc]/60 bg-[#fffdf8]/96 pt-[env(safe-area-inset-top,0px)] shadow-[0_20px_60px_rgba(122,51,27,0.10)] backdrop-blur-md transition-all duration-300 lg:block",
             isScrolled ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           )}
           aria-label="Sticky navigation"

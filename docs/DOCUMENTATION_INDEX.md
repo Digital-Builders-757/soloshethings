@@ -153,6 +153,8 @@ User-facing documentation and feature status.
 - **[USER_GUIDE.md](./USER_GUIDE.md)** - User roles, capabilities, and UX expectations
 - **[MVP_STATUS_NOTION.md](./MVP_STATUS_NOTION.md)** - **Canonical shipped status** and progress history
 - **[BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md)** - Brand color palette, usage rules, and design tokens
+- **[DASHBOARD_DESIGN_LANGUAGE.md](./DASHBOARD_DESIGN_LANGUAGE.md)** - Dashboard art-direction manual: philosophy, typography, composition, atmosphere, interaction, colour, implementation rules, and future extensions
+- **[PROFILE_PAGE_IMPLEMENTATION.md](./PROFILE_PAGE_IMPLEMENTATION.md)** - Profile page developer reference: architecture, CSS classes, responsive behavior, accessibility, removed systems, and continuation ideas
 - **[UX_REFERENCE_AWA.md](./UX_REFERENCE_AWA.md)** - Accidentally Wes Anderson inspiration (structure only, not styling)
 - **[design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md](./design-plans/BRAND_COLOR_VIBRANCY_ENHANCEMENT.md)** - Brand color vibrancy enhancement design plan and implementation
 - **[design-plans/WHITE_BACKGROUND_COLOR_MATCHING_PLAN.md](./design-plans/WHITE_BACKGROUND_COLOR_MATCHING_PLAN.md)** - White background section visual consistency plan and implementation
