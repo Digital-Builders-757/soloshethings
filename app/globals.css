@@ -134,7 +134,14 @@
 
 /* Warm editorial system */
 .page-warm {
-  background: #fffaf0;
+  background-color: #fffaf0;
+  /* Micro warm-dot grain — reads as paper texture, not a pattern */
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(122, 51, 27, 0.055) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
 }
 
 .editorial-card,
@@ -192,7 +199,8 @@
 
 .wordmark {
   display: block;
-  font-family: Georgia, 'Times New Roman', serif;
+  /* Fraunces brings brand authority — same face as the hero headline */
+  font-family: var(--font-display), Georgia, 'Times New Roman', serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -206,7 +214,7 @@
 }
 
 .wordmark-sticky {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-display), Georgia, 'Times New Roman', serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1142,13 +1150,15 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* Deep, moody orange — dark bottom gives depth and cinematic weight */
+  /* Orange burns bright at top, extinguishes into near-dark at base —
+     creates depth and cinematic weight without losing the brand warmth */
   background: linear-gradient(
-    155deg,
-    #f05a20 0%,
-    #d94010 28%,
-    #bc3308 58%,
-    #7f200a 100%
+    158deg,
+    #ea5118 0%,
+    #cc3c0e 24%,
+    #a62e09 50%,
+    #5c1406 76%,
+    #2e0902 100%
   );
   min-height: 300px;
 }
@@ -1174,19 +1184,20 @@
   pointer-events: none;
 }
 
-/* Gold warmth pool — bottom-left, anchors the composition */
+/* Gold warmth pool — bottom-left, lifts against the dark base */
 .dash-hero-art::after {
   content: '';
   position: absolute;
-  bottom: -15%;
-  left: -10%;
-  width: 65%;
-  height: 65%;
+  bottom: -18%;
+  left: -12%;
+  width: 72%;
+  height: 72%;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(var(--brand-gold-rgb), 0.38) 0%,
-    transparent 62%
+    rgba(var(--brand-gold-rgb), 0.48) 0%,
+    rgba(var(--brand-gold-rgb), 0.18) 38%,
+    transparent 65%
   );
   pointer-events: none;
 }
@@ -1282,4 +1293,24 @@
   );
   border: none;
   margin: 0;
+}
+
+/**
+ * Card lift — the ONE shared motion signature across all interactive cards.
+ * Mirrors the CTA primary button's lift language. Cards come off the page on hover,
+ * like picking up a printed piece. Not used on article hero or structural elements.
+ */
+.dash-card-lift {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.dash-card-lift:hover {
+  transform: translateY(-3px);
+}
+
+.dash-card-lift:active {
+  transform: translateY(-1px);
 }

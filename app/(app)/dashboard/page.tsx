@@ -111,11 +111,11 @@ function ActionTile({
       <Link
         href={href}
         className={cn(
-          'group flex min-h-[11rem] gap-4 rounded-[1.55rem] border p-4 transition sm:min-h-[12rem] sm:flex-col sm:p-5',
+          'group flex gap-4 rounded-[1.55rem] border p-4 dash-card-lift sm:flex-col sm:p-5',
           toneStyles.card
         )}
       >
-        <div className="flex items-start justify-between gap-3 sm:min-h-[3.75rem]">
+        <div className="flex items-start justify-between gap-3">
           <span
             className={cn(
               'inline-flex rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em]',
@@ -339,8 +339,9 @@ export default async function DashboardPage() {
           profileChecklist={profileChecklist}
         />
 
-        <section aria-labelledby="dash-start-here-heading" className="mt-7 grid gap-4 sm:mt-8 lg:grid-cols-3">
-          <article className="editorial-card-sun relative overflow-hidden p-5 sm:p-6">
+        {/* items-start lets cards sit at natural heights, vertical offsets break lockstep */}
+        <section aria-labelledby="dash-start-here-heading" className="mt-7 grid items-start gap-4 sm:mt-8 lg:grid-cols-3">
+          <article className="dash-card-lift editorial-card-sun relative overflow-hidden p-5 sm:p-6">
             <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-white/35 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
               <p className="eyebrow text-[0.62rem] tracking-[0.24em]">Profile readiness</p>
@@ -369,7 +370,7 @@ export default async function DashboardPage() {
             </ul>
           </article>
 
-          <article className="editorial-card-ember relative overflow-hidden p-5 sm:p-6">
+          <article className="dash-card-lift editorial-card-ember relative overflow-hidden p-5 sm:p-6 lg:mt-6">
             <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-[#ffd2c0]/45 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
               <p className="eyebrow text-[0.62rem] tracking-[0.24em]">Best next move</p>
@@ -387,7 +388,7 @@ export default async function DashboardPage() {
             </Link>
           </article>
 
-          <article className="editorial-card-cocoa relative overflow-hidden p-5 text-[#fff5df] sm:p-6">
+          <article className="dash-card-lift editorial-card-cocoa relative overflow-hidden p-5 text-[#fff5df] sm:p-6 lg:mt-12">
             <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fab642]/14 blur-2xl" aria-hidden />
             <div className="flex items-start justify-between gap-3">
               <p className="eyebrow-light text-[0.62rem] tracking-[0.24em]">Live right now</p>
@@ -412,6 +413,7 @@ export default async function DashboardPage() {
           <aside
             className="editorial-card-strong order-1 overflow-hidden p-5 sm:p-6 lg:sticky lg:top-24 lg:order-2 lg:self-start"
             aria-labelledby="dash-snapshot-heading"
+            aria-label="Your profile at a glance"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
