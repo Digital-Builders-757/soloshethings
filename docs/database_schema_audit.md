@@ -545,6 +545,8 @@ CREATE POLICY "Admins select all reports"
 
 **Related RLS (same migration):** admins receive additional `SELECT` policies on `community_posts`, `post_images`, and `profiles` so the moderator queue can load post and member context without broad `UPDATE` grants on `reports`.
 
+> ⚠️ **Production deployment note:** Migration `20260516203000_moderation_admin_rls_reports.sql` was not applied to the production database, causing a Sentry runtime error (`42703: column reports.reviewed_at does not exist`). Repair migration `20260524000000_repair_reports_reviewed_columns.sql` adds the two missing columns idempotently. **This migration must be run on the production Supabase instance via `supabase db push` or the Supabase dashboard SQL editor before the `/reports` page will function correctly.**
+
 **Column Details:**
 - `id` - uuid, PRIMARY KEY, DEFAULT gen_random_uuid()
 - `reporter_id` - uuid, NOT NULL, REFERENCES profiles(id), ON DELETE CASCADE
