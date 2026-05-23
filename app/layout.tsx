@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Fraunces, Rokkitt } from "next/font/google"
-import "./globals.css"
+import './globals.css'
+import './styles/contour-system.css'
 
 const rokkitt = Rokkitt({
   subsets: ["latin"],

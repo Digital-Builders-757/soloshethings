@@ -1,0 +1,382 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SOLO SHE THINGS — VISUAL IDENTITY SYSTEM
+   Contour · Grain · Atmosphere · Motion
+
+   Inspired by: retro editorial layouts, artistic topographic maps,
+   warm premium print aesthetics, modern cultural storytelling brands.
+
+   Guiding principles:
+   — Ultra subtle. Opacity ceiling: 0.10 for all ornamental elements.
+   — Content always primary. Atmosphere serves words and images.
+   — Motion ceiling: 18s minimum cycle, under 18px maximum displacement.
+   — Never noisy. Never psychedelic. Never competing.
+   — Cinematic. Feminine. Artistic. Premium. Cultured.
+
+   Usage: import in app/layout.tsx alongside globals.css.
+   Components live in components/visual/ — use them for parameterized needs.
+   Use these CSS classes for static, non-parameterized decorative atmosphere.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── SYSTEM TOKENS ──────────────────────────────────────────────────────── */
+:root {
+  /* Contour system palette — independent of theme tokens */
+  --contour-warm: 122 51 27;       /* brand brown */
+  --contour-cream: 247 232 190;    /* brand cream */
+  --contour-gold: 250 182 66;      /* brand gold */
+  --contour-ember: 227 75 22;      /* brand orange */
+
+  /* Opacity scale for ornamental use */
+  --ornament-xs: 0.032;
+  --ornament-sm: 0.048;
+  --ornament-md: 0.068;
+  --ornament-lg: 0.090;
+
+  /* Ambient motion durations */
+  --drift-slow: 20s;
+  --drift-medium: 16s;
+  --breathe-slow: 24s;
+}
+
+/* ─── RADIAL GRADIENT FIELDS ─────────────────────────────────────────────── */
+/*
+ * Layered radial gradient backgrounds for sections.
+ * Apply to a position: relative element; inner content sits above.
+ * Pair with a gradient-stop util to add local accents.
+ */
+
+/* Gold warmth — top-left bloom, used on cream/light sections */
+.radial-warm-gold {
+  background:
+    radial-gradient(
+      ellipse 65% 55% at 18% 22%,
+      rgba(var(--contour-gold), 0.22) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 40% 45% at 82% 75%,
+      rgba(var(--contour-ember), 0.10) 0%,
+      transparent 58%
+    );
+}
+
+/* Ember corner — orange pool at bottom-right, for art/dark panels */
+.radial-ember-corner {
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 90% 90%,
+      rgba(var(--contour-ember), 0.32) 0%,
+      rgba(var(--contour-ember), 0.12) 40%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 45% 40% at 10% 15%,
+      rgba(var(--contour-gold), 0.18) 0%,
+      transparent 55%
+    );
+}
+
+/* Dusk — warm multi-point evening-light quality */
+.radial-dusk {
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 15% 30%,
+      rgba(var(--contour-gold), 0.18) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 65% at 85% 70%,
+      rgba(var(--contour-ember), 0.14) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 45% 35% at 50% 100%,
+      rgba(var(--contour-warm), 0.08) 0%,
+      transparent 60%
+    );
+}
+
+/* Deep hearth — near-dark with ember pool; for rich cocoa / dark sections */
+.radial-deep-hearth {
+  background:
+    radial-gradient(
+      ellipse 60% 55% at 20% 85%,
+      rgba(var(--contour-gold), 0.30) 0%,
+      rgba(var(--contour-gold), 0.08) 45%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 40% 35% at 75% 20%,
+      rgba(var(--contour-ember), 0.18) 0%,
+      transparent 52%
+    );
+}
+
+/* Cream mist — very pale radial on white backgrounds for depth */
+.radial-cream-mist {
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 50% 40%,
+      rgba(var(--contour-cream), 0.55) 0%,
+      rgba(var(--contour-cream), 0.18) 55%,
+      transparent 75%
+    );
+}
+
+/* ─── ORGANIC BLOB SHAPES ────────────────────────────────────────────────── */
+/*
+ * Applied to any element to give it an organic, non-rectangular silhouette.
+ * Always pair with overflow:hidden (use .blob-clip for the combined form).
+ * Safe on images, tinted divs, or decorative containers.
+ */
+
+.blob-clip {
+  overflow: hidden;
+}
+
+/* Pebble — balanced, slightly asymmetric oval. Good for avatars and cards. */
+.blob-pebble {
+  border-radius: 58% 42% 55% 45% / 48% 52% 42% 56%;
+}
+
+/* Soft — barely perceptible organic edge. Almost rectangular but not quite. */
+.blob-soft {
+  border-radius: 52% 48% 54% 46% / 46% 54% 48% 52%;
+}
+
+/* Arc-cut — one strong bite taken from the top-right. Directional, editorial. */
+.blob-arc-cut {
+  border-radius: 82% 18% 66% 34% / 38% 62% 26% 74%;
+}
+
+/* Teardrop — wider at bottom, tapers toward top-right. Feels like water or a leaf. */
+.blob-teardrop {
+  border-radius: 70% 30% 62% 38% / 28% 72% 38% 62%;
+}
+
+/* Lens — horizontal lens / eye shape. Cinematic crop. */
+.blob-lens {
+  border-radius: 50% 50% 50% 50% / 35% 35% 65% 65%;
+}
+
+/* Slab — rectangular top, organic bottom edge. Like a printed card. */
+.blob-slab {
+  border-radius: 0.5rem 0.5rem 68% 32% / 0.5rem 0.5rem 42% 58%;
+}
+
+/* ─── GRAIN OVERLAYS ─────────────────────────────────────────────────────── */
+/*
+ * Apply to a positioned element via ::before to add SVG turbulence grain.
+ * The grain SVG is embedded as a data URI and tiled as background-image.
+ * All variants use fractalNoise with stitchTiles for seamless tiling.
+ *
+ * NOTE: The grain-* classes require the element to have position: relative.
+ * The pseudo-element is position: absolute, inset 0, pointer-events: none.
+ */
+
+/* Subtle — barely perceptible. Works on cream/light backgrounds. */
+.grain-subtle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.016;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+
+/* Medium — readable as paper texture. Good on orange/gold fields. */
+.grain-medium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.030;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 260px 260px;
+}
+
+/* Press — visible print grain. Use on dark cocoa sections for depth. */
+.grain-press::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.048;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* ─── AMBIENT CSS MOTION ─────────────────────────────────────────────────── */
+/*
+ * CSS-only ambient animations. For JS-driven motion, use AmbientField component.
+ * All durations are 18s minimum. All transforms are minor (< 16px displacement).
+ * Apply to decorative, non-interactive elements only.
+ */
+
+@keyframes contour-drift {
+  0%   { transform: translate(0,    0)    scale(1.000); }
+  20%  { transform: translate(9px,  -7px) scale(1.018); }
+  45%  { transform: translate(-6px, 8px)  scale(0.988); }
+  65%  { transform: translate(7px,  -4px) scale(1.012); }
+  80%  { transform: translate(-4px, 6px)  scale(0.994); }
+  100% { transform: translate(0,    0)    scale(1.000); }
+}
+
+@keyframes contour-breathe {
+  0%, 100% { opacity: 0.70; transform: scale(1.000); }
+  30%       { opacity: 0.95; transform: scale(1.055); }
+  60%       { opacity: 0.78; transform: scale(0.975); }
+  80%       { opacity: 1.00; transform: scale(1.030); }
+}
+
+@keyframes contour-shimmer {
+  0%, 100% { opacity: 0.65; }
+  45%       { opacity: 0.92; }
+  70%       { opacity: 0.72; }
+}
+
+@keyframes contour-slow-orbit {
+  0%   { transform: rotate(0deg)   translateX(6px) rotate(0deg);   }
+  100% { transform: rotate(360deg) translateX(6px) rotate(-360deg); }
+}
+
+/* Utility animation classes */
+.ambient-drift    { animation: contour-drift   20s ease-in-out infinite; }
+.ambient-breathe  { animation: contour-breathe 22s ease-in-out infinite; }
+.ambient-shimmer  { animation: contour-shimmer 18s ease-in-out infinite; }
+.ambient-orbit    { animation: contour-slow-orbit 28s linear infinite; }
+
+/* ─── EDITORIAL SECTION DIVIDERS (CSS variants) ──────────────────────────── */
+/*
+ * Used for dividing editorial zones within a page.
+ * For SVG-based wave/slash/mark variants, use the SectionDivider component.
+ */
+
+/* Warm horizon — the standard rule, refined */
+.divider-horizon {
+  height: 1px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    transparent    0%,
+    rgba(var(--contour-gold),  0.28) 15%,
+    rgba(var(--contour-warm),  0.20) 40%,
+    rgba(var(--contour-ember), 0.18) 60%,
+    rgba(var(--contour-gold),  0.28) 85%,
+    transparent    100%
+  );
+}
+
+/* Feather — fades more aggressively at edges, feels lighter */
+.divider-feather {
+  height: 1px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--contour-warm), 0.12) 35%,
+    rgba(var(--contour-warm), 0.18) 50%,
+    rgba(var(--contour-warm), 0.12) 65%,
+    transparent 100%
+  );
+}
+
+/* Double — a classic editorial double-rule, very refined spacing */
+.divider-double {
+  height: 5px;
+  border: none;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(var(--contour-warm), 0.18) 20%, rgba(var(--contour-warm), 0.18) 80%, transparent 100%)
+      center top / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent 0%, rgba(var(--contour-gold), 0.22) 20%, rgba(var(--contour-gold), 0.22) 80%, transparent 100%)
+      center bottom / 100% 1px no-repeat;
+}
+
+/* ─── ASYMMETRIC DECORATIVE GEOMETRY ─────────────────────────────────────── */
+/*
+ * CSS-based geometric accents. For SVG geometry, use GeometryAccent component.
+ */
+
+/* Offset column rule — a partial vertical rule for editorial columns */
+.geo-column-rule {
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(var(--contour-warm), 0.14) 20%,
+    rgba(var(--contour-warm), 0.14) 80%,
+    transparent 100%
+  );
+}
+
+/* Corner anchor — appears as an L-shape in one corner via box decoration */
+.geo-corner-anchor::before {
+  content: '';
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-top: 1.5px solid rgba(var(--contour-warm), 0.22);
+  border-left: 1.5px solid rgba(var(--contour-warm), 0.22);
+  pointer-events: none;
+}
+
+.geo-corner-anchor-tr::before {
+  content: '';
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-top: 1.5px solid rgba(var(--contour-warm), 0.18);
+  border-right: 1.5px solid rgba(var(--contour-warm), 0.18);
+  pointer-events: none;
+}
+
+/* ─── EDITORIAL TYPOGRAPHY REFINEMENTS ───────────────────────────────────── */
+/*
+ * Typography utilities that extend the display/body type system.
+ * Not full component styles — single-property overrides for editorial nuance.
+ */
+
+/* Drop cap — first letter treatment, editorial magazine style */
+.drop-cap::first-letter {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 3.8em;
+  font-weight: 900;
+  line-height: 0.75;
+  float: left;
+  margin-right: 0.08em;
+  margin-top: 0.08em;
+  color: rgba(var(--contour-ember), 1);
+}
+
+/* Run-in heading — bold inline start-of-paragraph label */
+.run-in-head {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--contour-ember), 1);
+}
+
+/* Pull quote — magazine large-quote treatment */
+.pull-quote {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.38;
+  letter-spacing: -0.01em;
+  color: rgba(var(--contour-warm), 0.85);
+  border-left: 2px solid rgba(var(--contour-ember), 0.50);
+  padding-left: 1.25rem;
+}
