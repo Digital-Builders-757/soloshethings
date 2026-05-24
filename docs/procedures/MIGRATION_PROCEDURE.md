@@ -12,14 +12,14 @@
 
 ## CI/CD (GitHub Actions)
 
-Committed migrations in `supabase/migrations/` can be deployed to hosted Supabase by GitHub Actions (Supabase CLI: `supabase link` → `supabase db push`). Workflows:
+Committed migrations in `supabase/migrations/` are exercised by GitHub Actions (Supabase CLI: `supabase link` + validation or `supabase db push`). Workflows:
 
-| Workflow | Trigger | Remote target |
-|----------|---------|----------------|
-| [.github/workflows/supabase-migrations-develop.yml](../../.github/workflows/supabase-migrations-develop.yml) | `push` to `develop`, `workflow_dispatch` | Staging Supabase |
-| [.github/workflows/supabase-migrations-main.yml](../../.github/workflows/supabase-migrations-main.yml) | `push` to `main`, `workflow_dispatch` | Production Supabase |
+| Workflow | Trigger | Behavior |
+|----------|---------|----------|
+| [.github/workflows/supabase-migrations-develop.yml](../../.github/workflows/supabase-migrations-develop.yml) | `push` to `develop` when `supabase/migrations/**` or this workflow changes; **`workflow_dispatch`** | **Validate only:** linked staging → `supabase db push --dry-run` → `supabase db lint --linked --fail-on error` (does **not** apply migrations) |
+| [.github/workflows/supabase-migrations-main.yml](../../.github/workflows/supabase-migrations-main.yml) | `push` to `main` when `supabase/migrations/**` or this workflow changes; **`workflow_dispatch`** | **`environment: production`** (use required reviewers); linked production → **`supabase db push --yes`** |
 
-**Repository secrets (Actions → Secrets and variables → Actions):**
+Configure a GitHub **`production`** environment with **required reviewers** so production pushes pause for approval when the Actions job waits on the deploy gate.
 
 - `SUPABASE_ACCESS_TOKEN`
 - `SUPABASE_STAGING_PROJECT_ID`, `SUPABASE_STAGING_DB_PASSWORD`

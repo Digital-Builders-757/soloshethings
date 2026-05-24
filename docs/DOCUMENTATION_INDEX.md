@@ -94,6 +94,7 @@ Single source of truth documents.
 - **[database_schema_audit.md](./database_schema_audit.md)** - Single source of truth for Supabase database schema (v0)
 - **[supabase/storage_setup_dashboard.sql](./supabase/storage_setup_dashboard.sql)** - One-time per environment: `user-uploads` bucket + storage RLS (run in Dashboard after `db push`; CLI cannot manage some `storage` DDL on hosted)
 - **[DATABASE_REPORT.md](./DATABASE_REPORT.md)** - Schema evolution, product mapping, RLS design, access patterns, and storage strategy
+- **[supabase-readonly-migration-verification.md](./supabase-readonly-migration-verification.md)** - Optional read-only SQL checks before deleting drift/repair migrations
 - **[WORDPRESS_SUPABASE_BLUEPRINT.md](./WORDPRESS_SUPABASE_BLUEPRINT.md)** - Hybrid stack architecture blueprint: WordPress (editorial) + Supabase (identity/community) + Next.js (delivery)
 
 ### Contracts Layer
@@ -205,6 +206,7 @@ Architecture diagrams and flow documentation.
 
 ### Migration Workflow
 - **Source of Truth:** [procedures/MIGRATION_PROCEDURE.md](./procedures/MIGRATION_PROCEDURE.md)
+- **Read-only checks before removing idempotent repair migrations:** [supabase-readonly-migration-verification.md](./supabase-readonly-migration-verification.md)
 - **Related:** [database_schema_audit.md](./database_schema_audit.md), [DATABASE_REPORT.md](./DATABASE_REPORT.md)
 
 ### Environment Setup
@@ -289,7 +291,7 @@ Architecture diagrams and flow documentation.
 - Documentation renamed
 - Topic ownership changes
 
-**Last Updated:** 2026-05-15  
+**Last Updated:** 2026-05-24  
 **Maintainer:** Development Team
 
 **Recent sync:** [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) is the high-level onboarding map (stack, routing, contract pointers); `procedures/IMPLEMENTATION_ROADMAP.md` is the only active-plan source. `MVP_STATUS_NOTION.md` remains the shipped-status source. The catch-up / finish-line roadmaps and older work-order docs are explicitly treated as historical checkpoints rather than the current queue. Reusable signed-in/community CSS and React helpers are indexed from [BRAND_STYLE_GUIDE.md](./BRAND_STYLE_GUIDE.md) (**Signed-in & community surfaces**).
