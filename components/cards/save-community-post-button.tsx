@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
@@ -54,17 +53,8 @@ export function SaveCommunityPostButton({
   className,
 }: SaveCommunityPostButtonProps) {
   const [state, formAction] = useActionState(toggleSavedCommunityPost, null)
-  const [saved, setSaved] = useState(initialSaved)
-
-  useEffect(() => {
-    setSaved(initialSaved)
-  }, [initialSaved])
-
-  useEffect(() => {
-    if (typeof state?.saved === 'boolean') {
-      setSaved(state.saved)
-    }
-  }, [state?.saved])
+  const saved =
+    typeof state?.saved === 'boolean' ? state.saved : initialSaved
 
   return (
     <form action={formAction} className={cn('space-y-2', className)}>

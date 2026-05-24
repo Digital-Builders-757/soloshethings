@@ -50,13 +50,10 @@ const DEFAULT_IMAGES: HeroImage[] = [
 
 export function WesAndersonHero({ images = DEFAULT_IMAGES }: WesAndersonHeroProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
   const [typedText, setTypedText] = useState('');
   const fullText = 'Discover safe spots, share your stories, and connect with a community that understands solo travel.';
 
   useEffect(() => {
-    setIsVisible(true);
-    
     // Typewriter effect
     let currentIndex = 0;
     const typeInterval = setInterval(() => {
@@ -85,7 +82,7 @@ export function WesAndersonHero({ images = DEFAULT_IMAGES }: WesAndersonHeroProp
     <section className="min-h-screen flex flex-col lg:flex-row items-center bg-gradient-to-br from-brand-blue1 via-brand-orange to-brand-yellow1 text-white hero-wash">
       {/* Content Left */}
       <div className="flex-1 px-4 py-20 md:py-24 lg:pl-16 lg:pr-8">
-        <div className={`max-w-2xl mx-auto lg:mx-0 ${isVisible ? 'animate-slide-up' : ''}`}>
+        <div className="max-w-2xl mx-auto lg:mx-0 animate-slide-up">
           <p className="eyebrow-text text-white/80 mb-4">Welcome</p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight drop-shadow-lg">
             Safe Travels for Solo Female Travelers
