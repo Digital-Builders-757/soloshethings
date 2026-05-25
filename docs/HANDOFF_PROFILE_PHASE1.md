@@ -1,19 +1,19 @@
-# Profile Page — Phase 1 Handoff Note
+# Profile Page — Phase 1 + Phase 4 Handoff Note
 
-**Date completed:** May 2026
-**Status:** Production-ready, committed to develop
+**Last updated:** May 2026
+**Status:** Production-ready on develop, awaiting merge to main
 
 ---
 
-## What was shipped
+## What was shipped — Phase 1 (commit 882d6a4)
 
 - Full structural redesign of `components/profile/profile-form.tsx`
 - Removed checklist/gamification system; replaced with `presenceNote` editorial signals
-- Removed outer form card; page now uses open surface zones directly
+- Removed outer form card; page uses open surface zones directly
 - Editorial typography, warm ink palette, atmospheric depth aligned with dashboard system
 - Compositional imperfection pass: micro-asymmetry, field drift, varied spacing cadence
 - Portrait zone redesigned as vertical narrative (display → upload)
-- Bio textarea styled as a writing surface (warm bg, generous padding and line-height)
+- Bio textarea styled as a writing surface (warm bg, generous padding, line-height 1.72)
 - Save conclusion: long approach, quiet right-aligned exit link
 - 7 dead CSS classes removed from `globals.css`
 - `.editorial-input` text color fixed from cold `#3a3a3a` to warm `#4a2c18`
@@ -21,46 +21,70 @@
 - `SaveProfileButton` cleaned of conflicting Tailwind overrides
 - Documentation: `docs/PROFILE_PAGE_IMPLEMENTATION.md` created and indexed
 
+## What was shipped — Phase 4 (this commit)
+
+- **Visibility radio-card system:** `<select>` replaced with 3 editorial radio-cards (`VISIBILITY_OPTIONS` constant, `privacyLevel` state). `role="radiogroup"`, `sr-only` inputs, warm dot selection indicator. Server action unchanged.
+- **Identity field two-column layout:** `grid-cols-1` mobile → `md:grid-cols-[2fr_3fr]` on desktop. `md:max-w-none` on username, `md:ml-0` cancels compositional drift at desktop. Gap replaces top-margin for stacking.
+- **Portrait strip redesign:** Replaced two stacked blocks with a responsive CSS grid. Mobile: 2-row `[auto_1fr]` (avatar+meta / upload spans full width). Desktop `md+`: 3-column strip `[auto_1fr_14rem]`, vertically centered. Upload label `md:sr-only`.
+- **Spacing rhythm refinements:**
+  - Hero → rule: asymmetric — `mb-7 sm:mb-9` above, `mb-6 sm:mb-7` below. Rule leans toward portrait.
+  - Portrait section: `mb-10 sm:mb-12` (down from `mb-14 sm:mb-[4.5rem]`), `pb-6 sm:pb-7` (down from `pb-8 sm:pb-10`)
+  - Portrait eyebrow: `mb-4 sm:mb-5` (down from `mb-6`)
+- Documentation synced: `PROFILE_PAGE_IMPLEMENTATION.md` fully updated for Phases 1+4
+
 ---
 
 ## Intentionally postponed
 
-| Item | Reason |
-|---|---|
-| Avatar crop/preview modal | Scope — upload + filename confirmation is sufficient for MVP |
-| Travel style tags / interest chips | Requires schema extension; defer to post-MVP |
-| Social/link fields | Low priority; schema addition needed first |
-| Mobile camera capture (`capture="user"`) | Nice-to-have; current file picker works on mobile |
-| Optimistic save feedback | `router.refresh()` is correct behavior for now; optimistic add later |
-| Animated pending state on save button | Fine for later; current `Saving…` text is sufficient |
+| Item | Status | Notes |
+|---|---|---|
+| ~~Profile visibility UX~~ | **Done** | Editorial radio-card system, Phase 4 |
+| Travel style tags | **Next** | Requires schema: `profiles.travel_styles text[]` + multi-select chip UI |
+| Avatar crop/preview modal | Pending | `react-image-crop` or `cropperjs`; sufficient for MVP without it |
+| Profile public view | Pending | `/members/[username]` route — entire new page surface |
+| Social/link fields | Pending | Low priority; schema extension needed |
+| Mobile camera capture | Pending | Nice-to-have; current file picker works |
+| Optimistic save feedback | Pending | `router.refresh()` is correct for now |
+| Animated save button | Pending | Text-only pending state is sufficient |
 
 ---
 
 ## Pre-existing lint issues (not introduced here)
 
-These exist in unrelated files and predate this work:
+Previously present in unrelated files — resolved after pnpm lockfile sync (May 2026):
+- `components/cards/save-community-post-button.tsx` — was 2× `react-hooks/set-state-in-effect`
+- `components/landing/wes-anderson-hero.tsx` — was 1× `react-hooks/set-state-in-effect`
 
-- `components/cards/save-community-post-button.tsx` — 2× `react-hooks/set-state-in-effect`
-- `components/landing/wes-anderson-hero.tsx` — 1× `react-hooks/set-state-in-effect`
-
-These should be addressed in a separate cleanup pass when touching those files.
+Lint is now fully clean (0 errors, 0 warnings).
 
 ---
 
 ## What to tackle next (profile system)
 
-1. **Travel style tags** — multi-select editorial chip system below bio; extend `profiles` schema first
-2. **Avatar crop** — add a client-side crop step before upload; libraries: `react-image-crop` or `cropperjs`
-3. **Profile visibility UX** — the current select works, but a visual radio-card system would feel more editorial
-4. **Profile public view** — `/members/[username]` page for how the profile appears to other members (not yet built)
+1. **Travel style tags** — multi-select editorial chip grid below bio  
+   Schema: `ALTER TABLE profiles ADD COLUMN travel_styles text[] NOT NULL DEFAULT '{}'`  
+   UI: chip grid with ~10–15 preset options, editorial toggle treatment, saved with `updateProfile`
+
+2. **Avatar crop** — client-side crop before upload  
+   Package: `react-image-crop` (lightweight, no canvas dependency)  
+   Pattern: intercept `handleAvatarChange`, show crop modal, upload cropped blob
+
+3. **Profile public view** — `/members/[username]` route  
+   New page: Server Component, reads profile by username, respects `privacy_level`, editorial identity layout
 
 ---
 
-## Files changed in this phase
+## Files changed
 
 ```
-components/profile/profile-form.tsx       — full redesign
-app/globals.css                           — dead CSS removal, editorial-input color fix
-docs/PROFILE_PAGE_IMPLEMENTATION.md       — new developer reference
-docs/DOCUMENTATION_INDEX.md              — indexed new doc
+Phase 1 (882d6a4):
+  components/profile/profile-form.tsx       — full structural redesign
+  app/globals.css                           — dead CSS removal, editorial-input color fix
+  docs/PROFILE_PAGE_IMPLEMENTATION.md       — developer reference (new)
+  docs/DOCUMENTATION_INDEX.md              — indexed new doc
+
+Phase 4 (this commit):
+  components/profile/profile-form.tsx       — visibility cards, portrait strip, identity grid, spacing
+  docs/PROFILE_PAGE_IMPLEMENTATION.md       — fully synced with Phase 4 layout/spacing decisions
+  docs/HANDOFF_PROFILE_PHASE1.md           — updated with Phase 4 shipped items and next steps
 ```

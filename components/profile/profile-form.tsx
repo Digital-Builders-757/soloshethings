@@ -8,6 +8,7 @@
  * Phase 2:   editorial cadence — compositional pacing, portrait narrative, bio as writing surface.
  * Phase 3:   controlled compositional imperfection — micro-asymmetry, authored drift.
  * Lock pass: responsive fixes, dead CSS removal, input color unification, button cleanup.
+ * Phase 4:   profile visibility redesign — editorial radio-card system replaces <select>.
  */
 
 'use client'
@@ -23,6 +24,30 @@ import { useEffect, useMemo, useState, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
+
+// Visibility options ordered from most to least open.
+// Descriptions are editorial observations, not instructions.
+const VISIBILITY_OPTIONS: ReadonlyArray<{
+  value: Profile['privacy_level']
+  label: string
+  description: string
+}> = [
+  {
+    value: 'public',
+    label: 'Public',
+    description: 'Your full presence is visible and findable across the community.',
+  },
+  {
+    value: 'limited',
+    label: 'Limited',
+    description: 'Essentials visible; personal details and bio held back from casual views.',
+  },
+  {
+    value: 'private',
+    label: 'Private',
+    description: 'A quiet footprint — name and avatar only, to those you interact with.',
+  },
+] as const
 
 type ProfileFormProps = {
   profile: Profile
@@ -59,6 +84,9 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
   const [bioLength, setBioLength] = useState(profile.bio?.length ?? 0)
   const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null)
   const [avatarName, setAvatarName] = useState<string | null>(null)
+  const [privacyLevel, setPrivacyLevel] = useState<Profile['privacy_level']>(
+    profile.privacy_level,
+  )
 
   const avatarFallback = useMemo(() => getAvatarFallback(profile), [profile])
   const currentAvatarSrc = localAvatarPreview ?? avatarUrl ?? null
@@ -136,7 +164,7 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
         </nav>
 
         {/* Hero — open surface, no card wrapper */}
-        <header className="mb-10 sm:mb-14">
+        <header className="mb-7 sm:mb-9">
           <p className="eyebrow text-[0.65rem] tracking-[0.26em]">Your space</p>
           <h1 className="display-headline mt-3 text-[1.85rem] text-[#713522] sm:text-[2.25rem] lg:text-[2.6rem]">
             Your presence in the community
@@ -154,8 +182,9 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
           )}
         </header>
 
-        {/* Compositional anchor rule — larger passage into the identity document */}
-        <div className="editorial-rule mb-12 sm:mb-16" />
+        {/* Compositional anchor rule — passage into the identity document.
+            More air above (breathing room after hero) than below (pulls toward portrait). */}
+        <div className="editorial-rule mb-6 sm:mb-7" />
 
         {/* State notices — above the form surface */}
         {state?.success ? (
@@ -181,10 +210,11 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
         {/* Form — zones on the page surface, no outer card */}
         <form action={formAction} className="min-w-0">
           {/* Portrait zone.
-              Vertical narrative: portrait presence first, upload mechanism second.
-              No horizontal settings opposition — the edit follows the display. */}
+              Mobile/sm: two-row grid — [avatar | meta] then [upload spans full width].
+              md+: single horizontal strip — avatar | meta | upload, vertically centered.
+              No stacked-form spacing on desktop. */}
           <section
-            className="profile-portrait-zone relative mb-14 overflow-hidden px-5 pb-8 pt-5 sm:mb-[4.5rem] sm:px-7 sm:pb-10 sm:pt-6"
+            className="profile-portrait-zone relative mb-10 overflow-hidden px-5 pb-6 pt-5 sm:mb-12 sm:px-7 sm:pb-7 sm:pt-5"
             aria-labelledby="portrait-section-label"
           >
             {/* Paper warmth pool — light settling into the surface corner, subliminal */}
@@ -197,52 +227,59 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
               }}
             />
 
-            <p id="portrait-section-label" className="profile-form-section-label relative mb-6">
+            <p id="portrait-section-label" className="profile-form-section-label relative mb-4 sm:mb-5">
               Portrait
             </p>
 
-            <div className="relative">
-              {/* Identity row — avatar beside status, always horizontal */}
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="profile-avatar-ring shrink-0">
-                  <div className="rounded-full bg-white p-1">
-                    <Avatar
-                      src={currentAvatarSrc}
-                      fallback={avatarFallback}
-                      alt={`${profile.username} avatar`}
-                      size="xl"
-                    />
-                  </div>
-                </div>
-                <div className="min-w-0">
-                  <p
-                    className={cn(
-                      'text-sm font-medium',
-                      profile.avatar_url || avatarName
-                        ? 'text-[#713522]'
-                        : 'text-[#713522]/72',
-                    )}
-                  >
-                    {avatarName ??
-                      (profile.avatar_url ? 'Current portrait on file' : 'No portrait yet')}
-                  </p>
-                  <p className="mt-1.5 text-xs text-[#7a331b]/44">
-                    JPG, PNG, or WebP · up to 2MB
-                  </p>
-                  {/* Portrait whisper — an intimate aside, not an instruction */}
-                  {!profile.avatar_url && !localAvatarPreview && !avatarName && (
-                    <p className="mt-2.5 text-[0.75rem] italic text-[#7a331b]/36">
-                      A face helps people place you.
-                    </p>
-                  )}
+            {/*
+              Grid template:
+                Mobile/sm : [auto | 1fr]        — avatar + meta in row 1, upload in row 2
+                md+       : [auto | 1fr | 14rem] — all three in a single horizontal strip
+            */}
+            <div className="relative grid grid-cols-[auto_1fr] items-start gap-x-4 gap-y-5 sm:gap-x-5 md:grid-cols-[auto_1fr_14rem] md:items-center md:gap-x-6 md:gap-y-0">
+              {/* Col 1 — avatar ring */}
+              <div className="profile-avatar-ring shrink-0">
+                <div className="rounded-full bg-white p-1">
+                  <Avatar
+                    src={currentAvatarSrc}
+                    fallback={avatarFallback}
+                    alt={`${profile.username} avatar`}
+                    size="xl"
+                  />
                 </div>
               </div>
 
-              {/* Upload — below, constrained, slightly drifted from left — secondary to the portrait */}
-              <div className="ml-1 mt-7 max-w-[21rem] sm:ml-2 sm:mt-8">
+              {/* Col 2 — portrait status + whisper */}
+              <div className="min-w-0">
+                <p
+                  className={cn(
+                    'text-sm font-medium',
+                    profile.avatar_url || avatarName
+                      ? 'text-[#713522]'
+                      : 'text-[#713522]/72',
+                  )}
+                >
+                  {avatarName ??
+                    (profile.avatar_url ? 'Current portrait on file' : 'No portrait yet')}
+                </p>
+                <p className="mt-1.5 text-xs text-[#7a331b]/44">
+                  JPG, PNG, or WebP · up to 2MB
+                </p>
+                {/* Portrait whisper — an intimate aside, not an instruction */}
+                {!profile.avatar_url && !localAvatarPreview && !avatarName && (
+                  <p className="mt-2.5 text-[0.75rem] italic text-[#7a331b]/36">
+                    A face helps people place you.
+                  </p>
+                )}
+              </div>
+
+              {/* Col 3 — upload action.
+                  Mobile: spans both columns (full-width row).
+                  md+: right column, label hidden (sr-only), input only. */}
+              <div className="col-span-2 md:col-span-1">
                 <label
                   htmlFor="avatar"
-                  className="mb-3 block text-sm font-medium text-[#713522]/80"
+                  className="mb-2.5 block text-sm font-medium text-[#713522]/75 md:sr-only"
                 >
                   Replace portrait
                 </label>
@@ -258,49 +295,52 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
             </div>
           </section>
 
-          {/* Identity fields — username, full name.
-              Spacing is intentionally varied: username is a handle (compact),
-              full name is an identity anchor (more deliberate pause before it). */}
+          {/* Identity fields — username and full name.
+              Mobile/sm: stacked with gap cadence and subtle drift on full name.
+              md+: side-by-side 40/60 grid — username column is compact (handle),
+              full name column is wider (identity anchor). Gap replaces top-margin. */}
           <section className="mb-10 sm:mb-12">
-            <div>
-              <label htmlFor="username" className="mb-2 block text-sm font-semibold text-[#713522]">
-                Username <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                defaultValue={profile.username}
-                autoComplete="username"
-                className="editorial-input warm-focus-ring min-h-12 min-w-0 max-w-[20rem] px-4 py-3.5 text-base sm:min-h-0 sm:py-3 sm:text-sm"
-                placeholder="choose a username"
-                pattern="[a-zA-Z0-9_]+"
-                title="Username can only contain letters, numbers, and underscores"
-                required
-              />
-              <p className="mt-1.5 text-xs text-[#7a331b]/42">
-                Letters, numbers, and underscores only.
-              </p>
-            </div>
-
-            <div className="ml-1 mt-9 sm:ml-2 sm:mt-11">
-              <label htmlFor="full_name" className="mb-3 block text-sm font-semibold text-[#713522]">
-                Full name
-              </label>
-              <input
-                type="text"
-                id="full_name"
-                name="full_name"
-                defaultValue={profile.full_name || ''}
-                autoComplete="name"
-                className="editorial-input warm-focus-ring min-h-12 min-w-0 px-4 py-3.5 text-base sm:min-h-0 sm:py-3 sm:text-sm"
-                placeholder="How you're known"
-              />
-              {!profile.full_name?.trim() ? (
-                <p className="mt-2 text-xs text-[#7a331b]/48">
-                  Appears next to your portrait across the community.
+            <div className="grid grid-cols-1 gap-y-9 sm:gap-y-11 md:grid-cols-[2fr_3fr] md:items-start md:gap-x-6 md:gap-y-0">
+              <div>
+                <label htmlFor="username" className="mb-2 block text-sm font-semibold text-[#713522]">
+                  Username <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  defaultValue={profile.username}
+                  autoComplete="username"
+                  className="editorial-input warm-focus-ring min-h-12 min-w-0 max-w-[20rem] px-4 py-3.5 text-base sm:min-h-0 sm:py-3 sm:text-sm md:max-w-none"
+                  placeholder="choose a username"
+                  pattern="[a-zA-Z0-9_]+"
+                  title="Username can only contain letters, numbers, and underscores"
+                  required
+                />
+                <p className="mt-1.5 text-xs text-[#7a331b]/42">
+                  Letters, numbers, and underscores only.
                 </p>
-              ) : null}
+              </div>
+
+              <div className="ml-1 sm:ml-2 md:ml-0">
+                <label htmlFor="full_name" className="mb-3 block text-sm font-semibold text-[#713522]">
+                  Full name
+                </label>
+                <input
+                  type="text"
+                  id="full_name"
+                  name="full_name"
+                  defaultValue={profile.full_name || ''}
+                  autoComplete="name"
+                  className="editorial-input warm-focus-ring min-h-12 min-w-0 px-4 py-3.5 text-base sm:min-h-0 sm:py-3 sm:text-sm"
+                  placeholder="How you're known"
+                />
+                {!profile.full_name?.trim() ? (
+                  <p className="mt-2 text-xs text-[#7a331b]/48">
+                    Appears next to your portrait across the community.
+                  </p>
+                ) : null}
+              </div>
             </div>
           </section>
 
@@ -320,26 +360,59 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
             </div>
 
             <div className="space-y-7 sm:space-y-8">
+              {/* Visibility — editorial radio-card grid.
+                  Three choices feel like authorial decisions, not settings options.
+                  Selected card: warm amber surface + barely-visible dot mark.
+                  Unselected: transparent, hint border on hover. */}
               <div>
-                <label
-                  htmlFor="privacy_level"
-                  className="mb-2.5 block text-sm font-semibold text-[#713522]"
+                <p
+                  id="visibility-label"
+                  className="mb-3 text-sm font-semibold text-[#713522]"
                 >
                   Profile visibility
-                </label>
-                <select
-                  id="privacy_level"
-                  name="privacy_level"
-                  defaultValue={profile.privacy_level}
-                  className="editorial-input warm-focus-ring min-h-12 min-w-0 max-w-[26rem] px-4 py-3.5 text-base sm:min-h-0 sm:py-3 sm:text-sm"
-                >
-                  <option value="public">Public — shareable across the community</option>
-                  <option value="limited">Limited — basics visible; details restrained</option>
-                  <option value="private">Private — minimal public footprint</option>
-                </select>
-                <p className="mt-1.5 text-xs text-[#7a331b]/50">
-                  This determines how your profile appears to other members.
                 </p>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="visibility-label"
+                  className="flex flex-col gap-2 sm:flex-row sm:gap-2.5"
+                >
+                  {VISIBILITY_OPTIONS.map((opt) => {
+                    const isSelected = privacyLevel === opt.value
+                    return (
+                      <label
+                        key={opt.value}
+                        className={cn(
+                          'relative flex-1 cursor-pointer rounded-xl border px-4 py-3.5 transition-colors duration-200',
+                          isSelected
+                            ? 'border-[#fab642]/45 bg-gradient-to-br from-[#fef6e4]/55 to-[#fffdf8]/70'
+                            : 'border-[#c8a882]/22 bg-transparent hover:border-[#c8a882]/42 hover:bg-[#fffdf8]/35',
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="privacy_level"
+                          value={opt.value}
+                          checked={isSelected}
+                          onChange={() => setPrivacyLevel(opt.value)}
+                          className="sr-only"
+                        />
+                        {/* Warm selection mark — subtle dot, not a checkbox */}
+                        {isSelected && (
+                          <span
+                            aria-hidden
+                            className="absolute right-3 top-3 h-[0.35rem] w-[0.35rem] rounded-full bg-[#e34b16]/50"
+                          />
+                        )}
+                        <span className="block text-sm font-semibold text-[#713522]">
+                          {opt.label}
+                        </span>
+                        <span className="mt-1 block text-[0.71rem] leading-relaxed text-[#7a331b]/50">
+                          {opt.description}
+                        </span>
+                      </label>
+                    )
+                  })}
+                </div>
               </div>
 
               {/* Soft compositional pause before bio — separates "who sees you" from "who you are".
