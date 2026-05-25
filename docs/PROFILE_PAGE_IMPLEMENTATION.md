@@ -2,7 +2,7 @@
 
 **File:** `components/profile/profile-form.tsx`
 **Route:** `/profile` → `app/(app)/profile/page.tsx`
-**Status:** Production-ready · TypeScript clean · Zero new lint errors
+**Status:** Production-ready · TypeScript clean · Lint clean
 
 ---
 
@@ -18,23 +18,24 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
   └── profile-page-inner (z-index:1, max-w-3xl, mx-auto)
         ├── <nav> breadcrumb
         ├── <header> hero — eyebrow / h1 / sub-paragraph / presenceNote
-        ├── .editorial-rule divider
+        │     mb-7 sm:mb-9 (asymmetric: more air above rule than below)
+        ├── .editorial-rule divider (mb-6 sm:mb-7 — leans toward portrait)
         ├── state notices (success / error, aria-live)
         └── <form>
-              ├── <section aria-labelledby> Portrait zone
+              ├── <section aria-labelledby> Portrait zone  (mb-10 sm:mb-12)
               │     ├── warmth pool overlay (aria-hidden)
-              │     ├── identity row (avatar ring + status text + portrait whisper)
-              │     └── upload block (constrained, slightly drifted)
-              ├── <section> Identity fields
-              │     ├── username (max-w-[20rem])
-              │     └── full name (ml-1 sm:ml-2 drift)
-              ├── <section aria-labelledby> Voice & presence
-              │     ├── visibility select (max-w-[26rem])
-              │     └── bio textarea (writing surface)
-              └── conclusion div (save button + back link)
+              │     ├── Mobile/sm: 2-row grid [avatar | meta] / [upload — col-span-2]
+              │     └── md+: 3-col strip  [avatar] [meta — 1fr] [upload — 14rem]
+              ├── <section> Identity fields  (mb-10 sm:mb-12)
+              │     ├── Mobile/sm: stacked — username then full name (gap-y-9 sm:gap-y-11)
+              │     └── md+: 2-col grid [username — 2fr] [full name — 3fr]
+              ├── <section aria-labelledby> Voice & presence  (mb-12 sm:mb-14)
+              │     ├── visibility radio-card group (3 cards, flex-col → sm:flex-row)
+              │     └── bio textarea (writing surface, warm bg)
+              └── conclusion div (save button + back link, right-aligned)
 ```
 
-**Layout philosophy:** No outer card. All sections are open zones on the page background. `max-w-3xl` canvas gives lateral breathing room. Vertical spacing is intentionally uneven between sections.
+**Layout philosophy:** No outer card. All sections are open zones on the page background. `max-w-3xl` canvas gives lateral breathing room. Vertical spacing is intentionally varied between sections.
 
 ---
 
@@ -48,10 +49,10 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 - All text stays in warm ink palette (`#713522`, `#7a331b`, `#4a2c18`) — never cold gray, never pure black
 
 **Spacing philosophy:**
-- Section margins vary intentionally: portrait `mb-14 sm:mb-[4.5rem]`, identity `mb-10 sm:mb-12`, voice `mb-12 sm:mb-14`
-- Portrait zone: asymmetric padding `px-5 pb-8 pt-5 sm:px-7 sm:pb-10 sm:pt-6` (more bottom air)
-- Full name container has `ml-1 sm:ml-2` horizontal drift from username — fields do not share identical left axis
-- Upload block: `ml-1 sm:ml-2` drift from portrait identity row
+- Hero → rule transition is asymmetric: `mb-7 sm:mb-9` above rule, `mb-6 sm:mb-7` below rule. Rule acts as a threshold crossing toward the portrait, not a wall between two zones.
+- Portrait zone: `px-5 pb-6 pt-5 sm:px-7 sm:pb-7 sm:pt-5` — compact now that the desktop layout is a single horizontal strip
+- Portrait eyebrow: `mb-4 sm:mb-5` — tight connection to the strip below it
+- Identity section: `mb-10 sm:mb-12`. On mobile, field gap is `gap-y-9 sm:gap-y-11`. Full name has `ml-1 sm:ml-2 md:ml-0` compositional drift (active on mobile/sm only, cancelled on md+)
 - Save row: `pt-8 sm:pt-12` long approach, `pb-4 sm:pb-6` trailing air
 - Page bottom: `pb-20 sm:pb-28` — page fades, does not stop
 
@@ -64,12 +65,66 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 **Surface treatment:**
 - Portrait zone: `.profile-portrait-zone` — warm gradient background, whisper-thin gold border, `border-radius: 1.5rem`
 - Voice section: inline gradient `from-[#f7e8be]/20 to-[#fffdf8]/52` with `border-[#fab642]/15` — no shadow, no elevation
-- All inputs/select/textarea: `.editorial-input` — warm ink text (`#4a2c18`), subtle border, 1rem border-radius, 150ms transition on focus
+- All inputs/textarea: `.editorial-input` — warm ink text (`#4a2c18`), subtle border, 1rem border-radius, 150ms transition on focus
 
 **Button philosophy:**
 - Save: `.cta-primary` only — gradient, warm shadow, translateY(-1px) on hover, controlled by CSS class entirely
 - `disabled:pointer-events-none disabled:opacity-60` added via Tailwind for pending state
 - Do not add Tailwind hover/shadow overrides to `.cta-primary` — they conflict with the CSS gradient
+
+---
+
+## 2b. Visibility Radio-Card System (Phase 4)
+
+**Replaces:** `<select name="privacy_level">` — now a 3-card horizontal radio group.
+
+**Pattern:** `VISIBILITY_OPTIONS` constant (outside component, `ReadonlyArray`) drives the render. `privacyLevel` React state (typed as `Profile['privacy_level']`) controls visual selection; the native `<input type="radio" name="privacy_level">` handles form submission — server action (`updateProfile`) unchanged.
+
+**Layout:** `flex-col gap-2` on mobile → `flex-row gap-2.5` on sm+. Each card is `flex-1`.
+
+**Selected card:** `border-[#fab642]/45 bg-gradient-to-br from-[#fef6e4]/55 to-[#fffdf8]/70` + tiny warm dot `h-[0.35rem] w-[0.35rem] rounded-full bg-[#e34b16]/50` at `top-3 right-3`.
+
+**Unselected card:** `border-[#c8a882]/22 bg-transparent` — hover lifts to `border-[#c8a882]/42 bg-[#fffdf8]/35`.
+
+**Accessibility:** `role="radiogroup" aria-labelledby="visibility-label"` on the group. Radio inputs are `sr-only` — labels are the interactive target. Keyboard: Tab → group, Space/Arrow → moves selection. The warm dot indicator is `aria-hidden`.
+
+---
+
+## 2c. Portrait Strip Layout (Phase 4 — responsive media row)
+
+**Replaces:** Two vertically stacked blocks (avatar+meta row, then upload below).
+
+**Grid pattern:**
+```
+Mobile/sm : grid-cols-[auto_1fr]
+  Row 1:  [avatar]  [meta text]
+  Row 2:  [upload — col-span-2, full width]
+
+md+       : grid-cols-[auto_1fr_14rem]
+  Row 1:  [avatar]  [meta — 1fr]  [upload — 14rem fixed]
+           ↑ items-center aligns all three vertically
+```
+
+**Upload label:** visible on mobile (`mb-2.5 block`), `md:sr-only` on desktop — contextually obvious beside the portrait; retained for screen readers.
+
+**Gap values:** `gap-x-4 sm:gap-x-5 md:gap-x-6` (column), `gap-y-5` (row, mobile only — no row gap on md+).
+
+---
+
+## 2d. Identity Field Two-Column Layout (Phase 4)
+
+**Replaces:** Vertically stacked username → full name with `mt-9 sm:mt-11` top margin.
+
+**Grid pattern:**
+```
+Mobile/sm : grid-cols-1, gap-y-9 sm:gap-y-11
+md+       : grid-cols-[2fr_3fr], items-start, gap-x-6
+            username (~40%) | full name (~60%)
+```
+
+**Key details:**
+- `md:max-w-none` on username input — releases the mobile `max-w-[20rem]` cap; grid column defines width on desktop
+- `md:ml-0` on full name container — cancels `ml-1 sm:ml-2` compositional drift when columns provide their own visual separation
 
 ---
 
@@ -95,26 +150,29 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 
 ## 4. Key Responsive Behaviors
 
-- **Portrait zone section margin:** `mb-14` mobile → `mb-[4.5rem]` sm+ (explicit arbitrary value — `mb-18` is not in Tailwind's default scale)
-- **Upload block:** constrained to `max-w-[21rem]` on all breakpoints; `max-w` prevents overflow on narrow viewports
-- **Bio textarea:** `min-h-[12rem]` on mobile, `sm:min-h-[10rem]` on sm+ — larger on mobile for comfortable thumb typing
-- **Input sizing:** `min-h-12` mobile (44px touch target), `sm:min-h-0` collapses to natural height on desktop; `py-3.5` mobile → `sm:py-3` desktop
-- **Hero h1:** fluid size via `text-[1.85rem] sm:text-[2.25rem] lg:text-[2.6rem]` — no clamp() needed at these breakpoints
-- **Page padding:** `pt-8 sm:pt-12` top, `pb-20 sm:pb-28` bottom
+- **Hero → rule transition:** asymmetric margins — `mb-7 sm:mb-9` on hero, `mb-6 sm:mb-7` on rule. More air above the rule than below it intentionally.
+- **Portrait zone:** `mb-10 sm:mb-12`. Grid switches from 2-row mobile to 3-column desktop at `md` breakpoint.
+- **Portrait upload column:** `col-span-2` (full width) on mobile, fixed `14rem` right column on `md+`. Upload label `md:sr-only`.
+- **Identity fields:** `grid-cols-1 gap-y-9` mobile → `md:grid-cols-[2fr_3fr] md:gap-x-6` desktop. `md:max-w-none` on username, `md:ml-0` on full name cancels mobile drift.
+- **Visibility cards:** `flex-col gap-2` mobile → `flex-row gap-2.5` sm+. Each card `flex-1`.
+- **Bio textarea:** `min-h-[12rem]` mobile, `sm:min-h-[10rem]` sm+ — larger on mobile for thumb typing.
+- **Input touch targets:** `min-h-12` mobile (44px), `sm:min-h-0` collapses on desktop; `py-3.5` mobile → `sm:py-3` desktop.
+- **Page padding:** `pt-8 sm:pt-12` top, `pb-20 sm:pb-28` bottom.
 
 ---
 
 ## 5. Accessibility
 
 - All inputs linked to labels via matching `id`/`htmlFor` pairs
-- Portrait zone and voice section use `aria-labelledby` pointing to section label `id`s
+- Portrait zone (`aria-labelledby="portrait-section-label"`) and voice section (`aria-labelledby="voice-section-label"`) use section label `id`s
+- Visibility radio group: `role="radiogroup" aria-labelledby="visibility-label"`; radio inputs `sr-only`; dot indicator `aria-hidden`
+- Upload label: `md:sr-only` — always accessible to screen readers, visually hidden only on desktop
 - Success notice: `role="status" aria-live="polite"`
 - Error notice: `role="alert" aria-live="assertive"`
 - File input: native `<input type="file">` — screen-reader accessible
 - Username: `required` attribute, `pattern` with descriptive `title`
-- Required `*` marker: `<span class="text-red-600">` is decorative but the `required` attribute carries the semantic weight
 - Breadcrumb: `<nav aria-label="Breadcrumb">`
-- Atmospheric overlays: `aria-hidden` on all decorative divs
+- All atmospheric overlays: `aria-hidden`
 - Focus: `.warm-focus-ring` provides 4px orange outline — visible but not aggressive
 
 ---
@@ -123,13 +181,15 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 
 | Removed | Reason |
 |---|---|
-| Progress checklist widget (`profile-completion-track`, `profile-completion-fill`, checklist row classes) | Gamification energy — belonged to onboarding flow, not identity editing |
-| Outer form card (`editorial-card-strong`, `profile-form-well`) | Created SaaS settings-panel feeling; replaced with open page surface zones |
-| `profile-avatar-panel` class | Superseded by `.profile-portrait-zone` (lighter, atmospheric, not elevated) |
-| Completion percentage / step counter | Implied task completion framing; replaced by `presenceNote` — quiet editorial observation |
+| Progress checklist widget | Gamification energy — belonged to onboarding flow, not identity editing |
+| Outer form card (`editorial-card-strong`, `profile-form-well`) | SaaS settings-panel feeling; replaced with open surface zones |
+| `profile-avatar-panel` class | Superseded by `.profile-portrait-zone` |
+| Completion percentage / step counter | Implied task completion framing; replaced by `presenceNote` |
 | "ACCOUNT BASICS" / "PROFILE GLOW-UP" section labels | Onboarding/productivity tone |
-| `text-brand-blue`, cold muted tones | Inconsistent with warm ink palette established on dashboard |
-| Horizontal avatar + upload two-column layout | Felt like a settings row; replaced with vertical narrative flow |
+| `text-brand-blue`, cold muted tones | Inconsistent with warm ink palette |
+| `<select name="privacy_level">` | Replaced by editorial radio-card group |
+| Stacked portrait layout (avatar+meta / upload) | Replaced by responsive media-row grid |
+| Vertically stacked identity fields | Replaced by responsive 2-column grid on md+ |
 
 **Replaced by:** `presenceNote` (computed in `useMemo`) — surfaces 1–2 quiet editorial signals when avatar, bio, or full name are missing. Returns `null` when the profile is complete.
 
@@ -137,13 +197,14 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 
 ## 7. Future Continuation Ideas
 
-- **Avatar crop / preview modal** — current upload shows filename only; a crop preview would improve portrait authorship UX
-- **Animated save state** — the save button pending state could have a subtle warmth pulse rather than just text change
-- **`presenceNote` expansion** — currently checks 3 fields; could weight bio more heavily (longer = warmer signal)
-- **Travel style tags** — editorial multi-select below bio (already in schema if added); would extend the voice section naturally
-- **Social/link fields** — optional Instagram, blog URL fields could extend identity section without structural change
-- **Mobile portrait upload** — camera capture (`accept="image/*" capture="user"`) could be added to the file input for mobile
-- **Optimistic save feedback** — currently requires `router.refresh()` round-trip; optimistic state would feel more immediate
+- **Travel style tags** — editorial multi-select chip grid below bio (requires schema: `profiles.travel_styles text[]`)
+- **Avatar crop / preview modal** — crop step before upload; `react-image-crop` or `cropperjs`
+- **Profile public view** — `/members/[username]` route showing how the profile appears to other members
+- **Animated save state** — subtle warmth pulse on the pending button instead of text-only change
+- **`presenceNote` expansion** — currently checks 3 fields; could weight bio length more heavily
+- **Social/link fields** — optional Instagram, blog URL below the identity section (schema extension needed)
+- **Mobile camera capture** — `capture="user"` on the file input for direct camera access on mobile
+- **Optimistic save feedback** — currently requires `router.refresh()` round-trip
 
 ---
 
@@ -152,10 +213,10 @@ profile-page-stage (relative, isolate, overflow-x:clip, atmospheric ::before gra
 | Check | Status |
 |---|---|
 | Production-ready | Yes |
-| TypeScript | Clean — zero errors |
-| Lint (profile-form.tsx) | Clean — zero errors introduced |
-| Pre-existing lint errors | 2 in unrelated files (`save-community-post-button.tsx`, `wes-anderson-hero.tsx`) — not introduced here |
-| Responsive | Verified — `sm:mb-18` broken rule fixed to `sm:mb-[4.5rem]` |
-| Accessibility | All labels, roles, and aria attributes verified |
+| TypeScript | Clean — zero source errors |
+| Lint | Clean — zero errors |
+| Responsive | Verified — portrait strip, identity 2-col, visibility cards all breakpoint-tested |
+| Accessibility | All labels, roles, aria attributes verified including new radio group and sr-only upload label |
 | Dead CSS removed | Yes — 7 stale classes removed from `globals.css` |
-| Design language consistency | `.editorial-input` text color unified to warm ink `#4a2c18` across all form controls |
+| Design language | `.editorial-input` warm ink `#4a2c18`, all editorial spacing/atmosphere patterns maintained |
+| Server action | Unchanged — `updateProfile` reads `privacy_level` from radio input as before |
