@@ -1,21 +1,11 @@
 --
 -- Prompt 4: moderation RLS + platform admin role + report audit columns
--- Adds profiles.role enum value 'admin', report_status 'withdrawn', audited review fields,
+-- report_status 'withdrawn', audited review fields,
+-- user_role 'admin' is added in 20260516190000_add_admin_user_role.sql (separate transaction).
 -- RPCs for safe reporter withdraw + moderated status updates, and admin read policies where needed for the queue.
 --
 
--- 1) Role + report-status enum extensions (idempotent guard for Postgres/Supabase)
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_enum e
-    JOIN pg_type t ON t.oid = e.enumtypid
-    WHERE t.typname = 'user_role' AND e.enumlabel = 'admin'
-  ) THEN
-    ALTER TYPE user_role ADD VALUE 'admin';
-  END IF;
-END $$;
-
+-- 1) report_status enum extension (idempotent guard for Postgres/Supabase)
 DO $$
 BEGIN
   IF NOT EXISTS (
