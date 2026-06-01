@@ -146,6 +146,7 @@ Testing requirements, quality gates, and monitoring.
 - **[proof/E2E_SMOKE_PATHS.md](./proof/E2E_SMOKE_PATHS.md)** - Critical user journeys for smoke testing
 - **[proof/MVP_SMOKE_CHECKLIST.md](./proof/MVP_SMOKE_CHECKLIST.md)** - Definitive QA checklist to verify MVP is usable and stable
 - **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Monitoring policy plus the live observability/Sentry implementation notes
+- **[testing/MODERATION_WORKFLOW_TEST_REPORT.md](./testing/MODERATION_WORKFLOW_TEST_REPORT.md)** - End-to-end moderation workflow validation (June 1, 2026) — lifecycle transitions, RBAC, reporter sync, mobile; Status: PASSED
 
 ### UX Canon Layer
 
