@@ -96,14 +96,17 @@ CREATE TABLE profiles (
   avatar_url text,
   role user_role NOT NULL DEFAULT 'talent',
   privacy_level privacy_level NOT NULL DEFAULT 'public',
+  travel_styles text[] NOT NULL DEFAULT '{}',
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT profiles_travel_styles_cardinality CHECK (cardinality(travel_styles) <= 8)
 );
 
 -- Indexes
 CREATE UNIQUE INDEX profiles_username_idx ON profiles(username);
 CREATE INDEX profiles_role_idx ON profiles(role);
 CREATE INDEX profiles_privacy_level_idx ON profiles(privacy_level);
+CREATE INDEX profiles_travel_styles_gin ON profiles USING GIN (travel_styles);
 
 -- RLS (Default deny - no access unless policy allows)
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;

@@ -22,6 +22,7 @@ import {
   isAvatarStoragePath,
   validateAvatarFile,
 } from '@/lib/storage/avatars'
+import { TRAVEL_STYLE_VALUES, TRAVEL_STYLES_MAX } from '@/lib/profile-travel-styles'
 import { createClient, getUser } from '@/lib/supabase/server'
 import type { privacy_level } from '@/types/database'
 
@@ -57,6 +58,15 @@ export async function updateProfile(
   const privacyLevel = parsePrivacy(formData.get('privacy_level'))
   const avatarEntry = formData.get('avatar')
   const avatarFile = avatarEntry instanceof File && avatarEntry.size > 0 ? avatarEntry : null
+
+  // Travel styles: multiple checkbox values submitted under the same name.
+  // Unknown values are silently dropped — whitelisted against the shared constant.
+  // Capped at TRAVEL_STYLES_MAX to match the DB cardinality constraint.
+  const travelStyles = formData
+    .getAll('travel_styles')
+    .filter((v): v is string => typeof v === 'string')
+    .filter((v) => TRAVEL_STYLE_VALUES.includes(v))
+    .slice(0, TRAVEL_STYLES_MAX)
 
   if (username === null) {
     return { error: 'Username is required' }
@@ -122,6 +132,7 @@ export async function updateProfile(
             bio: trimmedBio || null,
             privacy_level: privacyLevel ?? existing.privacy_level,
             avatar_url: avatarPath,
+            travel_styles: travelStyles,
           })
           .eq('id', user.id)
           .select('id')
@@ -136,6 +147,7 @@ export async function updateProfile(
             avatar_url: avatarPath,
             role: 'talent',
             privacy_level: privacyLevel ?? 'public',
+            travel_styles: travelStyles,
           })
           .select('id')
           .single()
