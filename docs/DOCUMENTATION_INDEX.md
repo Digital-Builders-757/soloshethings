@@ -147,6 +147,7 @@ Testing requirements, quality gates, and monitoring.
 - **[proof/MVP_SMOKE_CHECKLIST.md](./proof/MVP_SMOKE_CHECKLIST.md)** - Definitive QA checklist to verify MVP is usable and stable
 - **[proof/MONITORING_SENTRY_POSTURE.md](./proof/MONITORING_SENTRY_POSTURE.md)** - Monitoring policy plus the live observability/Sentry implementation notes
 - **[testing/MODERATION_WORKFLOW_TEST_REPORT.md](./testing/MODERATION_WORKFLOW_TEST_REPORT.md)** - End-to-end moderation workflow validation (June 1, 2026) — lifecycle transitions, RBAC, reporter sync, mobile; Status: PASSED
+- **[testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md](./testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md)** - Production verification of avatar upload, storage policies, path persistence, signed URL resolution, and old-file cleanup (June 1, 2026); Status: VERIFIED
 
 ### UX Canon Layer
 

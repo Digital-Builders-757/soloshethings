@@ -40,7 +40,8 @@
 |---|---|---|
 | ~~Profile visibility UX~~ | **Done** | Editorial radio-card system, Phase 4 |
 | Travel style tags | **Next** | Requires schema: `profiles.travel_styles text[]` + multi-select chip UI |
-| Avatar crop/preview modal | Pending | `react-image-crop` or `cropperjs`; sufficient for MVP without it |
+| Avatar upload (upload, storage, retrieval, persistence, cleanup) | **Done — Production Verified (June 1, 2026)** | See `docs/testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md` |
+| Avatar crop/preview modal | Pending | `react-image-crop` or `cropperjs`; base upload is verified; crop is a future enhancement |
 | Profile public view | Pending | `/members/[username]` route — entire new page surface |
 | Social/link fields | Pending | Low priority; schema extension needed |
 | Mobile camera capture | Pending | Nice-to-have; current file picker works |
