@@ -20,7 +20,7 @@ import type { Database } from '@/types/database';
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const profileSelect =
-  'id, username, full_name, bio, avatar_url, role, privacy_level, created_at, updated_at' as const
+  'id, username, full_name, bio, avatar_url, role, privacy_level, travel_styles, created_at, updated_at' as const
 
 /**
  * Get user profile by ID

@@ -9,12 +9,14 @@
  * Phase 3:   controlled compositional imperfection — micro-asymmetry, authored drift.
  * Lock pass: responsive fixes, dead CSS removal, input color unification, button cleanup.
  * Phase 4:   profile visibility redesign — editorial radio-card system replaces <select>.
+ * Phase 5:   travel style tags — curated chip grid below bio; max 8 selections.
  */
 
 'use client'
 
 import { updateProfile } from '@/app/actions/profile'
 import { Avatar } from '@/components/ui/avatar'
+import { TRAVEL_STYLE_OPTIONS, TRAVEL_STYLES_MAX } from '@/lib/profile-travel-styles'
 import type { Database } from '@/types/database'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
@@ -87,6 +89,7 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
   const [privacyLevel, setPrivacyLevel] = useState<Profile['privacy_level']>(
     profile.privacy_level,
   )
+  const [travelStyles, setTravelStyles] = useState<string[]>(profile.travel_styles ?? [])
 
   const avatarFallback = useMemo(() => getAvatarFallback(profile), [profile])
   const currentAvatarSrc = localAvatarPreview ?? avatarUrl ?? null
@@ -451,6 +454,76 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
                       A few lines goes a long way.
                     </span>
                   ) : null}
+                </div>
+              </div>
+
+              {/* Travel style tags — curated chip grid.
+                  Chips are sr-only checkboxes inside labels (mirrors visibility radio-card pattern).
+                  Selections capped at TRAVEL_STYLES_MAX; unselectable chips fade when limit is reached.
+                  Server action whitelists and slices the submitted values as the authoritative guard. */}
+              <div className="border-t border-[#c8a882]/12 pt-6 sm:pt-7">
+                <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <p id="travel-style-label" className="text-sm font-medium text-[#713522]/82">
+                    How you travel
+                  </p>
+                  <span
+                    className={cn(
+                      'text-xs transition-colors duration-200',
+                      travelStyles.length >= TRAVEL_STYLES_MAX
+                        ? 'font-semibold text-[#e34b16]/75'
+                        : 'text-[#7a331b]/38',
+                    )}
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    {travelStyles.length >= TRAVEL_STYLES_MAX
+                      ? `${TRAVEL_STYLES_MAX} of ${TRAVEL_STYLES_MAX} selected`
+                      : `Choose up to ${TRAVEL_STYLES_MAX} styles`}
+                  </span>
+                </div>
+
+                <div
+                  role="group"
+                  aria-labelledby="travel-style-label"
+                  className="flex flex-wrap gap-2"
+                >
+                  {TRAVEL_STYLE_OPTIONS.map((style) => {
+                    const isSelected = travelStyles.includes(style.value)
+                    const isDisabled = !isSelected && travelStyles.length >= TRAVEL_STYLES_MAX
+
+                    return (
+                      <label
+                        key={style.value}
+                        className={cn(
+                          'relative cursor-pointer rounded-full border px-3.5 py-1.5 text-[0.78rem] font-medium transition-colors duration-150',
+                          isSelected
+                            ? 'border-[#fab642]/55 bg-[#fef6e4] text-[#713522]'
+                            : isDisabled
+                              ? 'cursor-not-allowed border-[#c8a882]/18 bg-transparent text-[#7a331b]/28'
+                              : 'border-[#c8a882]/30 bg-transparent text-[#7a331b]/60 hover:border-[#c8a882]/50 hover:text-[#7a331b]/80',
+                        )}
+                      >
+                        <input
+                          type="checkbox"
+                          name="travel_styles"
+                          value={style.value}
+                          checked={isSelected}
+                          disabled={isDisabled}
+                          onChange={() => {
+                            if (isDisabled) return
+                            setTravelStyles((prev) =>
+                              prev.includes(style.value)
+                                ? prev.filter((v) => v !== style.value)
+                                : [...prev, style.value],
+                            )
+                          }}
+                          className="sr-only"
+                          aria-label={style.label}
+                        />
+                        {style.label}
+                      </label>
+                    )
+                  })}
                 </div>
               </div>
             </div>

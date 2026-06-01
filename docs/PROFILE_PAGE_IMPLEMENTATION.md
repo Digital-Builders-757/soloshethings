@@ -128,6 +128,31 @@ md+       : grid-cols-[2fr_3fr], items-start, gap-x-6
 
 ---
 
+## 2e. Travel Style Chip Grid (Phase 5)
+
+**Column added:** `profiles.travel_styles text[] NOT NULL DEFAULT '{}'`, cardinality CHECK ≤ 8, GIN index.
+
+**Constant file:** `lib/profile-travel-styles.ts` (non-server-only — importable by both action and form).
+Exports `TRAVEL_STYLE_OPTIONS` (12 options, `{ value, label }`), `TRAVEL_STYLE_VALUES` (`readonly string[]` for whitelist), `TRAVEL_STYLES_MAX` (8).
+
+**12 curated options:**
+`solo by choice` · `budget-first` · `luxury when it counts` · `slow travel` · `adventure over comfort` · `culture & art` · `food & flavour` · `nature & outdoors` · `city explorer` · `off the beaten path` · `wellness & reflection` · `pack light`
+
+**State:** `travelStyles: string[]` initialized from `profile.travel_styles ?? []`.
+
+**Form submission:** `<input type="checkbox" name="travel_styles" value={style.value} className="sr-only">` inside each `<label>`. Checked chips submit their values; unchecked ones are absent from `FormData`. Server action reads with `formData.getAll('travel_styles')`.
+
+**Max-selection UI:**
+- Counter label: "Choose up to 8 styles" → turns amber "8 of 8 selected" at limit (`aria-live="polite"`)
+- At limit, unselected chips get `disabled` attribute, `cursor-not-allowed`, and fade to `text-[#7a331b]/28`
+- Deselecting a chip re-enables all others immediately
+
+**Server-side guards:** whitelist filter + `.slice(0, TRAVEL_STYLES_MAX)` before DB write.
+
+**Accessibility:** `role="group" aria-labelledby="travel-style-label"` on the container. Each checkbox has `aria-label={style.label}` (the visible label text is also the accessible name of the `<label>` element). Counter uses `aria-live="polite" aria-atomic="true"`.
+
+---
+
 ## 3. Important CSS Classes
 
 | Class | Controls |
@@ -197,7 +222,7 @@ md+       : grid-cols-[2fr_3fr], items-start, gap-x-6
 
 ## 7. Future Continuation Ideas
 
-- **Travel style tags** — editorial multi-select chip grid below bio (requires schema: `profiles.travel_styles text[]`)
+- **Travel style chip counts** — show how many community members share each style (requires aggregation query; future discovery surface)
 - **Avatar crop / preview modal** — crop step before upload; `react-image-crop` or `cropperjs`
 - **Profile public view** — `/members/[username]` route showing how the profile appears to other members
 - **Animated save state** — subtle warmth pulse on the pending button instead of text-only change
@@ -215,8 +240,8 @@ md+       : grid-cols-[2fr_3fr], items-start, gap-x-6
 | Production-ready | Yes |
 | TypeScript | Clean — zero source errors |
 | Lint | Clean — zero errors |
-| Responsive | Verified — portrait strip, identity 2-col, visibility cards all breakpoint-tested |
-| Accessibility | All labels, roles, aria attributes verified including new radio group and sr-only upload label |
+| Responsive | Verified — portrait strip, identity 2-col, visibility cards, travel chip grid all breakpoint-tested |
+| Accessibility | All labels, roles, aria attributes verified — radio group, sr-only upload label, travel chip group with aria-live counter |
 | Dead CSS removed | Yes — 7 stale classes removed from `globals.css` |
 | Design language | `.editorial-input` warm ink `#4a2c18`, all editorial spacing/atmosphere patterns maintained |
-| Server action | Unchanged — `updateProfile` reads `privacy_level` from radio input as before |
+| Server action | `updateProfile` reads `privacy_level` from radio input and `travel_styles` from checkbox array |

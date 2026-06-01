@@ -44,6 +44,7 @@ export interface Database {
           avatar_url: string | null
           role: user_role
           privacy_level: privacy_level
+          travel_styles: string[]
           created_at: string
           updated_at: string
         }
@@ -55,6 +56,7 @@ export interface Database {
           avatar_url?: string | null
           role?: user_role
           privacy_level?: privacy_level
+          travel_styles?: string[]
           created_at?: string
           updated_at?: string
         }
@@ -66,6 +68,7 @@ export interface Database {
           avatar_url?: string | null
           role?: user_role
           privacy_level?: privacy_level
+          travel_styles?: string[]
           created_at?: string
           updated_at?: string
         }
