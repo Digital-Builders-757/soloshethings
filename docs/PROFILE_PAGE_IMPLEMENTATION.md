@@ -153,6 +153,41 @@ Exports `TRAVEL_STYLE_OPTIONS` (12 options, `{ value, label }`), `TRAVEL_STYLE_V
 
 ---
 
+## 2f. Avatar Crop Modal (Phase 6)
+
+**Component:** `components/profile/avatar-crop-modal.tsx` — lightweight accessible dialog (no Radix).
+
+**Library:** `react-image-crop` — circular 1:1 crop, `circularCrop` + `aspect={1}`.
+
+**Flow:**
+1. User clicks **Choose portrait** / **Replace portrait** → hidden file input
+2. `validateAvatarFile()` on original — reject if type invalid or > 2MB (before modal opens)
+3. Modal opens with object URL source
+4. **Use portrait** → `getCroppedAvatarFile()` canvas export, max **512×512** px (`AVATAR_CROP_OUTPUT_MAX_PX`)
+5. Cropped `File` stored in `pendingAvatarFile`; preview via blob URL
+6. Form submit builds `FormData` programmatically; `formData.set('avatar', pendingAvatarFile)` only when a new portrait was cropped
+7. `updateProfile` server action unchanged — upload, cleanup, revalidate as before
+
+**Client modules:**
+- `lib/storage/avatar-client.ts` — shared validation constants (client + server)
+- `lib/client/avatar-crop.ts` — canvas crop utility
+
+**Accessibility:** `role="dialog"`, `aria-modal`, labelled title/description, Escape to cancel, focus trap, body scroll lock, backdrop click closes.
+
+**Manual QA checklist:**
+- [ ] Choose JPG/PNG/WebP under 2MB → modal opens
+- [ ] File > 2MB → error before modal, no upload
+- [ ] Invalid type → error before modal
+- [ ] Crop + **Use portrait** → ring preview updates
+- [ ] **Cancel** / Escape / backdrop → no preview change
+- [ ] Save profile → portrait persists after refresh
+- [ ] Replace portrait → old storage file removed (single file in bucket)
+- [ ] Dashboard shows new avatar after save
+- [ ] Logout/login → avatar still visible
+- [ ] Mobile: modal usable, touch crop handles work
+
+---
+
 ## 3. Important CSS Classes
 
 | Class | Controls |

@@ -1,30 +1,23 @@
 import 'server-only'
 
 import { logServerFailure } from '@/lib/server-log'
+import {
+  AVATAR_ALLOWED_TYPES,
+  AVATAR_MAX_BYTES,
+  type AvatarMimeType,
+  validateAvatarFile,
+} from '@/lib/storage/avatar-client'
 import { createClient } from '@/lib/supabase/server'
 
-export const AVATAR_BUCKET = 'avatars'
-export const AVATAR_MAX_BYTES = 2 * 1024 * 1024
-export const AVATAR_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
+export { AVATAR_ALLOWED_TYPES, AVATAR_MAX_BYTES, validateAvatarFile }
+export type { AvatarMimeType }
 
-type AvatarMimeType = (typeof AVATAR_ALLOWED_TYPES)[number]
+export const AVATAR_BUCKET = 'avatars'
 
 const extensionByMimeType: Record<AvatarMimeType, string> = {
   'image/jpeg': 'jpg',
   'image/png': 'png',
   'image/webp': 'webp',
-}
-
-export function validateAvatarFile(file: File) {
-  if (!AVATAR_ALLOWED_TYPES.includes(file.type as AvatarMimeType)) {
-    return 'Upload a JPG, PNG, or WebP image.'
-  }
-
-  if (file.size > AVATAR_MAX_BYTES) {
-    return 'Avatar images must be 2MB or smaller.'
-  }
-
-  return null
 }
 
 export function buildAvatarStoragePath(userId: string, file: File) {

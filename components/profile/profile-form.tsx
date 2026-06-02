@@ -10,19 +10,26 @@
  * Lock pass: responsive fixes, dead CSS removal, input color unification, button cleanup.
  * Phase 4:   profile visibility redesign — editorial radio-card system replaces <select>.
  * Phase 5:   travel style tags — curated chip grid below bio; max 8 selections.
+ * Phase 6:   avatar crop modal — square crop before profile save; server upload unchanged.
  */
 
 'use client'
 
 import { updateProfile } from '@/app/actions/profile'
+import { AvatarCropModal } from '@/components/profile/avatar-crop-modal'
 import { Avatar } from '@/components/ui/avatar'
 import { TRAVEL_STYLE_OPTIONS, TRAVEL_STYLES_MAX } from '@/lib/profile-travel-styles'
+import {
+  AVATAR_ACCEPT,
+  validateAvatarFile,
+  type AvatarMimeType,
+} from '@/lib/storage/avatar-client'
 import type { Database } from '@/types/database'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import type { ChangeEvent } from 'react'
-import { useEffect, useMemo, useState, useActionState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
+import { startTransition, useActionState, useEffect, useMemo, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -82,10 +89,18 @@ function SaveProfileButton() {
 
 export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
   const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cropImageSrcRef = useRef<string | null>(null)
   const [state, formAction] = useActionState(updateProfile, null)
   const [bioLength, setBioLength] = useState(profile.bio?.length ?? 0)
   const [localAvatarPreview, setLocalAvatarPreview] = useState<string | null>(null)
   const [avatarName, setAvatarName] = useState<string | null>(null)
+  const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null)
+  const [avatarPickError, setAvatarPickError] = useState<string | null>(null)
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null)
+  const [cropSourceFileName, setCropSourceFileName] = useState('')
+  const [cropMimeType, setCropMimeType] = useState<AvatarMimeType>('image/jpeg')
   const [privacyLevel, setPrivacyLevel] = useState<Profile['privacy_level']>(
     profile.privacy_level,
   )
@@ -119,24 +134,86 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
       if (localAvatarPreview) {
         URL.revokeObjectURL(localAvatarPreview)
       }
+      if (cropImageSrcRef.current) {
+        URL.revokeObjectURL(cropImageSrcRef.current)
+      }
     }
   }, [localAvatarPreview])
 
-  function handleAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+  function clearCropSource() {
+    if (cropImageSrcRef.current) {
+      URL.revokeObjectURL(cropImageSrcRef.current)
+      cropImageSrcRef.current = null
+    }
+    setCropImageSrc(null)
+  }
+
+  function handleAvatarPick(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null
+    event.target.value = ''
+
+    setAvatarPickError(null)
+
+    if (!file) {
+      return
+    }
+
+    const validationError = validateAvatarFile(file)
+    if (validationError) {
+      setAvatarPickError(validationError)
+      return
+    }
+
+    clearCropSource()
+    const nextCropSrc = URL.createObjectURL(file)
+    cropImageSrcRef.current = nextCropSrc
+    setCropImageSrc(nextCropSrc)
+    setCropSourceFileName(file.name)
+    setCropMimeType(file.type as AvatarMimeType)
+    setCropModalOpen(true)
+  }
+
+  function handleCropConfirm(croppedFile: File) {
+    const validationError = validateAvatarFile(croppedFile)
+    if (validationError) {
+      setAvatarPickError(validationError)
+      setCropModalOpen(false)
+      clearCropSource()
+      return
+    }
 
     if (localAvatarPreview) {
       URL.revokeObjectURL(localAvatarPreview)
     }
 
-    if (!file) {
-      setLocalAvatarPreview(null)
-      setAvatarName(null)
+    setPendingAvatarFile(croppedFile)
+    setLocalAvatarPreview(URL.createObjectURL(croppedFile))
+    setAvatarName('Portrait ready to save')
+    setAvatarPickError(null)
+    setCropModalOpen(false)
+    clearCropSource()
+  }
+
+  function handleCropCancel() {
+    setCropModalOpen(false)
+    clearCropSource()
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (!pendingAvatarFile) {
       return
     }
 
-    setLocalAvatarPreview(URL.createObjectURL(file))
-    setAvatarName(file.name)
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    formData.set('avatar', pendingAvatarFile)
+
+    startTransition(() => {
+      formAction(formData)
+    })
   }
 
   return (
@@ -211,7 +288,7 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
         ) : null}
 
         {/* Form — zones on the page surface, no outer card */}
-        <form action={formAction} className="min-w-0">
+        <form action={formAction} onSubmit={handleSubmit} className="min-w-0">
           {/* Portrait zone.
               Mobile/sm: two-row grid — [avatar | meta] then [upload spans full width].
               md+: single horizontal strip — avatar | meta | upload, vertically centered.
@@ -257,7 +334,7 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
                 <p
                   className={cn(
                     'text-sm font-medium',
-                    profile.avatar_url || avatarName
+                    profile.avatar_url || avatarName || pendingAvatarFile
                       ? 'text-[#713522]'
                       : 'text-[#713522]/72',
                   )}
@@ -280,20 +357,32 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
                   Mobile: spans both columns (full-width row).
                   md+: right column, label hidden (sr-only), input only. */}
               <div className="col-span-2 md:col-span-1">
+                <input
+                  ref={fileInputRef}
+                  id="avatar"
+                  type="file"
+                  accept={AVATAR_ACCEPT}
+                  onChange={handleAvatarPick}
+                  className="sr-only"
+                />
                 <label
                   htmlFor="avatar"
                   className="mb-2.5 block text-sm font-medium text-[#713522]/75 md:sr-only"
                 >
                   Replace portrait
                 </label>
-                <input
-                  id="avatar"
-                  name="avatar"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleAvatarChange}
-                  className="warm-focus-ring block min-h-[3.25rem] w-full rounded-2xl border border-[#7a331b]/10 bg-white/70 px-4 py-3.5 text-base text-[#7a331b]/72 file:mr-3 file:min-h-10 file:rounded-full file:border-0 file:bg-brand-cream file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-[#713522] hover:file:bg-[#fab642]/45 sm:min-h-0 sm:text-sm"
-                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="warm-focus-ring min-h-11 w-full rounded-2xl border border-[#7a331b]/12 bg-white/70 px-4 py-3 text-sm font-medium text-[#713522] transition hover:border-[#c8a882]/45 hover:bg-[#fffdf8]"
+                >
+                  {pendingAvatarFile || profile.avatar_url ? 'Replace portrait' : 'Choose portrait'}
+                </button>
+                {avatarPickError ? (
+                  <p className="mt-2 text-xs font-medium text-red-900" role="alert">
+                    {avatarPickError}
+                  </p>
+                ) : null}
               </div>
             </div>
           </section>
@@ -540,6 +629,15 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
             </Link>
           </div>
         </form>
+
+        <AvatarCropModal
+          open={cropModalOpen}
+          imageSrc={cropImageSrc}
+          sourceFileName={cropSourceFileName}
+          mimeType={cropMimeType}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
       </div>
     </div>
   )

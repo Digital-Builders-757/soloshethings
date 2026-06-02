@@ -41,7 +41,7 @@
 | ~~Profile visibility UX~~ | **Done** | Editorial radio-card system, Phase 4 |
 | ~~Travel style tags~~ | **Done** | `profiles.travel_styles text[]` column + cardinality CHECK + GIN index; 12-option curated chip grid below bio; max 8 selections enforced in UI, server action, and DB |
 | Avatar upload (upload, storage, retrieval, persistence, cleanup) | **Done — Production Verified (June 1, 2026)** | See `docs/testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md` |
-| Avatar crop/preview modal | Pending | `react-image-crop` or `cropperjs`; base upload is verified; crop is a future enhancement |
+| Avatar crop/preview modal | **Implemented — pending QA** | `react-image-crop` + `AvatarCropModal`; 512px max output; original >2MB rejected pre-crop; server action unchanged |
 | Profile public view | Pending | `/members/[username]` route — entire new page surface |
 | Social/link fields | Pending | Low priority; schema extension needed |
 | Mobile camera capture | Pending | Nice-to-have; current file picker works |
@@ -62,11 +62,8 @@ Lint is now fully clean (0 errors, 0 warnings).
 
 ## What to tackle next (profile system)
 
-1. **Avatar crop** — client-side crop before upload  
-   Package: `react-image-crop` (lightweight, no canvas dependency)  
-   Pattern: intercept `handleAvatarChange`, show crop modal, upload cropped blob
-
-3. **Profile public view** — `/members/[username]` route  
+1. **Avatar crop QA** — manual pass on crop modal, save flow, dashboard refresh (see implementation doc QA checklist)
+2. **Profile public view** — `/members/[username]` route  
    New page: Server Component, reads profile by username, respects `privacy_level`, editorial identity layout
 
 ---
