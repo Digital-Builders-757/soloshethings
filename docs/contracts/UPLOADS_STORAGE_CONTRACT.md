@@ -2,7 +2,10 @@
 
 **Purpose:** File upload rules, storage buckets, path conventions, privacy toggles, signed URLs, and moderation hooks for SoloSheThings.
 
-**Hosted Supabase:** After `supabase db push`, create the `user-uploads` bucket and storage policies using [../supabase/storage_setup_dashboard.sql](../supabase/storage_setup_dashboard.sql) in the Dashboard SQL Editor (CLI migrations cannot manage some `storage` DDL on hosted projects).
+**Hosted Supabase:** After `supabase db push`, apply storage policies in the Dashboard SQL Editor (CLI migrations cannot manage some `storage` DDL on hosted projects):
+
+- [../supabase/storage_setup_dashboard.sql](../supabase/storage_setup_dashboard.sql) — `user-uploads` bucket (legacy script)
+- [../supabase/avatars_storage_policies.sql](../supabase/avatars_storage_policies.sql) — **`avatars` bucket (live app)** with visibility-aware portrait reads
 
 ## Non-Negotiables
 
@@ -26,7 +29,8 @@
 - **Allowed Types:** `image/jpeg`, `image/png`, `image/webp`
 - **Auto-optimize:** Yes (via Next.js Image component)
 - **RLS:** Enabled
-- **Current implementation:** `profiles.avatar_url` stores the avatar storage path; signed URLs are generated server-side for dashboard/profile rendering
+- **Current implementation:** `profiles.avatar_url` stores the avatar storage path; signed URLs are generated server-side via `getAvatarSignedUrl()` using the **viewer's** session (no service role). Cross-user reads are allowed by storage RLS when `privacy_level` permits — see [avatars_storage_policies.sql](../supabase/avatars_storage_policies.sql).
+- **Portrait visibility (storage RLS):** `public` → anyone; `limited` → authenticated only; `private` → owner folder only (no admin bypass for avatars)
 
 **Path Convention:**
 ```
@@ -727,6 +731,23 @@ CREATE POLICY "Users can view own avatars"
   USING (
     bucket_id = 'avatars' AND
     auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+CREATE POLICY "Users can view avatars for visible profiles"
+  ON storage.objects FOR SELECT
+  USING (
+    bucket_id = 'avatars' AND
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.avatar_url = storage.objects.name
+      AND (
+        p.privacy_level = 'public'::public.privacy_level
+        OR (
+          p.privacy_level = 'limited'::public.privacy_level
+          AND auth.uid() IS NOT NULL
+        )
+      )
+    )
   );
 
 -- Post Images: Users can upload to own posts

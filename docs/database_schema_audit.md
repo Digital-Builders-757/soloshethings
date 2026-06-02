@@ -687,9 +687,28 @@ CREATE TABLE messages (
 
 ## Storage Buckets
 
-### user-uploads
+### avatars (live app — profile portraits)
 
-User-uploaded images (profile avatars, post images).
+**Configuration:**
+- **Public:** No (private bucket; access via RLS + signed URLs)
+- **File Size Limit:** 2MB per file
+- **Allowed Types:** `image/jpeg`, `image/png`, `image/webp`
+- **Path:** `{user_id}/{timestamp}-{uuid}.{ext}` — stored in `profiles.avatar_url`
+
+**RLS Policies (canonical runnable script):**
+
+Apply with [supabase/avatars_storage_policies.sql](./supabase/avatars_storage_policies.sql) in **Supabase Dashboard → SQL Editor** (per environment).
+
+| Policy | Operation | Rule |
+|--------|-----------|------|
+| `Users can upload own avatars` | INSERT | Own folder only |
+| `Users can view own avatars` | SELECT | Own folder (private portraits) |
+| `Users can view avatars for visible profiles` | SELECT | `profiles.avatar_url` join; `public` → anyone; `limited` → authenticated; `private` → owner only |
+| `Users can delete own avatars` | DELETE | Own folder only |
+
+Portrait bytes follow the same visibility intent as `/members/[username]` but **private avatars are owner-only** (no admin storage bypass).
+
+### user-uploads (legacy script — not used by current avatar upload code)
 
 **Configuration:**
 - **Public:** No (access via signed URLs or RLS)
