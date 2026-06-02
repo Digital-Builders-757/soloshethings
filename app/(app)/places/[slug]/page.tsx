@@ -15,11 +15,12 @@ import {
   CommunityChipPublic,
   CommunityChipTopic,
 } from '@/components/community/community-story-surface'
+import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
-import { Avatar } from '@/components/ui/avatar'
+import { MemberProfileLink } from '@/components/profile/member-profile-link'
 import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
 import { COMMUNITY_STORY_TOPIC_LABELS, placeLabelMatchKey, type CommunityStoryTopicSlug } from '@/lib/community-story-taxonomy'
 import { ensureCommunityStoryReadAllowed } from '@/lib/billing/community-story-reads'
@@ -244,22 +245,20 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                 </p>
               ) : null}
 
-              <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-brand-brown/10 pt-6">
-                <Avatar
-                  src={authorAvatarUrl}
-                  fallback={authorName.slice(0, 2).toUpperCase()}
-                  alt={`${authorName} avatar`}
-                  size="lg"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm text-brand-blue/90">
-                    <span className="font-semibold text-brand-pinkDark">{authorName}</span>
-                    {isOwnPost ? (
-                      <span className="ml-2 inline-flex rounded-full bg-brand-gold/25 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-brand-pinkDark">
-                        Your story
-                      </span>
-                    ) : null}
-                  </p>
+              <CommunityAuthorPreview
+                className="mt-6 border-t border-brand-brown/10 pt-6"
+                username={post.author?.username}
+                fullName={post.author?.full_name}
+                avatarUrl={authorAvatarUrl}
+                size="lg"
+                nameSuffix={
+                  isOwnPost ? (
+                    <span className="ml-2 inline-flex rounded-full bg-brand-gold/25 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-brand-pinkDark">
+                      Your story
+                    </span>
+                  ) : null
+                }
+                meta={
                   <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-brand-blue/85">
                     <time dateTime={post.created_at} className="font-medium text-brand-pinkDark/90">
                       {formatPublishedAt(post.created_at)}
@@ -275,8 +274,8 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                       </>
                     ) : null}
                   </p>
-                </div>
-              </div>
+                }
+              />
 
               <div className="community-context-banner mt-6 px-4 py-3 text-sm leading-relaxed text-brand-blue/90">
                 This is the live member story view — same copy others see when the post is public. If something feels off,
@@ -393,7 +392,14 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                           {relatedPost.title}
                         </Link>
                       </h3>
-                      <p className="mt-2 text-sm font-semibold text-brand-pinkDark">{relatedAuthorName}</p>
+                      <p className="mt-2 text-sm font-semibold text-brand-pinkDark">
+                        <MemberProfileLink
+                          username={relatedPost.author?.username}
+                          className="text-brand-pinkDark hover:text-brand-orange"
+                        >
+                          {relatedAuthorName}
+                        </MemberProfileLink>
+                      </p>
                       <p className="mt-2 line-clamp-3 flex-1 text-sm leading-6 text-brand-blue/85">{relatedPost.content}</p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {relatedPost.is_public ? (

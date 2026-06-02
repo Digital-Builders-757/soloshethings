@@ -17,6 +17,7 @@
 
 import { updateProfile } from '@/app/actions/profile'
 import { AvatarCropModal } from '@/components/profile/avatar-crop-modal'
+import { MemberProfileLink } from '@/components/profile/member-profile-link'
 import { Avatar } from '@/components/ui/avatar'
 import { TRAVEL_STYLE_OPTIONS, TRAVEL_STYLES_MAX } from '@/lib/profile-travel-styles'
 import {
@@ -252,6 +253,16 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
           <p className="mt-4 max-w-[29rem] text-sm leading-relaxed text-[#7a331b]/62 sm:text-[0.9375rem]">
             Everything here travels with you — across stories, replies, and community spaces.
           </p>
+          {profile.username ? (
+            <p className="mt-4">
+              <MemberProfileLink
+                username={profile.username}
+                className="text-sm font-semibold text-[#e34b16] hover:text-[#c74010]"
+              >
+                View member profile →
+              </MemberProfileLink>
+            </p>
+          ) : null}
 
           {/* Presence note — true marginalia. Further from the main column than a typical aside.
               Disappears entirely when the profile is warm. */}

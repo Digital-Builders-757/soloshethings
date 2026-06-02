@@ -47,6 +47,7 @@ Use these companion docs for everything else:
   - **Moderation operator increment (2026-05-16)** — migration `20260516203000_moderation_admin_rls_reports.sql`, `/admin/moderation`, reporter `withdraw_post_report`, admin-only `moderator_update_report`, `withdrawn` report status surfaced across member UIs, owner permanent-remove confirmation.
   - **Honest homepage marketing-interest capture (2026-05-17)** — `marketing_interest` table + `/` newsletter panel (`submitMarketingInterest`, service role insert/update); no outbound marketing/automation bundled.
   - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry **Logs** (`Sentry.logger.info`, attribute `product_signal`: signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
+  - **Profile system v1.3 + community integration (2026-06)** — public `/members/[username]` with RPC visibility gates; avatar visibility storage policies; shared `MemberProfileLink` / `CommunityAuthorPreview`; community author rows link to member profiles; branded enumeration-safe member not-found.
 
 ### Live in-progress work
 

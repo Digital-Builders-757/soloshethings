@@ -5,6 +5,7 @@ import { ArrowRight, UserRound } from 'lucide-react'
 import Link from 'next/link'
 
 import { Avatar } from '@/components/ui/avatar'
+import { MemberProfileLink } from '@/components/profile/member-profile-link'
 import {
   AmbientField,
   ContourBackground,
@@ -20,6 +21,7 @@ interface ProfileChecklistItem {
 interface DashboardHeroProps {
   avatarUrl: string | null
   displayName: string
+  username: string
   email: string
   role: string
   membershipTier: 'full' | 'limited'
@@ -65,6 +67,7 @@ const artPanelVariants = {
 export function DashboardHero({
   avatarUrl,
   displayName,
+  username,
   email,
   role,
   membershipTier,
@@ -159,15 +162,26 @@ export function DashboardHero({
           variants={itemVariants}
           className="mt-5 flex items-center gap-3"
         >
-          <Avatar
-            src={avatarUrl}
-            fallback={displayName.slice(0, 2).toUpperCase()}
-            size="lg"
-            alt={`${displayName} avatar`}
-          />
+          <MemberProfileLink
+            username={username}
+            className="shrink-0 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e34b16]"
+            ariaLabel={`View @${username} member profile`}
+          >
+            <Avatar
+              src={avatarUrl}
+              fallback={displayName.slice(0, 2).toUpperCase()}
+              size="lg"
+              alt={`${displayName} avatar`}
+            />
+          </MemberProfileLink>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-[#7a331b]">
-              @{displayName}
+              <MemberProfileLink
+                username={username}
+                className="text-[#7a331b] hover:text-[#e34b16]"
+              >
+                @{username}
+              </MemberProfileLink>
             </p>
             <p className="mt-0.5 truncate text-xs text-[#6d5849]/75">{email}</p>
           </div>
