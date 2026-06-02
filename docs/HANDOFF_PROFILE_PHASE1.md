@@ -42,7 +42,8 @@
 | ~~Travel style tags~~ | **Done** | `profiles.travel_styles text[]` column + cardinality CHECK + GIN index; 12-option curated chip grid below bio; max 8 selections enforced in UI, server action, and DB |
 | Avatar upload (upload, storage, retrieval, persistence, cleanup) | **Done — Production Verified (June 1, 2026)** | See `docs/testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md` |
 | Avatar crop/preview modal | **Implemented — pending QA** | `react-image-crop` + `AvatarCropModal`; 512px max output; original >2MB rejected pre-crop; server action unchanged |
-| Profile public view | Pending | `/members/[username]` route — entire new page surface |
+| Profile public view | **Done — Phase 2** | `/members/[username]` — Server Component + `resolve_member_profile` RPC gates |
+| Avatar cross-user portrait on member profiles | **Follow-up (storage)** | `avatars` bucket RLS is owner-only SELECT; cross-user `getAvatarSignedUrl` fails → initials fallback. Add visibility-aware storage policy (separate from Phase 2). See `UPLOADS_STORAGE_CONTRACT.md`. |
 | Social/link fields | Pending | Low priority; schema extension needed |
 | Mobile camera capture | Pending | Nice-to-have; current file picker works |
 | Optimistic save feedback | Pending | `router.refresh()` is correct for now |
@@ -63,8 +64,8 @@ Lint is now fully clean (0 errors, 0 warnings).
 ## What to tackle next (profile system)
 
 1. **Avatar crop QA** — manual pass on crop modal, save flow, dashboard refresh (see implementation doc QA checklist)
-2. **Profile public view** — `/members/[username]` route  
-   New page: Server Component, reads profile by username, respects `privacy_level`, editorial identity layout
+2. ~~**Profile public view**~~ — **Done (Phase 2):** `/members/[username]` with RPC visibility gates  
+3. **Avatar storage RLS for cross-user portraits** — visibility-aware SELECT on `avatars` bucket (not blocking Phase 2)
 
 ---
 

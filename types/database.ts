@@ -518,6 +518,12 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      resolve_member_profile: {
+        Args: {
+          p_username: string
+        }
+        Returns: Json
+      }
       withdraw_post_report: {
         Args: {
           p_report_id: string
