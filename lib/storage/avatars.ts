@@ -38,6 +38,13 @@ export function isAvatarStoragePath(value: string | null | undefined, userId?: s
   return userId ? value.startsWith(`${userId}/`) : true
 }
 
+/**
+ * Resolve a portrait URL for display.
+ *
+ * Uses the viewer-scoped server client — storage RLS on the `avatars` bucket
+ * must allow SELECT before createSignedUrl succeeds. See
+ * docs/supabase/avatars_storage_policies.sql (public / limited / owner-only private).
+ */
 export async function getAvatarSignedUrl(storagePath: string | null | undefined) {
   if (!storagePath) {
     return null

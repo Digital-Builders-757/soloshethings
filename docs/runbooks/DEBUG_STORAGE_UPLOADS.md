@@ -532,7 +532,11 @@ if (error) {
 
 ## Common Fixes
 
-### Fix 1: Create Missing Storage Policies
+### Fix 1: Create / repair avatars bucket policies
+
+Run the canonical script: [avatars_storage_policies.sql](../supabase/avatars_storage_policies.sql) in the Supabase Dashboard SQL Editor.
+
+Or apply policies individually:
 
 ```sql
 -- Create policies for avatars bucket
@@ -550,6 +554,23 @@ USING (
   auth.uid()::text = (storage.foldername(name))[1]
 );
 
+CREATE POLICY "Users can view avatars for visible profiles"
+ON storage.objects FOR SELECT
+USING (
+  bucket_id = 'avatars' AND
+  EXISTS (
+    SELECT 1 FROM public.profiles p
+    WHERE p.avatar_url = storage.objects.name
+    AND (
+      p.privacy_level = 'public'::public.privacy_level
+      OR (
+        p.privacy_level = 'limited'::public.privacy_level
+        AND auth.uid() IS NOT NULL
+      )
+    )
+  )
+);
+
 CREATE POLICY "Users can delete own avatars"
 ON storage.objects FOR DELETE
 USING (
@@ -557,6 +578,26 @@ USING (
   auth.uid()::text = (storage.foldername(name))[1]
 );
 ```
+
+**Verify cross-user portrait signing:**
+
+```sql
+-- List avatars bucket SELECT policies
+SELECT policyname, cmd, qual
+FROM pg_policies
+WHERE schemaname = 'storage' AND tablename = 'objects'
+  AND policyname LIKE '%avatar%';
+```
+
+```typescript
+// As anonymous: createSignedUrl for a public-profile avatar path should succeed
+// after "Users can view avatars for visible profiles" is applied.
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .createSignedUrl(publicProfileAvatarPath, 3600);
+```
+
+**Expected:** Public-profile paths sign for anon; limited-profile paths sign for authenticated only; private non-owner paths fail.
 
 ### Fix 2: Fix Path Generation
 

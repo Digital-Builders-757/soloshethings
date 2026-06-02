@@ -43,7 +43,7 @@
 | Avatar upload (upload, storage, retrieval, persistence, cleanup) | **Done — Production Verified (June 1, 2026)** | See `docs/testing/AVATAR_UPLOAD_VERIFICATION_REPORT.md` |
 | Avatar crop/preview modal | **Implemented — pending QA** | `react-image-crop` + `AvatarCropModal`; 512px max output; original >2MB rejected pre-crop; server action unchanged |
 | Profile public view | **Done — Phase 2** | `/members/[username]` — Server Component + `resolve_member_profile` RPC gates |
-| Avatar cross-user portrait on member profiles | **Follow-up (storage)** | `avatars` bucket RLS is owner-only SELECT; cross-user `getAvatarSignedUrl` fails → initials fallback. Add visibility-aware storage policy (separate from Phase 2). See `UPLOADS_STORAGE_CONTRACT.md`. |
+| Avatar cross-user portrait on member profiles | **Implemented — apply Dashboard SQL** | Run `docs/supabase/avatars_storage_policies.sql` per environment; visibility-aware SELECT on `avatars` bucket |
 | Social/link fields | Pending | Low priority; schema extension needed |
 | Mobile camera capture | Pending | Nice-to-have; current file picker works |
 | Optimistic save feedback | Pending | `router.refresh()` is correct for now |
@@ -65,7 +65,7 @@ Lint is now fully clean (0 errors, 0 warnings).
 
 1. **Avatar crop QA** — manual pass on crop modal, save flow, dashboard refresh (see implementation doc QA checklist)
 2. ~~**Profile public view**~~ — **Done (Phase 2):** `/members/[username]` with RPC visibility gates  
-3. **Avatar storage RLS for cross-user portraits** — visibility-aware SELECT on `avatars` bucket (not blocking Phase 2)
+3. ~~**Avatar storage RLS for cross-user portraits**~~ — **Done (script):** `docs/supabase/avatars_storage_policies.sql` — run in Dashboard per environment
 
 ---
 
