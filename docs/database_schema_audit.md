@@ -4,14 +4,15 @@
 
 ## Schema Version: v0
 
-**Last Updated:** 2026-05-15
-**Migration Base:** Initial schema + Stripe/read-cap + community discovery metadata
+**Last Updated:** 2026-06-02
+**Migration Base:** Initial schema + Stripe/read-cap + community discovery metadata + member profile visibility
 **Migration Files:**
 - `supabase/migrations/20250101000000_initial_schema.sql`
 - `supabase/migrations/20260514194500_stripe_webhook_and_post_reads.sql`
 - `supabase/migrations/20260515194500_community_place_label_story_tags.sql`
 - `supabase/migrations/20260515030823_repair_profiles_id_fkey_auth_users.sql` — idempotent repair: `profiles.id` FK must reference `auth.users(id)` (fixes drift if an older DB pointed at the wrong target).
 - `supabase/migrations/20260519120000_repair_community_posts_place_label_story_tags.sql` — idempotent repair: ensures `place_label` / `story_tags` (+ constraints, indexes, owner `post_images` UPDATE policy alignment) when an environment missed `20260515194500`.
+- `supabase/migrations/20260602120000_member_profile_visibility.sql` — RLS for `limited` profile reads + `resolve_member_profile(text)` RPC for `/members/[username]`.
 **Status:** ✅ Implemented - Migration ready to run
 
 ## Important Rules
@@ -79,6 +80,17 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Member profile resolver for /members/[username] (SECURITY DEFINER).
+-- Returns a status enum in JSON — never leaks private rows to anonymous viewers.
+-- See profiles table visibility matrix below.
+CREATE OR REPLACE FUNCTION public.resolve_member_profile(p_username text)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+-- Full body in supabase/migrations/20260602120000_member_profile_visibility.sql
+-- Grants: EXECUTE to anon, authenticated
 ```
 
 ## Tables
@@ -119,6 +131,17 @@ CREATE POLICY "Users can view public profiles"
   ON profiles FOR SELECT
   USING (privacy_level = 'public');
 
+CREATE POLICY "Authenticated users can view limited profiles"
+  ON profiles FOR SELECT
+  TO authenticated
+  USING (privacy_level = 'limited');
+
+CREATE POLICY "Admins select profiles for moderation"
+  ON profiles FOR SELECT
+  USING (
+    EXISTS (SELECT 1 FROM profiles pr WHERE pr.id = auth.uid() AND pr.role = 'admin'::user_role)
+  );
+
 CREATE POLICY "Users can insert own profile"
   ON profiles FOR INSERT
   WITH CHECK (auth.uid() = id);
@@ -134,14 +157,28 @@ CREATE TRIGGER update_profiles_updated_at
   EXECUTE FUNCTION update_updated_at();
 ```
 
+**Member profile visibility (`resolve_member_profile` + RLS):**
+
+| Viewer | `public` | `limited` | `private` | Missing username |
+|--------|----------|-----------|-----------|------------------|
+| Anonymous | `visible` | `auth_required` | `not_found` | `not_found` |
+| Authenticated (not owner/admin) | `visible` | `visible` | `private` | `not_found` |
+| Owner | `visible` | `visible` | `visible` | — |
+| Admin | `visible` | `visible` | `visible` | — |
+
+- Direct `SELECT` on `profiles` follows RLS (public, limited+authenticated, own row, admin).
+- `/members/[username]` MUST use `resolve_member_profile(username)` for gate states (`auth_required`, `private`, `not_found`).
+- Anonymous `private` → `not_found` (no username enumeration). Authenticated non-owner `private` → `private` message with username only.
+
 **Column Details:**
 - `id` - uuid, PRIMARY KEY, REFERENCES auth.users(id), ON DELETE CASCADE
-- `username` - text, NOT NULL, UNIQUE
+- `username` - text, NOT NULL, UNIQUE (stored lowercase by app)
 - `full_name` - text, NULLABLE
 - `bio` - text, NULLABLE, CHECK (char_length <= 500)
-- `avatar_url` - text, NULLABLE
+- `avatar_url` - text, NULLABLE (storage path, not public URL)
 - `role` - user_role enum, NOT NULL, DEFAULT 'talent'
 - `privacy_level` - privacy_level enum, NOT NULL, DEFAULT 'public'
+- `travel_styles` - text[] NOT NULL DEFAULT '{}', CHECK (cardinality <= 8)
 - `created_at` - timestamptz, NOT NULL, DEFAULT now()
 - `updated_at` - timestamptz, NOT NULL, DEFAULT now()
 
