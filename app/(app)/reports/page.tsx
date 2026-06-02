@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { PendingReportWithdrawal } from '@/components/safety/pending-report-withdrawal'
+import { MemberProfileLink } from '@/components/profile/member-profile-link'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import {
   REPORT_REASON_LABELS,
@@ -356,7 +357,13 @@ export default async function ReportsPage({ searchParams }: Props) {
                             {report.post ? (
                               <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-brand-blue/85">
                                 <span>
-                                  Story by <span className="font-semibold text-brand-pinkDark">{authorName}</span>
+                                  Story by{' '}
+                                  <MemberProfileLink
+                                    username={report.post.author?.username}
+                                    className="font-semibold text-brand-pinkDark hover:text-brand-orange"
+                                  >
+                                    {authorName}
+                                  </MemberProfileLink>
                                 </span>
                                 {authorFilterHref ? (
                                   <Link

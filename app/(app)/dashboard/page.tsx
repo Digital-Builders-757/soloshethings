@@ -503,6 +503,7 @@ export default async function DashboardPage() {
         <DashboardHero
           avatarUrl={avatarUrl}
           displayName={displayName}
+          username={profile.username}
           email={user.email ?? ''}
           role={profile.role}
           membershipTier={membershipTier}

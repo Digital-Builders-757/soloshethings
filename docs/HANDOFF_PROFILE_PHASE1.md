@@ -66,6 +66,18 @@ Lint is now fully clean (0 errors, 0 warnings).
 1. **Avatar crop QA** — manual pass on crop modal, save flow, dashboard refresh (see implementation doc QA checklist)
 2. ~~**Profile public view**~~ — **Done (Phase 2):** `/members/[username]` with RPC visibility gates  
 3. ~~**Avatar storage RLS for cross-user portraits**~~ — **Done (script):** `docs/supabase/avatars_storage_policies.sql` — run in Dashboard per environment
+4. **Community–member profile integration** — **Done (Phase 5):** shared `MemberProfileLink` + `CommunityAuthorPreview`; author rows on `/places`, `/saved`, `/places/[slug]`, `/reports` link to `/members/{username}`; branded `not-found.tsx` for enumeration-safe unavailable state; owner preview from `/profile` and dashboard identity strip
+
+---
+
+## What was shipped — Phase 5 (community integration)
+
+- **`lib/profile/member-profile-path.ts`** — `getMemberProfilePath`, `getAuthorDisplayName`
+- **`components/profile/member-profile-link.tsx`** — guarded link to `/members/{username}`
+- **`components/community/community-author-preview.tsx`** — shared avatar + name row (both link when username exists)
+- **`app/(public)/members/[username]/not-found.tsx`** — branded “Profile unavailable”; identical UI for unknown username, invalid username, and anonymous access to private profiles (no enumeration)
+- Wired community surfaces: `places/page.tsx`, `places/[slug]/page.tsx`, `saved/page.tsx`, `reports/page.tsx`
+- Owner preview: “View member profile →” on `/profile`; dashboard identity strip links avatar + `@username` to public profile
 
 ---
 

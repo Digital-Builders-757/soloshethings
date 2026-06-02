@@ -14,7 +14,7 @@ import {
   CommunityChipSavedTimestamp,
   communityWarmCardClassName,
 } from '@/components/community/community-story-surface'
-import { Avatar } from '@/components/ui/avatar'
+import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { cn } from '@/lib/utils'
 import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
@@ -366,18 +366,14 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                           {latestReport ? <CommunityBadgeReported /> : null}
                         </div>
 
-                        <div className="mt-4 flex items-center gap-3">
-                          <Avatar
-                            src={post.authorAvatarUrl}
-                            fallback={authorName.slice(0, 2).toUpperCase()}
-                            alt={`${authorName} avatar`}
-                            size="md"
-                          />
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
-                            <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
-                          </div>
-                        </div>
+                        <CommunityAuthorPreview
+                          className="mt-4"
+                          username={post.author?.username}
+                          fullName={post.author?.full_name}
+                          avatarUrl={post.authorAvatarUrl}
+                          publishedAt={post.created_at}
+                          publishedAtLabel={formatDate}
+                        />
 
                         <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
                           <Link href={detailHref} className="transition hover:text-[#e34b16]">
