@@ -16,6 +16,9 @@ import {
 } from '@/components/community/community-story-surface'
 import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
+import { EmptyState } from '@/components/ui/empty-state'
+import { StatusBadge } from '@/components/ui/status-badge'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { getMembershipTier } from '@/lib/billing/entitlements'
@@ -26,10 +29,9 @@ import {
   type CommunityStoryTopicSlug,
 } from '@/lib/community-story-taxonomy'
 import { getCommunityDiscoveryFacets, getCommunityFeedPosts } from '@/lib/queries/community-posts'
-import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
+import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
-import type { report_status } from '@/types/database'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All stories' },
@@ -98,21 +100,6 @@ function normalizePage(value?: string) {
   }
 
   return Math.min(parsed, 5)
-}
-
-function reportStatusTone(status: report_status) {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
 }
 
 function buildPlacesHref(
@@ -297,30 +284,21 @@ export default async function PlacesPage({ searchParams }: Props) {
 
       <CommunitySurfaceNav active="places" itemHrefs={workspaceHrefs} />
 
-      {membershipTier === 'limited' ? (
-        <aside
-          className="mt-4 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] px-4 py-3 text-sm text-[#7a331b]"
-          role="note"
-        >
-          <span className="font-semibold">Limited member access:</span>{' '}
-          you can open up to three other members&apos; stories per day (UTC). Subscribe for unlimited reads, saves, and posting.{' '}
-          <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
-            Open billing
-          </Link>
-        </aside>
-      ) : null}
+      {membershipTier === 'limited' ? <UpgradePrompt variant="feed" className="mt-4" /> : null}
 
       {posts.length === 0 ? (
-        <section className="editorial-card mt-6 p-6 sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No stories yet</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-            Once members start publishing, this feed will show public stories here. Your own private and public
-            submissions will also appear after you post.
-          </p>
-          <Link href="/submit" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-            Publish the first story →
-          </Link>
-        </section>
+        <EmptyState
+          id="places-empty"
+          className="mt-6"
+          variant="editorial"
+          title="No stories yet"
+          description="Once members start publishing, this feed will show public stories here. Your own private and public submissions will also appear after you post."
+          primaryAction={{
+            label: 'Publish the first story →',
+            href: '/submit',
+            variant: 'link',
+          }}
+        />
       ) : (
         <>
           <section className="editorial-card mt-6 p-5 sm:p-6">
@@ -543,28 +521,35 @@ export default async function PlacesPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
-              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No stories match this filter yet</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-                Try a different keyword, switch views, or clear the filters to return to the full community feed.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/places" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Reset filters →
-                </Link>
-                {activeAuthorId ? (
-                  <Link
-                    href={buildPlacesHref(activeView, query, 1, undefined, undefined, discoveryForHref)}
-                    className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
-                  >
-                    Show all members
-                  </Link>
-                ) : null}
-                <Link href="/saved" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                  Open saved stories
-                </Link>
-              </div>
-            </section>
+            <EmptyState
+              id="places-filtered-empty"
+              className="mt-6"
+              variant="editorial"
+              ariaLive="polite"
+              title="No stories match this filter yet"
+              description="Try a different keyword, switch views, or clear the filters to return to the full community feed."
+              primaryAction={{
+                label: 'Reset filters →',
+                href: '/places',
+                variant: 'link',
+              }}
+              extraActions={[
+                ...(activeAuthorId
+                  ? [
+                      {
+                        label: 'Show all members',
+                        href: buildPlacesHref(activeView, query, 1, undefined, undefined, discoveryForHref),
+                        variant: 'link' as const,
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Open saved stories',
+                  href: '/saved',
+                  variant: 'link',
+                },
+              ]}
+            />
           ) : (
             <>
               <section className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -642,9 +627,11 @@ export default async function PlacesPage({ searchParams }: Props) {
                       <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
 
                       {latestReport ? (
-                        <div className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
-                          {REPORT_STATUS_LABELS[latestReport.status]}
-                        </div>
+                        <StatusBadge
+                          kind="report"
+                          status={latestReport.status}
+                          className="mt-6 min-h-10 items-center justify-center px-4"
+                        />
                       ) : null}
 
                       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

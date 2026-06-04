@@ -15,12 +15,13 @@ import {
   communityWarmCardClassName,
 } from '@/components/community/community-story-surface'
 import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
+import { EmptyState } from '@/components/ui/empty-state'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { cn } from '@/lib/utils'
-import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
+import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
-import type { report_status } from '@/types/database'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All saves' },
@@ -71,21 +72,6 @@ function normalizePage(value?: string) {
   }
 
   return Math.min(parsed, 5)
-}
-
-function reportStatusTone(status: report_status) {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
 }
 
 function buildSavedHref(view: ViewFilter, query: string, page = 1, authorId?: string, authorLabel?: string) {
@@ -210,15 +196,18 @@ export default async function SavedPostsPage({ searchParams }: Props) {
       <CommunitySurfaceNav active="saved" itemHrefs={workspaceHrefs} />
 
       {savedPosts.length === 0 ? (
-        <section className="editorial-card mt-6 p-6 sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Nothing saved yet</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-            Use the save button on a story card or detail page and it will appear here for your account only.
-          </p>
-          <Link href="/places" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-            Explore the feed →
-          </Link>
-        </section>
+        <EmptyState
+          id="saved-empty"
+          className="mt-6"
+          variant="editorial"
+          title="Nothing saved yet"
+          description="Use the save button on a story card or detail page and it will appear here for your account only."
+          primaryAction={{
+            label: 'Explore the feed →',
+            href: '/places',
+            variant: 'link',
+          }}
+        />
       ) : (
         <>
           <section className="editorial-card mt-6 p-5 sm:p-6">
@@ -300,28 +289,35 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
-              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No saved stories match this view yet</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-                Try a different keyword, switch filters, or clear this view to return to your full saved list.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/saved" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Reset saved filters →
-                </Link>
-                {activeAuthorId ? (
-                  <Link
-                    href={buildSavedHref(activeView, query, 1)}
-                    className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
-                  >
-                    Show all members
-                  </Link>
-                ) : null}
-                <Link href="/places" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                  Browse stories
-                </Link>
-              </div>
-            </section>
+            <EmptyState
+              id="saved-filtered-empty"
+              className="mt-6"
+              variant="editorial"
+              ariaLive="polite"
+              title="No saved stories match this view yet"
+              description="Try a different keyword, switch filters, or clear this view to return to your full saved list."
+              primaryAction={{
+                label: 'Reset saved filters →',
+                href: '/saved',
+                variant: 'link',
+              }}
+              extraActions={[
+                ...(activeAuthorId
+                  ? [
+                      {
+                        label: 'Show all members',
+                        href: buildSavedHref(activeView, query, 1),
+                        variant: 'link' as const,
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Browse stories',
+                  href: '/places',
+                  variant: 'link',
+                },
+              ]}
+            />
           ) : (
             <>
               <section className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -383,11 +379,11 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                         <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
 
                         {latestReport ? (
-                          <div
-                            className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}
-                          >
-                            {REPORT_STATUS_LABELS[latestReport.status]}
-                          </div>
+                          <StatusBadge
+                            kind="report"
+                            status={latestReport.status}
+                            className="mt-6 min-h-10 items-center justify-center px-4"
+                          />
                         ) : null}
 
                         <div className="mt-6 border-t border-brand-pinkDark/10 pt-5">
