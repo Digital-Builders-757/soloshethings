@@ -9,6 +9,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
+import { NoResultsState } from '@/components/ui/no-results-state'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { RestoreCommunityPostButton } from '@/components/submit/restore-community-post-button'
 import { SubmitForm } from '@/components/submit/submit-form'
 import { buildStoryDetailHref } from '@/lib/community-navigation'
@@ -206,18 +208,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               Story permanently removed from community surfaces. Your timeline below keeps the reference for your account only.
             </div>
           ) : null}
-          {membershipTier === 'limited' ? (
-            <aside
-              className="rounded-[1.25rem] border border-brand-orange/28 bg-gradient-to-br from-brand-cream/60 to-white p-4 text-sm leading-relaxed text-brand-pinkDark sm:p-5"
-              role="note"
-            >
-              <span className="font-semibold">Posting needs membership.</span> Start a trial from{' '}
-              <Link href="/subscribe" className="font-semibold text-brand-orange underline-offset-2 hover:text-brand-coral hover:underline">
-                Billing
-              </Link>
-              — drafts stay here until you subscribe.
-            </aside>
-          ) : null}
+          {membershipTier === 'limited' ? <UpgradePrompt variant="studio" /> : null}
 
           <SubmitForm recentPostCount={recentPosts.length} />
         </div>
@@ -351,19 +342,15 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
                   </section>
 
                   {showFilteredEmptyState ? (
-                    <div className="mt-6 rounded-[1.35rem] border border-brand-pinkDark/12 bg-brand-cream/30 p-5 sm:p-6">
-                      <p className="community-section-label text-[0.65rem]">No matches</p>
-                      <p className="mt-2 font-serif text-lg font-semibold text-brand-pinkDark">Nothing on this shelf row</p>
-                      <p className="mt-2 text-sm leading-relaxed text-brand-blue/85">
-                        Try another keyword or tab — your stories are still here.
-                      </p>
-                      <Link
-                        href="/submit"
-                        className="cta-secondary mt-5 inline-flex min-h-11 items-center justify-center px-6 text-sm"
-                      >
-                        Reset filters
-                      </Link>
-                    </div>
+                    <NoResultsState
+                      id="submit-filtered-empty"
+                      className="mt-6"
+                      variant="inline"
+                      filterEyebrow="No matches"
+                      title="Nothing on this shelf row"
+                      description="Try another keyword or tab — your stories are still here."
+                      resetAction={{ label: 'Reset filters', href: '/submit' }}
+                    />
                   ) : (
                     <>
                       <div className="mt-6 space-y-5">

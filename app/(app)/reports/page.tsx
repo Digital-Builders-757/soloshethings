@@ -5,15 +5,16 @@ import { ActiveMemberFilterBanner } from '@/components/community/active-member-f
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { PendingReportWithdrawal } from '@/components/safety/pending-report-withdrawal'
 import { MemberProfileLink } from '@/components/profile/member-profile-link'
+import { EmptyState } from '@/components/ui/empty-state'
+import { NoResultsState } from '@/components/ui/no-results-state'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import {
   REPORT_REASON_LABELS,
-  REPORT_STATUS_LABELS,
   getMemberPostReports,
 } from '@/lib/queries/reports'
 import {
   reportCardRailBg,
-  reportStatusBadgeClasses,
   reportSummaryChipClasses,
 } from '@/lib/report-status-presentational'
 import { getUser } from '@/lib/supabase/server'
@@ -182,27 +183,28 @@ export default async function ReportsPage({ searchParams }: Props) {
       <CommunitySurfaceNav active="reports" itemHrefs={workspaceHrefs} />
 
       {reports.length === 0 ? (
-        <section className="mt-6 rounded-[1.5rem] border border-brand-pinkDark/12 bg-white p-6 shadow-[0_16px_40px_rgba(122,51,27,0.06)] sm:p-10">
-          <p className="profile-form-section-label text-[0.65rem]">No activity yet</p>
-          <h2 className="mt-3 font-serif text-2xl font-semibold text-brand-pinkDark sm:text-3xl">
-            You have not submitted any reports
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
-            If something on the feed concerns you, open the story and use Report — it will show up here with a clear
-            status so you can follow moderation outcomes at your own pace.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link href="/places" className="cta-secondary inline-flex min-h-12 items-center justify-center px-8 text-sm sm:min-h-11">
-              Go to the feed
-            </Link>
-            <Link
-              href="/saved"
-              className="community-filter-pill inline-flex min-h-12 items-center justify-center border-brand-pinkDark/15 bg-brand-cream/40 text-brand-pinkDark hover:border-brand-pinkDark/25 sm:min-h-11"
-            >
-              View saved stories
-            </Link>
-          </div>
-        </section>
+        <EmptyState
+          id="reports-empty"
+          className="mt-6 border-brand-pinkDark/12 bg-white shadow-[0_16px_40px_rgba(122,51,27,0.06)] sm:p-10"
+          variant="community"
+          eyebrow="No activity yet"
+          title="You have not submitted any reports"
+          description="If something on the feed concerns you, open the story and use Report — it will show up here with a clear status so you can follow moderation outcomes at your own pace."
+          primaryAction={{
+            label: 'Go to the feed',
+            href: '/places',
+            variant: 'secondary',
+          }}
+          extraActions={[
+            {
+              label: 'View saved stories',
+              href: '/saved',
+              variant: 'link',
+              className:
+                'community-filter-pill inline-flex min-h-12 items-center justify-center border-brand-pinkDark/15 bg-brand-cream/40 text-brand-pinkDark hover:border-brand-pinkDark/25 sm:min-h-11',
+            },
+          ]}
+        />
       ) : (
         <>
           <section className="editorial-card mt-6 p-5 sm:p-6">
@@ -284,31 +286,32 @@ export default async function ReportsPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="mt-6 rounded-[1.5rem] border border-brand-pinkDark/12 bg-brand-cream/25 p-6 sm:p-8">
-              <p className="community-section-label text-[0.65rem]">Nothing in this view</p>
-              <h2 className="mt-2 font-serif text-2xl font-semibold text-brand-pinkDark sm:text-3xl">
-                No reports match your filters
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-blue/85 sm:text-base">
-                Try another status tab or clear search — your full history is unchanged.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link href="/reports" className="cta-secondary inline-flex min-h-12 items-center justify-center px-8 text-sm sm:min-h-11">
-                  Reset filters
-                </Link>
-                {activeAuthorId ? (
-                  <Link
-                    href={buildReportsHref(activeView, query, 1)}
-                    className="community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11"
-                  >
-                    Clear member filter
-                  </Link>
-                ) : null}
-                <Link href="/places" className="community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11">
-                  Browse stories
-                </Link>
-              </div>
-            </section>
+            <NoResultsState
+              id="reports-filtered-empty"
+              className="mt-6"
+              variant="community"
+              title="No reports match your filters"
+              description="Try another status tab or clear search — your full history is unchanged."
+              resetAction={{ label: 'Reset filters', href: '/reports' }}
+              alternateActions={[
+                ...(activeAuthorId
+                  ? [
+                      {
+                        label: 'Clear member filter',
+                        href: buildReportsHref(activeView, query, 1),
+                        className:
+                          'community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11',
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Browse stories',
+                  href: '/places',
+                  className:
+                    'community-filter-pill inline-flex min-h-12 items-center justify-center sm:min-h-11',
+                },
+              ]}
+            />
           ) : (
             <>
               <section className="mt-6 space-y-4 sm:space-y-5">
@@ -396,14 +399,11 @@ export default async function ReportsPage({ searchParams }: Props) {
                             <p className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-brand-blue/65">
                               Status
                             </p>
-                            <span
-                              className={cn(
-                                'inline-flex min-h-10 w-full items-center justify-center rounded-full border px-3 text-center text-sm font-semibold leading-snug sm:min-h-0 sm:justify-start sm:px-4 sm:py-2',
-                                reportStatusBadgeClasses(report.status)
-                              )}
-                            >
-                              {REPORT_STATUS_LABELS[report.status]}
-                            </span>
+                            <StatusBadge
+                              kind="report"
+                              status={report.status}
+                              className="min-h-10 w-full items-center justify-center text-center leading-snug sm:min-h-0 sm:w-auto sm:justify-start sm:px-4 sm:py-2"
+                            />
                             <p className="text-xs leading-relaxed text-brand-blue/75">
                               Record updated {formatDate(report.updated_at)}
                             </p>

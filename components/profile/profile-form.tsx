@@ -18,7 +18,9 @@
 import { updateProfile } from '@/app/actions/profile'
 import { AvatarCropModal } from '@/components/profile/avatar-crop-modal'
 import { MemberProfileLink } from '@/components/profile/member-profile-link'
+import { PrivacyNotice } from '@/components/profile/privacy-notice'
 import { Avatar } from '@/components/ui/avatar'
+import { SectionHeader } from '@/components/ui/section-header'
 import { TRAVEL_STYLE_OPTIONS, TRAVEL_STYLES_MAX } from '@/lib/profile-travel-styles'
 import {
   AVATAR_ACCEPT,
@@ -246,13 +248,19 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
 
         {/* Hero — open surface, no card wrapper */}
         <header className="mb-7 sm:mb-9">
-          <p className="eyebrow text-[0.65rem] tracking-[0.26em]">Your space</p>
-          <h1 className="display-headline mt-3 text-[1.85rem] text-[#713522] sm:text-[2.25rem] lg:text-[2.6rem]">
-            Your presence in the community
-          </h1>
-          <p className="mt-4 max-w-[29rem] text-sm leading-relaxed text-[#7a331b]/62 sm:text-[0.9375rem]">
-            Everything here travels with you — across stories, replies, and community spaces.
-          </p>
+          <SectionHeader
+            id="profile-hero"
+            tone="warm"
+            size="page"
+            eyebrow="Your space"
+            title={
+              <span className="display-headline text-[1.85rem] text-[#713522] sm:text-[2.25rem] lg:text-[2.6rem]">
+                Your presence in the community
+              </span>
+            }
+            description="Everything here travels with you — across stories, replies, and community spaces."
+            className="[&_h1]:mt-3 [&_p]:max-w-[29rem] [&_p]:text-[#7a331b]/62"
+          />
           {profile.username ? (
             <p className="mt-4">
               <MemberProfileLink
@@ -516,6 +524,7 @@ export function ProfileForm({ profile, avatarUrl }: ProfileFormProps) {
                     )
                   })}
                 </div>
+                <PrivacyNotice className="mt-4" />
               </div>
 
               {/* Soft compositional pause before bio — separates "who sees you" from "who you are".

@@ -1,59 +1,77 @@
 /**
  * Blog List Page
- * 
+ *
  * WordPress editorial content (public, no auth required)
  * ISR with 1-hour revalidation
  * Server-side fetch only
- * 
+ *
  * Reference: docs/WORDPRESS_SUPABASE_BLUEPRINT.md
- * 
+ *
  * NOTE: WordPress integration is OPTIONAL in Phase 1.
  * Shows "Coming Soon" when WP_URL is not configured.
  */
 
-import { getWpPosts, isWordPressConfigured } from "@/lib/wp-rest";
-import type { WpPostListResponse } from "@/lib/wp-types";
-import Link from "next/link";
-import Image from "next/image";
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { EmptyState } from '@/components/ui/empty-state'
+import { SectionHeader } from '@/components/ui/section-header'
+import { getWpPosts, isWordPressConfigured } from '@/lib/wp-rest'
+import type { WpPostListResponse } from '@/lib/wp-types'
 
 export default async function BlogPage() {
-  const wpConfigured = isWordPressConfigured();
-  const posts: WpPostListResponse = await getWpPosts({ perPage: 12 });
+  const wpConfigured = isWordPressConfigured()
+  const posts: WpPostListResponse = await getWpPosts({ perPage: 12 })
 
   return (
     <main className="section-y shell-inline min-w-0 flex-1 overflow-x-clip">
       <div className="mx-auto max-w-7xl">
-        <h1 className="mb-6 text-balance break-words font-serif text-3xl font-bold text-brand-orange md:mb-8 md:text-4xl lg:text-5xl">
-          SHE <span className="text-brand-blue">Stories</span> & Guides
-        </h1>
-        
+        <SectionHeader
+          as="header"
+          id="blog-index"
+          tone="blog"
+          size="page"
+          eyebrow="Editorial"
+          title={
+            <>
+              SHE <span className="text-brand-blue">Stories</span> & Guides
+            </>
+          }
+          description="Travel guides, destination spotlights, and solo travel stories from the Solo SHE Things publication."
+          className="mb-6 md:mb-8"
+        />
+
         {!wpConfigured || posts.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="max-w-md mx-auto">
-              <h2 className="text-2xl font-semibold mb-4 text-neutral-800">
-                Blog Coming Soon
-              </h2>
-              <p className="text-neutral-600 text-lg mb-6">
-                {!wpConfigured
-                  ? "We're preparing amazing travel content for you. Check back soon!"
-                  : "No blog posts available at the moment. Check back soon!"}
-              </p>
-              <div className="bg-brand-peach/30 border border-brand-peach/50 text-foreground p-4 rounded-xl">
-                <p className="text-sm font-medium">
-                  ✨ Stay tuned for travel guides, destination spotlights, and solo travel stories!
-                </p>
-              </div>
-            </div>
-          </div>
+          <EmptyState
+            id="blog-empty"
+            variant="blog"
+            eyebrow="Publication"
+            title="Stories and guides are on the way"
+            description={
+              !wpConfigured
+                ? 'We are preparing travel content for you. Stay tuned for guides, destination spotlights, and solo travel stories.'
+                : 'No posts are published right now. Check back soon for new guides and stories.'
+            }
+            primaryAction={{
+              label: 'Return home',
+              href: '/',
+              variant: 'secondary',
+            }}
+            secondaryAction={{
+              label: 'About Solo SHE Things',
+              href: '/about',
+              variant: 'link',
+            }}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => {
               const featuredImage =
-                post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+                post._embedded?.['wp:featuredmedia']?.[0]?.source_url
               const excerpt = post.excerpt.rendered
-                .replace(/<[^>]*>/g, "")
+                .replace(/<[^>]*>/g, '')
                 .trim()
-                .substring(0, 150);
+                .substring(0, 150)
 
               return (
                 <article
@@ -62,11 +80,11 @@ export default async function BlogPage() {
                 >
                   <div className="overflow-hidden rounded-[calc(var(--radius-xl)-3px)]">
                     {featuredImage && (
-                      <div className="aspect-video bg-neutral-200 relative overflow-hidden">
+                      <div className="relative aspect-video overflow-hidden bg-neutral-200">
                         <Image
                           src={featuredImage}
                           alt={
-                            post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
+                            post._embedded?.['wp:featuredmedia']?.[0]?.alt_text ||
                             post.title.rendered
                           }
                           fill
@@ -77,32 +95,31 @@ export default async function BlogPage() {
                       </div>
                     )}
                     {!featuredImage && (
-                      <div className="aspect-video bg-neutral-200"></div>
+                      <div className="aspect-video bg-neutral-200" />
                     )}
                     <div className="p-6">
-                      <h2 className="text-xl font-semibold mb-2 line-clamp-2">
+                      <h2 className="mb-2 line-clamp-2 text-xl font-semibold">
                         {post.title.rendered}
                       </h2>
-                      {excerpt && (
-                        <p className="text-neutral-600 mb-4 line-clamp-3">
+                      {excerpt ? (
+                        <p className="mb-4 line-clamp-3 text-neutral-600">
                           {excerpt}...
                         </p>
-                      )}
+                      ) : null}
                       <Link
                         href={`/blog/${post.slug}`}
-                        className="text-brand-orange hover:text-brand-orange/80 font-medium"
+                        className="font-medium text-brand-orange hover:text-brand-orange/80"
                       >
                         Read More →
                       </Link>
                     </div>
                   </div>
                 </article>
-              );
+              )
             })}
           </div>
         )}
       </div>
     </main>
-  );
+  )
 }
-
