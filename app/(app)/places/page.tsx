@@ -1,23 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
-import {
-  communityWarmCardClassName,
-  CommunityBadgeFeatured,
-  CommunityBadgeReported,
-  CommunityChipEmphasis,
-  CommunityChipPrivate,
-  CommunityChipPublic,
-  CommunityChipTopic,
-  CommunityPillSaved,
-} from '@/components/community/community-story-surface'
-import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
+import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { EmptyState } from '@/components/ui/empty-state'
-import { StatusBadge } from '@/components/ui/status-badge'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
@@ -562,107 +549,34 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const moreFromAuthorHref = buildPlacesHref(activeView, query, 1, post.author_id, authorName, discoveryForHref)
 
                 return (
-                  <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
-                    {coverImage ? (
-                      <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
-                        <Image
-                          src={coverImage}
-                          alt={post.images[0]?.alt_text ?? post.title}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                          unoptimized
-                        />
-                      </div>
-                    ) : null}
-
-                    <div className="p-5 sm:p-6">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {post.is_public ? (
-                          <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
-                        ) : (
-                          <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
-                        )}
-                        {isOwnPost ? (
-                          <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
-                        ) : null}
-                        {savedPostIds.has(post.id) ? <CommunityPillSaved /> : null}
-                        {post.is_featured ? <CommunityBadgeFeatured /> : null}
-                        <span className="story-meta-chip text-[0.58rem]">
-                          {post.images.length} image{post.images.length === 1 ? '' : 's'}
-                        </span>
-                        {latestReport ? <CommunityBadgeReported /> : null}
-                      </div>
-
-                      <CommunityAuthorPreview
-                        className="mt-4"
-                        username={post.author?.username}
-                        fullName={post.author?.full_name}
-                        avatarUrl={post.authorAvatarUrl}
-                        publishedAt={post.created_at}
-                        publishedAtLabel={formatPublishedAt}
-                      />
-
-                      <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                        <Link href={detailHref} className="transition hover:text-[#e34b16]">
-                          {post.title}
-                        </Link>
-                      </h2>
-                      {post.place_label?.trim() ? (
-                        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#9b7455]">
-                          Place · {post.place_label.trim()}
-                        </p>
-                      ) : null}
-                      {(post.story_tags ?? []).filter(Boolean).length > 0 ? (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {(post.story_tags ?? []).map((slug) => {
-                            const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
-                            if (!label) return null
-                            return (
-                              <CommunityChipTopic key={`${post.id}-${slug}`}>{label}</CommunityChipTopic>
-                            )
-                          })}
-                        </div>
-                      ) : null}
-                      <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                      {latestReport ? (
-                        <StatusBadge
-                          kind="report"
-                          status={latestReport.status}
-                          className="mt-6 min-h-10 items-center justify-center px-4"
-                        />
-                      ) : null}
-
-                      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                        <div className="space-y-2">
-                          <SaveCommunityPostButton
-                            postId={post.id}
-                            path={currentPath}
-                            initialSaved={savedPostIds.has(post.id)}
-                          />
-                          <p className="text-xs text-[#6d5849]">
-                            {isOwnPost && !post.is_public
-                              ? 'Only you can see this in the feed, and saves stay on your account only.'
-                              : 'Open the story for full details, saving, and reporting tools.'}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          {!isOwnPost ? (
-                            <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                              More from {authorName}
-                            </Link>
-                          ) : null}
-                          <Link href={latestReport ? '/reports' : '/saved'} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                            {latestReport ? 'Track report' : 'Saved list'}
-                          </Link>
-                          <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                            Open story →
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
+                  <CommunityStoryCard
+                    key={post.id}
+                    variant="feed"
+                    postId={post.id}
+                    title={post.title}
+                    content={post.content}
+                    isPublic={post.is_public}
+                    isFeatured={post.is_featured}
+                    imageCount={post.images.length}
+                    detailHref={detailHref}
+                    author={{
+                      username: post.author?.username,
+                      fullName: post.author?.full_name,
+                      avatarUrl: post.authorAvatarUrl,
+                    }}
+                    authorDisplayName={authorName}
+                    publishedAt={post.created_at}
+                    formatPublishedAt={formatPublishedAt}
+                    coverImageSrc={coverImage}
+                    coverImageAlt={post.images[0]?.alt_text ?? post.title}
+                    latestReport={latestReport ?? null}
+                    isOwnPost={isOwnPost}
+                    isSaved={savedPostIds.has(post.id)}
+                    placeLabel={post.place_label}
+                    storyTags={post.story_tags ?? []}
+                    currentPath={currentPath}
+                    moreFromAuthorHref={moreFromAuthorHref}
+                  />
                 )
                 })}
               </section>

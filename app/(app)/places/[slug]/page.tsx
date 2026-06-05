@@ -16,16 +16,17 @@ import {
   CommunityChipTopic,
 } from '@/components/community/community-story-surface'
 import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
+import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { ReportPostForm } from '@/components/safety/report-post-form'
 import { OwnerCommunityPostManager } from '@/components/submit/owner-community-post-manager'
 import { OwnerPostImageManager } from '@/components/submit/owner-post-image-manager'
-import { MemberProfileLink } from '@/components/profile/member-profile-link'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { appendCommunityAuthorParams, buildStoryDetailHref, getCommunityReturnLink } from '@/lib/community-navigation'
 import { COMMUNITY_STORY_TOPIC_LABELS, placeLabelMatchKey, type CommunityStoryTopicSlug } from '@/lib/community-story-taxonomy'
 import { ensureCommunityStoryReadAllowed } from '@/lib/billing/community-story-reads'
 import { type CommunityFeedPost, getCommunityPostDetail, getCommunityRelatedPosts } from '@/lib/queries/community-posts'
-import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
+import { getLatestMemberPostReportsForPosts, REPORT_REASON_LABELS } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getAvatarSignedUrl } from '@/lib/storage/avatars'
 import { getUser } from '@/lib/supabase/server'
@@ -78,21 +79,6 @@ function relatedStoryReason(args: {
   }
 
   return snippets.slice(0, 2).join(' · ')
-}
-
-function reportStatusTone(status: 'pending' | 'reviewed' | 'resolved' | 'dismissed' | 'withdrawn') {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
 }
 
 function buildPlacesExploreHref(options?: {
@@ -379,46 +365,20 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
                   })
 
                   return (
-                    <article
+                    <CommunityStoryCard
                       key={relatedPost.id}
-                      className={cn(
-                        'story-detail-related-card flex flex-col p-4 sm:p-5',
-                        relatedIndex === 0 && 'lg:ring-2 lg:ring-brand-gold/35'
-                      )}
-                    >
-                      <p className="community-section-label text-[0.65rem]">{relatedReason}</p>
-                      <h3 className="mt-3 font-serif text-xl font-semibold text-brand-pinkDark">
-                        <Link href={relatedHref} className="transition hover:text-brand-orange">
-                          {relatedPost.title}
-                        </Link>
-                      </h3>
-                      <p className="mt-2 text-sm font-semibold text-brand-pinkDark">
-                        <MemberProfileLink
-                          username={relatedPost.author?.username}
-                          className="text-brand-pinkDark hover:text-brand-orange"
-                        >
-                          {relatedAuthorName}
-                        </MemberProfileLink>
-                      </p>
-                      <p className="mt-2 line-clamp-3 flex-1 text-sm leading-6 text-brand-blue/85">{relatedPost.content}</p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {relatedPost.is_public ? (
-                          <CommunityChipPublic className="text-[0.58rem]">Public</CommunityChipPublic>
-                        ) : (
-                          <CommunityChipPrivate className="text-[0.58rem]">Private to owner</CommunityChipPrivate>
-                        )}
-                        {relatedPost.is_featured ? <CommunityBadgeFeatured /> : null}
-                        <span className="story-meta-chip text-[0.58rem]">
-                          {relatedPost.images.length} photo{relatedPost.images.length === 1 ? '' : 's'}
-                        </span>
-                      </div>
-                      <Link
-                        href={relatedHref}
-                        className="mt-5 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
-                      >
-                        Open story →
-                      </Link>
-                    </article>
+                      variant="related"
+                      title={relatedPost.title}
+                      content={relatedPost.content}
+                      isPublic={relatedPost.is_public}
+                      isFeatured={relatedPost.is_featured}
+                      imageCount={relatedPost.images.length}
+                      detailHref={relatedHref}
+                      authorUsername={relatedPost.author?.username}
+                      authorDisplayName={relatedAuthorName}
+                      reasonLabel={relatedReason}
+                      highlight={relatedIndex === 0}
+                    />
                   )
                 })}
               </div>
@@ -445,9 +405,11 @@ export default async function PlaceDetailPage({ params, searchParams }: Props) {
             <div className="story-detail-aside-panel p-5 sm:p-6">
               <p className="eyebrow text-[0.65rem] tracking-[0.22em]">Your report status</p>
               <h2 className="mt-2 font-serif text-xl font-semibold text-brand-pinkDark">You already flagged this story</h2>
-              <div className={`mt-4 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
-                {REPORT_STATUS_LABELS[latestReport.status]}
-              </div>
+              <StatusBadge
+                kind="report"
+                status={latestReport.status}
+                className="mt-4 min-h-10 items-center justify-center px-4"
+              />
               <p className="mt-4 text-sm leading-6 text-brand-blue/85">
                 Latest reason:{' '}
                 <span className="font-semibold text-brand-pinkDark">{REPORT_REASON_LABELS[latestReport.reason]}</span>

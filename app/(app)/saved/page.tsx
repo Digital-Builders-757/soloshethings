@@ -1,22 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
+import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
-import {
-  CommunityBadgeFeatured,
-  CommunityBadgeReported,
-  CommunityChipEmphasis,
-  CommunityChipPrivate,
-  CommunityChipPublic,
-  CommunityChipSavedTimestamp,
-  communityWarmCardClassName,
-} from '@/components/community/community-story-surface'
-import { CommunityAuthorPreview } from '@/components/community/community-author-preview'
 import { EmptyState } from '@/components/ui/empty-state'
-import { StatusBadge } from '@/components/ui/status-badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { cn } from '@/lib/utils'
 import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
@@ -330,89 +318,32 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                   const moreFromAuthorHref = buildSavedHref(activeView, query, 1, post.author_id, authorName)
 
                   return (
-                    <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
-                      {coverImage ? (
-                        <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
-                          <Image
-                            src={coverImage}
-                            alt={post.images[0]?.alt_text ?? post.title}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 50vw, 100vw"
-                            unoptimized
-                          />
-                        </div>
-                      ) : null}
-
-                      <div className="p-5 sm:p-6">
-                        <div className="flex flex-wrap items-center gap-2">
-                          {post.is_public ? (
-                            <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
-                          ) : (
-                            <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
-                          )}
-                          <CommunityChipSavedTimestamp>Saved {formatDate(post.saved_at)}</CommunityChipSavedTimestamp>
-                          {isOwnPost ? (
-                            <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
-                          ) : null}
-                          {post.is_featured ? <CommunityBadgeFeatured /> : null}
-                          <span className="story-meta-chip text-[0.58rem]">
-                            {post.images.length} photo{post.images.length === 1 ? '' : 's'}
-                          </span>
-                          {latestReport ? <CommunityBadgeReported /> : null}
-                        </div>
-
-                        <CommunityAuthorPreview
-                          className="mt-4"
-                          username={post.author?.username}
-                          fullName={post.author?.full_name}
-                          avatarUrl={post.authorAvatarUrl}
-                          publishedAt={post.created_at}
-                          publishedAtLabel={formatDate}
-                        />
-
-                        <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                          <Link href={detailHref} className="transition hover:text-[#e34b16]">
-                            {post.title}
-                          </Link>
-                        </h2>
-                        <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                        {latestReport ? (
-                          <StatusBadge
-                            kind="report"
-                            status={latestReport.status}
-                            className="mt-6 min-h-10 items-center justify-center px-4"
-                          />
-                        ) : null}
-
-                        <div className="mt-6 border-t border-brand-pinkDark/10 pt-5">
-                          <p className="profile-form-section-label mb-3 text-[0.62rem]">Library cleanup</p>
-                          <SaveCommunityPostButton
-                            postId={post.id}
-                            path={currentPath}
-                            initialSaved
-                            variant="card"
-                            savedListContext
-                          />
-                          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                            {!isOwnPost ? (
-                              <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                                More from {authorName}
-                              </Link>
-                            ) : null}
-                            <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                              Open story →
-                            </Link>
-                            {latestReport ? (
-                              <Link href="/reports" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                                Track report
-                              </Link>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </article>
+                    <CommunityStoryCard
+                      key={post.id}
+                      variant="saved"
+                      postId={post.id}
+                      title={post.title}
+                      content={post.content}
+                      isPublic={post.is_public}
+                      isFeatured={post.is_featured}
+                      imageCount={post.images.length}
+                      detailHref={detailHref}
+                      author={{
+                        username: post.author?.username,
+                        fullName: post.author?.full_name,
+                        avatarUrl: post.authorAvatarUrl,
+                      }}
+                      authorDisplayName={authorName}
+                      publishedAt={post.created_at}
+                      formatPublishedAt={formatDate}
+                      coverImageSrc={coverImage}
+                      coverImageAlt={post.images[0]?.alt_text ?? post.title}
+                      latestReport={latestReport ?? null}
+                      isOwnPost={isOwnPost}
+                      savedAtLabel={formatDate(post.saved_at)}
+                      currentPath={currentPath}
+                      moreFromAuthorHref={moreFromAuthorHref}
+                    />
                   )
                 })}
               </section>
