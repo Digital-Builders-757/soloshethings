@@ -2,7 +2,9 @@
 
 **Purpose:** Definitive QA run to verify MVP is usable and stable before declaring "MVP done."
 
-**Automated gate (local / CI):** `npm run lint`, `npm run typecheck`, and `npm run build` should all pass. Auth flows below are **manual** and require a running app plus Supabase (see `.env.local`).
+**Automated gate (local / CI):** `pnpm run lint`, `pnpm run typecheck`, and `pnpm run build` should all pass. Auth flows below are **manual** and require a running app plus Supabase (see `.env.local`).
+
+**UI/UX catch-up (2026-06-01):** Roadmap item **#2** complete. Member/community surfaces use shared `EmptyState` / `NoResultsState` for global and filtered empties, `LoadingState` for auth and `(app)` segment loading, and `ErrorRecoveryCard` for route/profile recovery. Re-run filtered-empty and loading checks after major UI changes.
 
 **When to Run:** Before any demo, before tagging "MVP ready", after major changes.
 
@@ -12,7 +14,7 @@
 
 **Implementation notes (2026-05):** Root `viewport.viewportFit: "cover"` plus CSS utilities `shell-inline` / `shell-pb-safe` / `section-y` in `app/globals.css` align gutters with iOS safe-area insets. `--shell-chrome-height` approximates the banner+header stack for homepage hero `min-height` math. Logged-in header uses **My dashboard** / **Browse stories** / **Saved stories** / **My profile** / **Submit story** (`components/layout/SiteHeader.tsx`).
 
-**Device matrix (manual):** Re-run sections **A–D** at **~375px wide** (mobile), **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible.
+**Device matrix (manual):** Re-run sections **A–D** at **~320px**, **~375px**, **~390px**, **~768px** (tablet), and **~1280px** (desktop). Focus: no horizontal scroll on marketing and member shells, nav usable (overflow scroll on tight desktop if needed), auth CTAs visible, community card footers stack cleanly on narrow widths, keyboard focus visible on workspace nav and card links.
 
 ---
 
@@ -24,7 +26,7 @@
 - [ ] No console errors
 - [ ] Navigation visible
 - [ ] At ~375px viewport width: **no horizontal scroll** on the main column (hero + first sections)
-- [ ] Optional: slow 3G — confirm a **loading skeleton** appears briefly (route `loading.tsx`) instead of a long blank paint
+- [ ] Optional: slow 3G — confirm a **loading skeleton** appears briefly (`LoadingState` / route `loading.tsx`) instead of a long blank paint on public and `(app)` routes
 
 - [ ] Optional: scroll to the homepage **Stay in the loop** panel, submit an address, and confirm the success messaging matches reality (persisted intent only—no promised inbox automation)
 
@@ -36,8 +38,8 @@
 
 ### ✅ Test 3: Blog Detail (No WP_URL)
 - [ ] Visit `/blog/some-slug`
-- [ ] If `WP_URL` is NOT configured: Should see 404 (notFound) or "Coming Soon"
-- [ ] **MUST NOT crash** - graceful fallback required
+- [ ] If `WP_URL` is NOT configured: Should see designed blog not-found (`app/(public)/blog/not-found.tsx`) or graceful 404 — **MUST NOT crash**
+- [ ] No white screen or error page
 
 ### ✅ Test 4: Protected Route Redirect
 - [ ] Visit `/dashboard` while logged out
@@ -167,7 +169,7 @@
 - [ ] While a member filter is active on `/reports`, use the shared community workspace nav and confirm the same member stays selected when you switch back to browse or saved surfaces
 - [ ] With a **pending** post report you filed, withdraw it from `/reports` (or equivalent control) and confirm the status badge updates to Withdrawn consistently on `/reports`, `/places`, and `/saved`
 - [ ] As a signed-in member **without** `profiles.role = 'admin'`, visit `/admin/moderation` and confirm you cannot reach or use the operator queue UI
-- [ ] Try a filter or search that returns no matches and confirm the empty state explains that filters, not missing data, caused the result
+- [ ] Try a filter or search that returns no matches on `/places`, `/saved`, `/reports`, or `/submit` and confirm **`NoResultsState`** (or equivalent filtered empty) explains that filters—not missing data—caused the result
 - [ ] Refresh other tabs
 - [ ] Changes should propagate (or at least not break)
 
@@ -226,10 +228,10 @@
 ## G) Performance & Errors
 
 ### ✅ Test 19: Build Check
-- [ ] Run `npm run lint` (zero warnings)
-- [ ] Run `npm run typecheck`
-- [ ] Run `npm run build`
-- [ ] Build should complete without errors
+- [ ] Run `pnpm lint` (zero warnings)
+- [ ] Run `pnpm typecheck`
+- [ ] Run `pnpm build`
+- [ ] Build should complete without errors (non-blocking Sentry/OpenTelemetry webpack warnings are acceptable)
 
 ### ✅ Test 20: Runtime Errors
 - [ ] Check browser console (all tests above)
@@ -250,7 +252,7 @@
 **Optional but Recommended:**
 - ✅ Tests E-F pass (edge cases and WordPress)
 - ✅ Tests run on **local and Vercel production**
-- ✅ Sections A–D spot-checked at **mobile (~375px)**, **tablet (~768px)**, and **desktop (~1280px)** viewports
+- ✅ Sections A–D spot-checked at **320px**, **375px**, **390px**, **tablet (~768px)**, and **desktop (~1280px)** viewports
 
 ---
 
@@ -259,11 +261,13 @@
 These are expected MVP limitations, not bugs:
 
 - WordPress preview mode may show published content only (Phase 1 limitation)
-- No Stripe subscription yet (explicitly NOT MVP)
-- Community browsing is now live at `/places`, and owner archive/restore plus first-pass `/submit` history filters now cover the basic self-service post lifecycle, but richer filters, saves, and editing controls are still incomplete
-- Submit flow now creates community posts, links recent submissions into `/places/[slug]`, and public detail pages expose a lightweight report form backed by the `reports` table
-- Members can now open `/reports` to review their own report history, filter by status, and jump back to the associated story when it is still available
-- Avatar uploads are implemented, but richer avatar management is still incomplete
+- Stripe subscription checkout and entitlement gates are live; trial/limited reading rules apply per billing contract
+- Community browsing is live at `/places`; owner archive/restore and `/submit` history filters cover the basic self-service post lifecycle
+- Submit owner shelf cards use inline editorial cards (lifecycle-specific), not the browse `CommunityStoryCard` family
+- `/submit` trust/safety copy and lifecycle badges shipped in UI/UX catch-up (2026-06-01); owner detail photo manager unchanged in behavior
+- Members can open `/reports` to review report history, filter by status, and jump back to associated stories when available
+- Avatar uploads are implemented; richer avatar management remains a future polish item
+- Full manual viewport matrix (320–desktop) is checklist-driven, not CI-automated
 
 ---
 
@@ -275,6 +279,6 @@ These are expected MVP limitations, not bugs:
 
 ---
 
-**Last Updated:** 2026-05-14  
+**Last Updated:** 2026-06-01  
 **Maintainer:** Development Team
 

@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
+import { SectionHeader } from '@/components/ui/section-header'
 import { ContourBackground } from '@/components/visual'
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -224,16 +225,18 @@ export function DashboardModules({
            * mt-7 — it arrives sooner, feels more direct.
            */}
           <div className="relative z-10">
-            <p className="eyebrow text-[0.62rem] tracking-[0.28em]">Best next move</p>
-
-            <h2 className="mt-4 font-display text-[1.55rem] font-black leading-[1.1] text-[#7a331b]">
-              {nextStep.title}
-            </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-[#6d5849]">
-              {nextStep.description}
-            </p>
-
+            <SectionHeader
+              size="compact"
+              tone="warm"
+              eyebrow="Best next move"
+              title={
+                <span className="font-display text-[1.55rem] font-black leading-[1.1] text-brand-pinkDark">
+                  {nextStep.title}
+                </span>
+              }
+              description={nextStep.description}
+              className="[&_h3]:mt-4 [&_p]:mt-3"
+            />
             <Link href={nextStep.href} className="cta-primary mt-6 px-5 text-sm">
               {nextStep.cta}
             </Link>
@@ -265,15 +268,18 @@ export function DashboardModules({
            * This is the compositional rest after the urgency of the center block.
            */}
           <div className="relative z-10">
-            <p className="eyebrow text-[0.62rem] tracking-[0.28em]">Live right now</p>
-
-            <h2 className="mt-7 font-display text-[1.35rem] font-black leading-tight text-[#7a331b]">
-              What this member area already does
-            </h2>
-
-            <p className="mt-2.5 text-sm leading-relaxed text-[#6d5849]/80">
-              A little more color, a little more delight, same honest product underneath.
-            </p>
+            <SectionHeader
+              size="compact"
+              tone="warm"
+              eyebrow="Live right now"
+              title={
+                <span className="font-display text-[1.35rem] font-black leading-tight text-brand-pinkDark">
+                  What this member area already does
+                </span>
+              }
+              description="A little more color, a little more delight, same honest product underneath."
+              className="[&_h3]:mt-7 [&_p]:mt-2.5 [&_p]:text-[#6d5849]/80"
+            />
 
             {/*
              * Loose item list — no boxy rows, generous spacing.

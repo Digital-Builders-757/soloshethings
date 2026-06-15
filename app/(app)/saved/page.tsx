@@ -1,26 +1,16 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
+import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
-import {
-  CommunityBadgeFeatured,
-  CommunityBadgeReported,
-  CommunityChipEmphasis,
-  CommunityChipPrivate,
-  CommunityChipPublic,
-  CommunityChipSavedTimestamp,
-  communityWarmCardClassName,
-} from '@/components/community/community-story-surface'
-import { Avatar } from '@/components/ui/avatar'
+import { EmptyState } from '@/components/ui/empty-state'
+import { NoResultsState } from '@/components/ui/no-results-state'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { cn } from '@/lib/utils'
-import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
+import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
 import { getSavedCommunityPosts } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
-import type { report_status } from '@/types/database'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All saves' },
@@ -71,21 +61,6 @@ function normalizePage(value?: string) {
   }
 
   return Math.min(parsed, 5)
-}
-
-function reportStatusTone(status: report_status) {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
 }
 
 function buildSavedHref(view: ViewFilter, query: string, page = 1, authorId?: string, authorLabel?: string) {
@@ -210,15 +185,18 @@ export default async function SavedPostsPage({ searchParams }: Props) {
       <CommunitySurfaceNav active="saved" itemHrefs={workspaceHrefs} />
 
       {savedPosts.length === 0 ? (
-        <section className="editorial-card mt-6 p-6 sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">Nothing saved yet</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-            Use the save button on a story card or detail page and it will appear here for your account only.
-          </p>
-          <Link href="/places" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-            Explore the feed →
-          </Link>
-        </section>
+        <EmptyState
+          id="saved-empty"
+          className="mt-6"
+          variant="editorial"
+          title="Nothing saved yet"
+          description="Use the save button on a story card or detail page and it will appear here for your account only."
+          primaryAction={{
+            label: 'Explore the feed →',
+            href: '/places',
+            variant: 'link',
+          }}
+        />
       ) : (
         <>
           <section className="editorial-card mt-6 p-5 sm:p-6">
@@ -300,28 +278,36 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
-              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No saved stories match this view yet</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-                Try a different keyword, switch filters, or clear this view to return to your full saved list.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/saved" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Reset saved filters →
-                </Link>
-                {activeAuthorId ? (
-                  <Link
-                    href={buildSavedHref(activeView, query, 1)}
-                    className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
-                  >
-                    Show all members
-                  </Link>
-                ) : null}
-                <Link href="/places" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                  Browse stories
-                </Link>
-              </div>
-            </section>
+            <NoResultsState
+              id="saved-filtered-empty"
+              className="mt-6"
+              variant="editorial"
+              ariaLive="polite"
+              filterEyebrow="No matches"
+              title="No saved stories match this view yet"
+              description="Try a different keyword, switch filters, or clear this view to return to your full saved list."
+              resetAction={{
+                label: 'Reset saved filters →',
+                href: '/saved',
+                variant: 'link',
+              }}
+              alternateActions={[
+                ...(activeAuthorId
+                  ? [
+                      {
+                        label: 'Show all members',
+                        href: buildSavedHref(activeView, query, 1),
+                        variant: 'link' as const,
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Browse stories',
+                  href: '/places',
+                  variant: 'link',
+                },
+              ]}
+            />
           ) : (
             <>
               <section className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -334,93 +320,32 @@ export default async function SavedPostsPage({ searchParams }: Props) {
                   const moreFromAuthorHref = buildSavedHref(activeView, query, 1, post.author_id, authorName)
 
                   return (
-                    <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
-                      {coverImage ? (
-                        <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
-                          <Image
-                            src={coverImage}
-                            alt={post.images[0]?.alt_text ?? post.title}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 50vw, 100vw"
-                            unoptimized
-                          />
-                        </div>
-                      ) : null}
-
-                      <div className="p-5 sm:p-6">
-                        <div className="flex flex-wrap items-center gap-2">
-                          {post.is_public ? (
-                            <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
-                          ) : (
-                            <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
-                          )}
-                          <CommunityChipSavedTimestamp>Saved {formatDate(post.saved_at)}</CommunityChipSavedTimestamp>
-                          {isOwnPost ? (
-                            <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
-                          ) : null}
-                          {post.is_featured ? <CommunityBadgeFeatured /> : null}
-                          <span className="story-meta-chip text-[0.58rem]">
-                            {post.images.length} photo{post.images.length === 1 ? '' : 's'}
-                          </span>
-                          {latestReport ? <CommunityBadgeReported /> : null}
-                        </div>
-
-                        <div className="mt-4 flex items-center gap-3">
-                          <Avatar
-                            src={post.authorAvatarUrl}
-                            fallback={authorName.slice(0, 2).toUpperCase()}
-                            alt={`${authorName} avatar`}
-                            size="md"
-                          />
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
-                            <p className="text-xs text-[#6d5849]">Published {formatDate(post.created_at)}</p>
-                          </div>
-                        </div>
-
-                        <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                          <Link href={detailHref} className="transition hover:text-[#e34b16]">
-                            {post.title}
-                          </Link>
-                        </h2>
-                        <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                        {latestReport ? (
-                          <div
-                            className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}
-                          >
-                            {REPORT_STATUS_LABELS[latestReport.status]}
-                          </div>
-                        ) : null}
-
-                        <div className="mt-6 border-t border-brand-pinkDark/10 pt-5">
-                          <p className="profile-form-section-label mb-3 text-[0.62rem]">Library cleanup</p>
-                          <SaveCommunityPostButton
-                            postId={post.id}
-                            path={currentPath}
-                            initialSaved
-                            variant="card"
-                            savedListContext
-                          />
-                          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                            {!isOwnPost ? (
-                              <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                                More from {authorName}
-                              </Link>
-                            ) : null}
-                            <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                              Open story →
-                            </Link>
-                            {latestReport ? (
-                              <Link href="/reports" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                                Track report
-                              </Link>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </article>
+                    <CommunityStoryCard
+                      key={post.id}
+                      variant="saved"
+                      postId={post.id}
+                      title={post.title}
+                      content={post.content}
+                      isPublic={post.is_public}
+                      isFeatured={post.is_featured}
+                      imageCount={post.images.length}
+                      detailHref={detailHref}
+                      author={{
+                        username: post.author?.username,
+                        fullName: post.author?.full_name,
+                        avatarUrl: post.authorAvatarUrl,
+                      }}
+                      authorDisplayName={authorName}
+                      publishedAt={post.created_at}
+                      formatPublishedAt={formatDate}
+                      coverImageSrc={coverImage}
+                      coverImageAlt={post.images[0]?.alt_text ?? post.title}
+                      latestReport={latestReport ?? null}
+                      isOwnPost={isOwnPost}
+                      savedAtLabel={formatDate(post.saved_at)}
+                      currentPath={currentPath}
+                      moreFromAuthorHref={moreFromAuthorHref}
+                    />
                   )
                 })}
               </section>

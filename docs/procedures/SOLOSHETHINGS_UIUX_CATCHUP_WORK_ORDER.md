@@ -2,7 +2,20 @@
 
 **Execution batch for bringing the product experience layer up to the level of the already-shipped functionality.**
 
-**Status (2026-05-15):** Ready for execution as a **safe parallel lane** while Supabase CI/CD recovery remains the active operational blocker.
+**Status (2026-06-01):** ✅ **COMPLETE** — Phases A–G and Prompts 1–8 finished. Roadmap item **#2** closed. No further execution in this work order unless a regression reopens it.
+
+**Completion summary:**
+- **Phase A:** Route-by-route UI/UX audit (read-only)
+- **Phase B:** Shared primitives — `EmptyState`, `NoResultsState`, `SectionHeader`, `StatusBadge`, `UpgradePrompt`, `types/ui-primitives.ts`
+- **Phase C:** Dashboard + profile home-base polish — `SectionHeader`, `PrivacyNotice`, dashboard modules
+- **Phase D:** Blog editorial — `SectionHeader`, `EmptyState` on index/slug paths
+- **Phase E:** Member workspace — E.1 primitive adoption; E.2 `CommunityStoryCard` / `CommunityReportCard`; E.3 `/submit` trust/safety pass
+- **Phase F:** `LoadingState`, `ErrorRecoveryCard`, auth loading fallbacks, blog `not-found`, filtered `NoResultsState`, mobile footer/focus fixes
+- **Phase G:** Documentation sync (this file, `IMPLEMENTATION_ROADMAP.md`, `MVP_SMOKE_CHECKLIST.md`)
+
+**Verification (2026-06-01):** `pnpm typecheck`, `pnpm lint`, `pnpm build` pass.
+
+**Intentionally not built:** `FilterChip`, `ProfileCompletionCard`, `metric-card`, `action-card` abstractions; submit owner shelf cards remain inline editorial cards (lifecycle-specific, not feed cards).
 
 **Why this exists:** SoloSHEThings is no longer a simple landing-page/blog concept. It is now a mobile-first member platform with public editorial content, authenticated community surfaces, Stripe subscription gates, moderation, uploads, Sentry/product signals, and a first-pass visual system. The current opportunity is not random new UI. The current opportunity is to make the existing product feel intentional, premium, scannable, safe, and complete.
 
@@ -38,17 +51,20 @@ SoloSHEThings is now a real product with:
 - Sentry monitoring and product-signal instrumentation
 - a first-pass shared visual system across signed-in/community surfaces
 
-### What is still weak
+### What was improved (2026-06-01 closeout)
 
-The product is functionally ahead of its presentation.
+The product experience layer was brought closer to the already-shipped functionality:
 
-The biggest UX gap is the **product experience layer**:
-- the dashboard is still closer to a shell than a rich member home base
-- blog/editorial can look more publication-grade
-- empty/loading/error states need stronger design language
-- trust/safety/privacy cues should be more visible
-- community cards need a tighter reusable visual language
-- mobile-first polish needs a more deliberate audit pass
+- Dashboard and profile read as a calm member home base with clearer section hierarchy and privacy guidance
+- Blog index uses shared editorial primitives and designed empty/fallback states
+- Community browse/saved/reports/detail surfaces share a card + badge language via `CommunityStoryCard` and `CommunityReportCard`
+- `/submit` communicates upload, privacy, moderation, and lifecycle states in plain language
+- Empty, loading, and error paths use shared primitives (`EmptyState`, `NoResultsState`, `LoadingState`, `ErrorRecoveryCard`) instead of ad-hoc panels
+- Mobile composition fixes (stacked card footers, `min-w-0` grids, keyboard focus on community nav/links)
+
+### Historical gap diagnosis (pre-batch)
+
+These were the weaknesses that motivated the batch:
 
 ### Operational constraint while this batch runs
 
@@ -242,7 +258,9 @@ Use the existing routes to do a real composition pass:
 
 ## Suggested execution order
 
-### Phase A — Audit first (no coding)
+> **All phases below are ✅ complete as of 2026-06-01.**
+
+### Phase A — Audit first (no coding) ✅
 
 Before changing code, inspect the current surfaces and produce a concise route-by-route plan covering:
 - existing shared primitives
@@ -251,11 +269,13 @@ Before changing code, inspect the current surfaces and produce a concise route-b
 - accessibility/mobile risks
 - proposed files to change
 
-### Phase B — Shared primitives
+### Phase B — Shared primitives ✅
 
 Strengthen shared components/utilities before doing page-by-page polish.
 
-Examples:
+**Shipped:** `components/ui/empty-state.tsx`, `no-results-state.tsx`, `section-header.tsx`, `status-badge.tsx`, `upgrade-prompt.tsx`, `types/ui-primitives.ts`, `types/status-badge.ts`, `lib/status-badge-presentational.ts`. Deferred: `filter-chip`, `metric-card`, `action-card`.
+
+Examples (reference):
 - `components/ui/empty-state.tsx`
 - `components/ui/section-header.tsx`
 - `components/ui/status-badge.tsx`
@@ -264,25 +284,35 @@ Examples:
 - `components/ui/action-card.tsx`
 - shared blog/community/dashboard card wrappers
 
-### Phase C — Dashboard + profile
+### Phase C — Dashboard + profile ✅
 
 Use the dashboard/profile routes to establish the signed-in member-home tone.
 
-### Phase D — Blog/public editorial
+**Shipped:** `SectionHeader` on dashboard modules; `PrivacyNotice` on profile; dashboard hero/modules composition pass.
+
+### Phase D — Blog/public editorial ✅
 
 Upgrade publication quality on `/blog` and `/blog/[slug]` without changing the WordPress contract.
 
-### Phase E — Member workspace polish
+**Shipped:** `SectionHeader` + `EmptyState` on blog index; slug editorial hierarchy pass (no fetch/sanitize changes).
+
+### Phase E — Member workspace polish ✅
 
 Polish `/places`, `/saved`, `/reports`, `/submit`, and `/places/[slug]`.
 
-### Phase F — Empty/loading/error + mobile QA
+**Shipped:** E.1 — `EmptyState`, `NoResultsState`, `UpgradePrompt`, `StatusBadge` adoption on community routes. E.2 — `CommunityStoryCard`, `CommunityReportCard`. E.3 — `/submit` trust/safety workspace pass.
+
+### Phase F — Empty/loading/error + mobile QA ✅
 
 Finish with state design and mobile/accessibility cleanup.
 
-### Phase G — Docs sync
+**Shipped:** `LoadingState`, `ErrorRecoveryCard`; auth Suspense + segment loading adoption; blog segment `not-found`; filtered-list `NoResultsState` on places/saved; mobile footer stacking and focus rings on community surfaces.
+
+### Phase G — Docs sync ✅
 
 Only update docs where reusable patterns or execution guidance truly changed.
+
+**Shipped (2026-06-01):** `IMPLEMENTATION_ROADMAP.md`, this file, `MVP_SMOKE_CHECKLIST.md`.
 
 ---
 
@@ -303,13 +333,13 @@ Do **not**:
 
 ## Acceptance criteria
 
-This batch is done only when:
+This batch is **done** (verified 2026-06-01):
 - the dashboard clearly communicates status and next actions
 - the blog feels publication-grade
 - member/community surfaces share one coherent card/chip/badge language
 - empty/loading/error states feel intentional
 - trust/safety/private/public status is easier to understand
-- mobile layouts work at 320px / 375px / 390px / tablet / desktop
+- mobile layouts work at 320px / 375px / 390px / tablet / desktop (code-level fixes applied; manual viewport QA remains in `MVP_SMOKE_CHECKLIST.md`)
 - no contracts, schema, auth, or RLS behavior were changed
 - `pnpm typecheck`, `pnpm lint`, and `pnpm build` pass
 
@@ -317,7 +347,9 @@ This batch is done only when:
 
 ## Cursor prompt pack
 
-### Prompt 1 — audit before coding
+> **Prompts 1–8: ✅ complete (2026-06-01).** Archived below for regression reference.
+
+### Prompt 1 — audit before coding ✅
 
 Audit the SoloSHEThings UI/UX without coding yet.
 
@@ -349,7 +381,7 @@ Return only:
 
 Do not edit files yet.
 
-### Prompt 2 — shared UI primitives pass
+### Prompt 2 — shared UI primitives pass ✅
 
 You are working in the SoloSHEThings repo.
 
@@ -372,7 +404,7 @@ Constraints:
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build` before finishing.
 
-### Prompt 3 — dashboard + profile home-base pass
+### Prompt 3 — dashboard + profile home-base pass ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -396,7 +428,7 @@ Do not add new unsafe queries or change auth rules.
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build`.
 
-### Prompt 4 — blog publication-grade pass
+### Prompt 4 — blog publication-grade pass ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -419,7 +451,7 @@ Do not change fetch architecture or sanitize rules unless required for a visual 
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build`.
 
-### Prompt 5 — community-card family pass
+### Prompt 5 — community-card family pass ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -444,7 +476,7 @@ Do not change privacy or list-context behavior.
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build`.
 
-### Prompt 6 — submit + trust/safety UX pass
+### Prompt 6 — submit + trust/safety UX pass ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -466,7 +498,7 @@ Do not change storage or moderation behavior.
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build`.
 
-### Prompt 7 — mobile/accessibility cleanup pass
+### Prompt 7 — mobile/accessibility cleanup pass ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -485,7 +517,7 @@ Check:
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm build`.
 
-### Prompt 8 — final docs + verification summary
+### Prompt 8 — final docs + verification summary ✅
 
 Read first:
 - `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
@@ -496,12 +528,4 @@ Read first:
 Goal:
 After the implementation pass, update docs only where reusable UI rules or work-order guidance changed materially.
 
-Return:
-1. summary of improvements
-2. files changed
-3. route-by-route UX impact
-4. accessibility notes
-5. anything intentionally not changed
-6. verification results
-
-Keep docs honest and non-duplicative.
+**Completed 2026-06-01:** roadmap item #2 closed; see Phase G notes above.

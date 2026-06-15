@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { ProfileErrorFallback } from '@/components/profile/profile-error-fallback'
+import { SectionHeader } from '@/components/ui/section-header'
 import { getMembershipTier } from '@/lib/billing/entitlements'
 import { getProfileWithBoundedRepair } from '@/lib/queries/profiles'
 import { getAvatarSignedUrl } from '@/lib/storage/avatars'
@@ -503,6 +504,7 @@ export default async function DashboardPage() {
         <DashboardHero
           avatarUrl={avatarUrl}
           displayName={displayName}
+          username={profile.username}
           email={user.email ?? ''}
           role={profile.role}
           membershipTier={membershipTier}
@@ -553,7 +555,7 @@ export default async function DashboardPage() {
            */}
           <aside
             className="relative order-1 overflow-hidden rounded-2xl border-t border-[#ead8c2]/45 bg-[#fffdf8]/65 px-6 pt-5 pb-10 sm:px-7 sm:pt-6 sm:pb-12 lg:sticky lg:top-24 lg:order-2 lg:mt-12 lg:self-start"
-            aria-labelledby="dash-snapshot-heading"
+            aria-labelledby="dash-snapshot-title"
             aria-label="Your member identity"
           >
             {/*
@@ -571,21 +573,22 @@ export default async function DashboardPage() {
               }}
             />
 
-            {/* Section label */}
-            <p className="eyebrow text-[0.62rem] tracking-[0.28em]">Identity record</p>
+            <SectionHeader
+              id="dash-snapshot"
+              size="compact"
+              tone="warm"
+              eyebrow="Identity record"
+              title={
+                <span className="font-display text-[1.6rem] font-black leading-[1.05] text-brand-pinkDark">
+                  {displayName}
+                </span>
+              }
+              className="[&_h3]:mt-3"
+            />
             <hr className="editorial-rule mt-3" />
 
-            {/* Display name — typographic anchor, tighter leading on display size */}
-            <div className="mt-5">
-              <h2
-                id="dash-snapshot-heading"
-                className="font-display text-[1.6rem] font-black leading-[1.05] text-[#7a331b]"
-              >
-                {displayName}
-              </h2>
-              {/* Handle + name are a unit — tight proximity */}
-              <p className="mt-0.5 text-sm text-[#9a7258]">@{profile.username}</p>
-            </div>
+            {/* Handle + name are a unit — tight proximity */}
+            <p className="mt-0.5 text-sm text-[#9a7258]">@{profile.username}</p>
 
             {/*
              * Metadata — label / value pairs with hairline separators between each field.
@@ -660,19 +663,19 @@ export default async function DashboardPage() {
           {/* ── QUICK ACTIONS SECTION ──────────────────────────────────────── */}
           {/* lg:pr-3: 12px of asymmetric right padding creates whitespace tension
             * between the tile field edge and the sidebar — breaks rectangular closure */}
-          <section aria-labelledby="dash-actions-heading" className="order-2 min-w-0 lg:order-1 lg:pr-3">
-            {/* Editorial section heading — eyebrow close, heading dominant */}
-            <div>
-              {/* Slightly more open tracking at section level signals authority */}
-              <p className="eyebrow text-[0.62rem] tracking-[0.32em]">Your space</p>
-              {/* Tight mt-1.5: eyebrow and heading are optically a single typographic unit */}
-              <h2
-                id="dash-actions-heading"
-                className="mt-1.5 font-display text-[2rem] font-black leading-[1.08] text-[#7a331b] sm:text-[2.5rem]"
-              >
-                Quick actions
-              </h2>
-            </div>
+          <section aria-labelledby="dash-actions-title" className="order-2 min-w-0 lg:order-1 lg:pr-3">
+            <SectionHeader
+              id="dash-actions"
+              size="section"
+              tone="warm"
+              eyebrow="Your space"
+              title={
+                <span className="font-display text-[2rem] font-black leading-[1.08] text-brand-pinkDark sm:text-[2.5rem]">
+                  Quick actions
+                </span>
+              }
+              className="[&_h2]:mt-1.5"
+            />
 
             {/*
              * mt-9 sm:mt-11: more gravity between heading and tiles.

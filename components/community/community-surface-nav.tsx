@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import type { CommunitySurfaceKey } from '@/lib/community-navigation'
+import { cn } from '@/lib/utils'
 
 type CommunitySurfaceNavProps = {
   active: CommunitySurfaceKey
@@ -16,6 +17,9 @@ const NAV_ITEMS: Array<{ key: CommunitySurfaceKey; href: string; label: string }
   { key: 'submit', href: '/submit', label: 'Submit story' },
 ]
 
+const navLinkFocus =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e34b16]'
+
 export function CommunitySurfaceNav({ active, backHref, backLabel, itemHrefs }: CommunitySurfaceNavProps) {
   return (
     <section className="editorial-card mt-6 p-4 sm:p-5" aria-label="Community workspace navigation">
@@ -26,13 +30,19 @@ export function CommunitySurfaceNav({ active, backHref, backLabel, itemHrefs }: 
         </div>
 
         {backHref && backLabel ? (
-          <Link href={backHref} className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+          <Link
+            href={backHref}
+            className={cn(
+              'inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]',
+              navLinkFocus,
+            )}
+          >
             Back to {backLabel.toLowerCase()} →
           </Link>
         ) : null}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="mt-4 flex min-w-0 flex-wrap gap-3">
         {NAV_ITEMS.map((item) => {
           const isActive = item.key === active
 
@@ -41,11 +51,12 @@ export function CommunitySurfaceNav({ active, backHref, backLabel, itemHrefs }: 
               key={item.key}
               href={itemHrefs?.[item.key] ?? item.href}
               aria-current={isActive ? 'page' : undefined}
-              className={
+              className={cn(
                 isActive
                   ? 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#e34b16]/30 bg-[#fff3ec] px-4 text-sm font-semibold text-[#7a331b]'
-                  : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]'
-              }
+                  : 'inline-flex min-h-11 items-center justify-center rounded-full border border-[#ead8c2] bg-white px-4 text-sm font-semibold text-[#7a331b] transition hover:border-[#e34b16]/40 hover:text-[#e34b16]',
+                navLinkFocus,
+              )}
             >
               {item.label}
             </Link>

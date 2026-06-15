@@ -118,6 +118,12 @@ curl -I https://app.com/blog
 - [ ] Story owners can update each photo’s description (`alt_text`) and move photos earlier/later in gallery order backed by `post_images` UPDATE RLS
 - [ ] `/reports` lists the signed-in member's own post reports with status filters, story links, and an explicit member filter for narrowing to one storyteller
 - [ ] `/saved`, `/reports`, and `/submit` each offer load-more / show-fewer controls that preserve the current search and filter context
+- [ ] Author avatar and display name on `/places`, `/saved`, and `/places/[id]` link to `/members/{username}` when username is present
+- [ ] “Story by {author}” on `/reports` links to `/members/{username}` when username is present; “Filter to this author” remains a separate feed-filter action
+- [ ] `/profile` exposes “View member profile →” when the signed-in user has a username
+- [ ] Dashboard identity strip shows `@username` (not display name) and links avatar + handle to `/members/{username}`
+- [ ] `/members/{username}` not-found: unknown username, invalid username, and anonymous private profile all show identical “Profile unavailable” UI (no enumeration leak)
+- [ ] `/members/{username}` limited profile shows auth gate for anonymous viewers; private profile shows private gate for authenticated non-owners
 
 **Verification:**
 ```sql

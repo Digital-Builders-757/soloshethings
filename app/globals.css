@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  /* Viewport chrome — banner + header, for hero min-height math (see HeroSection) */
-  --shell-chrome-height: 6.5rem;
+  /* Viewport chrome — navbar top (44px) + navbar height (82px) + breathing room (44px) */
+  --shell-chrome-height: 170px;
   /* Brand Palette - Figma Design */
   --brand-orange: #e34b16;
   --brand-orange-rgb: 227 75 22;
@@ -18,6 +18,11 @@
   --brand-gray-rgb: 217 217 217;
   --brand-dark: #3a3a3a;
   --brand-dark-rgb: 58 58 58;
+
+  /** Homepage / shell cream field */
+  --surface-cream: #fffaf0;
+  /** Manifesto epilogue card surface */
+  --surface-epilogue: #0c1015;
 
   /* Legacy/compat aliases */
   --brand-pink: #f7e8be;
@@ -81,7 +86,8 @@
 
 @media (min-width: 1024px) {
   :root {
-    --shell-chrome-height: 8rem;
+    /* Navbar dimensions are fixed regardless of breakpoint */
+    --shell-chrome-height: 170px;
   }
 }
 
@@ -978,22 +984,28 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar — epilogue track, cream thumb */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-cream) var(--surface-epilogue);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: var(--surface-epilogue);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-orange);
+  background: var(--surface-cream);
   border-radius: 4px;
+  border: 1px solid rgba(255, 250, 240, 0.35);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-blue);
+  background: #fffdf6;
 }
 
 /* Clean image utility */

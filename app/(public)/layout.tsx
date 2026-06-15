@@ -1,5 +1,4 @@
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { Banner } from "@/components/layout/Banner";
+import { NavbarServer } from "@/components/navbar/NavbarServer";
 import { PublicLayoutClient } from "./layout-client";
 
 export default function PublicLayout({
@@ -8,9 +7,8 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col overflow-x-clip bg-white">
-      <Banner />
-      <SiteHeader />
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-[#fffaf0]">
+      <NavbarServer />
       <PublicLayoutClient>{children}</PublicLayoutClient>
     </div>
   );

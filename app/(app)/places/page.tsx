@@ -1,21 +1,12 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { SaveCommunityPostButton } from '@/components/cards/save-community-post-button'
 import { ActiveMemberFilterBanner } from '@/components/community/active-member-filter-banner'
-import {
-  communityWarmCardClassName,
-  CommunityBadgeFeatured,
-  CommunityBadgeReported,
-  CommunityChipEmphasis,
-  CommunityChipPrivate,
-  CommunityChipPublic,
-  CommunityChipTopic,
-  CommunityPillSaved,
-} from '@/components/community/community-story-surface'
+import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
-import { Avatar } from '@/components/ui/avatar'
+import { EmptyState } from '@/components/ui/empty-state'
+import { NoResultsState } from '@/components/ui/no-results-state'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { getMembershipTier } from '@/lib/billing/entitlements'
@@ -26,10 +17,9 @@ import {
   type CommunityStoryTopicSlug,
 } from '@/lib/community-story-taxonomy'
 import { getCommunityDiscoveryFacets, getCommunityFeedPosts } from '@/lib/queries/community-posts'
-import { getLatestMemberPostReportsForPosts, REPORT_STATUS_LABELS } from '@/lib/queries/reports'
+import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
 import { getSavedCommunityPostIds } from '@/lib/queries/saved-posts'
 import { getUser } from '@/lib/supabase/server'
-import type { report_status } from '@/types/database'
 
 const VIEW_OPTIONS = [
   { value: 'all', label: 'All stories' },
@@ -98,21 +88,6 @@ function normalizePage(value?: string) {
   }
 
   return Math.min(parsed, 5)
-}
-
-function reportStatusTone(status: report_status) {
-  switch (status) {
-    case 'resolved':
-      return 'border-green-200 bg-green-50 text-green-800'
-    case 'dismissed':
-      return 'border-slate-200 bg-slate-50 text-slate-700'
-    case 'reviewed':
-      return 'border-amber-200 bg-amber-50 text-amber-800'
-    case 'withdrawn':
-      return 'border-violet-200 bg-violet-50 text-violet-800'
-    default:
-      return 'border-[#ead8c2] bg-white text-[#7a331b]'
-  }
 }
 
 function buildPlacesHref(
@@ -297,30 +272,21 @@ export default async function PlacesPage({ searchParams }: Props) {
 
       <CommunitySurfaceNav active="places" itemHrefs={workspaceHrefs} />
 
-      {membershipTier === 'limited' ? (
-        <aside
-          className="mt-4 rounded-2xl border border-[#ead8c2] bg-[#fff8ec] px-4 py-3 text-sm text-[#7a331b]"
-          role="note"
-        >
-          <span className="font-semibold">Limited member access:</span>{' '}
-          you can open up to three other members&apos; stories per day (UTC). Subscribe for unlimited reads, saves, and posting.{' '}
-          <Link href="/subscribe" className="font-semibold text-[#e34b16] underline underline-offset-2 hover:text-[#c74010]">
-            Open billing
-          </Link>
-        </aside>
-      ) : null}
+      {membershipTier === 'limited' ? <UpgradePrompt variant="feed" className="mt-4" /> : null}
 
       {posts.length === 0 ? (
-        <section className="editorial-card mt-6 p-6 sm:p-8">
-          <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No stories yet</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-            Once members start publishing, this feed will show public stories here. Your own private and public
-            submissions will also appear after you post.
-          </p>
-          <Link href="/submit" className="mt-6 inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-            Publish the first story →
-          </Link>
-        </section>
+        <EmptyState
+          id="places-empty"
+          className="mt-6"
+          variant="editorial"
+          title="No stories yet"
+          description="Once members start publishing, this feed will show public stories here. Your own private and public submissions will also appear after you post."
+          primaryAction={{
+            label: 'Publish the first story →',
+            href: '/submit',
+            variant: 'link',
+          }}
+        />
       ) : (
         <>
           <section className="editorial-card mt-6 p-5 sm:p-6">
@@ -543,28 +509,36 @@ export default async function PlacesPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <section className="editorial-card mt-6 p-6 sm:p-8">
-              <h2 className="font-serif text-2xl font-semibold text-[#7a331b]">No stories match this filter yet</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d5849] sm:text-base">
-                Try a different keyword, switch views, or clear the filters to return to the full community feed.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/places" className="inline-flex text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                  Reset filters →
-                </Link>
-                {activeAuthorId ? (
-                  <Link
-                    href={buildPlacesHref(activeView, query, 1, undefined, undefined, discoveryForHref)}
-                    className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
-                  >
-                    Show all members
-                  </Link>
-                ) : null}
-                <Link href="/saved" className="inline-flex text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                  Open saved stories
-                </Link>
-              </div>
-            </section>
+            <NoResultsState
+              id="places-filtered-empty"
+              className="mt-6"
+              variant="editorial"
+              ariaLive="polite"
+              filterEyebrow="No matches"
+              title="No stories match this filter yet"
+              description="Try a different keyword, switch views, or clear the filters to return to the full community feed."
+              resetAction={{
+                label: 'Reset filters →',
+                href: '/places',
+                variant: 'link',
+              }}
+              alternateActions={[
+                ...(activeAuthorId
+                  ? [
+                      {
+                        label: 'Show all members',
+                        href: buildPlacesHref(activeView, query, 1, undefined, undefined, discoveryForHref),
+                        variant: 'link' as const,
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Open saved stories',
+                  href: '/saved',
+                  variant: 'link',
+                },
+              ]}
+            />
           ) : (
             <>
               <section className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -577,109 +551,34 @@ export default async function PlacesPage({ searchParams }: Props) {
                 const moreFromAuthorHref = buildPlacesHref(activeView, query, 1, post.author_id, authorName, discoveryForHref)
 
                 return (
-                  <article key={post.id} className={communityWarmCardClassName({ featured: post.is_featured })}>
-                    {coverImage ? (
-                      <div className="story-detail-photo-frame relative aspect-[16/10] w-full shrink-0 rounded-none border-x-0 border-t-0">
-                        <Image
-                          src={coverImage}
-                          alt={post.images[0]?.alt_text ?? post.title}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                          unoptimized
-                        />
-                      </div>
-                    ) : null}
-
-                    <div className="p-5 sm:p-6">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {post.is_public ? (
-                          <CommunityChipPublic className="text-[0.58rem]">Public story</CommunityChipPublic>
-                        ) : (
-                          <CommunityChipPrivate className="text-[0.58rem]">Private to you</CommunityChipPrivate>
-                        )}
-                        {isOwnPost ? (
-                          <CommunityChipEmphasis className="text-[0.58rem]">Your post</CommunityChipEmphasis>
-                        ) : null}
-                        {savedPostIds.has(post.id) ? <CommunityPillSaved /> : null}
-                        {post.is_featured ? <CommunityBadgeFeatured /> : null}
-                        <span className="story-meta-chip text-[0.58rem]">
-                          {post.images.length} image{post.images.length === 1 ? '' : 's'}
-                        </span>
-                        {latestReport ? <CommunityBadgeReported /> : null}
-                      </div>
-
-                      <div className="mt-4 flex items-center gap-3">
-                        <Avatar
-                          src={post.authorAvatarUrl}
-                          fallback={authorName.slice(0, 2).toUpperCase()}
-                          alt={`${authorName} avatar`}
-                          size="md"
-                        />
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-[#7a331b]">{authorName}</p>
-                          <p className="text-xs text-[#6d5849]">Published {formatPublishedAt(post.created_at)}</p>
-                        </div>
-                      </div>
-
-                      <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-                        <Link href={detailHref} className="transition hover:text-[#e34b16]">
-                          {post.title}
-                        </Link>
-                      </h2>
-                      {post.place_label?.trim() ? (
-                        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#9b7455]">
-                          Place · {post.place_label.trim()}
-                        </p>
-                      ) : null}
-                      {(post.story_tags ?? []).filter(Boolean).length > 0 ? (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {(post.story_tags ?? []).map((slug) => {
-                            const label = COMMUNITY_STORY_TOPIC_LABELS[slug as CommunityStoryTopicSlug]
-                            if (!label) return null
-                            return (
-                              <CommunityChipTopic key={`${post.id}-${slug}`}>{label}</CommunityChipTopic>
-                            )
-                          })}
-                        </div>
-                      ) : null}
-                      <p className="mt-3 line-clamp-4 text-sm leading-7 text-[#6d5849] sm:text-base">{post.content}</p>
-
-                      {latestReport ? (
-                        <div className={`mt-6 inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm font-semibold ${reportStatusTone(latestReport.status)}`}>
-                          {REPORT_STATUS_LABELS[latestReport.status]}
-                        </div>
-                      ) : null}
-
-                      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                        <div className="space-y-2">
-                          <SaveCommunityPostButton
-                            postId={post.id}
-                            path={currentPath}
-                            initialSaved={savedPostIds.has(post.id)}
-                          />
-                          <p className="text-xs text-[#6d5849]">
-                            {isOwnPost && !post.is_public
-                              ? 'Only you can see this in the feed, and saves stay on your account only.'
-                              : 'Open the story for full details, saving, and reporting tools.'}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          {!isOwnPost ? (
-                            <Link href={moreFromAuthorHref} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                              More from {authorName}
-                            </Link>
-                          ) : null}
-                          <Link href={latestReport ? '/reports' : '/saved'} className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
-                            {latestReport ? 'Track report' : 'Saved list'}
-                          </Link>
-                          <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
-                            Open story →
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
+                  <CommunityStoryCard
+                    key={post.id}
+                    variant="feed"
+                    postId={post.id}
+                    title={post.title}
+                    content={post.content}
+                    isPublic={post.is_public}
+                    isFeatured={post.is_featured}
+                    imageCount={post.images.length}
+                    detailHref={detailHref}
+                    author={{
+                      username: post.author?.username,
+                      fullName: post.author?.full_name,
+                      avatarUrl: post.authorAvatarUrl,
+                    }}
+                    authorDisplayName={authorName}
+                    publishedAt={post.created_at}
+                    formatPublishedAt={formatPublishedAt}
+                    coverImageSrc={coverImage}
+                    coverImageAlt={post.images[0]?.alt_text ?? post.title}
+                    latestReport={latestReport ?? null}
+                    isOwnPost={isOwnPost}
+                    isSaved={savedPostIds.has(post.id)}
+                    placeLabel={post.place_label}
+                    storyTags={post.story_tags ?? []}
+                    currentPath={currentPath}
+                    moreFromAuthorHref={moreFromAuthorHref}
+                  />
                 )
                 })}
               </section>

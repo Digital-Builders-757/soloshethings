@@ -35,6 +35,13 @@ This section documents **what shipped in-repo** alongside the conceptual matrix 
 
 - Requires `profiles.role = 'admin'` (see middleware + [`AUTH_CONTRACT.md`](./AUTH_CONTRACT.md)). Members use `/reports` for their **own** report history—including withdrawing pending post reports (`withdraw_post_report`) into `withdrawn`—while operator transitions use `moderator_update_report`.
 
+**Member profiles (`/members/[username]`, 2026-06)**
+
+- Public route resolved exclusively via `resolve_member_profile` RPC (see [`DATA_ACCESS_QUERY_CONTRACT.md`](./DATA_ACCESS_QUERY_CONTRACT.md)).
+- Community surfaces (`/places`, `/saved`, `/places/[slug]`, `/reports`) link author avatar and display name to `/members/{username}` when `profiles.username` is present (`MemberProfileLink`, `CommunityAuthorPreview`).
+- **Non-enumerating not-found:** unknown username, invalid username pattern, and anonymous requests to a private profile all invoke `notFound()` and render the same branded `not-found.tsx` (“Profile unavailable”)—no distinct messaging that reveals whether a username exists.
+- Authenticated viewers see `auth_required` or `private` gate components when RPC returns those states; only `visible` renders the full public profile view.
+
 **Authenticated free tier (no qualifying subscription / trial)**
 
 - Story detail quota: **3 distinct other-authors’ stories per UTC calendar day** via **`community_post_reads`**; **viewing own stories does not increment the cap**.

@@ -223,7 +223,7 @@ export default function AboutPage() {
               <div className="relative order-2 px-2 md:p-4 lg:order-1">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-peach-offset shadow-peach-offset-hover transition-all md:rounded-3xl">
                   <Image
-                    src="/images/about-mission.jpg"
+                    src="/images/about-mission.png"
                     alt="The Solo SHE Things community"
                     fill
                     className="object-cover"

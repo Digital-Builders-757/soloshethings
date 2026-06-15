@@ -5,6 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLenis } from "@/components/providers/lenis-provider"
+import { getScrollY } from "@/lib/lenis/scroll-position"
 import { Button } from "@/components/ui/button"
 import { LogoutButton } from "./logout-button"
 
@@ -38,16 +40,27 @@ export function NavClient({
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { lenis, isEnabled } = useLenis()
 
   useEffect(() => {
     if (!showStickyNav) return
 
-    const handleScroll = () => setIsScrolled(window.scrollY > 56)
+    const handleScroll = () => {
+      setIsScrolled(getScrollY(lenis, isEnabled) > 56)
+    }
+
     handleScroll()
+
+    if (isEnabled && lenis) {
+      lenis.on("scroll", handleScroll)
+      return () => {
+        lenis.off("scroll", handleScroll)
+      }
+    }
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [showStickyNav])
+  }, [showStickyNav, lenis, isEnabled])
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -56,10 +69,17 @@ export function NavClient({
     }
 
     document.body.style.overflow = "hidden"
+    if (isEnabled && lenis) {
+      lenis.stop()
+    }
+
     return () => {
       document.body.style.removeProperty("overflow")
+      if (isEnabled && lenis) {
+        lenis.start()
+      }
     }
-  }, [isMobileMenuOpen])
+  }, [isMobileMenuOpen, lenis, isEnabled])
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
 
@@ -199,7 +219,10 @@ export function NavClient({
         </div>
 
         {isMobileMenuOpen && (
-          <div className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-brand-pinkDark/12 bg-gradient-to-b from-white to-brand-cream/25 lg:hidden">
+          <div
+            data-lenis-prevent
+            className="max-h-[min(85dvh,40rem)] overflow-y-auto overscroll-y-contain border-t border-brand-pinkDark/12 bg-gradient-to-b from-white to-brand-cream/25 lg:hidden"
+          >
             <nav
               className="container mx-auto flex flex-col gap-0 py-4 pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] shell-inline"
               aria-label="Mobile navigation"
