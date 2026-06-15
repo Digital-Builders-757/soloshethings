@@ -21,16 +21,9 @@
 
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
+import { LoadingState } from '@/components/ui/loading-state'
 import { getUser } from '@/lib/supabase/server'
 import { ResetPasswordForm } from './reset-password-form'
-
-function ResetPasswordFallback() {
-  return (
-    <main className="flex flex-1 items-center justify-center px-4 py-16">
-      <p className="text-sm font-semibold text-[#6d5849]">Loading…</p>
-    </main>
-  )
-}
 
 export default async function ResetPasswordPage({
   searchParams,
@@ -55,7 +48,7 @@ export default async function ResetPasswordPage({
   }
 
   return (
-    <Suspense fallback={<ResetPasswordFallback />}>
+    <Suspense fallback={<LoadingState variant="auth" label="Loading password reset…" />}>
       <ResetPasswordForm />
     </Suspense>
   )

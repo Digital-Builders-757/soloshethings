@@ -20,6 +20,12 @@ import { COMMUNITY_STORY_TOPIC_LABELS, type CommunityStoryTopicSlug } from '@/li
 import { cn } from '@/lib/utils'
 import type { report_status } from '@/types/database'
 
+const communityLinkFocus =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e34b16]'
+
+const communityLinkFocusBrand =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange'
+
 type CommunityStoryCardAuthor = {
   username?: string | null
   fullName?: string | null
@@ -178,7 +184,7 @@ function CommunityStoryCardFeed(props: CommunityStoryCardFeedProps) {
         />
 
         <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-          <Link href={detailHref} className="transition hover:text-[#e34b16]">
+          <Link href={detailHref} className={cn('transition hover:text-[#e34b16]', communityLinkFocus)}>
             {title}
           </Link>
         </h2>
@@ -200,8 +206,8 @@ function CommunityStoryCardFeed(props: CommunityStoryCardFeedProps) {
 
         {latestReport ? <CommunityStoryCardReportBadge latestReport={latestReport} /> : null}
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-2">
+        <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
+          <div className="min-w-0 space-y-2">
             <SaveCommunityPostButton postId={postId} path={currentPath} initialSaved={isSaved} />
             <p className="text-xs text-[#6d5849]">
               {isOwnPost && !isPublic
@@ -209,22 +215,25 @@ function CommunityStoryCardFeed(props: CommunityStoryCardFeedProps) {
                 : 'Open the story for full details, saving, and reporting tools.'}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 sm:justify-end">
             {!isOwnPost && moreFromAuthorHref ? (
               <Link
                 href={moreFromAuthorHref}
-                className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
+                className={cn('text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]', communityLinkFocus)}
               >
                 More from {authorDisplayName}
               </Link>
             ) : null}
             <Link
               href={latestReport ? '/reports' : '/saved'}
-              className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
+              className={cn('text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]', communityLinkFocus)}
             >
               {latestReport ? 'Track report' : 'Saved list'}
             </Link>
-            <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+            <Link
+              href={detailHref}
+              className={cn('text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]', communityLinkFocus)}
+            >
               Open story →
             </Link>
           </div>
@@ -291,7 +300,7 @@ function CommunityStoryCardSaved(props: CommunityStoryCardSavedProps) {
         />
 
         <h2 className="mt-4 font-serif text-2xl font-semibold text-[#7a331b]">
-          <Link href={detailHref} className="transition hover:text-[#e34b16]">
+          <Link href={detailHref} className={cn('transition hover:text-[#e34b16]', communityLinkFocus)}>
             {title}
           </Link>
         </h2>
@@ -308,20 +317,26 @@ function CommunityStoryCardSaved(props: CommunityStoryCardSavedProps) {
             variant="card"
             savedListContext
           />
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="mt-5 flex min-w-0 flex-wrap items-center gap-x-5 gap-y-2">
             {!isOwnPost && moreFromAuthorHref ? (
               <Link
                 href={moreFromAuthorHref}
-                className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]"
+                className={cn('text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]', communityLinkFocus)}
               >
                 More from {authorDisplayName}
               </Link>
             ) : null}
-            <Link href={detailHref} className="text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]">
+            <Link
+              href={detailHref}
+              className={cn('text-sm font-semibold text-[#e34b16] transition hover:text-[#c74010]', communityLinkFocus)}
+            >
               Open story →
             </Link>
             {latestReport ? (
-              <Link href="/reports" className="text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]">
+              <Link
+                href="/reports"
+                className={cn('text-sm font-semibold text-[#7a331b] transition hover:text-[#e34b16]', communityLinkFocus)}
+              >
                 Track report
               </Link>
             ) : null}
@@ -357,7 +372,7 @@ function CommunityStoryCardRelated(props: CommunityStoryCardRelatedProps) {
     >
       <p className="community-section-label text-[0.65rem]">{reasonLabel}</p>
       <h3 className="mt-3 font-serif text-xl font-semibold text-brand-pinkDark">
-        <Link href={detailHref} className="transition hover:text-brand-orange">
+        <Link href={detailHref} className={cn('transition hover:text-brand-orange', communityLinkFocusBrand)}>
           {title}
         </Link>
       </h3>
@@ -383,7 +398,10 @@ function CommunityStoryCardRelated(props: CommunityStoryCardRelatedProps) {
       </div>
       <Link
         href={detailHref}
-        className="mt-5 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral"
+        className={cn(
+          'mt-5 inline-flex text-sm font-semibold text-brand-orange transition hover:text-brand-coral',
+          communityLinkFocusBrand,
+        )}
       >
         Open story →
       </Link>

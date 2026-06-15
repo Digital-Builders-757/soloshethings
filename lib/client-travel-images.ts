@@ -58,7 +58,7 @@ export const CLIENT_TRAVEL_IMAGES: ClientTravelImage[] = [
     isHeic: true,
   },
   {
-    src: '/client-travel/market-spices-yarn.JPG',
+    src: '/client-travel/market-spices-yarn.png',
     alt: 'Vibrant indoor market filled with colorful yarns, spices, and traditional goods',
     location: 'North Africa',
     category: 'food-culture',
@@ -79,7 +79,7 @@ export const CLIENT_TRAVEL_IMAGES: ClientTravelImage[] = [
     isHeic: true,
   },
   {
-    src: '/client-travel/mountain-summit-city-view.JPG',
+    src: '/client-travel/mountain-summit-city-view.png',
     alt: 'Person standing triumphantly on rocky peak overlooking sprawling city and bay',
     location: 'Europe',
     category: 'landscapes',
@@ -99,7 +99,7 @@ export const CLIENT_TRAVEL_IMAGES: ClientTravelImage[] = [
     category: 'people',
   },
   {
-    src: '/client-travel/garden-tiled-staircase.JPG',
+    src: '/client-travel/garden-tiled-staircase.png',
     alt: 'Woman sitting on vibrant blue and green tiled staircase surrounded by lush garden foliage',
     location: 'Mediterranean/North Africa',
     category: 'people',

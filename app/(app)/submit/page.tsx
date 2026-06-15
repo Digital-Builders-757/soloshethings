@@ -150,8 +150,8 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
 
       <CommunitySurfaceNav active="submit" />
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(17.5rem,0.88fr)] lg:items-start lg:gap-12">
-        <div className="space-y-6">
+      <div className="mt-8 grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(17.5rem,0.88fr)] lg:items-start lg:gap-12">
+        <div className="min-w-0 space-y-6">
           {params.storyArchived === '1' ? (
             <div
               className="rounded-[1.25rem] border border-emerald-300/75 bg-emerald-50/95 p-4 text-sm leading-relaxed text-emerald-950"
@@ -181,7 +181,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           <SubmitForm recentPostCount={recentPosts.length} />
         </div>
 
-        <aside className="flex flex-col gap-6">
+        <aside className="flex min-w-0 flex-col gap-6">
           <div className="editorial-card-sun p-5 sm:p-6">
             <SectionHeader
               size="compact"

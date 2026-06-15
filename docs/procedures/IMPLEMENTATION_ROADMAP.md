@@ -4,7 +4,7 @@
 
 **Status:** ✅ CANONICAL
 **Owner:** Procedures Layer
-**Last Updated:** 2026-05-15
+**Last Updated:** 2026-06-01
 
 ---
 
@@ -48,21 +48,20 @@ Use these companion docs for everything else:
   - **Honest homepage marketing-interest capture (2026-05-17)** — `marketing_interest` table + `/` newsletter panel (`submitMarketingInterest`, service role insert/update); no outbound marketing/automation bundled.
   - **Product learning signals (2026-05-17)** — `captureProductSignal` Sentry **Logs** (`Sentry.logger.info`, attribute `product_signal`: signup, Stripe checkout open/return, community post create/save, report filed); muted with `DISABLE_PRODUCT_SIGNALS`; see `MONITORING_SENTRY_POSTURE.md`.
   - **Profile system v1.3 + community integration (2026-06)** — public `/members/[username]` with RPC visibility gates; avatar visibility storage policies; shared `MemberProfileLink` / `CommunityAuthorPreview`; community author rows link to member profiles; branded enumeration-safe member not-found.
+  - **UI/UX catch-up pass (2026-06-01)** — roadmap item **#2** complete per `SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md` (Phases A–G, Prompts 1–8). Shared UI primitives (`EmptyState`, `NoResultsState`, `SectionHeader`, `StatusBadge`, `UpgradePrompt`, `LoadingState`, `ErrorRecoveryCard`), dashboard/profile home-base polish, blog editorial adoption, `CommunityStoryCard` / `CommunityReportCard` family, `/submit` trust/safety workspace pass, empty/loading/error + mobile/a11y cleanup. Visual/composition only — no schema, RLS, auth, billing, or workflow changes.
 
 ### Live in-progress work
 
 - **Mandatory operational lane:** hosted Supabase migration stability / secret-scope recovery (`SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`)
-- **Safe parallel product lane:** UI/UX catch-up and design-system completion work that avoids schema, migrations, RLS, auth, billing, and new protected behavior (`SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`)
 - **Product queue remains paused behind the blocker above** unless the work in hand is clearly unrelated or safely visual-only.
 
 ### Resume pointer
 
 - **Branch target:** `develop`
 - **Operational recovery doc:** `docs/procedures/SOLOSHETHINGS_SUPABASE_CICD_RECOVERY_WORK_ORDER.md`
-- **Safe visual/UI doc:** `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
-- **Latest shipped batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs). Prior batch: moderation operator increment (2026-05-16).
+- **Latest shipped batch (2026-06-01):** UI/UX catch-up pass complete — shared member/community UI primitives, card family, submit trust workspace, loading/error recovery, mobile/a11y composition fixes. Work-order record: `SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`.
+- **Prior batch (2026-05-17):** truthful `marketing_interest` UX + **`product_signal`** instrumentation + doc sync across work orders (`MONITORING_SENTRY_POSTURE`, QA proofs).
 - **Known verification note:** the production build may still emit non-blocking `Critical dependency: the request of a dependency is an expression` warnings from Sentry/OpenTelemetry transitive packages during webpack; treat as upstream noise unless the build fails or runtime breaks.
-- **Best safe parallel focus while recovery is still open:** UI/UX catch-up across dashboard, blog, member surfaces, empty/loading/error states, trust/safety cues, and mobile polish (`SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`).
 - **Next focus after recovery:** ESP-backed broadcasts / richer analytics dashboards **only when** ops justifies (`SOLOSHETHINGS_POST_LAUNCH_BACKLOG_WORK_ORDER.md` §2–§3 stretch).
 
 ---
@@ -85,21 +84,22 @@ Work top to bottom unless a regression or blocker forces a reorder.
 
 **Definition of done:** staging hosted migration run is boring; production path is either validated or blocked by one explicit documented issue.
 
-### 2) UI/UX catch-up pass — 🚧 SAFE PARALLEL PRODUCT LANE
+### 2) UI/UX catch-up pass — ✅ SHIPPED (2026-06-01)
 
 **Goal:** close the product-experience gap between the already-shipped functionality and the current presentation so SoloSHEThings feels like a trustworthy travel publication, private member community, calm member dashboard, premium subscription product, and privacy-aware platform.
 
-**Work order anchor:** `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md`
+**Work order anchor:** `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md` (Phases A–G complete; Prompts 1–8 complete)
 
-**What this covers:**
-- dashboard usefulness and recent-activity framing
-- blog/public editorial quality
-- shared story-card and state-badge language
-- empty/loading/error-state design
-- trust/safety/private/public visibility cues
-- mobile-first accessibility/composition cleanup
+**Shipped highlights:**
+- Shared UI primitives: `EmptyState`, `NoResultsState`, `SectionHeader`, `StatusBadge`, `UpgradePrompt`, `LoadingState`, `ErrorRecoveryCard`, `PrivacyNotice`
+- Dashboard + profile member-home polish; blog index/slug editorial adoption
+- Community card family: `CommunityStoryCard`, `CommunityReportCard` on `/places`, `/saved`, `/reports`, related grid on `/places/[slug]`
+- `/submit` trust/safety workspace pass (upload/privacy/moderation copy, lifecycle badges, designed empties)
+- Auth/app loading skeletons; blog segment `not-found`; filtered-list `NoResultsState`; mobile footer stacking + keyboard focus on community nav/cards
 
-**Hard guardrail:** this lane is safe only while it avoids schema, migrations, RLS, auth, billing, and new protected behavior.
+**Verification (2026-06-01):** `pnpm typecheck`, `pnpm lint`, `pnpm build` pass.
+
+**Hard guardrail honored:** no schema, migrations, RLS, auth, billing, or protected-behavior changes in this lane.
 
 ### 3) Community second-pass depth — ✅ SHIPPED (2026-05-15)
 
@@ -153,6 +153,7 @@ If a regression appears in auth, access control, billing, or data safety, fix th
 ## Historical work-order map
 
 These files remain useful as **completed batch records / implementation notes**, not as the active queue:
+- `docs/procedures/SOLOSHETHINGS_UIUX_CATCHUP_WORK_ORDER.md` (UI/UX catch-up — **complete 2026-06-01**)
 - `docs/procedures/SOLOSHETHINGS_AUTH_DASHBOARD_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_AUTH_RELIABILITY_WORK_ORDER.md`
 - `docs/procedures/SOLOSHETHINGS_FRONTEND_SYSTEM_WORK_ORDER.md`
@@ -182,6 +183,8 @@ npm run typecheck
 npm run lint
 npm run build
 ```
+
+(Or `pnpm typecheck`, `pnpm lint`, `pnpm build` — equivalent project scripts.)
 
 ---
 

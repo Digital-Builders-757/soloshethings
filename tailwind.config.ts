@@ -91,6 +91,9 @@ const config: Config = {
         sans: ["var(--font-rokkitt)", "Georgia", "serif"],
         serif: ["var(--font-rokkitt)", "Georgia", "serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
+        'navbar-anton': ["var(--font-anton)", "Impact", "sans-serif"],
+        'navbar-grace': ["var(--font-covered-grace)", "cursive"],
+        'navbar-jakarta': ["var(--font-plus-jakarta)", "system-ui", "sans-serif"],
       },
       fontSize: {
         'display-xl': ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }],   // 56px
@@ -181,6 +184,10 @@ const config: Config = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.72' },
         },
+        'travellers-letter-float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       animation: {
         "gradient-shift": "gradient-shift 8s ease infinite",
@@ -196,6 +203,7 @@ const config: Config = {
         'gentle-glow': 'gentle-glow 2s ease-in-out infinite',
         'gentle-pulse': 'gentle-pulse 3s ease-in-out infinite',
         'pulse-soft': 'pulse-soft 2.25s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'travellers-letter-float': 'travellers-letter-float 9s ease-in-out infinite',
       },
     },
   },

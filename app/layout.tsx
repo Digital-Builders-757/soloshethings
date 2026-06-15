@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
-import { Fraunces, Rokkitt } from "next/font/google"
+import { Anton, Covered_By_Your_Grace, Fraunces, Plus_Jakarta_Sans, Rokkitt } from "next/font/google"
+import { LenisProvider } from "@/components/providers/lenis-provider"
 import './globals.css'
 import './styles/contour-system.css'
 
@@ -14,6 +15,27 @@ const fraunces = Fraunces({
   variable: "--font-display",
   weight: ["400", "700", "900"],
   style: ["normal", "italic"],
+})
+
+/** Navbar logo — "SOLO" and "THINGS" */
+const anton = Anton({
+  subsets: ["latin"],
+  variable: "--font-anton",
+  weight: "400",
+})
+
+/** Navbar logo — "SHE" */
+const coveredByYourGrace = Covered_By_Your_Grace({
+  subsets: ["latin"],
+  variable: "--font-covered-grace",
+  weight: "400",
+})
+
+/** Navbar UI + hero heading */
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
 })
 
 export const metadata: Metadata = {
@@ -38,10 +60,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body
-        className={`${rokkitt.variable} ${fraunces.variable} font-sans antialiased min-h-dvh overflow-x-clip`}
+        className={`${rokkitt.variable} ${fraunces.variable} ${anton.variable} ${coveredByYourGrace.variable} ${plusJakartaSans.variable} font-sans antialiased min-h-dvh overflow-x-clip`}
         suppressHydrationWarning
       >
-        {children}
+        <LenisProvider>{children}</LenisProvider>
       </body>
     </html>
   )

@@ -137,3 +137,7 @@ scoop/
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Temporary files
+.tmp/
+tmp/
