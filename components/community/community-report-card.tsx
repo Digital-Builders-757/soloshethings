@@ -8,6 +8,9 @@ import { reportCardRailBg } from '@/lib/report-status-presentational'
 import { cn } from '@/lib/utils'
 import type { report_reason, report_status } from '@/types/database'
 
+const reportLinkFocus =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-orange'
+
 export type CommunityReportCardProps = {
   reportId: string
   status: report_status
@@ -63,7 +66,10 @@ export function CommunityReportCard({
 
             <h2 className="mt-3 font-serif text-xl font-semibold text-brand-pinkDark sm:text-2xl">
               {postHref ? (
-                <Link href={postHref} className="transition hover:text-brand-orange">
+                <Link
+                  href={postHref}
+                  className={cn('transition hover:text-brand-orange', reportLinkFocus)}
+                >
                   {postTitle}
                 </Link>
               ) : (
@@ -89,7 +95,10 @@ export function CommunityReportCard({
                 {authorFilterHref ? (
                   <Link
                     href={authorFilterHref}
-                    className="font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline"
+                    className={cn(
+                      'font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline',
+                      reportLinkFocus,
+                    )}
                   >
                     Filter to this author
                   </Link>
@@ -126,7 +135,10 @@ export function CommunityReportCard({
             {postHref ? (
               <Link
                 href={postHref}
-                className="text-sm font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline"
+                className={cn(
+                  'text-sm font-semibold text-brand-orange underline-offset-2 transition hover:text-brand-coral hover:underline',
+                  reportLinkFocus,
+                )}
               >
                 Open story
               </Link>

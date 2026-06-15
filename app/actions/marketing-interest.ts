@@ -97,7 +97,6 @@ export async function submitMarketingInterest(
   }
 
   return {
-    success:
-      'Thanks — your email was saved so we know you’re interested in SoloSheThings updates. We’re not sending marketing email from here yet (no newsletters or broadcasts are automated until we wire a provider); this is manual follow-up territory for now.',
+    success: 'You’re on the list — we’ll be in touch soon.',
   }
 }

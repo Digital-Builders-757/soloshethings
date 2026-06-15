@@ -5,6 +5,7 @@ import { ActiveMemberFilterBanner } from '@/components/community/active-member-f
 import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { EmptyState } from '@/components/ui/empty-state'
+import { NoResultsState } from '@/components/ui/no-results-state'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
 import { cn } from '@/lib/utils'
 import { getLatestMemberPostReportsForPosts } from '@/lib/queries/reports'
@@ -277,19 +278,20 @@ export default async function SavedPostsPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <EmptyState
+            <NoResultsState
               id="saved-filtered-empty"
               className="mt-6"
               variant="editorial"
               ariaLive="polite"
+              filterEyebrow="No matches"
               title="No saved stories match this view yet"
               description="Try a different keyword, switch filters, or clear this view to return to your full saved list."
-              primaryAction={{
+              resetAction={{
                 label: 'Reset saved filters →',
                 href: '/saved',
                 variant: 'link',
               }}
-              extraActions={[
+              alternateActions={[
                 ...(activeAuthorId
                   ? [
                       {

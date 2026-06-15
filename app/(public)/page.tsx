@@ -1,19 +1,17 @@
 import { Footer } from "@/components/footer"
 import { HeroSection } from "@/components/home/hero-section"
-import { WelcomeSection } from "@/components/home/welcome-section"
 import { CommunityCTA } from "@/components/home/community-cta"
 import { NewsletterSection } from "@/components/home/newsletter-section"
-import { AboutPreview } from "@/components/home/about-preview"
+import { ManifestoSection } from "@/components/home/manifesto-section"
 
 export default async function HomePage() {
   return (
     <>
-      <main className="min-w-0 overflow-x-clip">
+      <main className="min-w-0 overflow-x-visible">
         <HeroSection />
-        <WelcomeSection />
         <CommunityCTA />
         <NewsletterSection />
-        <AboutPreview />
+        <ManifestoSection />
       </main>
       <Footer />
     </>

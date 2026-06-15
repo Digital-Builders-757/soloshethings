@@ -5,6 +5,7 @@ import { ActiveMemberFilterBanner } from '@/components/community/active-member-f
 import { CommunityStoryCard } from '@/components/community/community-story-card'
 import { CommunitySurfaceNav } from '@/components/community/community-surface-nav'
 import { EmptyState } from '@/components/ui/empty-state'
+import { NoResultsState } from '@/components/ui/no-results-state'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { Badge } from '@/components/ui/badge'
 import { appendCommunityAuthorParams, buildCommunityWorkspaceHref, buildStoryDetailHref } from '@/lib/community-navigation'
@@ -508,19 +509,20 @@ export default async function PlacesPage({ searchParams }: Props) {
           </section>
 
           {showFilteredEmptyState ? (
-            <EmptyState
+            <NoResultsState
               id="places-filtered-empty"
               className="mt-6"
               variant="editorial"
               ariaLive="polite"
+              filterEyebrow="No matches"
               title="No stories match this filter yet"
               description="Try a different keyword, switch views, or clear the filters to return to the full community feed."
-              primaryAction={{
+              resetAction={{
                 label: 'Reset filters →',
                 href: '/places',
                 variant: 'link',
               }}
-              extraActions={[
+              alternateActions={[
                 ...(activeAuthorId
                   ? [
                       {
